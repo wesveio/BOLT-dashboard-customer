@@ -1,39 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { routing } from '@/i18n/routing';
 
 /**
  * POST /api/locale
- * Set locale cookie for user preference
+ * Set locale preference in cookie
  */
 export async function POST(request: NextRequest) {
   try {
-    const { locale } = await request.json();
+    const body = await request.json();
+    const locale = body.locale;
 
-    // Validate locale
-    if (!locale || !routing.locales.includes(locale)) {
+    if (!locale || !['en', 'pt-BR', 'es'].includes(locale)) {
       return NextResponse.json(
         { error: 'Invalid locale' },
         { status: 400 }
       );
     }
 
-    // Set cookie
     const cookieStore = await cookies();
     cookieStore.set('NEXT_LOCALE', locale, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 365, // 1 year
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      httpOnly: false, // Allow client-side access
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+      path: '/',
     });
 
     return NextResponse.json({ success: true, locale });
   } catch (error) {
-    console.error('Locale update error:', error);
     return NextResponse.json(
-      { error: 'Failed to update locale' },
-      { status: 500 }
+      { error: 'Invalid request body' },
+      { status: 400 }
     );
   }
 }
-

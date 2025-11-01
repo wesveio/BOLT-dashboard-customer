@@ -53,6 +53,12 @@
       "english": "English",
       "portuguese": "Português",
       "spanish": "Español"
+    },
+    "overview": {
+      "title": "Overview",
+      "welcome": "Welcome to your BOLT Dashboard",
+      "quickStart": "Quick Start",
+      "description": "Your dashboard is ready! Metrics and analytics will appear here once you start receiving checkout data."
     }
   },
   "auth": {

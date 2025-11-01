@@ -4,6 +4,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { verifyCode } from '@/utils/auth/code-generator';
 import { generateSessionToken } from '@/utils/auth/code-generator';
 import { cookies } from 'next/headers';
+import { isAuthBypassEnabled, getMockUser } from '@/utils/auth/dev-bypass';
 
 const verifyCodeSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -18,6 +19,47 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { email, code } = verifyCodeSchema.parse(body);
+
+    // Development bypass - only works in development mode
+    if (isAuthBypassEnabled()) {
+      console.warn('‼️ [DEBUG] Auth bypass enabled - skipping code verification');
+      
+      const mockUser = getMockUser();
+      const sessionToken = generateSessionToken();
+      const refreshToken = generateSessionToken();
+      
+      const sessionDurationHours = parseInt(
+        process.env.AUTH_SESSION_DURATION_HOURS || '24',
+        10
+      );
+      const refreshDurationDays = parseInt(
+        process.env.AUTH_REFRESH_TOKEN_DURATION_DAYS || '30',
+        10
+      );
+
+      // Set HTTP-only cookies
+      const cookieStore = cookies();
+      cookieStore.set('dashboard_session', sessionToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        maxAge: sessionDurationHours * 60 * 60,
+        path: '/',
+      });
+
+      cookieStore.set('dashboard_refresh', refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        maxAge: refreshDurationDays * 24 * 60 * 60,
+        path: '/',
+      });
+
+      return NextResponse.json({
+        success: true,
+        user: mockUser,
+      });
+    }
 
     if (!supabaseAdmin) {
       return NextResponse.json(

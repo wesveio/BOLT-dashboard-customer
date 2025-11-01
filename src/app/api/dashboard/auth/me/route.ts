@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
+import { isAuthBypassEnabled, getMockUser } from '@/utils/auth/dev-bypass';
 
 /**
  * GET /api/dashboard/auth/me
@@ -8,6 +9,26 @@ import { cookies } from 'next/headers';
  */
 export async function GET(request: NextRequest) {
   try {
+    // Development bypass - only works in development mode
+    if (isAuthBypassEnabled()) {
+      console.warn('‼️ [DEBUG] Auth bypass enabled - returning mock user');
+      const mockUser = getMockUser();
+      
+      // Set a mock session cookie to maintain consistency
+      const cookieStore = cookies();
+      cookieStore.set('dashboard_session', 'dev-bypass-token', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60, // 24 hours
+        path: '/',
+      });
+
+      return NextResponse.json({
+        user: mockUser,
+      });
+    }
+
     if (!supabaseAdmin) {
       return NextResponse.json(
         { error: 'Server configuration error' },

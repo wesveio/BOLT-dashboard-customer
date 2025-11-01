@@ -20,11 +20,15 @@ export function LanguageSwitcher() {
   const handleLocaleChange = async (newLocale: string) => {
     try {
       // Set locale cookie via API
-      await fetch('/api/locale', {
+      const response = await fetch('/api/locale', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ locale: newLocale }),
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to set locale');
+      }
 
       // Refresh the page to apply new locale
       startTransition(() => {

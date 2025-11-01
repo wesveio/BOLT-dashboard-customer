@@ -63,7 +63,7 @@ export function useDashboardAuth() {
         isLoading: false,
         isAuthenticated: false,
       });
-      router.push('/dashboard/login');
+      router.push('/login');
     } catch (error) {
       console.error('Logout error:', error);
     }

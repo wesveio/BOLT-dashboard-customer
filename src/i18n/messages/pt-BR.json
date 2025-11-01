@@ -48,6 +48,12 @@
       "profile": "Perfil",
       "logout": "Sair",
       "language": "Idioma"
+    },
+    "overview": {
+      "title": "Visão Geral",
+      "welcome": "Bem-vindo ao seu Dashboard BOLT",
+      "quickStart": "Início Rápido",
+      "description": "Seu dashboard está pronto! Métricas e analytics aparecerão aqui assim que você começar a receber dados de checkout."
     }
   },
   "auth": {
