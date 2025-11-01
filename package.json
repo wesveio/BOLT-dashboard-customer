@@ -14,8 +14,8 @@
     "migrate": "tsx scripts/run-migrations.ts"
   },
   "dependencies": {
-    "@heroui/react": "^2.8.5",
     "@heroicons/react": "^2.2.0",
+    "@heroui/react": "^2.8.5",
     "@supabase/supabase-js": "^2.39.0",
     "@tanstack/react-query": "^5.17.0",
     "@tiptap/react": "^2.1.0",
@@ -38,6 +38,7 @@
     "@types/react": "^18.2.57",
     "@types/react-dom": "^18.2.19",
     "autoprefixer": "^10.4.17",
+    "dotenv": "^17.2.3",
     "eslint": "^8.56.0",
     "eslint-config-next": "14.1.0",
     "postcss": "^8.4.35",
@@ -46,4 +47,3 @@
     "typescript": "^5.8.3"
   }
 }
-

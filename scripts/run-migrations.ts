@@ -1,93 +1,39 @@
 /**
  * Script para executar migrações do Supabase
  * 
- * Este script executa todas as migrações SQL na ordem correta
- * usando o cliente Supabase com service role key.
+ * Este script tenta executar migrações usando o Supabase CLI.
+ * Se o CLI não estiver disponível, gera um arquivo SQL consolidado
+ * para execução manual no SQL Editor.
  * 
  * Uso:
- *   tsx scripts/run-migrations.ts
+ *   yarn migrate
  *   ou
- *   npx tsx scripts/run-migrations.ts
+ *   tsx scripts/run-migrations.ts
  * 
  * Requisitos:
- *   - Variáveis de ambiente configuradas (.env.local)
- *   - SUPABASE_SERVICE_ROLE_KEY deve estar configurada
+ *   - Supabase CLI instalado (opcional, mas recomendado)
+ *   - Ou acesso ao SQL Editor do Supabase Dashboard
  */
 
-import { createClient } from '@supabase/supabase-js';
-import { readFileSync, readdirSync } from 'fs';
+import { config } from 'dotenv';
+config({ path: './.env.local' });
+
+import { readFileSync, readdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import { execSync } from 'child_process';
 
-// Configuração
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const migrationsDir = join(process.cwd(), 'supabase', 'migrations');
-
-if (!supabaseUrl || !supabaseServiceRoleKey) {
-  console.error('❌ [ERROR] Variáveis de ambiente não configuradas');
-  console.error('   Certifique-se de que .env.local contém:');
-  console.error('   - NEXT_PUBLIC_SUPABASE_URL');
-  console.error('   - SUPABASE_SERVICE_ROLE_KEY');
-  process.exit(1);
-}
-
-const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+const outputFile = join(process.cwd(), 'supabase', 'all-migrations.sql');
 
 /**
- * Executa uma migração SQL
+ * Verifica se o Supabase CLI está instalado
  */
-async function runMigration(fileName: string, sql: string): Promise<void> {
-  console.log(`\n📝 Executando: ${fileName}...`);
-
+function hasSupabaseCLI(): boolean {
   try {
-    // Executa o SQL usando RPC ou query direta
-    const { error } = await supabase.rpc('exec_sql', { sql_query: sql });
-
-    // Se RPC não existir, tenta executar diretamente via REST
-    if (error && error.message.includes('function') && error.message.includes('does not exist')) {
-      console.log('   ⚠️  RPC não disponível, executando via REST API...');
-
-      // Garantir que a service role key está definida
-      if (!supabaseServiceRoleKey) {
-        throw new Error('SUPABASE_SERVICE_ROLE_KEY não está configurada');
-      }
-
-      // Para queries complexas, precisamos usar a API SQL do Supabase
-      // Nota: Isso requer acesso via service role key
-      const response = await fetch(`${supabaseUrl}/rest/v1/rpc/exec_sql`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': supabaseServiceRoleKey,
-          'Authorization': `Bearer ${supabaseServiceRoleKey}`,
-        },
-        body: JSON.stringify({ sql_query: sql }),
-      });
-
-      if (!response.ok) {
-        // Se ainda falhar, vamos tentar executar via psql ou sugerir execução manual
-        console.error('   ❌ Não é possível executar via REST API automaticamente');
-        console.error('   💡 Execute manualmente no SQL Editor do Supabase Dashboard');
-        throw new Error(`Migration failed: ${fileName}`);
-      }
-    } else if (error) {
-      throw error;
-    }
-
-    console.log(`   ✅ ${fileName} executado com sucesso`);
-  } catch (error: any) {
-    console.error(`   ❌ Erro ao executar ${fileName}:`, error.message);
-
-    // Se for erro de sintaxe ou estrutura, mostra mais detalhes
-    if (error.code || error.details) {
-      console.error('   Detalhes:', {
-        code: error.code,
-        details: error.details,
-        hint: error.hint,
-      });
-    }
-
-    throw error;
+    execSync('supabase --version', { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
   }
 }
 
@@ -100,6 +46,89 @@ function sortMigrations(files: string[]): string[] {
     const numB = parseInt(b.match(/^(\d+)/)?.[1] || '0');
     return numA - numB;
   });
+}
+
+/**
+ * Executa migrações usando Supabase CLI
+ */
+function runWithCLI(): void {
+  console.log('📦 Usando Supabase CLI para executar migrações...\n');
+
+  try {
+    // Verifica se o projeto está linkado
+    try {
+      execSync('supabase status', { stdio: 'ignore' });
+    } catch {
+      console.log('⚠️  Projeto não está linkado ao Supabase CLI');
+      console.log('\n💡 Para usar o CLI:');
+      console.log('   1. Execute: supabase login');
+      console.log('   2. Execute: supabase link --project-ref seu-project-ref');
+      console.log('   3. Execute: supabase db push\n');
+      throw new Error('Projeto não linkado');
+    }
+
+    // Executa as migrações
+    console.log('🚀 Executando: supabase db push...\n');
+    execSync('supabase db push', {
+      stdio: 'inherit',
+      cwd: process.cwd(),
+    });
+
+    console.log('\n✅ Migrações executadas com sucesso via CLI!');
+  } catch (error: any) {
+    console.error('\n❌ Erro ao executar via CLI:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Gera arquivo SQL consolidado para execução manual
+ */
+function generateConsolidatedSQL(sortedFiles: string[]): void {
+  console.log('📝 Gerando arquivo SQL consolidado...\n');
+
+  let consolidatedSQL = `-- ============================================================================
+-- MIGRAÇÕES CONSOLIDADAS - Dashboard Customer
+-- ============================================================================
+-- Este arquivo contém todas as migrações na ordem correta.
+-- Execute este arquivo completo no SQL Editor do Supabase Dashboard.
+-- ============================================================================
+-- Gerado em: ${new Date().toISOString()}
+-- Total de migrações: ${sortedFiles.length}
+-- ============================================================================
+
+`;
+
+  sortedFiles.forEach((file, index) => {
+    const filePath = join(migrationsDir, file);
+    const sql = readFileSync(filePath, 'utf-8');
+
+    consolidatedSQL += `\n-- ============================================================================
+-- MIGRATION ${index + 1}/${sortedFiles.length}: ${file}
+-- ============================================================================\n\n`;
+
+    consolidatedSQL += sql;
+    consolidatedSQL += '\n\n';
+  });
+
+  consolidatedSQL += `-- ============================================================================
+-- FIM DAS MIGRAÇÕES
+-- ============================================================================
+-- Próximos passos:
+-- 1. Verifique se todas as tabelas foram criadas
+-- 2. Verifique as políticas RLS
+-- 3. Teste a conexão com a aplicação
+-- ============================================================================
+`;
+
+  writeFileSync(outputFile, consolidatedSQL, 'utf-8');
+
+  console.log(`✅ Arquivo gerado: ${outputFile}\n`);
+  console.log('📋 Instruções:');
+  console.log('   1. Acesse o Dashboard do Supabase');
+  console.log('   2. Vá para SQL Editor');
+  console.log('   3. Copie e cole o conteúdo do arquivo gerado');
+  console.log('   4. Execute o SQL (Ctrl+Enter / Cmd+Enter)\n');
 }
 
 /**
@@ -128,28 +157,30 @@ async function main() {
       console.log(`   ${index + 1}. ${file}`);
     });
 
-    // Executa cada migração em sequência
-    for (const file of sortedFiles) {
-      const filePath = join(migrationsDir, file);
-      const sql = readFileSync(filePath, 'utf-8');
-      await runMigration(file, sql);
+    console.log('\n');
+
+    // Tenta usar CLI, senão gera arquivo consolidado
+    if (hasSupabaseCLI()) {
+      try {
+        runWithCLI();
+      } catch (cliError) {
+        console.log('\n⚠️  Não foi possível executar via CLI, gerando arquivo SQL...\n');
+        generateConsolidatedSQL(sortedFiles);
+      }
+    } else {
+      console.log('ℹ️  Supabase CLI não encontrado\n');
+      generateConsolidatedSQL(sortedFiles);
+      console.log('\n💡 Para usar o CLI no futuro:');
+      console.log('   - macOS: brew install supabase/tap/supabase');
+      console.log('   - npm: npm install -g supabase');
+      console.log('   - Veja: supabase/MIGRATION-GUIDE.md\n');
     }
 
-    console.log('\n✅ Todas as migrações foram executadas com sucesso!');
-    console.log('\n💡 Próximos passos:');
-    console.log('   1. Verifique as tabelas no Dashboard do Supabase');
-    console.log('   2. Verifique se as políticas RLS estão ativas');
-    console.log('   3. Teste a conexão com a aplicação\n');
-
   } catch (error: any) {
-    console.error('\n❌ Falha ao executar migrações:', error.message);
-    console.error('\n💡 Alternativas:');
-    console.error('   1. Execute manualmente no SQL Editor do Supabase Dashboard');
-    console.error('   2. Use o Supabase CLI: supabase db push');
+    console.error('\n❌ Erro:', error.message);
     process.exit(1);
   }
 }
 
 // Executa
 main();
-

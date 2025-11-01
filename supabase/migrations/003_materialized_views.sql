@@ -3,10 +3,12 @@
 -- ============================================================================
 
 -- Hourly checkout metrics
+-- Note: Using DATE_TRUNC instead of time_bucket for PostgreSQL compatibility
+-- (time_bucket requires TimescaleDB extension)
 CREATE MATERIALIZED VIEW analytics.checkout_metrics_hourly AS
 SELECT
   customer_id,
-  time_bucket('1 hour', timestamp) AS hour,
+  DATE_TRUNC('hour', timestamp) AS hour,
   COUNT(DISTINCT session_id) AS total_sessions,
   COUNT(DISTINCT CASE WHEN event_type = 'order_confirmed' THEN session_id END) AS completed_checkouts,
   COUNT(DISTINCT CASE WHEN event_type = 'step_abandoned' THEN session_id END) AS abandoned_checkouts,
@@ -16,7 +18,8 @@ SELECT
   COUNT(DISTINCT CASE WHEN category = 'error' THEN session_id END) AS error_sessions
 FROM analytics.events
 WHERE category IN ('metric', 'user_action')
-GROUP BY customer_id, time_bucket('1 hour', timestamp);
+  AND customer_id IS NOT NULL
+GROUP BY customer_id, DATE_TRUNC('hour', timestamp);
 
 -- Create unique index for refresh
 CREATE UNIQUE INDEX idx_checkout_metrics_hourly_unique
@@ -36,6 +39,7 @@ SELECT
   COUNT(DISTINCT order_form_id) AS unique_orders
 FROM analytics.events
 WHERE category IN ('metric', 'user_action')
+  AND customer_id IS NOT NULL
 GROUP BY customer_id, DATE(timestamp);
 
 -- Create unique index for refresh
@@ -55,6 +59,7 @@ SELECT
   COUNT(DISTINCT CASE WHEN event_type = 'order_confirmed' THEN session_id END) AS confirmed
 FROM analytics.events
 WHERE category = 'user_action'
+  AND customer_id IS NOT NULL
 GROUP BY customer_id, DATE(timestamp);
 
 -- Create unique index for refresh
