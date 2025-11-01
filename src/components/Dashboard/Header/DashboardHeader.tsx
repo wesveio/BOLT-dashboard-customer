@@ -52,9 +52,11 @@ export function DashboardHeader() {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="User menu">
-                <DropdownItem key="profile">{t('profile')}</DropdownItem>
+                <DropdownItem key="profile" href="/dashboard/profile">
+                  {t('profile')}
+                </DropdownItem>
                 <DropdownItem key="settings" href="/dashboard/settings">
-                  Settings
+                  {t('settings')}
                 </DropdownItem>
                 <DropdownItem
                   key="logout"

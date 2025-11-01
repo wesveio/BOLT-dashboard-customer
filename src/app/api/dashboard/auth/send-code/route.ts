@@ -18,9 +18,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email } = sendCodeSchema.parse(body);
 
-    // Get client IP for rate limiting
+    // Get client IP for rate limiting and locale from middleware
     const headersList = headers();
     const ipAddress = headersList.get('x-forwarded-for') || headersList.get('x-real-ip') || 'unknown';
+    const locale = headersList.get('x-locale') || 'en';
 
     if (!supabaseAdmin) {
       return NextResponse.json(
@@ -86,7 +87,6 @@ export async function POST(request: NextRequest) {
     // Send email with code
     try {
       const emailService = getEmailService();
-      const locale = request.headers.get('x-locale') || 'en';
       const { html, text } = generateAccessCodeEmail(code, locale);
 
       await emailService.sendEmail({
