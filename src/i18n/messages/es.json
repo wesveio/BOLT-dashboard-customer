@@ -90,6 +90,26 @@
       "devices": {
         "title": "Distribución por Dispositivo",
         "subtitle": "Tasas de conversión por tipo de dispositivo"
+      },
+      "browsers": {
+        "title": "Navegador y Plataforma",
+        "subtitle": "Métricas de rendimiento por navegador y plataforma",
+        "totalSessions": "Total de Sesiones",
+        "totalSessionsSubtitle": "Sesiones de checkout por navegador",
+        "avgConversion": "Conversión Promedio",
+        "avgConversionSubtitle": "Tasa promedio de conversión",
+        "topBrowser": "Navegador Principal",
+        "ofSessions": "de sesiones",
+        "browserDistribution": "Distribución de Navegadores",
+        "browserDistributionSubtitle": "Porcentaje de sesiones por navegador",
+        "browserPerformance": "Rendimiento de Navegadores",
+        "browserPerformanceSubtitle": "Tasas de conversión por navegador",
+        "sessions": "Sesiones",
+        "conversionRate": "Tasa de Conversión",
+        "revenue": "Ingresos",
+        "marketShare": "Participación de Mercado",
+        "platformBreakdown": "Distribución de Plataformas",
+        "platformBreakdownSubtitle": "Sesiones y rendimiento por plataforma"
       }
     },
     "themes": {

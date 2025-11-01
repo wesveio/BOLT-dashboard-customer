@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
+import { getSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import { isAuthBypassEnabled, getMockUser } from '@/utils/auth/dev-bypass';
 
@@ -29,12 +29,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    if (!supabaseAdmin) {
-      return NextResponse.json(
-        { error: 'Server configuration error' },
-        { status: 500 }
-      );
-    }
+    const supabaseAdmin = getSupabaseAdmin();
 
     const cookieStore = cookies();
     const sessionToken = cookieStore.get('dashboard_session')?.value;

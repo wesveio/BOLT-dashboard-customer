@@ -95,6 +95,26 @@
       "devices": {
         "title": "Device Breakdown",
         "subtitle": "Conversion rates by device type"
+      },
+      "browsers": {
+        "title": "Browser & Platform",
+        "subtitle": "Performance metrics by browser and platform",
+        "totalSessions": "Total Sessions",
+        "totalSessionsSubtitle": "Checkout sessions by browser",
+        "avgConversion": "Avg Conversion",
+        "avgConversionSubtitle": "Average conversion rate",
+        "topBrowser": "Top Browser",
+        "ofSessions": "of sessions",
+        "browserDistribution": "Browser Distribution",
+        "browserDistributionSubtitle": "Percentage of sessions by browser",
+        "browserPerformance": "Browser Performance",
+        "browserPerformanceSubtitle": "Conversion rates by browser",
+        "sessions": "Sessions",
+        "conversionRate": "Conversion Rate",
+        "revenue": "Revenue",
+        "marketShare": "Market Share",
+        "platformBreakdown": "Platform Breakdown",
+        "platformBreakdownSubtitle": "Sessions and performance by platform"
       }
     },
     "themes": {

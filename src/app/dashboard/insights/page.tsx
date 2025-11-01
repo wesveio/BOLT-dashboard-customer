@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion as m } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
@@ -25,9 +25,8 @@ interface Insight {
   timestamp: string;
 }
 
-// TODO: Replace with real insights generator
-const generateInsights = (): Insight[] => {
-  return [
+// Default insights fallback
+const defaultInsights: Insight[] = [
     {
       id: '1',
       type: 'success',
@@ -77,7 +76,6 @@ const generateInsights = (): Insight[] => {
       timestamp: '3 days ago',
     },
   ];
-};
 
 const insightIcons = {
   success: CheckCircleIcon,
@@ -121,13 +119,44 @@ const impactColors = {
 
 export default function InsightsPage() {
   const t = useTranslations('dashboard.insights');
-  const [insights] = useState<Insight[]>(generateInsights());
+  const [insights, setInsights] = useState<Insight[]>(defaultInsights);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadInsights = async () => {
+      try {
+        const response = await fetch('/api/dashboard/insights');
+        if (response.ok) {
+          const data = await response.json();
+          setInsights(data.insights || defaultInsights);
+        }
+      } catch (error) {
+        console.error('Load insights error:', error);
+        setInsights(defaultInsights);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadInsights();
+  }, []);
 
   const filteredInsights = {
     high: insights.filter((i) => i.impact === 'high'),
     medium: insights.filter((i) => i.impact === 'medium'),
     low: insights.filter((i) => i.impact === 'low'),
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Generating insights...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <m.div initial="hidden" animate="visible" variants={fadeIn}>

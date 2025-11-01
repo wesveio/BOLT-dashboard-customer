@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion as m } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
-import { Card, CardBody, Button } from '@heroui/react';
+import { Card, CardBody, Button, Spinner } from '@heroui/react';
 import { ThemeEditor } from '@/components/Dashboard/ThemeEditor/ThemeEditor';
 import { RoleGuard } from '@/components/Dashboard/RoleGuard/RoleGuard';
 import { PlusIcon, PaintBrushIcon } from '@heroicons/react/24/outline';
@@ -13,21 +13,44 @@ export default function ThemesPage() {
   const t = useTranslations('dashboard.themes');
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
 
-  // TODO: Replace with real data from Supabase
-  const themes = [
-    {
-      id: '1',
-      name: 'Default Theme',
-      isActive: true,
-      preview: null,
-    },
-    {
-      id: '2',
-      name: 'Dark Mode',
-      isActive: false,
-      preview: null,
-    },
-  ];
+  const [themes, setThemes] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadThemes = async () => {
+      try {
+        const response = await fetch('/api/dashboard/themes');
+        if (response.ok) {
+          const data = await response.json();
+          setThemes(data.themes || []);
+        }
+      } catch (error) {
+        console.error('Load themes error:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadThemes();
+  }, []);
+
+  const handleActivateTheme = async (themeId: string) => {
+    try {
+      const response = await fetch(`/api/dashboard/themes/${themeId}`, {
+        method: 'POST',
+      });
+      if (response.ok) {
+        // Reload themes
+        const refreshResponse = await fetch('/api/dashboard/themes');
+        if (refreshResponse.ok) {
+          const data = await refreshResponse.json();
+          setThemes(data.themes || []);
+        }
+      }
+    } catch (error) {
+      console.error('Activate theme error:', error);
+    }
+  };
 
   if (selectedTheme) {
     return (
@@ -36,7 +59,11 @@ export default function ThemesPage() {
         onBack={() => setSelectedTheme(null)}
         onSave={() => {
           setSelectedTheme(null);
-          // TODO: Refresh themes list
+          // Refresh themes list
+          fetch('/api/dashboard/themes')
+            .then((res) => res.json())
+            .then((data) => setThemes(data.themes || []))
+            .catch((err) => console.error('Refresh themes error:', err));
         }}
       />
     );
@@ -63,59 +90,82 @@ export default function ThemesPage() {
           </RoleGuard>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {themes.map((theme) => (
-            <m.div
-              key={theme.id}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 cursor-pointer">
-                <CardBody className="p-6">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-                      <PaintBrushIcon className="w-8 h-8 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-gray-900">{theme.name}</h3>
-                      {theme.isActive && (
-                        <span className="inline-block mt-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-semibold rounded">
-                          Active
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <RoleGuard requiredPermission={{ resource: 'themes', action: 'write' }}>
-                      <Button
-                        size="sm"
-                        variant="flat"
-                        className="flex-1"
-                        onPress={() => setSelectedTheme(theme.id)}
-                      >
-                        {t('edit')}
-                      </Button>
-                    </RoleGuard>
-                    {!theme.isActive && (
-                      <RoleGuard requiredPermission={{ resource: 'themes', action: 'write' }}>
-                        <Button
-                          size="sm"
-                          color="primary"
-                          variant="light"
-                          onPress={() => {
-                            // TODO: Activate theme
-                          }}
-                        >
-                          {t('activate')}
-                        </Button>
-                      </RoleGuard>
-                    )}
-                  </div>
-                </CardBody>
-              </Card>
-            </m.div>
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center py-12">
+            <Spinner size="lg" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {themes.length === 0 ? (
+              <div className="col-span-full text-center py-12">
+                <PaintBrushIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-gray-900 mb-2">No Themes Yet</h3>
+                <p className="text-gray-600 mb-4">Create your first theme to get started</p>
+                <RoleGuard requiredPermission={{ resource: 'themes', action: 'write' }}>
+                  <Button
+                    color="primary"
+                    size="lg"
+                    className="bg-gradient-to-r from-blue-600 to-purple-600"
+                    startContent={<PlusIcon className="w-5 h-5" />}
+                    onPress={() => setSelectedTheme('new')}
+                  >
+                    {t('createNew')}
+                  </Button>
+                </RoleGuard>
+              </div>
+            ) : (
+              themes.map((theme) => (
+                <m.div
+                  key={theme.id}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 cursor-pointer">
+                    <CardBody className="p-6">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                          <PaintBrushIcon className="w-8 h-8 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold text-gray-900">{theme.name}</h3>
+                          {theme.isActive && (
+                            <span className="inline-block mt-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-semibold rounded">
+                              Active
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <RoleGuard requiredPermission={{ resource: 'themes', action: 'write' }}>
+                          <Button
+                            size="sm"
+                            variant="flat"
+                            className="flex-1"
+                            onPress={() => setSelectedTheme(theme.id)}
+                          >
+                            {t('edit')}
+                          </Button>
+                        </RoleGuard>
+                        {!theme.isActive && (
+                          <RoleGuard requiredPermission={{ resource: 'themes', action: 'write' }}>
+                            <Button
+                              size="sm"
+                              color="primary"
+                              variant="light"
+                              onPress={() => handleActivateTheme(theme.id)}
+                            >
+                              {t('activate')}
+                            </Button>
+                          </RoleGuard>
+                        )}
+                      </div>
+                    </CardBody>
+                  </Card>
+                </m.div>
+              ))
+            )}
+          </div>
+        )}
       </m.div>
     </RoleGuard>
   );

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion as m } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
@@ -7,21 +8,49 @@ import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TruckIcon } from '@heroicons/react/24/outline';
-
-// TODO: Replace with real data from Supabase
-const shippingMethodsData = [
-  { method: 'Standard', count: 350, avgDays: 5, avgCost: 12.5 },
-  { method: 'Express', count: 180, avgDays: 2, avgCost: 25.0 },
-  { method: 'Same Day', count: 50, avgDays: 1, avgCost: 45.0 },
-];
+import { Spinner } from '@heroui/react';
 
 export default function ShippingAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.shipping');
+  const [shippingMethodsData, setShippingMethodsData] = useState<any[]>([]);
+  const [metrics, setMetrics] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const totalShipments = shippingMethodsData.reduce((sum, item) => sum + item.count, 0);
-  const avgShippingCost =
-    shippingMethodsData.reduce((sum, item) => sum + item.avgCost * item.count, 0) /
-    totalShipments;
+  useEffect(() => {
+    const loadShippingData = async () => {
+      try {
+        const response = await fetch('/api/dashboard/analytics/shipping?period=week');
+        if (response.ok) {
+          const data = await response.json();
+          setShippingMethodsData(data.shippingMethods || []);
+          setMetrics({
+            totalShipments: data.totalShipments,
+            avgShippingCost: data.avgShippingCost,
+          });
+        }
+      } catch (error) {
+        console.error('Load shipping analytics error:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadShippingData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="text-center">
+          <Spinner size="lg" />
+          <p className="mt-4 text-gray-600">Loading shipping analytics...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const totalShipments = metrics?.totalShipments || 0;
+  const avgShippingCost = metrics?.avgShippingCost || '0.00';
 
   return (
     <m.div initial="hidden" animate="visible" variants={fadeIn}>
@@ -40,7 +69,7 @@ export default function ShippingAnalyticsPage() {
         />
         <MetricCard
           title="Avg Shipping Cost"
-          value={`$${avgShippingCost.toFixed(2)}`}
+          value={`$${avgShippingCost}`}
           subtitle="Average shipping fee"
         />
         <MetricCard
@@ -96,7 +125,7 @@ export default function ShippingAnalyticsPage() {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">Avg Delivery</span>
                 <span className="text-lg font-bold text-gray-900">
-                  {method.avgDays} days
+                  {method.avgDays?.toFixed(1) || '0'} days
                 </span>
               </div>
               <div className="flex items-center justify-between">

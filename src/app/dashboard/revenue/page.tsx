@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion as m } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
@@ -25,26 +25,50 @@ const periodOptions = [
   { value: 'year', label: 'Last 12 months' },
 ];
 
-// TODO: Replace with real data from Supabase
-const revenueData = [
-  { date: 'Mon', revenue: 4500 },
-  { date: 'Tue', revenue: 5200 },
-  { date: 'Wed', revenue: 4800 },
-  { date: 'Thu', revenue: 6100 },
-  { date: 'Fri', revenue: 5500 },
-  { date: 'Sat', revenue: 7200 },
-  { date: 'Sun', revenue: 6800 },
-];
-
 export default function RevenuePage() {
   const t = useTranslations('dashboard.revenue');
   const [period, setPeriod] = useState<Period>('week');
+  const [revenueData, setRevenueData] = useState<any[]>([]);
+  const [metrics, setMetrics] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // TODO: Replace with real calculations
-  const totalRevenue = 40100;
-  const avgOrderValue = 68.5;
-  const totalOrders = 585;
-  const revenueGrowth = 12.5;
+  useEffect(() => {
+    const loadRevenueData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/dashboard/revenue?period=${period}`);
+        if (response.ok) {
+          const data = await response.json();
+          setMetrics(data.metrics);
+          setRevenueData(data.chartData);
+        }
+      } catch (error) {
+        console.error('Load revenue data error:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadRevenueData();
+  }, [period]);
+
+  const displayMetrics = metrics || {
+    totalRevenue: 0,
+    avgOrderValue: '0.00',
+    totalOrders: 0,
+    revenuePerHour: '0.00',
+    revenueGrowth: '0.0',
+  };
+
+  const displayRevenueData = revenueData.length > 0 ? revenueData : [
+    { date: 'Mon', revenue: 0 },
+    { date: 'Tue', revenue: 0 },
+    { date: 'Wed', revenue: 0 },
+    { date: 'Thu', revenue: 0 },
+    { date: 'Fri', revenue: 0 },
+    { date: 'Sat', revenue: 0 },
+    { date: 'Sun', revenue: 0 },
+  ];
 
   return (
     <m.div initial="hidden" animate="visible" variants={fadeIn}>
@@ -62,30 +86,32 @@ export default function RevenuePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
           title={t('totalRevenue')}
-          value={`$${totalRevenue.toLocaleString()}`}
+          value={`$${Number(displayMetrics.totalRevenue).toLocaleString()}`}
           subtitle="Revenue for selected period"
-          trend={{ value: revenueGrowth, isPositive: true }}
+          trend={{ value: parseFloat(displayMetrics.revenueGrowth || '0'), isPositive: parseFloat(displayMetrics.revenueGrowth || '0') > 0 }}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
+          isLoading={isLoading}
         />
         <MetricCard
           title={t('avgOrderValue')}
-          value={`$${avgOrderValue.toFixed(2)}`}
+          value={`$${displayMetrics.avgOrderValue}`}
           subtitle="Average transaction value"
-          trend={{ value: 3.2, isPositive: true }}
           icon={<ShoppingBagIcon className="w-6 h-6 text-white" />}
+          isLoading={isLoading}
         />
         <MetricCard
           title={t('totalOrders')}
-          value={totalOrders.toLocaleString()}
+          value={Number(displayMetrics.totalOrders).toLocaleString()}
           subtitle="Orders processed"
-          trend={{ value: 8.5, isPositive: true }}
           icon={<ArrowTrendingUpIcon className="w-6 h-6 text-white" />}
+          isLoading={isLoading}
         />
         <MetricCard
           title={t('revenuePerHour')}
-          value="$238.7"
+          value={`$${displayMetrics.revenuePerHour}`}
           subtitle="Average hourly revenue"
           icon={<ClockIcon className="w-6 h-6 text-white" />}
+          isLoading={isLoading}
         />
       </div>
 
@@ -113,7 +139,7 @@ export default function RevenuePage() {
           }
         >
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={revenueData}>
+            <LineChart data={displayRevenueData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
               <XAxis
                 dataKey="date"

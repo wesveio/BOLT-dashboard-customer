@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { supabaseAdmin } from '@/lib/supabase';
+import { getSupabaseAdmin } from '@/lib/supabase';
 import { verifyCode } from '@/utils/auth/code-generator';
 import { generateSessionToken } from '@/utils/auth/code-generator';
 import { cookies } from 'next/headers';
@@ -61,12 +61,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    if (!supabaseAdmin) {
-      return NextResponse.json(
-        { error: 'Server configuration error' },
-        { status: 500 }
-      );
-    }
+    const supabaseAdmin = getSupabaseAdmin();
 
     // Find valid auth code
     const { data: authCode, error: findError } = await supabaseAdmin

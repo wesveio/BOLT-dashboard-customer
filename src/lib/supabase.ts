@@ -1,4 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { NextResponse } from 'next/server';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -33,4 +34,34 @@ export const supabaseAdmin = supabaseServiceRoleKey
       },
     })
   : null;
+
+/**
+ * Get validated Supabase admin client for API routes
+ * This function ensures the admin client is properly configured before use
+ * 
+ * @returns SupabaseClient - Guaranteed non-null admin client
+ * @throws Error if admin client is not configured
+ */
+export function getSupabaseAdmin(): SupabaseClient {
+  if (!supabaseAdmin) {
+    throw new Error('Supabase admin client is not configured. Check SUPABASE_SERVICE_ROLE_KEY environment variable.');
+  }
+  return supabaseAdmin;
+}
+
+/**
+ * Validate Supabase admin client and return error response if not configured
+ * Use this in API route handlers to return proper HTTP error response
+ * 
+ * @returns NextResponse with error if not configured, null if valid
+ */
+export function validateSupabaseAdmin(): NextResponse | null {
+  if (!supabaseAdmin) {
+    return NextResponse.json(
+      { error: 'Database configuration error' },
+      { status: 500 }
+    );
+  }
+  return null;
+}
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion as m } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
@@ -7,21 +8,50 @@ import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { CreditCardIcon } from '@heroicons/react/24/outline';
-
-// TODO: Replace with real data from Supabase
-const paymentMethodsData = [
-  { name: 'Credit Card', value: 45, revenue: 18045, successRate: 98.5 },
-  { name: 'Debit Card', value: 25, revenue: 10025, successRate: 97.2 },
-  { name: 'PIX', value: 20, revenue: 8020, successRate: 99.8 },
-  { name: 'Bank Transfer', value: 10, revenue: 4010, successRate: 95.1 },
-];
+import { Spinner } from '@heroui/react';
 
 const COLORS = ['#2563eb', '#9333ea', '#10b981', '#f59e0b'];
 
 export default function PaymentAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.payment');
+  const [paymentMethodsData, setPaymentMethodsData] = useState<any[]>([]);
+  const [metrics, setMetrics] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const totalPayments = paymentMethodsData.reduce((sum, item) => sum + item.value, 0);
+  useEffect(() => {
+    const loadPaymentData = async () => {
+      try {
+        const response = await fetch('/api/dashboard/analytics/payment?period=week');
+        if (response.ok) {
+          const data = await response.json();
+          setPaymentMethodsData(data.paymentMethods || []);
+          setMetrics({
+            totalPayments: data.totalPayments,
+            avgSuccessRate: data.avgSuccessRate,
+          });
+        }
+      } catch (error) {
+        console.error('Load payment analytics error:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPaymentData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="text-center">
+          <Spinner size="lg" />
+          <p className="mt-4 text-gray-600">Loading payment analytics...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const totalPayments = metrics?.totalPayments || 0;
 
   return (
     <m.div initial="hidden" animate="visible" variants={fadeIn}>
@@ -45,7 +75,7 @@ export default function PaymentAnalyticsPage() {
         />
         <MetricCard
           title="Avg Success Rate"
-          value="97.7%"
+          value={`${metrics?.avgSuccessRate || '0.0'}%`}
           subtitle="Average payment success rate"
         />
       </div>
@@ -102,14 +132,14 @@ export default function PaymentAnalyticsPage() {
                     method.successRate >= 98 ? 'text-green-600' : 'text-orange-600'
                   }`}
                 >
-                  {method.successRate.toFixed(1)}%
+                  {method.successRate?.toFixed(1) || '0.0'}%
                 </span>
               </div>
               <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-500"
                   style={{
-                    width: `${method.successRate}%`,
+                    width: `${method.successRate || 0}%`,
                     background: `linear-gradient(to right, ${COLORS[index % COLORS.length]}, ${COLORS[(index + 1) % COLORS.length]})`,
                   }}
                 />

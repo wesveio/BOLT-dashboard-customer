@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion as m } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
@@ -59,13 +59,56 @@ export default function SettingsPage() {
     exportFormat: 'csv',
   });
 
+  // Load settings from API on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const response = await fetch('/api/dashboard/settings');
+        if (response.ok) {
+          const data = await response.json();
+          const settings = data.settings || {};
+          
+          if (settings.general) {
+            setGeneralSettings(settings.general);
+          }
+          if (settings.notifications) {
+            setNotificationSettings(settings.notifications);
+          }
+          if (settings.security) {
+            setSecuritySettings(settings.security);
+          }
+          if (settings.analytics) {
+            setAnalyticsSettings(settings.analytics);
+          }
+        }
+      } catch (error) {
+        console.error('Load settings error:', error);
+      }
+    };
+
+    loadSettings();
+  }, []);
+
   const handleSaveGeneral = async () => {
     setIsSaving(true);
     try {
-      // TODO: Save to Supabase
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch('/api/dashboard/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category: 'general',
+          settings: generalSettings,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to save settings');
+      }
+
       toast.success(t('saveSuccess'));
     } catch (error) {
+      console.error('Save general settings error:', error);
       toast.error(t('saveError'));
     } finally {
       setIsSaving(false);
@@ -75,10 +118,23 @@ export default function SettingsPage() {
   const handleSaveNotifications = async () => {
     setIsSaving(true);
     try {
-      // TODO: Save to Supabase
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch('/api/dashboard/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category: 'notifications',
+          settings: notificationSettings,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to save settings');
+      }
+
       toast.success(t('saveSuccess'));
     } catch (error) {
+      console.error('Save notification settings error:', error);
       toast.error(t('saveError'));
     } finally {
       setIsSaving(false);
@@ -88,10 +144,23 @@ export default function SettingsPage() {
   const handleSaveSecurity = async () => {
     setIsSaving(true);
     try {
-      // TODO: Save to Supabase
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch('/api/dashboard/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category: 'security',
+          settings: securitySettings,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to save settings');
+      }
+
       toast.success(t('saveSuccess'));
     } catch (error) {
+      console.error('Save security settings error:', error);
       toast.error(t('saveError'));
     } finally {
       setIsSaving(false);
@@ -101,10 +170,23 @@ export default function SettingsPage() {
   const handleSaveAnalytics = async () => {
     setIsSaving(true);
     try {
-      // TODO: Save to Supabase
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch('/api/dashboard/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category: 'analytics',
+          settings: analyticsSettings,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to save settings');
+      }
+
       toast.success(t('saveSuccess'));
     } catch (error) {
+      console.error('Save analytics settings error:', error);
       toast.error(t('saveError'));
     } finally {
       setIsSaving(false);

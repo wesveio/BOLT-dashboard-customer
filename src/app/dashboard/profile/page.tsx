@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion as m } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
@@ -20,6 +20,7 @@ export default function ProfilePage() {
   const { user } = useDashboardAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -28,14 +29,56 @@ export default function ProfilePage() {
     jobTitle: '',
   });
 
+  useEffect(() => {
+    // Load profile data from API
+    const loadProfile = async () => {
+      try {
+        const response = await fetch('/api/dashboard/profile');
+        if (response.ok) {
+          const data = await response.json();
+          setFormData({
+            name: data.profile.name || '',
+            email: data.profile.email || '',
+            phone: data.profile.phone || '',
+            company: data.profile.company || '',
+            jobTitle: data.profile.jobTitle || '',
+          });
+        }
+      } catch (error) {
+        console.error('Load profile error:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProfile();
+  }, []);
+
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      // TODO: Save to Supabase
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch('/api/dashboard/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.phone,
+          company: formData.company,
+          jobTitle: formData.jobTitle,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to save profile');
+      }
+
+      const data = await response.json();
       toast.success(t('saveSuccess'));
       setIsEditing(false);
+      // Optionally refresh user data
     } catch (error) {
+      console.error('Save profile error:', error);
       toast.error(t('saveError'));
     } finally {
       setIsSaving(false);

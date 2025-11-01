@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { supabaseAdmin } from '@/lib/supabase';
+import { getSupabaseAdmin } from '@/lib/supabase';
 import { generateAccessCode, hashCode } from '@/utils/auth/code-generator';
 import { getEmailService, generateAccessCodeEmail } from '@/utils/auth/email-service';
 import { headers } from 'next/headers';
@@ -23,12 +23,7 @@ export async function POST(request: NextRequest) {
     const ipAddress = headersList.get('x-forwarded-for') || headersList.get('x-real-ip') || 'unknown';
     const locale = headersList.get('x-locale') || 'en';
 
-    if (!supabaseAdmin) {
-      return NextResponse.json(
-        { error: 'Server configuration error' },
-        { status: 500 }
-      );
-    }
+    const supabaseAdmin = getSupabaseAdmin();
 
     // Check rate limit (max 3 codes per hour per email)
     const { data: recentCodes } = await supabaseAdmin

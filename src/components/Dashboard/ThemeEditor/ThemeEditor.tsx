@@ -60,8 +60,43 @@ export function ThemeEditor({ themeId, onBack, onSave }: ThemeEditorProps) {
     },
   });
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(themeId !== 'new');
 
-  // TODO: Load theme config from Supabase if themeId !== 'new'
+  // Load theme config from Supabase if themeId !== 'new'
+  useEffect(() => {
+    if (themeId === 'new') {
+      setIsLoading(false);
+      return;
+    }
+
+    const loadTheme = async () => {
+      try {
+        const response = await fetch(`/api/dashboard/themes/${themeId}`);
+        if (!response.ok) {
+          throw new Error('Failed to load theme');
+        }
+
+        const data = await response.json();
+        const themeConfig = data.theme.config;
+
+        if (themeConfig) {
+          setConfig({
+            name: themeConfig.name || data.theme.name || '',
+            layout: themeConfig.layout || 'default',
+            colors: themeConfig.colors || config.colors,
+            fonts: themeConfig.fonts || config.fonts,
+            logo: themeConfig.logo,
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load theme:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadTheme();
+  }, [themeId]);
 
   const handleSave = async () => {
     if (!canWrite('themes')) {
@@ -70,8 +105,23 @@ export function ThemeEditor({ themeId, onBack, onSave }: ThemeEditorProps) {
 
     setIsSaving(true);
     try {
-      // TODO: Save to Supabase
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const url = themeId === 'new' 
+        ? '/api/dashboard/themes'
+        : `/api/dashboard/themes/${themeId}`;
+      
+      const method = themeId === 'new' ? 'POST' : 'PATCH';
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(config),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to save theme');
+      }
+
       onSave();
     } catch (error) {
       console.error('Failed to save theme:', error);
@@ -79,6 +129,17 @@ export function ThemeEditor({ themeId, onBack, onSave }: ThemeEditorProps) {
       setIsSaving(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Loading theme...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <m.div initial="hidden" animate="visible" variants={fadeIn}>

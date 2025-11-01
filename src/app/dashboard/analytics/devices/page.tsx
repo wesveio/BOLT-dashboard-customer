@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion as m } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
@@ -7,20 +8,50 @@ import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { DevicePhoneMobileIcon } from '@heroicons/react/24/outline';
-
-// TODO: Replace with real data from Supabase
-const deviceData = [
-  { device: 'Mobile', sessions: 620, conversion: 52.5, revenue: 32610 },
-  { device: 'Desktop', sessions: 280, conversion: 68.2, revenue: 19096 },
-  { device: 'Tablet', sessions: 100, conversion: 58.0, revenue: 5800 },
-];
+import { Spinner } from '@heroui/react';
 
 const COLORS = ['#2563eb', '#9333ea', '#10b981'];
 
 export default function DeviceAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.devices');
+  const [deviceData, setDeviceData] = useState<any[]>([]);
+  const [metrics, setMetrics] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const totalSessions = deviceData.reduce((sum, item) => sum + item.sessions, 0);
+  useEffect(() => {
+    const loadDeviceData = async () => {
+      try {
+        const response = await fetch('/api/dashboard/analytics/devices?period=week');
+        if (response.ok) {
+          const data = await response.json();
+          setDeviceData(data.devices || []);
+          setMetrics({
+            totalSessions: data.totalSessions,
+            avgConversion: data.avgConversion,
+          });
+        }
+      } catch (error) {
+        console.error('Load device analytics error:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadDeviceData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="text-center">
+          <Spinner size="lg" />
+          <p className="mt-4 text-gray-600">Loading device analytics...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const totalSessions = metrics?.totalSessions || 0;
 
   return (
     <m.div initial="hidden" animate="visible" variants={fadeIn}>
@@ -39,12 +70,14 @@ export default function DeviceAnalyticsPage() {
         />
         <MetricCard
           title="Avg Conversion"
-          value="58.2%"
+          value={`${metrics?.avgConversion || '0.0'}%`}
           subtitle="Average conversion rate"
         />
         <MetricCard
           title="Mobile Share"
-          value="62.0%"
+          value={deviceData.length > 0 && totalSessions > 0
+            ? `${((deviceData.find(d => d.device === 'Mobile')?.sessions || 0) / totalSessions * 100).toFixed(1)}%`
+            : '0%'}
           subtitle="Percentage of mobile sessions"
         />
       </div>
