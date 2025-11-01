@@ -65,6 +65,7 @@ export async function POST(request: NextRequest) {
 
     // Find valid auth code
     const { data: authCode, error: findError } = await supabaseAdmin
+      .schema('dashboard')
       .from('auth_codes')
       .select('*')
       .eq('email', email.toLowerCase())
@@ -97,6 +98,7 @@ export async function POST(request: NextRequest) {
     if (!isValid) {
       // Increment attempts
       await supabaseAdmin
+        .schema('dashboard')
         .from('auth_codes')
         .update({ attempts: authCode.attempts + 1 })
         .eq('id', authCode.id);
@@ -109,12 +111,14 @@ export async function POST(request: NextRequest) {
 
     // Mark code as used
     await supabaseAdmin
+      .schema('dashboard')
       .from('auth_codes')
       .update({ used: true })
       .eq('id', authCode.id);
 
     // Find user
     const { data: user, error: userError } = await supabaseAdmin
+      .schema('dashboard')
       .from('users')
       .select('*')
       .eq('email', email.toLowerCase())
@@ -146,6 +150,7 @@ export async function POST(request: NextRequest) {
 
     // Store session
     const { error: sessionError } = await supabaseAdmin
+      .schema('dashboard')
       .from('sessions')
       .insert({
         user_id: user.id,
@@ -167,6 +172,7 @@ export async function POST(request: NextRequest) {
 
     // Update user last login
     await supabaseAdmin
+      .schema('dashboard')
       .from('users')
       .update({ last_login_at: new Date().toISOString() })
       .eq('id', user.id);

@@ -230,6 +230,35 @@
       "invalidCode": "Invalid code. Please try again.",
       "codeExpired": "Code expired. Please request a new one.",
       "tooManyAttempts": "Too many attempts. Please request a new code."
+    },
+    "signup": {
+      "title": "Create new account",
+      "subtitle": "Fill in your information to create an account",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "name@example.com",
+      "firstNameLabel": "First Name",
+      "firstNamePlaceholder": "John",
+      "lastNameLabel": "Last Name",
+      "lastNamePlaceholder": "Doe",
+      "vtexAccountLabel": "VTEX Account",
+      "vtexAccountPlaceholder": "mycompany",
+      "vtexAccountDescription": "Your VTEX account name (no spaces, only letters, numbers, hyphens and underscores)",
+      "companyNameLabel": "Company Name",
+      "companyNamePlaceholder": "My Company Ltd",
+      "companyNameDescription": "Optional",
+      "createAccount": "Create account",
+      "creating": "Creating account...",
+      "alreadyHaveAccount": "Already have an account?",
+      "loginLink": "Sign in",
+      "success": {
+        "title": "Account created successfully!",
+        "message": "Your account has been created. You can now sign in.",
+        "loginButton": "Sign in now"
+      },
+      "error": {
+        "generic": "Error creating account. Please try again.",
+        "network": "Network error. Please try again."
+      }
     }
   }
 }

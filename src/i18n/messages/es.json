@@ -225,6 +225,35 @@
       "invalidCode": "Código inválido. Por favor, inténtelo de nuevo.",
       "codeExpired": "Código expirado. Por favor, solicite uno nuevo.",
       "tooManyAttempts": "Demasiados intentos. Por favor, solicite un nuevo código."
+    },
+    "signup": {
+      "title": "Crear nueva cuenta",
+      "subtitle": "Complete su información para crear una cuenta",
+      "emailLabel": "Dirección de email",
+      "emailPlaceholder": "nombre@ejemplo.com",
+      "firstNameLabel": "Nombre",
+      "firstNamePlaceholder": "Juan",
+      "lastNameLabel": "Apellido",
+      "lastNamePlaceholder": "Pérez",
+      "vtexAccountLabel": "VTEX Account",
+      "vtexAccountPlaceholder": "miempresa",
+      "vtexAccountDescription": "Nombre de su cuenta VTEX (sin espacios, solo letras, números, guiones y guiones bajos)",
+      "companyNameLabel": "Nombre de la Empresa",
+      "companyNamePlaceholder": "Mi Empresa S.A.",
+      "companyNameDescription": "Opcional",
+      "createAccount": "Crear cuenta",
+      "creating": "Creando cuenta...",
+      "alreadyHaveAccount": "¿Ya tiene una cuenta?",
+      "loginLink": "Iniciar sesión",
+      "success": {
+        "title": "¡Cuenta creada exitosamente!",
+        "message": "Su cuenta ha sido creada. Ahora puede iniciar sesión.",
+        "loginButton": "Iniciar sesión ahora"
+      },
+      "error": {
+        "generic": "Error al crear la cuenta. Por favor, inténtelo de nuevo.",
+        "network": "Error de red. Por favor, inténtelo de nuevo."
+      }
     }
   }
 }

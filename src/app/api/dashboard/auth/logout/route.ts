@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
     // Delete session from database
     if (sessionToken) {
       await supabaseAdmin
+        .schema('dashboard')
         .from('sessions')
         .delete()
         .eq('token', sessionToken);
@@ -24,6 +25,7 @@ export async function POST(request: NextRequest) {
 
     if (refreshToken) {
       await supabaseAdmin
+        .schema('dashboard')
         .from('sessions')
         .delete()
         .eq('refresh_token', refreshToken);

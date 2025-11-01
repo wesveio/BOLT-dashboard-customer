@@ -70,13 +70,13 @@ CREATE POLICY "Owners and admins can update users"
   FOR UPDATE
   USING (
     EXISTS (
-      SELECT 1 FROM dashboard.users current_user
-      WHERE current_user.id = auth.uid()::UUID
+      SELECT 1 FROM dashboard.users currentUser
+      WHERE currentUser.id = auth.uid()::UUID
       AND (
-        (current_user.role = 'owner')
-        OR (current_user.role = 'admin' AND dashboard.users.role != 'owner')
+        (currentUser.role = 'owner')
+        OR (currentUser.role = 'admin' AND dashboard.users.role != 'owner')
       )
-      AND current_user.account_id = dashboard.users.account_id
+      AND currentUser.account_id = dashboard.users.account_id
     )
   );
 

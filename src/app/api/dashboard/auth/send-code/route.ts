@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
 
     // Check rate limit (max 3 codes per hour per email)
     const { data: recentCodes } = await supabaseAdmin
+      .schema('dashboard')
       .from('auth_codes')
       .select('created_at')
       .eq('email', email.toLowerCase())
@@ -62,6 +63,7 @@ export async function POST(request: NextRequest) {
     const [codeSalt, codeHashValue] = codeHash.split(':');
     
     const { error: dbError } = await supabaseAdmin
+      .schema('dashboard')
       .from('auth_codes')
       .insert({
         email: email.toLowerCase(),

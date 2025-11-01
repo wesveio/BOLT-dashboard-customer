@@ -3,14 +3,17 @@
 -- ============================================================================
 
 -- Index for rate limiting checks on auth_codes
+-- Note: Removed NOW() from predicate (functions in index predicate must be IMMUTABLE)
+-- The query can filter by expires_at > NOW() at runtime
 CREATE INDEX idx_auth_codes_rate_limit
 ON dashboard.auth_codes (email, created_at DESC)
-WHERE used = false AND expires_at > NOW();
+WHERE used = false;
 
 -- Index for session cleanup
+-- Note: Removed NOW() from predicate (functions in index predicate must be IMMUTABLE)
+-- The query can filter by expires_at < NOW() at runtime
 CREATE INDEX idx_sessions_cleanup
-ON dashboard.sessions (expires_at)
-WHERE expires_at < NOW();
+ON dashboard.sessions (expires_at);
 
 -- ============================================================================
 -- FUNCTIONS FOR AUTH

@@ -43,6 +43,7 @@ export async function GET(request: NextRequest) {
 
     // Find session and user
     const { data: session, error: sessionError } = await supabaseAdmin
+      .schema('dashboard')
       .from('sessions')
       .select('user_id')
       .eq('token', sessionToken)
@@ -58,6 +59,7 @@ export async function GET(request: NextRequest) {
 
     // Get user details
     const { data: user, error: userError } = await supabaseAdmin
+      .schema('dashboard')
       .from('users')
       .select('*')
       .eq('id', session.user_id)

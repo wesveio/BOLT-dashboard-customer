@@ -1,7 +1,5 @@
--- Enable UUID extension (explicitly in public schema)
--- Note: Supabase uses PostgreSQL which has gen_random_uuid() built-in,
--- but uuid-ossp provides uuid_generate_v4() for compatibility
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
+-- Enable extensions
+-- Note: Supabase uses PostgreSQL which has gen_random_uuid() built-in (no extension needed)
 CREATE EXTENSION IF NOT EXISTS "pg_trgm" WITH SCHEMA public;
 
 -- Grant usage on schema public (ensures functions are accessible)
@@ -25,7 +23,7 @@ CREATE SCHEMA IF NOT EXISTS analytics;
 
 -- Customer accounts
 CREATE TABLE customer.accounts (
-  id UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   vtex_account_name TEXT UNIQUE NOT NULL,
   company_name TEXT NOT NULL,
   plan_type TEXT NOT NULL DEFAULT 'basic', -- 'basic' | 'pro' | 'enterprise'
@@ -38,11 +36,13 @@ CREATE TABLE customer.accounts (
 
 -- Dashboard users (passwordless auth)
 CREATE TABLE dashboard.users (
-  id UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   account_id UUID REFERENCES customer.accounts(id) ON DELETE CASCADE NOT NULL,
   email TEXT UNIQUE NOT NULL,
   role TEXT NOT NULL DEFAULT 'viewer', -- 'owner' | 'admin' | 'editor' | 'viewer'
   name TEXT,
+  first_name TEXT,
+  last_name TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   last_login_at TIMESTAMPTZ,
@@ -52,7 +52,7 @@ CREATE TABLE dashboard.users (
 
 -- Auth codes (for passwordless authentication)
 CREATE TABLE dashboard.auth_codes (
-  id UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email TEXT NOT NULL,
   code_hash TEXT NOT NULL, -- Hashed 6-digit code
   code_salt TEXT NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE dashboard.auth_codes (
 
 -- Dashboard sessions
 CREATE TABLE dashboard.sessions (
-  id UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES dashboard.users(id) ON DELETE CASCADE NOT NULL,
   token TEXT UNIQUE NOT NULL,
   refresh_token TEXT UNIQUE NOT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE dashboard.sessions (
 
 -- Events table (time-series data)
 CREATE TABLE analytics.events (
-  id UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   session_id TEXT NOT NULL,
   order_form_id TEXT,
   customer_id UUID REFERENCES customer.accounts(id) ON DELETE CASCADE,
@@ -115,7 +115,7 @@ CREATE INDEX idx_events_timestamp ON analytics.events (timestamp DESC);
 
 -- Theme configurations
 CREATE TABLE dashboard.theme_configs (
-  id UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   account_id UUID REFERENCES customer.accounts(id) ON DELETE CASCADE NOT NULL,
   name TEXT NOT NULL,
   is_active BOOLEAN DEFAULT false,
@@ -128,7 +128,7 @@ CREATE TABLE dashboard.theme_configs (
 
 -- Theme versions (versionamento)
 CREATE TABLE dashboard.theme_versions (
-  id UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   theme_id UUID REFERENCES dashboard.theme_configs(id) ON DELETE CASCADE NOT NULL,
   version_number INTEGER NOT NULL,
   config JSONB NOT NULL,
@@ -140,7 +140,7 @@ CREATE TABLE dashboard.theme_versions (
 
 -- Financial metrics
 CREATE TABLE dashboard.financial_metrics (
-  id UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   account_id UUID REFERENCES customer.accounts(id) ON DELETE CASCADE NOT NULL,
   period_start DATE NOT NULL,
   period_end DATE NOT NULL,
