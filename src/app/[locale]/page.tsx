@@ -1,7 +1,12 @@
-import { redirect } from '@/i18n/routing';
+import { permanentRedirect } from 'next/navigation';
 
-export default function RootPage() {
+export default function RootPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   // Redirect to dashboard
-  redirect('/dashboard');
+  // With localePrefix: 'never', the URL won't show the locale
+  permanentRedirect('/dashboard');
 }
 

@@ -48,6 +48,11 @@
       "profile": "Profile",
       "logout": "Logout",
       "language": "Language"
+    },
+    "language": {
+      "english": "English",
+      "portuguese": "Português",
+      "spanish": "Español"
     }
   },
   "auth": {
