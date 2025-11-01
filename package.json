@@ -9,7 +9,9 @@
     "lint": "next lint",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "migrate:list": "tsx scripts/run-migrations-simple.ts",
+    "migrate": "tsx scripts/run-migrations.ts"
   },
   "dependencies": {
     "@heroui/react": "^2.8.5",
@@ -40,6 +42,7 @@
     "eslint-config-next": "14.1.0",
     "postcss": "^8.4.35",
     "prettier": "^3.4.2",
+    "tsx": "^4.7.0",
     "typescript": "^5.8.3"
   }
 }
