@@ -1,0 +1,71 @@
+{
+  "common": {
+    "buttons": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "close": "Close",
+      "back": "Back",
+      "next": "Next",
+      "submit": "Submit",
+      "loading": "Loading...",
+      "retry": "Retry"
+    },
+    "labels": {
+      "email": "Email",
+      "password": "Password",
+      "name": "Name",
+      "role": "Role",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At"
+    },
+    "errors": {
+      "generic": "An error occurred",
+      "network": "Network error. Please try again.",
+      "unauthorized": "You are not authorized to access this resource",
+      "notFound": "Resource not found",
+      "validation": "Validation error"
+    },
+    "success": {
+      "saved": "Saved successfully",
+      "deleted": "Deleted successfully",
+      "updated": "Updated successfully"
+    }
+  },
+  "dashboard": {
+    "sidebar": {
+      "overview": "Overview",
+      "performance": "Performance",
+      "revenue": "Revenue",
+      "analytics": "Analytics",
+      "themes": "Themes",
+      "insights": "Insights",
+      "settings": "Settings"
+    },
+    "header": {
+      "profile": "Profile",
+      "logout": "Logout",
+      "language": "Language"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in to your account",
+      "subtitle": "Enter your email to receive an access code",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "name@example.com",
+      "sendCode": "Send code",
+      "codeSent": "Code sent! Check your email",
+      "codeLabel": "Access code",
+      "codePlaceholder": "Enter 6-digit code",
+      "verifyCode": "Verify code",
+      "resendCode": "Resend code",
+      "invalidCode": "Invalid code. Please try again.",
+      "codeExpired": "Code expired. Please request a new one.",
+      "tooManyAttempts": "Too many attempts. Please request a new code."
+    }
+  }
+}
+

@@ -1,0 +1,71 @@
+{
+  "common": {
+    "buttons": {
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "delete": "Excluir",
+      "edit": "Editar",
+      "close": "Fechar",
+      "back": "Voltar",
+      "next": "Próximo",
+      "submit": "Enviar",
+      "loading": "Carregando...",
+      "retry": "Tentar novamente"
+    },
+    "labels": {
+      "email": "Email",
+      "password": "Senha",
+      "name": "Nome",
+      "role": "Função",
+      "status": "Status",
+      "createdAt": "Criado em",
+      "updatedAt": "Atualizado em"
+    },
+    "errors": {
+      "generic": "Ocorreu um erro",
+      "network": "Erro de rede. Por favor, tente novamente.",
+      "unauthorized": "Você não está autorizado a acessar este recurso",
+      "notFound": "Recurso não encontrado",
+      "validation": "Erro de validação"
+    },
+    "success": {
+      "saved": "Salvo com sucesso",
+      "deleted": "Excluído com sucesso",
+      "updated": "Atualizado com sucesso"
+    }
+  },
+  "dashboard": {
+    "sidebar": {
+      "overview": "Visão Geral",
+      "performance": "Desempenho",
+      "revenue": "Receita",
+      "analytics": "Analytics",
+      "themes": "Temas",
+      "insights": "Insights",
+      "settings": "Configurações"
+    },
+    "header": {
+      "profile": "Perfil",
+      "logout": "Sair",
+      "language": "Idioma"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Entre na sua conta",
+      "subtitle": "Digite seu email para receber um código de acesso",
+      "emailLabel": "Endereço de email",
+      "emailPlaceholder": "nome@exemplo.com",
+      "sendCode": "Enviar código",
+      "codeSent": "Código enviado! Verifique seu email",
+      "codeLabel": "Código de acesso",
+      "codePlaceholder": "Digite o código de 6 dígitos",
+      "verifyCode": "Verificar código",
+      "resendCode": "Reenviar código",
+      "invalidCode": "Código inválido. Por favor, tente novamente.",
+      "codeExpired": "Código expirado. Por favor, solicite um novo.",
+      "tooManyAttempts": "Muitas tentativas. Por favor, solicite um novo código."
+    }
+  }
+}
+

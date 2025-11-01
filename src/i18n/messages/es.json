@@ -1,0 +1,71 @@
+{
+  "common": {
+    "buttons": {
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "delete": "Eliminar",
+      "edit": "Editar",
+      "close": "Cerrar",
+      "back": "Volver",
+      "next": "Siguiente",
+      "submit": "Enviar",
+      "loading": "Cargando...",
+      "retry": "Reintentar"
+    },
+    "labels": {
+      "email": "Email",
+      "password": "Contraseña",
+      "name": "Nombre",
+      "role": "Rol",
+      "status": "Estado",
+      "createdAt": "Creado en",
+      "updatedAt": "Actualizado en"
+    },
+    "errors": {
+      "generic": "Ocurrió un error",
+      "network": "Error de red. Por favor, inténtelo de nuevo.",
+      "unauthorized": "No está autorizado para acceder a este recurso",
+      "notFound": "Recurso no encontrado",
+      "validation": "Error de validación"
+    },
+    "success": {
+      "saved": "Guardado exitosamente",
+      "deleted": "Eliminado exitosamente",
+      "updated": "Actualizado exitosamente"
+    }
+  },
+  "dashboard": {
+    "sidebar": {
+      "overview": "Resumen",
+      "performance": "Rendimiento",
+      "revenue": "Ingresos",
+      "analytics": "Analíticas",
+      "themes": "Temas",
+      "insights": "Insights",
+      "settings": "Configuración"
+    },
+    "header": {
+      "profile": "Perfil",
+      "logout": "Cerrar sesión",
+      "language": "Idioma"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar sesión en su cuenta",
+      "subtitle": "Ingrese su email para recibir un código de acceso",
+      "emailLabel": "Dirección de email",
+      "emailPlaceholder": "nombre@ejemplo.com",
+      "sendCode": "Enviar código",
+      "codeSent": "¡Código enviado! Verifique su email",
+      "codeLabel": "Código de acceso",
+      "codePlaceholder": "Ingrese el código de 6 dígitos",
+      "verifyCode": "Verificar código",
+      "resendCode": "Reenviar código",
+      "invalidCode": "Código inválido. Por favor, inténtelo de nuevo.",
+      "codeExpired": "Código expirado. Por favor, solicite uno nuevo.",
+      "tooManyAttempts": "Demasiados intentos. Por favor, solicite un nuevo código."
+    }
+  }
+}
+
