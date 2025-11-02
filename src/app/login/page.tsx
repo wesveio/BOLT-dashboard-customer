@@ -116,7 +116,9 @@ function LoginContent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <h1 className="text-4xl lg:text-5xl font-bold mb-6">Welcome to BOLT Dashboard</h1>
+            <h1 className="text-4xl lg:text-5xl font-bold mb-6">
+              {mode === 'login' ? 'Welcome Back' : 'Welcome'}
+            </h1>
             <p className="text-xl text-blue-100 mb-12">
               {mode === 'login' 
                 ? 'Sign in to access your dashboard and manage your checkout analytics.'

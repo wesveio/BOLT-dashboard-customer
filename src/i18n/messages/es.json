@@ -42,7 +42,10 @@
       "analytics": "Analíticas",
       "themes": "Temas",
       "insights": "Insights",
-      "settings": "Configuración"
+      "settings": "Configuración",
+      "account": "Cuenta",
+      "role": "Rol",
+      "vtexAccount": "Cuenta VTEX"
     },
     "header": {
       "profile": "Perfil",

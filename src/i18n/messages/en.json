@@ -42,7 +42,11 @@
       "analytics": "Analytics",
       "themes": "Themes",
       "insights": "Insights",
-      "settings": "Settings"
+      "plans": "Plans",
+      "settings": "Settings",
+      "account": "Account",
+      "role": "Role",
+      "vtexAccount": "VTEX Account"
     },
     "header": {
       "profile": "Profile",
@@ -213,6 +217,77 @@
       "saveChanges": "Save Changes",
       "saveSuccess": "Settings saved successfully",
       "saveError": "Failed to save settings"
+    },
+    "plans": {
+      "title": "Plans & Pricing",
+      "subtitle": "Manage your subscription and view available plans",
+      "currentPlan": "Current Plan",
+      "availablePlans": "Available Plans",
+      "history": "Subscription History",
+      "upgrade": "Upgrade",
+      "downgrade": "Downgrade",
+      "changePlan": "Change Plan",
+      "selectPlan": "Select Plan",
+      "contactSales": "Contact Sales",
+      "confirmChange": "Confirm Change",
+      "cancel": "Cancel",
+      "startedAt": "Started",
+      "endedAt": "Ended",
+      "billingCycle": "Billing Cycle",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "active": "Active",
+      "cancelled": "Cancelled",
+      "expired": "Expired",
+      "pending": "Pending"
+    }
+  },
+  "pricing": {
+    "title": "Pricing",
+    "subtitle": "Simple, transparent pricing for businesses of all sizes",
+    "starter": {
+      "name": "Starter",
+      "description": "Perfect for small stores getting started",
+      "price": "$200",
+      "transactionFee": "1%",
+      "features": ["Bolt Core", "BoltFlow Basic"]
+    },
+    "professional": {
+      "name": "Professional",
+      "description": "For growing businesses that need advanced features",
+      "price": "$500",
+      "transactionFee": "0.5%",
+      "features": ["Bolt Core", "BoltFlow Complete", "BoltGuard", "BoltMetrics"]
+    },
+    "enterprise": {
+      "name": "Enterprise",
+      "description": "Custom solutions for large enterprises",
+      "price": "Custom",
+      "features": ["All Features", "BoltX AI", "Priority Support"]
+    },
+    "cta": {
+      "startTrial": "Start Free Trial",
+      "contactSales": "Contact Sales",
+      "getStarted": "Get Started"
+    },
+    "comparePlans": "Compare Plans",
+    "monthly": "/month",
+    "transactionFee": "transaction fee",
+    "features": {
+      "boltCore": "Bolt Core",
+      "boltCoreDesc": "Checkout engine and headless flow",
+      "boltflowBasic": "BoltFlow Basic",
+      "boltflowBasicDesc": "React components and APIs for custom UIs (basic)",
+      "boltflowComplete": "BoltFlow Complete",
+      "boltflowCompleteDesc": "React components and APIs for custom UIs (complete)",
+      "boltguard": "BoltGuard",
+      "boltguardDesc": "Monitors, validates, and protects transactions",
+      "boltmetrics": "BoltMetrics",
+      "boltmetricsDesc": "Real-time analytics and A/B performance dashboard",
+      "boltx": "BoltX",
+      "boltxDesc": "AI-powered optimizations and predictive UX flows",
+      "prioritySupport": "Priority Support",
+      "prioritySupportDesc": "Dedicated support with faster response times"
     }
   },
   "auth": {

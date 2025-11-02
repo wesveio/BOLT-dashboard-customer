@@ -85,14 +85,23 @@ export async function GET(_: NextRequest) {
     // Use RPC function to query customer.accounts table
     let vtexAccountName: string | null = null;
     if (user.account_id) {
-      const { data: accounts, error: accountError } = await supabaseAdmin
-        .rpc('get_account_by_id', { p_account_id: user.account_id });
+      try {
+        const { data: accounts, error: accountError } = await supabaseAdmin
+          .rpc('get_account_by_id', { p_account_id: user.account_id });
 
-      if (!accountError && accounts && accounts.length > 0) {
-        vtexAccountName = accounts[0].vtex_account_name;
-      } else if (accountError) {
-        // Log error but don't fail the request
-        console.warn('⚠️ [DEBUG] Could not fetch VTEX account name:', accountError);
+        if (!accountError && accounts && accounts.length > 0) {
+          vtexAccountName = accounts[0].vtex_account_name;
+        } else if (accountError) {
+          // Function might not exist yet - log but continue
+          if (accountError.code === 'PGRST202') {
+            console.warn('⚠️ [DEBUG] Function get_account_by_id not found. Please run migration 010_add_get_account_by_id_function.sql');
+          } else {
+            console.warn('⚠️ [DEBUG] Could not fetch VTEX account name:', accountError);
+          }
+        }
+      } catch (error) {
+        // Silently continue if function doesn't exist yet
+        console.warn('⚠️ [DEBUG] Error fetching VTEX account name:', error);
       }
     }
 

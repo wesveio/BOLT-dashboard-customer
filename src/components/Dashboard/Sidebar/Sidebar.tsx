@@ -13,8 +13,13 @@ import {
   HomeIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  UserCircleIcon,
+  ArrowTopRightOnSquareIcon,
+  CreditCardIcon,
 } from '@heroicons/react/24/outline';
 import { useSidebar } from '@/contexts/SidebarContext';
+import { useDashboardAuth } from '@/hooks/useDashboardAuth';
+import { Avatar } from '@heroui/react';
 
 interface NavItem {
   href: string;
@@ -26,6 +31,7 @@ export function Sidebar() {
   const { isCollapsed, toggleCollapse } = useSidebar();
   const t = useTranslations('dashboard.sidebar');
   const pathname = usePathname();
+  const { user, isLoading } = useDashboardAuth();
 
   const navItems: NavItem[] = [
     { href: '/dashboard', icon: HomeIcon, label: t('overview') },
@@ -34,6 +40,7 @@ export function Sidebar() {
     { href: '/dashboard/analytics', icon: ChartBarIcon, label: t('analytics') },
     { href: '/dashboard/themes', icon: PaintBrushIcon, label: t('themes') },
     { href: '/dashboard/insights', icon: LightBulbIcon, label: t('insights') },
+    { href: '/dashboard/plans', icon: CreditCardIcon, label: t('plans') },
     { href: '/dashboard/settings', icon: Cog6ToothIcon, label: t('settings') },
   ];
 
@@ -44,6 +51,27 @@ export function Sidebar() {
     return pathname?.startsWith(href);
   };
 
+  // Get user display name
+  const getUserDisplayName = () => {
+    if (!user) return '';
+    if (user.name) return user.name;
+    if (user.firstName && user.lastName) return `${user.firstName} ${user.lastName}`;
+    if (user.firstName) return user.firstName;
+    return user.email;
+  };
+
+  // Get user name for Avatar component
+  const getUserNameForAvatar = () => {
+    if (!user) return 'U';
+    return user.name || user.email || 'U';
+  };
+
+  // Format role for display
+  const formatRole = (role?: string) => {
+    if (!role) return '';
+    return role.charAt(0).toUpperCase() + role.slice(1);
+  };
+
   return (
     <aside
       className={`bg-white border-r border-gray-100 fixed left-0 top-0 h-screen z-30 transition-all duration-200 flex flex-col ${
@@ -51,6 +79,70 @@ export function Sidebar() {
       }`}
     >
       <div className={`flex-1 overflow-y-auto p-6 transition-all duration-200 ${isCollapsed ? 'px-4' : ''}`}>
+        {/* Account Info Section */}
+        {!isLoading && user && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`mb-6 pb-6 border-b border-gray-100 transition-all duration-200 ${
+              isCollapsed ? 'flex justify-center' : 'flex flex-col items-center'
+            }`}
+          >
+            {/* Avatar */}
+            <div className="flex-shrink-0">
+              <Avatar
+                size={isCollapsed ? 'sm' : 'md'}
+                name={getUserNameForAvatar()}
+                className="bg-gradient-to-br from-blue-500 to-purple-500 text-white shadow-md"
+              />
+            </div>
+
+            <AnimatePresence>
+              {!isCollapsed && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex flex-col items-center mt-3 w-full"
+                >
+                  {/* User Name */}
+                  <p className="text-sm font-semibold text-gray-900 truncate w-full text-center">
+                    {getUserDisplayName()}
+                  </p>
+                  
+                  {/* Email */}
+                  {(user.firstName || user.name) && (
+                    <p className="text-xs text-gray-500 truncate mt-0.5 w-full text-center">
+                      {user.email}
+                    </p>
+                  )}
+
+                  {/* Role Badge */}
+                  {user.role && (
+                    <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-blue-50 border border-blue-200">
+                      <UserCircleIcon className="w-3 h-3 text-blue-600" />
+                      <span className="text-xs font-medium text-blue-600">
+                        {formatRole(user.role)}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* VTEX Account */}
+                  {user.vtexAccountName && (
+                    <div className="mt-2 text-xs text-gray-600 truncate w-full text-center">
+                      <span className="font-medium">{t('vtexAccount')}:</span>
+                      <div className="flex items-center gap-1">
+                        <Link href={`https://${user.vtexAccountName}.myvtex.com`} target="_blank" className="flex items-center gap-1 w-full justify-center"><span className="text-blue-600">{user.vtexAccountName}</span> <ArrowTopRightOnSquareIcon className="w-3 h-3 text-blue-600" /></Link>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        )}
+
         {/* Navigation */}
         <nav className="space-y-2">
           {navItems.map((item) => {

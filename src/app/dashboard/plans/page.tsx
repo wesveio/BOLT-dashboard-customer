@@ -1,0 +1,240 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { motion as m } from 'framer-motion';
+import { Card, CardBody, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Spinner } from '@heroui/react';
+import { fadeIn, slideIn } from '@/utils/animations';
+import { useDashboardAuth } from '@/hooks/useDashboardAuth';
+import { PricingCard } from '@/components/Dashboard/Plans/PricingCard';
+import { SubscriptionHistory } from '@/components/Dashboard/Plans/SubscriptionHistory';
+import { PlanComparison } from '@/components/Dashboard/Plans/PlanComparison';
+import { Plan, Subscription, SubscriptionTransaction, comparePlans, getPlanDisplayName } from '@/utils/plans';
+import { toast } from 'sonner';
+
+export default function PlansPage() {
+  const t = useTranslations('dashboard.plans');
+  const router = useRouter();
+  const { user, isLoading: authLoading } = useDashboardAuth();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [currentSubscription, setCurrentSubscription] = useState<Subscription | null>(null);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [transactions, setTransactions] = useState<SubscriptionTransaction[]>([]);
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      fetchData();
+    }
+  }, [authLoading, user]);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      // Fetch plans
+      const plansResponse = await fetch('/api/dashboard/plans');
+      if (plansResponse.ok) {
+        const plansData = await plansResponse.json();
+        setPlans(plansData.plans || []);
+      }
+
+      // Fetch subscriptions
+      const subscriptionsResponse = await fetch('/api/dashboard/subscriptions');
+      if (subscriptionsResponse.ok) {
+        const subscriptionsData = await subscriptionsResponse.json();
+        setSubscriptions(subscriptionsData.subscriptions || []);
+        const activeSub = subscriptionsData.subscriptions?.find((s: Subscription) => s.status === 'active');
+        setCurrentSubscription(activeSub || null);
+      }
+
+      // Fetch transactions
+      const transactionsResponse = await fetch('/api/dashboard/subscriptions/transactions');
+      if (transactionsResponse.ok) {
+        const transactionsData = await transactionsResponse.json();
+        setTransactions(transactionsData.transactions || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch plans data:', error);
+      toast.error('Failed to load plans data');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePlanSelect = (plan: Plan) => {
+    setSelectedPlan(plan);
+    onOpen();
+  };
+
+  const handleConfirmChange = async () => {
+    if (!selectedPlan) return;
+
+    setIsUpdating(true);
+    try {
+      const response = await fetch('/api/dashboard/subscriptions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          plan_id: selectedPlan.id,
+        }),
+      });
+
+      if (response.ok) {
+        toast.success('Plan updated successfully');
+        onClose();
+        setSelectedPlan(null);
+        fetchData(); // Refresh data
+      } else {
+        const error = await response.json();
+        toast.error(error.error || 'Failed to update plan');
+      }
+    } catch (error) {
+      console.error('Failed to update plan:', error);
+      toast.error('Failed to update plan');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const currentPlanId = currentSubscription?.plan_id;
+  const currentPlanCode = currentSubscription?.plan?.code || '';
+
+  if (isLoading || authLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  return (
+    <m.div initial="hidden" animate="visible" variants={fadeIn}>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('title')}</h1>
+        <p className="text-gray-600">{t('subtitle')}</p>
+      </div>
+
+      {/* Current Plan Section */}
+      {currentSubscription && (
+        <m.div variants={slideIn} initial="hidden" animate="visible" className="mb-8">
+          <Card className="border border-blue-200 bg-gradient-to-r from-blue-50 to-purple-50 mb-8">
+            <CardBody className="p-6">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">Current Plan</h2>
+                  <p className="text-gray-700">
+                    You're currently on the <strong>{getPlanDisplayName(currentPlanCode as any)}</strong> plan.
+                    {currentSubscription.started_at && (
+                      <span className="text-sm text-gray-600 ml-2">
+                        Started {new Date(currentSubscription.started_at).toLocaleDateString()}
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+        </m.div>
+      )}
+
+      {/* Available Plans */}
+      <div className="mb-12">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Available Plans</h2>
+        {plans.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {plans.map((plan) => {
+              const isCurrent = plan.id === currentPlanId;
+              return (
+                <PricingCard
+                  key={plan.id}
+                  plan={plan}
+                  currentPlanId={currentPlanId}
+                  isCurrentPlan={isCurrent}
+                  onSelect={isCurrent ? undefined : handlePlanSelect}
+                  isLoading={isUpdating}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <Card className="border border-gray-100">
+            <CardBody className="p-6">
+              <div className="text-center py-8 text-gray-500">No plans available.</div>
+            </CardBody>
+          </Card>
+        )}
+      </div>
+
+      {/* Comparison Table */}
+      {plans.length > 0 && (
+        <div className="mb-12">
+          <PlanComparison plans={plans} />
+        </div>
+      )}
+
+      {/* Subscription History */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('history')}</h2>
+        <SubscriptionHistory subscriptions={subscriptions} transactions={transactions} isLoading={isLoading} />
+      </div>
+
+      {/* Confirmation Modal */}
+      <Modal isOpen={isOpen} onClose={onClose} size="lg">
+        <ModalContent>
+          <ModalHeader className="flex flex-col gap-1">
+            {selectedPlan && (
+              <>
+                {comparePlans(currentPlanCode as any, selectedPlan.code as any) === 'upgrade'
+                  ? 'Upgrade Plan'
+                  : 'Change Plan'}
+              </>
+            )}
+          </ModalHeader>
+          <ModalBody>
+            {selectedPlan && (
+              <div>
+                <p className="text-gray-600 mb-4">
+                  {currentPlanCode && comparePlans(currentPlanCode as any, selectedPlan.code as any) === 'upgrade'
+                    ? `You're about to upgrade to the ${selectedPlan.name} plan.`
+                    : `You're about to change to the ${selectedPlan.name} plan.`}
+                </p>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600 mb-2">New plan details:</p>
+                  <ul className="space-y-1 text-sm text-gray-700">
+                    <li>• Monthly fee: ${selectedPlan.monthly_price}</li>
+                    <li>• Transaction fee: {selectedPlan.transaction_fee_percent}%</li>
+                    <li>• Features: {selectedPlan.features.length} included</li>
+                  </ul>
+                </div>
+                <p className="text-xs text-gray-500 mt-4">
+                  Note: This change will take effect immediately. Your billing cycle will be updated.
+                </p>
+              </div>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="light" onPress={onClose} disabled={isUpdating}>
+              Cancel
+            </Button>
+            <Button
+              color="primary"
+              onPress={handleConfirmChange}
+              isLoading={isUpdating}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+            >
+              Confirm
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </m.div>
+  );
+}
+

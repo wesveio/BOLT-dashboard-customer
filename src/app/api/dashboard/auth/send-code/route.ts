@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     if (recentCodes && recentCodes.length >= 3) {
       const oldestCode = recentCodes[recentCodes.length - 1];
       const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-      
+
       if (new Date(oldestCode.created_at) > oneHourAgo) {
         return NextResponse.json(
           { error: 'Too many requests. Please try again later.' },
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
     // Store hashed code in database
     const [codeSalt, codeHashValue] = codeHash.split(':');
-    
+
     const { error: dbError } = await supabaseAdmin
       .rpc('insert_auth_code', {
         p_email: email,
@@ -79,11 +79,11 @@ export async function POST(request: NextRequest) {
 
       await emailService.sendEmail({
         to: email,
-        subject: locale === 'pt-BR' 
-          ? 'Seu Código de Acesso do Dashboard BOLT'
+        subject: locale === 'pt-BR'
+          ? 'Seu Código de Acesso ao BOLT'
           : locale === 'es'
-          ? 'Su Código de Acceso del Dashboard BOLT'
-          : 'Your BOLT Dashboard Access Code',
+            ? 'Su Código de Acceso a BOLT'
+            : 'Your BOLT Access Code',
         html,
         text,
       });
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
+        { error: 'Invalid request data', details: error.issues },
         { status: 400 }
       );
     }

@@ -63,20 +63,14 @@ export function DashboardHeader() {
               <DropdownTrigger>
                 <Button
                   variant="light"
-                  className="flex items-center gap-3 px-3"
-                  isIconOnly={false}
+                  className="flex items-center"
+                  isIconOnly={true}
                 >
                   <Avatar
                     size="sm"
                     name={user?.name || user?.email || 'U'}
                     className="bg-gradient-to-br from-blue-500 to-purple-500 text-white"
                   />
-                  <div className="text-left hidden md:block">
-                    <p className="text-sm font-semibold text-gray-900">
-                      {user?.vtexAccountName || user?.name || 'User'}
-                    </p>
-                    <p className="text-xs text-gray-500">{user?.email}</p>
-                  </div>
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="User menu">
