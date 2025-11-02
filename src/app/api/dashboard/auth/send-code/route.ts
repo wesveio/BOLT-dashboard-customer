@@ -27,14 +27,7 @@ export async function POST(request: NextRequest) {
 
     // Check rate limit (max 3 codes per hour per email)
     const { data: recentCodes } = await supabaseAdmin
-      .schema('dashboard')
-      .from('auth_codes')
-      .select('created_at')
-      .eq('email', email.toLowerCase())
-      .eq('used', false)
-      .gt('expires_at', new Date().toISOString())
-      .order('created_at', { ascending: false })
-      .limit(3);
+      .rpc('get_recent_auth_codes', { p_email: email, p_limit: 3 });
 
     if (recentCodes && recentCodes.length >= 3) {
       const oldestCode = recentCodes[recentCodes.length - 1];
@@ -63,14 +56,12 @@ export async function POST(request: NextRequest) {
     const [codeSalt, codeHashValue] = codeHash.split(':');
     
     const { error: dbError } = await supabaseAdmin
-      .schema('dashboard')
-      .from('auth_codes')
-      .insert({
-        email: email.toLowerCase(),
-        code_hash: codeHashValue,
-        code_salt: codeSalt,
-        expires_at: expiresAt.toISOString(),
-        ip_address: ipAddress,
+      .rpc('insert_auth_code', {
+        p_email: email,
+        p_code_hash: codeHashValue,
+        p_code_salt: codeSalt,
+        p_expires_at: expiresAt.toISOString(),
+        p_ip_address: ipAddress,
       });
 
     if (dbError) {

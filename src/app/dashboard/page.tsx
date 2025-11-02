@@ -2,12 +2,34 @@
 
 import { useTranslations } from 'next-intl';
 import { motion as m } from 'framer-motion';
-import { Card, CardBody } from '@heroui/react';
-import { fadeIn } from '@/utils/animations';
+import { Card, CardBody, Avatar, Spinner } from '@heroui/react';
+import { fadeIn, slideIn } from '@/utils/animations';
+import { useDashboardAuth } from '@/hooks/useDashboardAuth';
+import { UserIcon, BuildingOfficeIcon, PhoneIcon, BriefcaseIcon, CalendarIcon } from '@heroicons/react/24/outline';
 
 export default function DashboardPage() {
   const tSidebar = useTranslations('dashboard.sidebar');
   const tOverview = useTranslations('dashboard.overview');
+  const { user, isLoading } = useDashboardAuth();
+
+  const formatDate = (dateString?: string | null) => {
+    if (!dateString) return 'N/A';
+    try {
+      return new Date(dateString).toLocaleDateString('pt-BR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    } catch {
+      return 'N/A';
+    }
+  };
+
+  const getUserDisplayName = () => {
+    if (user?.name) return user.name;
+    if (user?.firstName && user?.lastName) return `${user.firstName} ${user.lastName}`;
+    return user?.email || 'User';
+  };
 
   return (
     <m.div initial="hidden" animate="visible" variants={fadeIn}>
@@ -15,6 +37,110 @@ export default function DashboardPage() {
         <h1 className="text-3xl font-bold text-gray-900 mb-2">{tOverview('title')}</h1>
         <p className="text-gray-600">{tOverview('welcome')}</p>
       </div>
+
+      {/* User Info Card */}
+      {isLoading ? (
+        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mb-8">
+          <CardBody className="p-6">
+            <div className="flex items-center justify-center py-8">
+              <Spinner size="lg" />
+            </div>
+          </CardBody>
+        </Card>
+      ) : user ? (
+        <m.div variants={slideIn} initial="hidden" animate="visible">
+          <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mb-8">
+            <CardBody className="p-6">
+              <div className="flex flex-col md:flex-row gap-6">
+                {/* Left: Avatar and Basic Info */}
+                <div className="flex items-start gap-4">
+                  <Avatar
+                    size="lg"
+                    name={getUserDisplayName()}
+                    className="w-20 h-20 text-2xl bg-gradient-to-br from-blue-500 to-purple-500 text-white flex-shrink-0"
+                  />
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-1">
+                      {getUserDisplayName()}
+                    </h2>
+                    <p className="text-sm text-gray-600 mb-3">{user.email}</p>
+                    <div className="inline-block px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full">
+                      {user.role || 'viewer'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: Additional Info */}
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {user.phone && (
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+                        <PhoneIcon className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Telefone</p>
+                        <p className="text-sm font-semibold text-gray-900">{user.phone}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {user.company && (
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+                        <BuildingOfficeIcon className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Empresa</p>
+                        <p className="text-sm font-semibold text-gray-900">{user.company}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {user.jobTitle && (
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+                        <BriefcaseIcon className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Cargo</p>
+                        <p className="text-sm font-semibold text-gray-900">{user.jobTitle}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {user.lastLogin && (
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+                        <CalendarIcon className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Último Acesso</p>
+                        <p className="text-sm font-semibold text-gray-900">
+                          {formatDate(user.lastLogin)}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {user.createdAt && (
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+                        <UserIcon className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Membro desde</p>
+                        <p className="text-sm font-semibold text-gray-900">
+                          {formatDate(user.createdAt)}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+        </m.div>
+      ) : null}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {/* Placeholder metric cards */}

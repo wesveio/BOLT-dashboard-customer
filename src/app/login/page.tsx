@@ -330,7 +330,8 @@ function LoginContent() {
                           isDisabled={isLoading}
                           classNames={{
                             input: 'text-base',
-                            label: 'text-sm font-semibold',
+                            label: 'text-sm font-semibold mb-2',
+                            inputWrapper: 'mt-1',
                           }}
                         />
 
@@ -364,7 +365,9 @@ function LoginContent() {
                             maxLength={6}
                             classNames={{
                               input: 'text-base font-mono text-center text-2xl tracking-widest',
-                              label: 'text-sm font-semibold',
+                              label: 'text-sm font-semibold mb-2',
+                              inputWrapper: 'mt-1',
+                              base: 'mb-4',
                             }}
                           />
                           <p className="text-xs text-gray-500 mt-2 text-center">

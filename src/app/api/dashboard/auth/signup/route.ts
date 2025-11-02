@@ -56,15 +56,10 @@ export async function POST(request: NextRequest) {
     const supabaseAdmin = getSupabaseAdmin();
 
     // Check if email already exists
-    const { data: existingUser, error: userCheckError } = await supabaseAdmin
-      .schema('dashboard')
-      .from('users')
-      .select('id, email')
-      .eq('email', sanitizedEmail)
-      .single();
+    const { data: existingUsers, error: userCheckError } = await supabaseAdmin
+      .rpc('get_user_by_email', { p_email: sanitizedEmail });
 
-    if (userCheckError && userCheckError.code !== 'PGRST116') {
-      // PGRST116 is "no rows returned" which is expected when user doesn't exist
+    if (userCheckError) {
       console.error('Error checking existing user:', userCheckError);
       return NextResponse.json(
         { error: 'Failed to verify email availability' },
@@ -72,7 +67,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (existingUser) {
+    if (existingUsers && existingUsers.length > 0) {
       return NextResponse.json(
         { error: 'Email already registered. Please login instead.' },
         { status: 409 }
@@ -81,7 +76,6 @@ export async function POST(request: NextRequest) {
 
     // Check if VTEX Account already exists
     const { data: existingAccounts, error: accountCheckError } = await supabaseAdmin
-      .schema('dashboard')
       .rpc('get_account_by_vtex_name', { p_vtex_account_name: sanitizedVTEXAccount });
 
     if (accountCheckError) {
@@ -104,7 +98,6 @@ export async function POST(request: NextRequest) {
     try {
       // First, create the account using SQL function
       const { data: accountId, error: accountError } = await supabaseAdmin
-        .schema('dashboard')
         .rpc('create_account', {
           p_vtex_account_name: sanitizedVTEXAccount,
           p_company_name: sanitizedCompanyName || sanitizedVTEXAccount,
@@ -140,19 +133,16 @@ export async function POST(request: NextRequest) {
 
       // Create the user linked to the account
       // Set role to 'owner' for the first user of an account
-      const { data: newUser, error: userError } = await supabaseAdmin
-        .schema('dashboard')
-        .from('users')
-        .insert({
-          account_id: newAccount.id,
-          email: sanitizedEmail,
-          first_name: sanitizedFirstName,
-          last_name: sanitizedLastName,
-          name: `${sanitizedFirstName} ${sanitizedLastName}`, // Full name for compatibility
-          role: 'owner', // First user is always owner
-        })
-        .select('id, email, first_name, last_name, role')
-        .single();
+      const { data: newUsers, error: userError } = await supabaseAdmin
+        .rpc('create_user', {
+          p_account_id: newAccount.id,
+          p_email: sanitizedEmail,
+          p_first_name: sanitizedFirstName,
+          p_last_name: sanitizedLastName,
+          p_role: 'owner', // First user is always owner
+        });
+
+      const newUser = newUsers && newUsers.length > 0 ? newUsers[0] : null;
 
       if (userError) {
         console.error('Error creating user:', userError);
@@ -160,7 +150,6 @@ export async function POST(request: NextRequest) {
         // If user creation fails, try to clean up the account
         // (best effort, don't fail if cleanup fails)
         await supabaseAdmin
-          .schema('dashboard')
           .rpc('delete_account', { p_account_id: newAccount.id });
 
         // Check if it's a unique constraint violation
@@ -180,7 +169,6 @@ export async function POST(request: NextRequest) {
       if (!newUser) {
         // Cleanup account if user creation failed
         await supabaseAdmin
-          .schema('dashboard')
           .rpc('delete_account', { p_account_id: newAccount.id });
         
         return NextResponse.json(

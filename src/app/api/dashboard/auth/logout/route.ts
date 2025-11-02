@@ -17,18 +17,12 @@ export async function POST(request: NextRequest) {
     // Delete session from database
     if (sessionToken) {
       await supabaseAdmin
-        .schema('dashboard')
-        .from('sessions')
-        .delete()
-        .eq('token', sessionToken);
+        .rpc('delete_session_by_token', { p_token: sessionToken });
     }
 
     if (refreshToken) {
       await supabaseAdmin
-        .schema('dashboard')
-        .from('sessions')
-        .delete()
-        .eq('refresh_token', refreshToken);
+        .rpc('delete_session_by_refresh_token', { p_refresh_token: refreshToken });
     }
 
     // Clear cookies

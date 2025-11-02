@@ -64,16 +64,10 @@ export async function POST(request: NextRequest) {
     const supabaseAdmin = getSupabaseAdmin();
 
     // Find valid auth code
-    const { data: authCode, error: findError } = await supabaseAdmin
-      .schema('dashboard')
-      .from('auth_codes')
-      .select('*')
-      .eq('email', email.toLowerCase())
-      .eq('used', false)
-      .gt('expires_at', new Date().toISOString())
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
+    const { data: authCodes, error: findError } = await supabaseAdmin
+      .rpc('get_auth_code_for_verification', { p_email: email });
+    
+    const authCode = authCodes && authCodes.length > 0 ? authCodes[0] : null;
 
     if (findError || !authCode) {
       return NextResponse.json(
@@ -98,10 +92,7 @@ export async function POST(request: NextRequest) {
     if (!isValid) {
       // Increment attempts
       await supabaseAdmin
-        .schema('dashboard')
-        .from('auth_codes')
-        .update({ attempts: authCode.attempts + 1 })
-        .eq('id', authCode.id);
+        .rpc('increment_auth_code_attempts', { p_code_id: authCode.id });
 
       return NextResponse.json(
         { error: 'Invalid code. Please try again.' },
@@ -111,18 +102,13 @@ export async function POST(request: NextRequest) {
 
     // Mark code as used
     await supabaseAdmin
-      .schema('dashboard')
-      .from('auth_codes')
-      .update({ used: true })
-      .eq('id', authCode.id);
+      .rpc('mark_auth_code_used', { p_code_id: authCode.id });
 
     // Find user
-    const { data: user, error: userError } = await supabaseAdmin
-      .schema('dashboard')
-      .from('users')
-      .select('*')
-      .eq('email', email.toLowerCase())
-      .single();
+    const { data: users, error: userError } = await supabaseAdmin
+      .rpc('get_user_by_email', { p_email: email });
+    
+    const user = users && users.length > 0 ? users[0] : null;
 
     // If user doesn't exist, they need to be invited first
     if (userError || !user) {
@@ -150,16 +136,14 @@ export async function POST(request: NextRequest) {
 
     // Store session
     const { error: sessionError } = await supabaseAdmin
-      .schema('dashboard')
-      .from('sessions')
-      .insert({
-        user_id: user.id,
-        token: sessionToken,
-        refresh_token: refreshToken,
-        expires_at: expiresAt.toISOString(),
-        refresh_expires_at: refreshExpiresAt.toISOString(),
-        ip_address: request.headers.get('x-forwarded-for') || 'unknown',
-        user_agent: request.headers.get('user-agent') || 'unknown',
+      .rpc('create_session', {
+        p_user_id: user.id,
+        p_token: sessionToken,
+        p_refresh_token: refreshToken,
+        p_expires_at: expiresAt.toISOString(),
+        p_refresh_expires_at: refreshExpiresAt.toISOString(),
+        p_ip_address: request.headers.get('x-forwarded-for') || 'unknown',
+        p_user_agent: request.headers.get('user-agent') || 'unknown',
       });
 
     if (sessionError) {
@@ -172,10 +156,7 @@ export async function POST(request: NextRequest) {
 
     // Update user last login
     await supabaseAdmin
-      .schema('dashboard')
-      .from('users')
-      .update({ last_login_at: new Date().toISOString() })
-      .eq('id', user.id);
+      .rpc('update_user_last_login', { p_user_id: user.id });
 
     // Set HTTP-only cookies
     const cookieStore = cookies();
