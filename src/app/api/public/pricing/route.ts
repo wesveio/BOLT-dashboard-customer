@@ -9,13 +9,8 @@ export async function GET(request: NextRequest) {
   try {
     const supabase = getSupabaseAdmin();
 
-    // Fetch all active plans
-    const { data: plans, error } = await supabase
-      .from('dashboard.plans')
-      .select('*')
-      .eq('is_active', true)
-      .order('display_order', { ascending: true })
-      .order('name', { ascending: true });
+    // Fetch all active plans using public function
+    const { data: plans, error } = await supabase.rpc('get_plans');
 
     if (error) {
       console.error('❌ [DEBUG] Error fetching plans:', error);

@@ -44,29 +44,24 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'User or account not found' }, { status: 404 });
     }
 
-    // Get user's subscriptions
+    // Get user's subscriptions using public function
     const { data: subscriptions, error: subscriptionsError } = await supabase
-      .from('dashboard.subscriptions')
-      .select('id')
-      .eq('account_id', user.account_id);
+      .rpc('get_subscriptions_by_account', { p_account_id: user.account_id });
 
     if (subscriptionsError) {
       console.error('❌ [DEBUG] Error fetching subscriptions:', subscriptionsError);
       return NextResponse.json({ error: 'Failed to fetch subscriptions' }, { status: 500 });
     }
 
-    const subscriptionIds = subscriptions?.map((s) => s.id) || [];
+    const subscriptionIds = subscriptions?.map((s: any) => s.id) || [];
 
     if (subscriptionIds.length === 0) {
       return NextResponse.json({ transactions: [] });
     }
 
-    // Fetch transactions for these subscriptions
+    // Fetch transactions for these subscriptions using public function
     const { data: transactions, error: transactionsError } = await supabase
-      .from('dashboard.subscription_transactions')
-      .select('*')
-      .in('subscription_id', subscriptionIds)
-      .order('transaction_date', { ascending: false });
+      .rpc('get_subscription_transactions', { p_subscription_ids: subscriptionIds });
 
     if (transactionsError) {
       console.error('❌ [DEBUG] Error fetching transactions:', transactionsError);

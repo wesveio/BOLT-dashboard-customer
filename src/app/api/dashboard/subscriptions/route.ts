@@ -44,15 +44,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'User or account not found' }, { status: 404 });
     }
 
-    // Fetch subscriptions with plan details
+    // Fetch subscriptions with plan details using public function
     const { data: subscriptions, error: subscriptionsError } = await supabase
-      .from('dashboard.subscriptions')
-      .select(`
-        *,
-        plan:dashboard.plans(*)
-      `)
-      .eq('account_id', user.account_id)
-      .order('started_at', { ascending: false });
+      .rpc('get_subscriptions_by_account', { p_account_id: user.account_id });
 
     if (subscriptionsError) {
       console.error('❌ [DEBUG] Error fetching subscriptions:', subscriptionsError);
@@ -118,13 +112,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'plan_id is required' }, { status: 400 });
     }
 
-    // Verify plan exists and is active
-    const { data: plan, error: planError } = await supabase
-      .from('dashboard.plans')
-      .select('*')
-      .eq('id', plan_id)
-      .eq('is_active', true)
-      .single();
+    // Verify plan exists and is active using public function
+    const { data: allPlans, error: plansError } = await supabase.rpc('get_plans');
+    const plan = allPlans?.find((p: any) => p.id === plan_id);
+    const planError = plansError || !plan ? { message: 'Plan not found' } : null;
 
     if (planError || !plan) {
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
@@ -148,15 +139,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to create subscription' }, { status: 500 });
     }
 
-    // Fetch the newly created subscription with plan details
-    const { data: newSubscription, error: fetchError } = await supabase
-      .from('dashboard.subscriptions')
-      .select(`
-        *,
-        plan:dashboard.plans(*)
-      `)
-      .eq('id', subscriptionId)
-      .single();
+    // Fetch the newly created subscription with plan details using public function
+    const { data: subscriptions, error: fetchError } = await supabase
+      .rpc('get_subscriptions_by_account', { p_account_id: user.account_id });
+    const newSubscription = subscriptions?.find((s: any) => s.id === subscriptionId);
 
     if (fetchError) {
       console.error('❌ [DEBUG] Error fetching new subscription:', fetchError);
