@@ -17,6 +17,7 @@ interface User {
   updatedAt?: string;
   lastLogin?: string | null;
   accountId?: string;
+  vtexAccountName?: string | null;
 }
 
 interface AuthState {

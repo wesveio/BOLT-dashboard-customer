@@ -19,6 +19,7 @@ export interface MockUser {
   updatedAt?: string;
   lastLogin?: string | null;
   accountId?: string;
+  vtexAccountName?: string | null;
 }
 
 /**
@@ -53,6 +54,7 @@ export function getMockUser(): MockUser {
     updatedAt: new Date().toISOString(),
     lastLogin: new Date().toISOString(),
     accountId: 'dev-account-id',
+    vtexAccountName: 'dev-account',
   };
 }
 

@@ -81,6 +81,21 @@ export async function GET(_: NextRequest) {
       );
     }
 
+    // Get VTEX account name if user has an account
+    // Use RPC function to query customer.accounts table
+    let vtexAccountName: string | null = null;
+    if (user.account_id) {
+      const { data: accounts, error: accountError } = await supabaseAdmin
+        .rpc('get_account_by_id', { p_account_id: user.account_id });
+
+      if (!accountError && accounts && accounts.length > 0) {
+        vtexAccountName = accounts[0].vtex_account_name;
+      } else if (accountError) {
+        // Log error but don't fail the request
+        console.warn('⚠️ [DEBUG] Could not fetch VTEX account name:', accountError);
+      }
+    }
+
     // Note: RPC function get_user_by_id doesn't include phone, company, job_title
     // These fields were added later. We need to use SQL or update the function.
     // For now, returning available fields from RPC function
@@ -99,6 +114,7 @@ export async function GET(_: NextRequest) {
         updatedAt: user.updated_at,
         lastLogin: user.last_login || null,
         accountId: user.account_id,
+        vtexAccountName: vtexAccountName,
       },
     });
   } catch (error) {

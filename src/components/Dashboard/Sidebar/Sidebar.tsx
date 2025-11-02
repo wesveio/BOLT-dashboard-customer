@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChartBarIcon,
   CurrencyDollarIcon,
@@ -11,7 +11,10 @@ import {
   PaintBrushIcon,
   LightBulbIcon,
   HomeIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from '@heroicons/react/24/outline';
+import { useSidebar } from '@/contexts/SidebarContext';
 
 interface NavItem {
   href: string;
@@ -20,6 +23,7 @@ interface NavItem {
 }
 
 export function Sidebar() {
+  const { isCollapsed, toggleCollapse } = useSidebar();
   const t = useTranslations('dashboard.sidebar');
   const pathname = usePathname();
 
@@ -41,32 +45,12 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-100 min-h-screen sticky top-0">
-      <div className="p-6">
-        {/* Logo */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
-              </svg>
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              BOLT
-            </span>
-          </div>
-        </div>
-
+    <aside
+      className={`bg-white border-r border-gray-100 fixed left-0 top-0 h-screen z-30 transition-all duration-200 flex flex-col ${
+        isCollapsed ? 'w-20' : 'w-64'
+      }`}
+    >
+      <div className={`flex-1 overflow-y-auto p-6 transition-all duration-200 ${isCollapsed ? 'px-4' : ''}`}>
         {/* Navigation */}
         <nav className="space-y-2">
           {navItems.map((item) => {
@@ -74,35 +58,62 @@ export function Sidebar() {
             const active = isActive(item.href);
 
             return (
-              <Link key={item.href} href={item.href}>
+              <Link key={item.href} href={item.href} title={isCollapsed ? item.label : ''}>
                 <motion.div
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                  className={`flex items-center gap-3 rounded-lg transition-all duration-200 ${
+                    isCollapsed ? 'justify-center px-2 py-3' : 'px-4 py-3'
+                  } ${
                     active
                       ? 'bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 shadow-sm'
                       : 'hover:bg-gray-50 hover:border-gray-200 border border-transparent'
                   }`}
-                  whileHover={{ x: 4 }}
+                  whileHover={isCollapsed ? {} : { x: 4 }}
                   transition={{ type: 'spring', stiffness: 300 }}
                 >
                   <Icon
-                    className={`w-5 h-5 ${
+                    className={`flex-shrink-0 ${
+                      isCollapsed ? 'w-6 h-6' : 'w-5 h-5'
+                    } ${
                       active
                         ? 'text-blue-600'
                         : 'text-gray-400 group-hover:text-gray-600'
                     }`}
                   />
-                  <span
-                    className={`font-semibold ${
-                      active ? 'text-blue-600' : 'text-gray-700'
-                    }`}
-                  >
-                    {item.label}
-                  </span>
+                  <AnimatePresence>
+                    {!isCollapsed && (
+                      <motion.span
+                        initial={{ opacity: 0, width: 0 }}
+                        animate={{ opacity: 1, width: 'auto' }}
+                        exit={{ opacity: 0, width: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className={`font-semibold whitespace-nowrap overflow-hidden ${
+                          active ? 'text-blue-600' : 'text-gray-700'
+                        }`}
+                      >
+                        {item.label}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               </Link>
             );
           })}
         </nav>
+      </div>
+
+      {/* Toggle Button - Footer */}
+      <div className={`border-t border-gray-100 p-4 flex ${isCollapsed ? 'justify-center' : 'justify-end'}`}>
+        <button
+          onClick={toggleCollapse}
+          className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+          aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {isCollapsed ? (
+            <ChevronRightIcon className="w-5 h-5 text-gray-600" />
+          ) : (
+            <ChevronLeftIcon className="w-5 h-5 text-gray-600" />
+          )}
+        </button>
       </div>
     </aside>
   );

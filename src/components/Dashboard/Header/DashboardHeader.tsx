@@ -11,21 +11,49 @@ import {
   Button,
 } from '@heroui/react';
 import { LanguageSwitcher } from '../LanguageSwitcher/LanguageSwitcher';
+import { useSidebar } from '@/contexts/SidebarContext';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export function DashboardHeader() {
   const t = useTranslations('dashboard.header');
   const { user, logout } = useDashboardAuth();
+  const { isCollapsed } = useSidebar();
 
   const handleLogout = async () => {
     await logout();
   };
 
   return (
-    <header className="bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-100 sticky top-0 z-20">
-      <div className="px-6 py-4">
-        <div className="flex items-center justify-between">
-          {/* Left side - can add breadcrumbs or title here */}
-          <div className="flex-1"></div>
+    <header
+      className={`sticky top-4 z-20 transition-all duration-200 ${
+        isCollapsed ? 'ml-20' : 'ml-64'
+      }`}
+    >
+      <div className="mx-4">
+        <div className="backdrop-blur-md bg-white/80 border border-white/30 rounded-full px-6 py-3 shadow-lg">
+          <div className="flex items-center justify-between">
+            {/* Left side - Logo */}
+            <Link
+              href="/dashboard"
+              className="flex items-center transition-opacity duration-200 hover:opacity-80"
+              aria-label="Bolt - Go to dashboard"
+            >
+              <div className="relative w-auto flex items-center" style={{ height: '18px' }}>
+                <Image
+                  src="/bolt.svg"
+                  alt="Bolt Logo"
+                  width={68}
+                  height={23}
+                  className="h-full w-auto object-contain"
+                  style={{
+                    filter: 'brightness(0) saturate(100%)',
+                  }}
+                  priority
+                  unoptimized
+                />
+              </div>
+            </Link>
 
           {/* Right side - User menu and language switcher */}
           <div className="flex items-center gap-4">
@@ -45,7 +73,7 @@ export function DashboardHeader() {
                   />
                   <div className="text-left hidden md:block">
                     <p className="text-sm font-semibold text-gray-900">
-                      {user?.name || 'User'}
+                      {user?.vtexAccountName || user?.name || 'User'}
                     </p>
                     <p className="text-xs text-gray-500">{user?.email}</p>
                   </div>
@@ -69,6 +97,7 @@ export function DashboardHeader() {
             </Dropdown>
           </div>
         </div>
+      </div>
       </div>
     </header>
   );

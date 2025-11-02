@@ -147,15 +147,15 @@ export default function DashboardPage() {
         {[1, 2, 3, 4].map((i) => (
           <Card
             key={i}
-            className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200"
+            className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 h-full flex flex-col"
           >
-            <CardBody className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
+            <CardBody className="p-6 flex-1 flex flex-col">
+              <div className="flex items-start justify-between h-full">
+                <div className="flex-1 flex flex-col">
                   <p className="text-sm text-gray-600 mb-1">Metric {i}</p>
                   <p className="text-2xl font-bold text-gray-900">--</p>
                 </div>
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0 ml-4">
                   <svg
                     className="w-6 h-6 text-white"
                     fill="none"

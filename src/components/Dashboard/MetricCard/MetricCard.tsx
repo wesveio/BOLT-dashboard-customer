@@ -31,12 +31,12 @@ export function MetricCard({
       initial="hidden"
       animate="visible"
       variants={fadeIn}
-      className={className}
+      className={`h-full ${className}`}
     >
-      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
-        <CardBody className="p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
+      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 h-full flex flex-col">
+        <CardBody className="p-6 flex-1 flex flex-col">
+          <div className="flex items-start justify-between h-full">
+            <div className="flex-1 flex flex-col">
               <p className="text-sm text-gray-600 mb-1 font-semibold">{title}</p>
               {isLoading ? (
                 <div className="h-8 w-24 bg-gray-200 rounded animate-pulse" />
@@ -60,7 +60,7 @@ export function MetricCard({
               )}
             </div>
             {icon && (
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center shadow-lg flex-shrink-0">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center shadow-lg flex-shrink-0 ml-4">
                 {icon}
               </div>
             )}
