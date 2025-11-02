@@ -23,30 +23,31 @@ export function PublicPricingCard({ plan, isPopular = false, onSelect }: PublicP
       transition={{ duration: 0.3 }}
       className="h-full"
     >
-      <Card
-        className={`border transition-all duration-200 h-full flex flex-col relative ${
-          isPopular
-            ? 'border-blue-500 shadow-xl ring-2 ring-blue-200 scale-105'
-            : 'border-gray-100 hover:border-blue-200 hover:shadow-lg'
-        }`}
-      >
+      <div className="relative h-full">
         {isPopular && (
-          <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-            <span className="inline-flex items-center px-4 py-1 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-bold shadow-lg">
+          <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-bold shadow-lg whitespace-nowrap">
               Most Popular
             </span>
           </div>
         )}
+        <Card
+          className={`border transition-all duration-200 h-full flex flex-col ${
+            isPopular
+              ? 'border-blue-500 shadow-xl ring-2 ring-blue-200'
+              : 'border-gray-100 hover:border-blue-200 hover:shadow-lg'
+          }`}
+        >
 
         <CardBody className="p-8 flex-1 flex flex-col">
           {/* Plan Header */}
           <div className="mb-8 text-center">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">{plan.name}</h3>
+            <h3 className="text-2xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-4">{plan.name}</h3>
             <div className="flex items-baseline justify-center gap-2 mb-2">
-              <span className="text-5xl font-bold text-gray-900">
+              <span className="text-3xl md:text-3xl lg:text-4xl font-bold text-gray-900">
                 {isEnterprise ? 'Custom' : formatCurrency(plan.monthly_price, 'USD')}
               </span>
-              {!isEnterprise && <span className="text-xl text-gray-600">/month</span>}
+              {!isEnterprise && <span className="text-lg md:text-xl text-gray-600">/month</span>}
             </div>
             {!isEnterprise && (
               <p className="text-sm text-gray-600 mt-2">
@@ -100,6 +101,7 @@ export function PublicPricingCard({ plan, isPopular = false, onSelect }: PublicP
           </div>
         </CardBody>
       </Card>
+      </div>
     </motion.div>
   );
 }

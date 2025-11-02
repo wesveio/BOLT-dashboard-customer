@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
 import { motion as m } from 'framer-motion';
 import { fadeIn, staggerContainer } from '@/utils/animations';
 import { AnimatedWrapper } from '@/components/Dashboard/AnimatedWrapper/AnimatedWrapper';
@@ -9,9 +8,12 @@ import { PublicPricingCard } from '@/components/Pricing/PublicPricingCard';
 import { PlanComparison } from '@/components/Dashboard/Plans/PlanComparison';
 import { Plan } from '@/utils/plans';
 import { Spinner } from '@heroui/react';
+import { getCachedData, setCachedData, isCachedDataValid } from '@/utils/cache';
+
+const CACHE_KEY = 'pricing_plans';
+const CACHE_TTL_MINUTES = 60*6; // Cache for 6 hours
 
 export default function PricingPage() {
-  const t = useTranslations('pricing');
   const [plans, setPlans] = useState<Plan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -20,20 +22,64 @@ export default function PricingPage() {
   }, []);
 
   const fetchPlans = async () => {
-    try {
-      const response = await fetch('/api/public/pricing');
-      if (response.ok) {
-        const data = await response.json();
-        setPlans(data.plans || []);
-      }
-    } catch (error) {
-      console.error('Failed to fetch plans:', error);
-    } finally {
+    // Try to get from cache first
+    const cachedPlans = getCachedData<Plan[]>(CACHE_KEY);
+    
+    if (cachedPlans && cachedPlans.length > 0) {
+      // Use cached data immediately
+      setPlans(cachedPlans);
       setIsLoading(false);
+
+      // Revalidate in background if cache is getting stale
+      if (!isCachedDataValid(CACHE_KEY)) {
+        fetchPlansFromAPI(true); // Silent refresh
+      }
+    } else {
+      // No cache, fetch from API
+      await fetchPlansFromAPI(false);
     }
   };
 
-  const professionalPlan = plans.find((p) => p.code === 'professional');
+  const fetchPlansFromAPI = async (silent: boolean = false) => {
+    try {
+      // Fetch with cache control - browser will respect Cache-Control headers
+      // from the API response (set to 1 hour cache)
+      const response = await fetch('/api/public/pricing', {
+        // Use 'default' to respect Cache-Control headers from server
+        cache: 'default',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const fetchedPlans = data.plans || [];
+
+        if (fetchedPlans.length > 0) {
+          setPlans(fetchedPlans);
+          
+          // Cache in localStorage for client-side caching
+          setCachedData(CACHE_KEY, fetchedPlans, CACHE_TTL_MINUTES);
+        }
+      } else if (response.status === 304) {
+        // Not Modified - use cached data
+        const cachedPlans = getCachedData<Plan[]>(CACHE_KEY);
+        if (cachedPlans) {
+          setPlans(cachedPlans);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch plans:', error);
+      
+      // Fallback to cache if available
+      const cachedPlans = getCachedData<Plan[]>(CACHE_KEY);
+      if (cachedPlans && cachedPlans.length > 0) {
+        setPlans(cachedPlans);
+      }
+    } finally {
+      if (!silent) {
+        setIsLoading(false);
+      }
+    }
+  };
 
   return (
     <AnimatedWrapper>
