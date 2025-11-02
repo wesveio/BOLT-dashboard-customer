@@ -1,9 +1,9 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { motion as m } from 'framer-motion';
-import { fadeIn } from '@/utils/animations';
 import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
+import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
+import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
 import Link from 'next/link';
 import { Button } from '@heroui/react';
 import {
@@ -48,20 +48,13 @@ export default function AnalyticsPage() {
   ];
 
   return (
-    <m.div initial="hidden" animate="visible" variants={fadeIn}>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('title')}</h1>
-        <p className="text-gray-600">{t('subtitle')}</p>
-      </div>
+    <PageWrapper>
+      <PageHeader title={t('title')} subtitle={t('subtitle')} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {analyticsCategories.map((category) => (
           <Link key={category.href} href={category.href}>
-            <m.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: 'spring', stiffness: 300 }}
-            >
+            <div className="transform transition-transform hover:scale-105 active:scale-95">
               <ChartCard
                 title={category.title}
                 subtitle={category.description}
@@ -84,11 +77,11 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
               </ChartCard>
-            </m.div>
+            </div>
           </Link>
         ))}
       </div>
-    </m.div>
+    </PageWrapper>
   );
 }
 

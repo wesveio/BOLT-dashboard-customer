@@ -17,29 +17,36 @@ export async function GET(request: NextRequest) {
 
     const supabaseAdmin = getSupabaseAdmin();
 
-    // Find session and user
-    const { data: session, error: sessionError } = await supabaseAdmin
-      .from('dashboard.sessions')
-      .select('user_id')
-      .eq('token', sessionToken)
-      .gt('expires_at', new Date().toISOString())
-      .single();
+    // Find session using RPC function (required for custom schema)
+    const { data: sessions, error: sessionError } = await supabaseAdmin
+      .rpc('get_session_by_token', { p_token: sessionToken });
+
+    const session = sessions && sessions.length > 0 ? sessions[0] : null;
 
     if (sessionError || !session) {
+      console.error('🚨 [DEBUG] Session error:', sessionError);
       return NextResponse.json(
         { error: 'Invalid or expired session' },
         { status: 401 }
       );
     }
 
-    // Get user to find their account_id
-    const { data: user, error: userError } = await supabaseAdmin
-      .from('dashboard.users')
-      .select('account_id')
-      .eq('id', session.user_id)
-      .single();
+    // Validate session expiration (RPC already filters expired, but double-check)
+    if (new Date(session.expires_at) < new Date()) {
+      return NextResponse.json(
+        { error: 'Session expired' },
+        { status: 401 }
+      );
+    }
+
+    // Get user to find their account_id using RPC function (required for custom schema)
+    const { data: users, error: userError } = await supabaseAdmin
+      .rpc('get_user_by_id', { p_user_id: session.user_id });
+
+    const user = users && users.length > 0 ? users[0] : null;
 
     if (userError || !user) {
+      console.error('🚨 [DEBUG] User query error:', userError);
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
@@ -70,22 +77,21 @@ export async function GET(request: NextRequest) {
 
     const range = dateRanges[period] || dateRanges.week;
 
-    // Query all checkout events
+    // Query all checkout events using RPC function (required for custom schema)
     const { data: events, error: eventsError } = await supabaseAdmin
-      .from('analytics.events')
-      .select('*')
-      .eq('customer_id', user.account_id)
-      .in('event_type', [
-        'checkout_start',
-        'cart_view',
-        'profile_step',
-        'shipping_step',
-        'payment_step',
-        'checkout_complete',
-      ])
-      .gte('timestamp', range.start.toISOString())
-      .lte('timestamp', range.end.toISOString())
-      .order('timestamp', { ascending: true });
+      .rpc('get_analytics_events_by_types', {
+        p_customer_id: user.account_id,
+        p_event_types: [
+          'checkout_start',
+          'cart_view',
+          'profile_step',
+          'shipping_step',
+          'payment_step',
+          'checkout_complete',
+        ],
+        p_start_date: range.start.toISOString(),
+        p_end_date: range.end.toISOString(),
+      });
 
     if (eventsError) {
       console.error('Get performance metrics error:', eventsError);
@@ -112,7 +118,7 @@ export async function GET(request: NextRequest) {
     };
 
     // Group events by session
-    const sessions: Record<string, {
+    const checkoutSessions: Record<string, {
       start: Date;
       steps: string[];
       times: Record<string, number>;
@@ -120,15 +126,15 @@ export async function GET(request: NextRequest) {
 
     events?.forEach((event) => {
       const sessionId = event.session_id;
-      if (!sessions[sessionId]) {
-        sessions[sessionId] = {
+      if (!checkoutSessions[sessionId]) {
+        checkoutSessions[sessionId] = {
           start: new Date(event.timestamp),
           steps: [],
           times: {},
         };
       }
 
-      const session = sessions[sessionId];
+      const session = checkoutSessions[sessionId];
       const eventTime = new Date(event.timestamp).getTime();
       const sessionStart = session.start.getTime();
 

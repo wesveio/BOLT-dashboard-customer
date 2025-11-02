@@ -318,7 +318,7 @@ ${t.expires}
 ${t.footer}
 
 ---
-Powered by BOLT
+Powered by BCKSTG
   `.trim();
 
   return { html, text };

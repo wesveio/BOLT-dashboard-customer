@@ -1,119 +1,76 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { motion as m } from 'framer-motion';
-import { fadeIn } from '@/utils/animations';
 import { FunnelChart } from '@/components/Dashboard/FunnelChart/FunnelChart';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
 import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { RealtimeIndicator } from '@/components/Dashboard/RealtimeIndicator/RealtimeIndicator';
-import { Spinner } from '@heroui/react';
+import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
+import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
+import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
+import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
 import {
   ChartBarIcon,
   ClockIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,
 } from '@heroicons/react/24/outline';
+import { usePerformanceData } from '@/hooks/useDashboardData';
+import { formatDuration, formatPercentage } from '@/utils/formatters';
 
 export default function PerformancePage() {
   const t = useTranslations('dashboard.performance');
-  const [metrics, setMetrics] = useState<any>(null);
-  const [funnelData, setFunnelData] = useState<any[]>([]);
-  const [stepMetrics, setStepMetrics] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadPerformanceData = async () => {
-      try {
-        const response = await fetch('/api/dashboard/performance?period=week');
-        if (response.ok) {
-          const data = await response.json();
-          setMetrics(data.metrics);
-          setFunnelData(data.funnel);
-          setStepMetrics(data.stepMetrics);
-        }
-      } catch (error) {
-        console.error('Load performance data error:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadPerformanceData();
-  }, []);
+  const { metrics, funnelData, stepMetrics, isLoading, error, refetch } = usePerformanceData();
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <div className="text-center">
-          <Spinner size="lg" />
-          <p className="mt-4 text-gray-600">Loading performance data...</p>
-        </div>
-      </div>
+      <PageWrapper>
+        <PageHeader title={t('title')} subtitle={t('subtitle')} />
+        <LoadingState message="Loading performance data..." fullScreen />
+      </PageWrapper>
     );
   }
 
-  // Default data if API returns empty
-  const defaultFunnelData = [
-    { step: 'cart', label: 'Cart', count: 1000, percentage: 100 },
-    { step: 'profile', label: 'Profile', count: 850, percentage: 85 },
-    { step: 'shipping', label: 'Shipping', count: 720, percentage: 72 },
-    { step: 'payment', label: 'Payment', count: 650, percentage: 65 },
-    { step: 'confirmed', label: 'Confirmed', count: 0, percentage: 0 },
-  ];
-
-  const defaultStepMetrics = [
-    { step: 'cart', label: 'Cart', avgTime: 0, abandonment: 0 },
-    { step: 'profile', label: 'Profile', avgTime: 0, abandonment: 0 },
-    { step: 'shipping', label: 'Shipping', avgTime: 0, abandonment: 0 },
-    { step: 'payment', label: 'Payment', avgTime: 0, abandonment: 0 },
-  ];
-
-  const displayFunnelData = funnelData.length > 0 ? funnelData : defaultFunnelData;
-  const displayStepMetrics = stepMetrics.length > 0 ? stepMetrics : defaultStepMetrics;
-  const displayMetrics = metrics || {
-    conversionRate: '0.0',
-    avgCheckoutTime: 0,
-    abandonmentRate: '0.0',
-    totalSessions: 0,
-  };
+  if (error) {
+    return (
+      <PageWrapper>
+        <PageHeader title={t('title')} subtitle={t('subtitle')} />
+        <ErrorState message="Failed to load performance data" onRetry={refetch} />
+      </PageWrapper>
+    );
+  }
 
   return (
-    <m.div initial="hidden" animate="visible" variants={fadeIn}>
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('title')}</h1>
-            <p className="text-gray-600">{t('subtitle')}</p>
-          </div>
-          <RealtimeIndicator isActive={true} />
-        </div>
-      </div>
+    <PageWrapper>
+      <PageHeader
+        title={t('title')}
+        subtitle={t('subtitle')}
+        action={<RealtimeIndicator isActive={true} />}
+      />
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
           title={t('conversionRate')}
-          value={`${displayMetrics.conversionRate}%`}
+          value={formatPercentage(parseFloat(metrics.conversionRate))}
           subtitle="Overall checkout completion"
           icon={<CheckCircleIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('avgCheckoutTime')}
-          value={`${Math.round(displayMetrics.avgCheckoutTime / 60)} min`}
+          value={formatDuration(metrics.avgCheckoutTime)}
           subtitle="Time to complete checkout"
           icon={<ClockIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('abandonmentRate')}
-          value={`${displayMetrics.abandonmentRate}%`}
+          value={formatPercentage(parseFloat(metrics.abandonmentRate))}
           subtitle="Checkouts abandoned"
           icon={<ExclamationTriangleIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('totalSessions')}
-          value={displayMetrics.totalSessions?.toLocaleString() || '0'}
+          value={metrics.totalSessions?.toLocaleString() || '0'}
           subtitle="Checkout sessions started"
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />
@@ -122,13 +79,13 @@ export default function PerformancePage() {
       {/* Funnel Chart */}
       <div className="mb-8">
         <ChartCard title={t('funnelTitle')} subtitle={t('funnelSubtitle')}>
-          <FunnelChart data={displayFunnelData} />
+          <FunnelChart data={funnelData} />
         </ChartCard>
       </div>
 
       {/* Step Performance */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {displayStepMetrics.map((step) => (
+        {stepMetrics.map((step) => (
           <ChartCard
             key={step.step}
             title={step.label}
@@ -157,7 +114,7 @@ export default function PerformancePage() {
           </ChartCard>
         ))}
       </div>
-    </m.div>
+    </PageWrapper>
   );
 }
 

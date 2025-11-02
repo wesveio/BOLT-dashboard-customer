@@ -1,90 +1,71 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { motion as m } from 'framer-motion';
-import { fadeIn } from '@/utils/animations';
 import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
+import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
+import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
+import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
+import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { GlobeAltIcon } from '@heroicons/react/24/outline';
-import { Spinner } from '@heroui/react';
+import { useAnalyticsData } from '@/hooks/useDashboardData';
+import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
 
 const COLORS = ['#2563eb', '#9333ea', '#10b981', '#f59e0b', '#ef4444'];
 
 export default function BrowserAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.browsers');
-  const [browserData, setBrowserData] = useState<any[]>([]);
-  const [platformData, setPlatformData] = useState<any[]>([]);
-  const [metrics, setMetrics] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadBrowserData = async () => {
-      try {
-        const response = await fetch('/api/dashboard/analytics/browsers?period=week');
-        if (response.ok) {
-          const data = await response.json();
-          setBrowserData(data.browsers || []);
-          setPlatformData(data.platforms || []);
-          setMetrics({
-            totalSessions: data.totalSessions,
-            avgConversion: data.avgConversion,
-          });
-        }
-      } catch (error) {
-        console.error('Load browser analytics error:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadBrowserData();
-  }, []);
+  const { data, isLoading, error, refetch } = useAnalyticsData({ type: 'browsers' });
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <div className="text-center">
-          <Spinner size="lg" />
-          <p className="mt-4 text-gray-600">Loading browser analytics...</p>
-        </div>
-      </div>
+      <PageWrapper>
+        <PageHeader title={t('title')} subtitle={t('subtitle')} />
+        <LoadingState message="Loading browser analytics..." fullScreen />
+      </PageWrapper>
     );
   }
 
-  const totalSessions = metrics?.totalSessions || 0;
-  const avgConversion = metrics?.avgConversion || '0.0';
+  if (error) {
+    return (
+      <PageWrapper>
+        <PageHeader title={t('title')} subtitle={t('subtitle')} />
+        <ErrorState message="Failed to load browser analytics" onRetry={refetch} />
+      </PageWrapper>
+    );
+  }
+
+  const browserData = data?.browsers || [];
+  const platformData = data?.platforms || [];
+  const totalSessions = data?.totalSessions || 0;
+  const avgConversion = data?.avgConversion || '0.0';
   const topBrowser = browserData.length > 0
-    ? browserData.reduce((max, item) => item.sessions > max.sessions ? item : max, browserData[0])
+    ? browserData.reduce((max: { browser: string; sessions: number }, item: { browser: string; sessions: number }) => item.sessions > max.sessions ? item : max, browserData[0])
     : { browser: 'N/A', sessions: 0 };
+  const topBrowserShare = totalSessions > 0 ? (topBrowser.sessions / totalSessions) * 100 : 0;
 
   return (
-    <m.div initial="hidden" animate="visible" variants={fadeIn}>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('title')}</h1>
-        <p className="text-gray-600">{t('subtitle')}</p>
-      </div>
+    <PageWrapper>
+      <PageHeader title={t('title')} subtitle={t('subtitle')} />
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <MetricCard
           title={t('totalSessions')}
-          value={totalSessions.toLocaleString()}
+          value={formatNumber(totalSessions)}
           subtitle={t('totalSessionsSubtitle')}
           icon={<GlobeAltIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('avgConversion')}
-          value={`${avgConversion}%`}
+          value={formatPercentage(parseFloat(avgConversion))}
           subtitle={t('avgConversionSubtitle')}
         />
         <MetricCard
           title={t('topBrowser')}
           value={topBrowser.browser || 'N/A'}
-          subtitle={totalSessions > 0
-            ? `${((topBrowser.sessions / totalSessions) * 100).toFixed(1)}% ${t('ofSessions')}`
-            : '0%'}
+          subtitle={formatPercentage(topBrowserShare)}
         />
       </div>
 
@@ -101,12 +82,12 @@ export default function BrowserAnalyticsPage() {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ browser, percent }) => `${browser} ${(percent * 100).toFixed(0)}%`}
+                label={({ browser, percent }: { browser: string; percent: number }) => `${browser} ${(percent * 100).toFixed(0)}%`}
                 outerRadius={120}
                 fill="#8884d8"
                 dataKey="sessions"
               >
-                {browserData.map((entry, index) => (
+                {browserData.map((_entry: unknown, index: number) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
@@ -142,7 +123,7 @@ export default function BrowserAnalyticsPage() {
                   border: '1px solid #e5e7eb',
                   borderRadius: '8px',
                 }}
-                formatter={(value: number) => [`${value.toFixed(1)}%`, t('conversionRate')]}
+                formatter={(value: number) => [`${formatPercentage(value)}`, t('conversionRate')]}
               />
               <Bar
                 dataKey="conversion"
@@ -156,31 +137,31 @@ export default function BrowserAnalyticsPage() {
 
       {/* Browser Details */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {browserData.map((browser, index) => (
+        {browserData.map((browser: { browser: string; sessions: number; conversion: number; revenue: number; marketShare?: number }, index: number) => (
           <ChartCard key={browser.browser} title={browser.browser}>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">{t('sessions')}</span>
                 <span className="text-lg font-bold text-gray-900">
-                  {browser.sessions.toLocaleString()}
+                  {formatNumber(browser.sessions)}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">{t('conversionRate')}</span>
                 <span className="text-lg font-bold text-green-600">
-                  {browser.conversion.toFixed(1)}%
+                  {formatPercentage(browser.conversion)}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">{t('revenue')}</span>
                 <span className="text-lg font-bold text-gray-900">
-                  ${browser.revenue.toLocaleString()}
+                  {formatCurrency(browser.revenue)}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">{t('marketShare')}</span>
                 <span className="text-lg font-bold text-gray-900">
-                  {browser.marketShare?.toFixed(1) || '0.0'}%
+                  {formatPercentage(browser.marketShare || 0)}
                 </span>
               </div>
               <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -231,25 +212,25 @@ export default function BrowserAnalyticsPage() {
 
       {/* Platform Details */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {platformData.map((platform, index) => (
+        {platformData.map((platform: { platform: string; sessions: number; conversion?: number; revenue: number }, index: number) => (
           <ChartCard key={platform.platform} title={platform.platform}>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">{t('sessions')}</span>
                 <span className="text-lg font-bold text-gray-900">
-                  {platform.sessions.toLocaleString()}
+                  {formatNumber(platform.sessions)}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">{t('conversionRate')}</span>
                 <span className="text-lg font-bold text-green-600">
-                  {platform.conversion?.toFixed(1) || '0.0'}%
+                  {formatPercentage(platform.conversion || 0)}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">{t('revenue')}</span>
                 <span className="text-lg font-bold text-gray-900">
-                  ${platform.revenue.toLocaleString()}
+                  {formatCurrency(platform.revenue)}
                 </span>
               </div>
               <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -265,7 +246,6 @@ export default function BrowserAnalyticsPage() {
           </ChartCard>
         ))}
       </div>
-    </m.div>
+    </PageWrapper>
   );
 }
-

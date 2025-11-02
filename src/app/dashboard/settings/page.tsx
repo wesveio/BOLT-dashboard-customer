@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { motion as m } from 'framer-motion';
-import { fadeIn } from '@/utils/animations';
+import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
+import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
 import {
   Card,
   CardBody,
@@ -194,11 +194,8 @@ export default function SettingsPage() {
   };
 
   return (
-    <m.div initial="hidden" animate="visible" variants={fadeIn}>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('title')}</h1>
-        <p className="text-gray-600">{t('subtitle')}</p>
-      </div>
+    <PageWrapper>
+      <PageHeader title={t('title')} subtitle={t('subtitle')} />
 
       <Tabs
         selectedKey={activeTab}
@@ -584,7 +581,7 @@ export default function SettingsPage() {
           </Tab>
         )}
       </Tabs>
-    </m.div>
+    </PageWrapper>
   );
 }
 

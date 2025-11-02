@@ -21,16 +21,20 @@ export async function GET(request: NextRequest) {
 
     const supabase = getSupabaseAdmin();
 
-    // Verify session is valid
-    const { data: session, error: sessionError } = await supabase
-      .from('dashboard.sessions')
-      .select('user_id')
-      .eq('token', sessionToken)
-      .gt('expires_at', new Date().toISOString())
-      .single();
+    // Verify session is valid using RPC function (required for custom schema)
+    const { data: sessions, error: sessionError } = await supabase
+      .rpc('get_session_by_token', { p_token: sessionToken });
+
+    const session = sessions && sessions.length > 0 ? sessions[0] : null;
 
     if (sessionError || !session) {
+      console.error('🚨 [DEBUG] Session error:', sessionError);
       return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
+    }
+
+    // Validate session expiration (RPC already filters expired, but double-check)
+    if (new Date(session.expires_at) < new Date()) {
+      return NextResponse.json({ error: 'Session expired' }, { status: 401 });
     }
 
     // Fetch all active plans using public function

@@ -2,37 +2,24 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { motion as m } from 'framer-motion';
-import { fadeIn } from '@/utils/animations';
+import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
+import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
+import { useApi } from '@/hooks/useApi';
 import { Card, CardBody, Button, Spinner } from '@heroui/react';
 import { ThemeEditor } from '@/components/Dashboard/ThemeEditor/ThemeEditor';
 import { RoleGuard } from '@/components/Dashboard/RoleGuard/RoleGuard';
+import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
 import { PlusIcon, PaintBrushIcon } from '@heroicons/react/24/outline';
 
 export default function ThemesPage() {
   const t = useTranslations('dashboard.themes');
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
 
-  const [themes, setThemes] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadThemes = async () => {
-      try {
-        const response = await fetch('/api/dashboard/themes');
-        if (response.ok) {
-          const data = await response.json();
-          setThemes(data.themes || []);
-        }
-      } catch (error) {
-        console.error('Load themes error:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadThemes();
-  }, []);
+  const { data, isLoading, refetch } = useApi<{ themes: any[] }>('/api/dashboard/themes', {
+    cacheKey: 'themes',
+    cacheTTL: 5,
+  });
+  const themes = data?.themes || [];
 
   const handleActivateTheme = async (themeId: string) => {
     try {
@@ -40,12 +27,7 @@ export default function ThemesPage() {
         method: 'POST',
       });
       if (response.ok) {
-        // Reload themes
-        const refreshResponse = await fetch('/api/dashboard/themes');
-        if (refreshResponse.ok) {
-          const data = await refreshResponse.json();
-          setThemes(data.themes || []);
-        }
+        refetch();
       }
     } catch (error) {
       console.error('Activate theme error:', error);
@@ -59,11 +41,7 @@ export default function ThemesPage() {
         onBack={() => setSelectedTheme(null)}
         onSave={() => {
           setSelectedTheme(null);
-          // Refresh themes list
-          fetch('/api/dashboard/themes')
-            .then((res) => res.json())
-            .then((data) => setThemes(data.themes || []))
-            .catch((err) => console.error('Refresh themes error:', err));
+          refetch();
         }}
       />
     );
@@ -71,29 +49,27 @@ export default function ThemesPage() {
 
   return (
     <RoleGuard requiredPermission={{ resource: 'themes', action: 'read' }}>
-      <m.div initial="hidden" animate="visible" variants={fadeIn}>
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('title')}</h1>
-            <p className="text-gray-600">{t('subtitle')}</p>
-          </div>
-          <RoleGuard requiredPermission={{ resource: 'themes', action: 'write' }}>
-            <Button
-              color="primary"
-              size="lg"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
-              startContent={<PlusIcon className="w-5 h-5" />}
-              onPress={() => setSelectedTheme('new')}
-            >
-              {t('createNew')}
-            </Button>
-          </RoleGuard>
-        </div>
+      <PageWrapper>
+        <PageHeader
+          title={t('title')}
+          subtitle={t('subtitle')}
+          action={
+            <RoleGuard requiredPermission={{ resource: 'themes', action: 'write' }}>
+              <Button
+                color="primary"
+                size="lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                startContent={<PlusIcon className="w-5 h-5" />}
+                onPress={() => setSelectedTheme('new')}
+              >
+                {t('createNew')}
+              </Button>
+            </RoleGuard>
+          }
+        />
 
         {isLoading ? (
-          <div className="flex justify-center items-center py-12">
-            <Spinner size="lg" />
-          </div>
+          <LoadingState message="Loading themes..." fullScreen={false} />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {themes.length === 0 ? (
@@ -115,10 +91,9 @@ export default function ThemesPage() {
               </div>
             ) : (
               themes.map((theme) => (
-                <m.div
+                <div
                   key={theme.id}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  className="transform transition-transform hover:scale-105 active:scale-95"
                 >
                   <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 cursor-pointer">
                     <CardBody className="p-6">
@@ -161,12 +136,12 @@ export default function ThemesPage() {
                       </div>
                     </CardBody>
                   </Card>
-                </m.div>
+                </div>
               ))
             )}
           </div>
         )}
-      </m.div>
+      </PageWrapper>
     </RoleGuard>
   );
 }

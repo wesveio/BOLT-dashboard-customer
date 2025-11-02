@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface User {
   id: string;
@@ -51,6 +51,7 @@ export function DashboardAuthProvider({ children }: DashboardAuthProviderProps) 
   });
   
   const router = useRouter();
+  const pathname = usePathname();
   
   // Ref para deduplicação de requisições simultâneas
   const isFetchingRef = useRef(false);
@@ -82,11 +83,20 @@ export function DashboardAuthProvider({ children }: DashboardAuthProviderProps) 
             isAuthenticated: true,
           });
         } else {
+          // Check if it's a 401 (session invalid/expired)
+          const isUnauthorized = response.status === 401;
+          
           setAuthState({
             user: null,
             isLoading: false,
             isAuthenticated: false,
           });
+
+          // Redirect to login if session is invalid and not already on login page
+          if (isUnauthorized && pathname !== '/login' && typeof window !== 'undefined') {
+            console.warn('⚠️ [DEBUG] Session expired, redirecting to login');
+            router.push('/login');
+          }
         }
       } catch (error) {
         console.error('Auth check error:', error);
@@ -106,7 +116,7 @@ export function DashboardAuthProvider({ children }: DashboardAuthProviderProps) 
     fetchPromiseRef.current = fetchPromise;
     
     return fetchPromise;
-  }, []);
+  }, [router, pathname]);
 
   /**
    * Faz logout do usuário

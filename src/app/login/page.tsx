@@ -6,6 +6,18 @@ import { useTranslations, useLocale } from 'next-intl';
 import { motion as m, AnimatePresence } from 'framer-motion';
 import { Card, CardBody, Input, Button, Spinner } from '@heroui/react';
 import { SignUpForm } from '@/components/Auth/SignUpForm';
+import { useApiPost } from '@/hooks/useApi';
+import { ApiError } from '@/utils/api-client';
+
+interface SendCodeResponse {
+  success?: boolean;
+  message?: string;
+}
+
+interface VerifyCodeResponse {
+  success?: boolean;
+  user?: unknown;
+}
 
 function LoginContent() {
   const t = useTranslations('auth.login');
@@ -16,82 +28,78 @@ function LoginContent() {
   const [step, setStep] = useState<'email' | 'code'>('email');
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [codeSent, setCodeSent] = useState(false);
+
+  const {
+    mutate: sendCode,
+    isLoading: isSendingCode,
+    error: sendCodeError,
+  } = useApiPost<SendCodeResponse, { email: string }>();
+
+  const {
+    mutate: verifyCode,
+    isLoading: isVerifyingCode,
+    error: verifyCodeError,
+  } = useApiPost<VerifyCodeResponse, { email: string; code: string }>();
+
+  const isLoading = isSendingCode || isVerifyingCode;
+  const error = sendCodeError || verifyCodeError;
+  const errorMessage = error
+    ? (error as ApiError).message || 'An error occurred. Please try again.'
+    : null;
 
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setIsLoading(true);
 
-    try {
-      const response = await fetch('/api/dashboard/auth/send-code', {
-        method: 'POST',
+    const result = await sendCode(
+      '/api/dashboard/auth/send-code',
+      { email },
+      {
         headers: {
-          'Content-Type': 'application/json',
           'x-locale': locale,
         },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || 'Failed to send code');
-        return;
       }
+    );
 
+    if (result) {
       setCodeSent(true);
       setStep('code');
-    } catch (err) {
-      setError('Network error. Please try again.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setIsLoading(true);
 
-    try {
-      const response = await fetch('/api/dashboard/auth/verify-code', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, code }),
-      });
+    const result = await verifyCode('/api/dashboard/auth/verify-code', { email, code });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || t('invalidCode'));
-        return;
-      }
-
+    if (result) {
       // Success - redirect to dashboard
       router.push('/dashboard');
       router.refresh();
-    } catch (err) {
-      setError('Network error. Please try again.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const handleResendCode = async () => {
     setCode('');
-    setError(null);
-    await handleSendCode(new Event('submit') as any);
+    const result = await sendCode(
+      '/api/dashboard/auth/send-code',
+      { email },
+      {
+        headers: {
+          'x-locale': locale,
+        },
+      }
+    );
+
+    if (result) {
+      setCodeSent(true);
+      setStep('code');
+    }
   };
 
   const handleSignupSuccess = () => {
     // Switch to login mode after successful signup
     setMode('login');
-    setError(null);
     // Optionally pre-fill email if available
   };
 
@@ -243,7 +251,6 @@ function LoginContent() {
                 onClick={() => {
                   setMode('login');
                   setStep('email');
-                  setError(null);
                   setCodeSent(false);
                 }}
                 className={`px-6 py-2 rounded-md font-semibold text-sm transition-all ${
@@ -258,7 +265,6 @@ function LoginContent() {
                 type="button"
                 onClick={() => {
                   setMode('signup');
-                  setError(null);
                 }}
                 className={`px-6 py-2 rounded-md font-semibold text-sm transition-all ${
                   mode === 'signup'
@@ -304,9 +310,9 @@ function LoginContent() {
                     </div>
 
                     {/* Error Message */}
-                    {error && (
+                    {errorMessage && (
                       <div className="mb-6 p-4 bg-red-50 border-2 border-red-300 rounded-lg">
-                        <p className="text-red-700 font-semibold text-sm">{error}</p>
+                        <p className="text-red-700 font-semibold text-sm">{errorMessage}</p>
                       </div>
                     )}
 
@@ -444,7 +450,7 @@ function LoginContent() {
 
           {/* Footer */}
           <p className="text-center text-xs text-gray-500 mt-6">
-            Powered by <span className="font-bold text-blue-600">BOLT</span>
+            Powered by <span className="font-bold text-blue-600">BCKSTG</span>
           </p>
         </div>
       </m.div>

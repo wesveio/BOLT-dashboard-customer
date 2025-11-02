@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
-import { motion as m } from 'framer-motion';
-import { fadeIn } from '@/utils/animations';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
 import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { RealtimeIndicator } from '@/components/Dashboard/RealtimeIndicator/RealtimeIndicator';
+import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
+import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
+import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
+import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
 import {
   CurrencyDollarIcon,
   ShoppingBagIcon,
@@ -15,100 +17,65 @@ import {
 } from '@heroicons/react/24/outline';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Select, SelectItem } from '@heroui/react';
-
-type Period = 'today' | 'week' | 'month' | 'year';
-
-const periodOptions = [
-  { value: 'today', label: 'Today' },
-  { value: 'week', label: 'Last 7 days' },
-  { value: 'month', label: 'Last 30 days' },
-  { value: 'year', label: 'Last 12 months' },
-];
+import { useRevenueData } from '@/hooks/useDashboardData';
+import { periodOptions, Period } from '@/utils/default-data';
+import { formatCurrency, formatNumber } from '@/utils/formatters';
 
 export default function RevenuePage() {
   const t = useTranslations('dashboard.revenue');
   const [period, setPeriod] = useState<Period>('week');
-  const [revenueData, setRevenueData] = useState<any[]>([]);
-  const [metrics, setMetrics] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { metrics, chartData, isLoading, error, refetch } = useRevenueData({ period });
 
-  useEffect(() => {
-    const loadRevenueData = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(`/api/dashboard/revenue?period=${period}`);
-        if (response.ok) {
-          const data = await response.json();
-          setMetrics(data.metrics);
-          setRevenueData(data.chartData);
-        }
-      } catch (error) {
-        console.error('Load revenue data error:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const displayMetrics = useMemo(() => metrics, [metrics]);
+  const displayRevenueData = useMemo(() => chartData, [chartData]);
 
-    loadRevenueData();
-  }, [period]);
-
-  const displayMetrics = metrics || {
-    totalRevenue: 0,
-    avgOrderValue: '0.00',
-    totalOrders: 0,
-    revenuePerHour: '0.00',
-    revenueGrowth: '0.0',
-  };
-
-  const displayRevenueData = revenueData.length > 0 ? revenueData : [
-    { date: 'Mon', revenue: 0 },
-    { date: 'Tue', revenue: 0 },
-    { date: 'Wed', revenue: 0 },
-    { date: 'Thu', revenue: 0 },
-    { date: 'Fri', revenue: 0 },
-    { date: 'Sat', revenue: 0 },
-    { date: 'Sun', revenue: 0 },
-  ];
+  if (error) {
+    return (
+      <PageWrapper>
+        <PageHeader title={t('title')} subtitle={t('subtitle')} />
+        <ErrorState message="Failed to load revenue data" onRetry={refetch} />
+      </PageWrapper>
+    );
+  }
 
   return (
-    <m.div initial="hidden" animate="visible" variants={fadeIn}>
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('title')}</h1>
-            <p className="text-gray-600">{t('subtitle')}</p>
-          </div>
-          <RealtimeIndicator isActive={true} />
-        </div>
-      </div>
+    <PageWrapper>
+      <PageHeader
+        title={t('title')}
+        subtitle={t('subtitle')}
+        action={<RealtimeIndicator isActive={true} />}
+      />
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
           title={t('totalRevenue')}
-          value={`$${Number(displayMetrics.totalRevenue).toLocaleString()}`}
+          value={formatCurrency(displayMetrics.totalRevenue)}
           subtitle="Revenue for selected period"
-          trend={{ value: parseFloat(displayMetrics.revenueGrowth || '0'), isPositive: parseFloat(displayMetrics.revenueGrowth || '0') > 0 }}
+          trend={{
+            value: parseFloat(displayMetrics.revenueGrowth || '0'),
+            isPositive: parseFloat(displayMetrics.revenueGrowth || '0') > 0,
+          }}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
           isLoading={isLoading}
         />
         <MetricCard
           title={t('avgOrderValue')}
-          value={`$${displayMetrics.avgOrderValue}`}
+          value={formatCurrency(displayMetrics.avgOrderValue)}
           subtitle="Average transaction value"
           icon={<ShoppingBagIcon className="w-6 h-6 text-white" />}
           isLoading={isLoading}
         />
         <MetricCard
           title={t('totalOrders')}
-          value={Number(displayMetrics.totalOrders).toLocaleString()}
+          value={formatNumber(displayMetrics.totalOrders)}
           subtitle="Orders processed"
           icon={<ArrowTrendingUpIcon className="w-6 h-6 text-white" />}
           isLoading={isLoading}
         />
         <MetricCard
           title={t('revenuePerHour')}
-          value={`$${displayMetrics.revenuePerHour}`}
+          value={formatCurrency(displayMetrics.revenuePerHour)}
           subtitle="Average hourly revenue"
           icon={<ClockIcon className="w-6 h-6 text-white" />}
           isLoading={isLoading}
@@ -185,7 +152,7 @@ export default function RevenuePage() {
           </div>
         </ChartCard>
       </div>
-    </m.div>
+    </PageWrapper>
   );
 }
 

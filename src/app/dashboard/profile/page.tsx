@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { motion as m } from 'framer-motion';
-import { fadeIn } from '@/utils/animations';
+import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
+import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
+import { formatDate, getUserDisplayName } from '@/utils/formatters';
 import {
   Card,
   CardBody,
@@ -97,11 +98,8 @@ export default function ProfilePage() {
   };
 
   return (
-    <m.div initial="hidden" animate="visible" variants={fadeIn}>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('title')}</h1>
-        <p className="text-gray-600">{t('subtitle')}</p>
-      </div>
+    <PageWrapper>
+      <PageHeader title={t('title')} subtitle={t('subtitle')} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column - Profile Info */}
@@ -234,7 +232,7 @@ export default function ProfilePage() {
                 <div className="relative inline-block mb-4">
                   <Avatar
                     size="lg"
-                    name={user?.name || user?.email || 'U'}
+                    name={getUserDisplayName(user || {})}
                     className="w-32 h-32 text-3xl bg-gradient-to-br from-blue-500 to-purple-500 text-white"
                   />
                   {isEditing && (
@@ -286,7 +284,7 @@ export default function ProfilePage() {
           </Card>
         </div>
       </div>
-    </m.div>
+    </PageWrapper>
   );
 }
 

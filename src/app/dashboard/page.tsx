@@ -2,49 +2,29 @@
 
 import { useTranslations } from 'next-intl';
 import { motion as m } from 'framer-motion';
-import { Card, CardBody, Avatar, Spinner } from '@heroui/react';
-import { fadeIn, slideIn } from '@/utils/animations';
+import { Card, CardBody, Avatar } from '@heroui/react';
+import { slideIn } from '@/utils/animations';
 import { useDashboardAuth } from '@/hooks/useDashboardAuth';
 import { UserIcon, BuildingOfficeIcon, PhoneIcon, BriefcaseIcon, CalendarIcon } from '@heroicons/react/24/outline';
+import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
+import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
+import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
+import { formatDate, getUserDisplayName } from '@/utils/formatters';
 
 export default function DashboardPage() {
   const tSidebar = useTranslations('dashboard.sidebar');
   const tOverview = useTranslations('dashboard.overview');
   const { user, isLoading } = useDashboardAuth();
 
-  const formatDate = (dateString?: string | null) => {
-    if (!dateString) return 'N/A';
-    try {
-      return new Date(dateString).toLocaleDateString('pt-BR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
-    } catch {
-      return 'N/A';
-    }
-  };
-
-  const getUserDisplayName = () => {
-    if (user?.name) return user.name;
-    if (user?.firstName && user?.lastName) return `${user.firstName} ${user.lastName}`;
-    return user?.email || 'User';
-  };
-
   return (
-    <m.div initial="hidden" animate="visible" variants={fadeIn}>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{tOverview('title')}</h1>
-        <p className="text-gray-600">{tOverview('welcome')}</p>
-      </div>
+    <PageWrapper>
+      <PageHeader title={tOverview('title')} subtitle={tOverview('welcome')} />
 
       {/* User Info Card */}
       {isLoading ? (
         <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mb-8">
           <CardBody className="p-6">
-            <div className="flex items-center justify-center py-8">
-              <Spinner size="lg" />
-            </div>
+            <LoadingState fullScreen={false} />
           </CardBody>
         </Card>
       ) : user ? (
@@ -56,12 +36,12 @@ export default function DashboardPage() {
                 <div className="flex items-start gap-4">
                   <Avatar
                     size="lg"
-                    name={getUserDisplayName()}
+                    name={getUserDisplayName(user)}
                     className="w-20 h-20 text-2xl bg-gradient-to-br from-blue-500 to-purple-500 text-white flex-shrink-0"
                   />
                   <div className="flex-1">
                     <h2 className="text-2xl font-bold text-gray-900 mb-1">
-                      {getUserDisplayName()}
+                      {getUserDisplayName(user)}
                     </h2>
                     <p className="text-sm text-gray-600 mb-3">{user.email}</p>
                     <div className="inline-block px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full">
@@ -182,7 +162,7 @@ export default function DashboardPage() {
           <p className="text-gray-600">{tOverview('description')}</p>
         </CardBody>
       </Card>
-    </m.div>
+    </PageWrapper>
   );
 }
 

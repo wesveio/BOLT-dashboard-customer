@@ -1,64 +1,48 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { motion as m } from 'framer-motion';
-import { fadeIn } from '@/utils/animations';
 import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
+import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
+import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
+import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
+import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { CreditCardIcon } from '@heroicons/react/24/outline';
-import { Spinner } from '@heroui/react';
+import { useAnalyticsData } from '@/hooks/useDashboardData';
+import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
 
 const COLORS = ['#2563eb', '#9333ea', '#10b981', '#f59e0b'];
 
 export default function PaymentAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.payment');
-  const [paymentMethodsData, setPaymentMethodsData] = useState<any[]>([]);
-  const [metrics, setMetrics] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadPaymentData = async () => {
-      try {
-        const response = await fetch('/api/dashboard/analytics/payment?period=week');
-        if (response.ok) {
-          const data = await response.json();
-          setPaymentMethodsData(data.paymentMethods || []);
-          setMetrics({
-            totalPayments: data.totalPayments,
-            avgSuccessRate: data.avgSuccessRate,
-          });
-        }
-      } catch (error) {
-        console.error('Load payment analytics error:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadPaymentData();
-  }, []);
+  const { data, isLoading, error, refetch } = useAnalyticsData({ type: 'payment' });
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <div className="text-center">
-          <Spinner size="lg" />
-          <p className="mt-4 text-gray-600">Loading payment analytics...</p>
-        </div>
-      </div>
+      <PageWrapper>
+        <PageHeader title={t('title')} subtitle={t('subtitle')} />
+        <LoadingState message="Loading payment analytics..." fullScreen />
+      </PageWrapper>
     );
   }
 
-  const totalPayments = metrics?.totalPayments || 0;
+  if (error) {
+    return (
+      <PageWrapper>
+        <PageHeader title={t('title')} subtitle={t('subtitle')} />
+        <ErrorState message="Failed to load payment analytics" onRetry={refetch} />
+      </PageWrapper>
+    );
+  }
+
+  const paymentMethodsData = data?.paymentMethods || [];
+  const totalPayments = data?.totalPayments || 0;
+  const avgSuccessRate = data?.avgSuccessRate || '0.0';
 
   return (
-    <m.div initial="hidden" animate="visible" variants={fadeIn}>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('title')}</h1>
-        <p className="text-gray-600">{t('subtitle')}</p>
-      </div>
+    <PageWrapper>
+      <PageHeader title={t('title')} subtitle={t('subtitle')} />
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -70,12 +54,12 @@ export default function PaymentAnalyticsPage() {
         />
         <MetricCard
           title="Transactions"
-          value={totalPayments.toLocaleString()}
+          value={formatNumber(totalPayments)}
           subtitle="Total transactions processed"
         />
         <MetricCard
           title="Avg Success Rate"
-          value={`${metrics?.avgSuccessRate || '0.0'}%`}
+          value={formatPercentage(parseFloat(avgSuccessRate))}
           subtitle="Average payment success rate"
         />
       </div>
@@ -116,13 +100,13 @@ export default function PaymentAnalyticsPage() {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">Transactions</span>
                 <span className="text-lg font-bold text-gray-900">
-                  {method.value.toLocaleString()}
+                  {formatNumber(method.value)}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">Revenue</span>
                 <span className="text-lg font-bold text-gray-900">
-                  ${method.revenue.toLocaleString()}
+                  {formatCurrency(method.revenue)}
                 </span>
               </div>
               <div className="flex items-center justify-between">
@@ -132,7 +116,7 @@ export default function PaymentAnalyticsPage() {
                     method.successRate >= 98 ? 'text-green-600' : 'text-orange-600'
                   }`}
                 >
-                  {method.successRate?.toFixed(1) || '0.0'}%
+                  {formatPercentage(method.successRate || 0)}
                 </span>
               </div>
               <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -148,7 +132,7 @@ export default function PaymentAnalyticsPage() {
           </ChartCard>
         ))}
       </div>
-    </m.div>
+    </PageWrapper>
   );
 }
 

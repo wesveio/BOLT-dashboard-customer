@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { motion as m } from 'framer-motion';
-import { fadeIn } from '@/utils/animations';
+import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
+import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
+import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
+import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
+import { useApi } from '@/hooks/useApi';
 import { Card, CardBody, Chip } from '@heroui/react';
 import {
   LightBulbIcon,
@@ -119,27 +121,11 @@ const impactColors = {
 
 export default function InsightsPage() {
   const t = useTranslations('dashboard.insights');
-  const [insights, setInsights] = useState<Insight[]>(defaultInsights);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadInsights = async () => {
-      try {
-        const response = await fetch('/api/dashboard/insights');
-        if (response.ok) {
-          const data = await response.json();
-          setInsights(data.insights || defaultInsights);
-        }
-      } catch (error) {
-        console.error('Load insights error:', error);
-        setInsights(defaultInsights);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadInsights();
-  }, []);
+  const { data, isLoading, error, refetch } = useApi<{ insights: Insight[] }>('/api/dashboard/insights', {
+    cacheKey: 'insights',
+    cacheTTL: 5,
+  });
+  const insights = data?.insights || defaultInsights;
 
   const filteredInsights = {
     high: insights.filter((i) => i.impact === 'high'),
@@ -149,21 +135,25 @@ export default function InsightsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Generating insights...</p>
-        </div>
-      </div>
+      <PageWrapper>
+        <PageHeader title={t('title')} subtitle={t('subtitle')} />
+        <LoadingState message="Generating insights..." fullScreen />
+      </PageWrapper>
+    );
+  }
+
+  if (error) {
+    return (
+      <PageWrapper>
+        <PageHeader title={t('title')} subtitle={t('subtitle')} />
+        <ErrorState message="Failed to load insights" onRetry={refetch} />
+      </PageWrapper>
     );
   }
 
   return (
-    <m.div initial="hidden" animate="visible" variants={fadeIn}>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('title')}</h1>
-        <p className="text-gray-600">{t('subtitle')}</p>
-      </div>
+    <PageWrapper>
+      <PageHeader title={t('title')} subtitle={t('subtitle')} />
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -215,18 +205,12 @@ export default function InsightsPage() {
 
       {/* Insights List */}
       <div className="space-y-4">
-        {insights.map((insight, index) => {
+        {insights.map((insight) => {
           const Icon = insightIcons[insight.type];
           const colors = insightColors[insight.type];
 
           return (
-            <m.div
-              key={insight.id}
-              initial="hidden"
-              animate="visible"
-              variants={fadeIn}
-              transition={{ delay: index * 0.1 }}
-            >
+            <div key={insight.id}>
               <Card
                 className={`border-2 ${colors.border} ${colors.bg} hover:shadow-lg transition-all duration-200`}
               >
@@ -263,7 +247,7 @@ export default function InsightsPage() {
                   </div>
                 </CardBody>
               </Card>
-            </m.div>
+            </div>
           );
         })}
       </div>
@@ -280,7 +264,7 @@ export default function InsightsPage() {
           </CardBody>
         </Card>
       )}
-    </m.div>
+    </PageWrapper>
   );
 }
 

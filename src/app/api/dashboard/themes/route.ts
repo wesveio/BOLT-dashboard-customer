@@ -35,38 +35,42 @@ export async function GET(request: NextRequest) {
 
     const supabaseAdmin = getSupabaseAdmin();
 
-    // Find session and user
-    const { data: session, error: sessionError } = await supabaseAdmin
-      .from('dashboard.sessions')
-      .select('user_id')
-      .eq('token', sessionToken)
-      .gt('expires_at', new Date().toISOString())
-      .single();
+    // Find session using RPC function (required for custom schema)
+    const { data: sessions, error: sessionError } = await supabaseAdmin
+      .rpc('get_session_by_token', { p_token: sessionToken });
+
+    const session = sessions && sessions.length > 0 ? sessions[0] : null;
 
     if (sessionError || !session) {
+      console.error('🚨 [DEBUG] Session error:', sessionError);
       return NextResponse.json(
         { error: 'Invalid or expired session' },
         { status: 401 }
       );
     }
 
-    // Get user to find their account_id
-    const { data: user, error: userError } = await supabaseAdmin
-      .from('users')
-      .select('account_id')
-      .eq('id', session.user_id)
-      .single();
+    // Validate session expiration (RPC already filters expired, but double-check)
+    if (new Date(session.expires_at) < new Date()) {
+      return NextResponse.json(
+        { error: 'Session expired' },
+        { status: 401 }
+      );
+    }
+
+    // Get user to find their account_id using RPC function (required for custom schema)
+    const { data: users, error: userError } = await supabaseAdmin
+      .rpc('get_user_by_id', { p_user_id: session.user_id });
+
+    const user = users && users.length > 0 ? users[0] : null;
 
     if (userError || !user) {
+      console.error('🚨 [DEBUG] User query error:', userError);
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Get themes for this account
+    // Get themes for this account using RPC function (required for custom schema)
     const { data: themes, error: themesError } = await supabaseAdmin
-      .from('dashboard.theme_configs')
-      .select('*')
-      .eq('account_id', user.account_id)
-      .order('created_at', { ascending: false });
+      .rpc('get_themes_by_account', { p_account_id: user.account_id });
 
     if (themesError) {
       console.error('Get themes error:', themesError);
@@ -103,49 +107,55 @@ export async function POST(request: NextRequest) {
 
     const supabaseAdmin = getSupabaseAdmin();
 
-    // Find session and user
-    const { data: session, error: sessionError } = await supabaseAdmin
-      .from('dashboard.sessions')
-      .select('user_id')
-      .eq('token', sessionToken)
-      .gt('expires_at', new Date().toISOString())
-      .single();
+    // Find session using RPC function (required for custom schema)
+    const { data: sessions, error: sessionError } = await supabaseAdmin
+      .rpc('get_session_by_token', { p_token: sessionToken });
+
+    const session = sessions && sessions.length > 0 ? sessions[0] : null;
 
     if (sessionError || !session) {
+      console.error('🚨 [DEBUG] Session error:', sessionError);
       return NextResponse.json(
         { error: 'Invalid or expired session' },
         { status: 401 }
       );
     }
 
-    // Get user to find their account_id
-    const { data: user, error: userError } = await supabaseAdmin
-      .from('users')
-      .select('account_id')
-      .eq('id', session.user_id)
-      .single();
+    // Validate session expiration (RPC already filters expired, but double-check)
+    if (new Date(session.expires_at) < new Date()) {
+      return NextResponse.json(
+        { error: 'Session expired' },
+        { status: 401 }
+      );
+    }
+
+    // Get user to find their account_id using RPC function (required for custom schema)
+    const { data: users, error: userError } = await supabaseAdmin
+      .rpc('get_user_by_id', { p_user_id: session.user_id });
+
+    const user = users && users.length > 0 ? users[0] : null;
 
     if (userError || !user) {
+      console.error('🚨 [DEBUG] User query error:', userError);
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     const body = await request.json();
     const validated = themeConfigSchema.parse(body);
 
-    // Create theme
-    const { data: theme, error: createError } = await supabaseAdmin
-      .from('dashboard.theme_configs')
-      .insert({
-        account_id: user.account_id,
-        name: validated.name,
-        config: validated,
-        is_active: false,
-        created_by: session.user_id,
-      })
-      .select()
-      .single();
+    // Create theme using RPC function (required for custom schema)
+    const { data: themes, error: createError } = await supabaseAdmin
+      .rpc('create_theme', {
+        p_account_id: user.account_id,
+        p_name: validated.name,
+        p_config: validated,
+        p_created_by: session.user_id,
+        p_is_active: false,
+      });
+    
+    const theme = themes && themes.length > 0 ? themes[0] : null;
 
-    if (createError) {
+    if (createError || !theme) {
       console.error('Create theme error:', createError);
       return NextResponse.json(
         { error: 'Failed to create theme' },
