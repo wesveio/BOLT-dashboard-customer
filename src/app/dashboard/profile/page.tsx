@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
 import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
-import { formatDate, getUserDisplayName } from '@/utils/formatters';
+import { getUserDisplayName } from '@/utils/formatters';
 import {
   Card,
   CardBody,
@@ -21,7 +21,6 @@ export default function ProfilePage() {
   const { user } = useDashboardAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -47,8 +46,6 @@ export default function ProfilePage() {
         }
       } catch (error) {
         console.error('Load profile error:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -74,7 +71,7 @@ export default function ProfilePage() {
         throw new Error(error.error || 'Failed to save profile');
       }
 
-      const data = await response.json();
+      await response.json();
       toast.success(t('saveSuccess'));
       setIsEditing(false);
       // Optionally refresh user data

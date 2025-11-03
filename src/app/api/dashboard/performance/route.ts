@@ -3,12 +3,13 @@ import { getSupabaseAdmin } from '@/lib/supabase';
 import { getAuthenticatedUser } from '@/lib/api/auth';
 import { getDateRange, parsePeriod } from '@/utils/date-ranges';
 import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
+import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 
 /**
  * GET /api/dashboard/performance
  * Get detailed performance metrics for the authenticated user's account
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const { user } = await getAuthenticatedUser();
 
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest) {
     const supabaseAdmin = getSupabaseAdmin();
 
     // Get performance data from analytics.events
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(_request.url);
     const period = parsePeriod(searchParams.get('period'));
 
     // Calculate date range
@@ -69,7 +70,7 @@ export async function GET(request: NextRequest) {
       times: Record<string, number>;
     }> = {};
 
-    events?.forEach((event) => {
+    events?.forEach((event: AnalyticsEvent) => {
       const sessionId = event.session_id;
       if (!checkoutSessions[sessionId]) {
         checkoutSessions[sessionId] = {
@@ -132,18 +133,35 @@ export async function GET(request: NextRequest) {
         : 0,
     };
 
+    // Helper functions for percentage calculations
+    const clampPercentage = (value: number): number => {
+      return Math.max(0, Math.min(100, value));
+    };
+
+    const roundPercentage = (value: number): number => {
+      return Math.round(value * 10) / 10;
+    };
+
     // Calculate conversion rate and abandonment
     const totalSessions = funnelSteps.cart || 1;
-    const conversionRate = (funnelSteps.confirmed / totalSessions) * 100;
-    const abandonmentRate = 100 - conversionRate;
+    const conversionRate = clampPercentage((funnelSteps.confirmed / totalSessions) * 100);
+    const abandonmentRate = clampPercentage(100 - conversionRate);
     const avgCheckoutTime = Object.values(avgTimes).reduce((a, b) => a + b, 0);
 
-    // Calculate abandonment by step
+    // Calculate abandonment by step (clamped to 0-100% and rounded)
     const stepAbandonment = {
-      cart: totalSessions > 0 ? ((totalSessions - funnelSteps.profile) / totalSessions) * 100 : 0,
-      profile: funnelSteps.profile > 0 ? ((funnelSteps.profile - funnelSteps.shipping) / funnelSteps.profile) * 100 : 0,
-      shipping: funnelSteps.shipping > 0 ? ((funnelSteps.shipping - funnelSteps.payment) / funnelSteps.shipping) * 100 : 0,
-      payment: funnelSteps.payment > 0 ? ((funnelSteps.payment - funnelSteps.confirmed) / funnelSteps.payment) * 100 : 0,
+      cart: totalSessions > 0
+        ? roundPercentage(clampPercentage(((totalSessions - funnelSteps.profile) / totalSessions) * 100))
+        : 0,
+      profile: funnelSteps.profile > 0
+        ? roundPercentage(clampPercentage(((funnelSteps.profile - funnelSteps.shipping) / funnelSteps.profile) * 100))
+        : 0,
+      shipping: funnelSteps.shipping > 0
+        ? roundPercentage(clampPercentage(((funnelSteps.shipping - funnelSteps.payment) / funnelSteps.shipping) * 100))
+        : 0,
+      payment: funnelSteps.payment > 0
+        ? roundPercentage(clampPercentage(((funnelSteps.payment - funnelSteps.confirmed) / funnelSteps.payment) * 100))
+        : 0,
     };
 
     // Format funnel data for chart

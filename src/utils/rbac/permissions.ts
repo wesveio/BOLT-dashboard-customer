@@ -94,6 +94,6 @@ export function canManage(role: Role, resource: string): boolean {
  */
 export function getAllowedResources(role: Role): string[] {
   const permissions = rolePermissions[role] || [];
-  return [...new Set(permissions.map((p) => p.resource))];
+  return Array.from(new Set(permissions.map((p) => p.resource)));
 }
 

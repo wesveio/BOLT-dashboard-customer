@@ -58,7 +58,26 @@ cp .env.local.example .env.local
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+The dashboard runs on **port 3001** by default.
+
+Open [http://localhost:3001](http://localhost:3001) in your browser.
+
+### Port Configuration
+
+- **Checkout App**: Runs on port **3000**
+- **Dashboard App**: Runs on port **3001**
+
+To run both applications simultaneously:
+
+```bash
+# Terminal 1 - Checkout (port 3000)
+cd bckstg-checkout
+yarn dev
+
+# Terminal 2 - Dashboard (port 3001)
+cd dashboard-customer
+yarn dev
+```
 
 ## Project Structure
 

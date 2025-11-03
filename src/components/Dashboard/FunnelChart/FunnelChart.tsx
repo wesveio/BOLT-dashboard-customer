@@ -1,6 +1,5 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
 import { Card, CardBody } from '@heroui/react';
 
 interface FunnelStep {
@@ -16,7 +15,6 @@ interface FunnelChartProps {
 }
 
 export function FunnelChart({ data, isLoading = false }: FunnelChartProps) {
-  const t = useTranslations('common');
 
   if (isLoading) {
     return (

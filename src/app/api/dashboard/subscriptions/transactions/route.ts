@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin, validateSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
+import { Subscription } from '@/utils/plans';
 
 /**
  * GET /api/dashboard/subscriptions/transactions
  * Get transaction history for the authenticated user's subscriptions
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const validationError = validateSupabaseAdmin();
     if (validationError) return validationError;
@@ -56,7 +57,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch subscriptions' }, { status: 500 });
     }
 
-    const subscriptionIds = subscriptions?.map((s: any) => s.id) || [];
+    const subscriptionIds = subscriptions?.map((s: Subscription) => s.id as string) || [];
 
     if (subscriptionIds.length === 0) {
       return NextResponse.json({ transactions: [] });

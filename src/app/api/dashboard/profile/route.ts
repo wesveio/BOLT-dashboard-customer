@@ -16,7 +16,7 @@ const profileSchema = z.object({
  * GET /api/dashboard/profile
  * Get user profile data
  */
-export const GET = async (request: NextRequest) => {
+export const GET = async (_request: NextRequest) => {
   try {
     const { user } = await getAuthenticatedUser();
 
@@ -43,7 +43,7 @@ export const GET = async (request: NextRequest) => {
  */
 export const PATCH = withAuthAndValidation(
   profileSchema,
-  async (request, { user: authUser, body }) => {
+  async (_request, { user: authUser, body }) => {
     try {
       const supabaseAdmin = getSupabaseAdmin();
 

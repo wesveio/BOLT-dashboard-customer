@@ -14,7 +14,7 @@ import {
   InformationCircleIcon,
 } from '@heroicons/react/24/outline';
 
-interface Insight {
+export interface Insight {
   id: string;
   type: 'success' | 'warning' | 'info' | 'recommendation';
   title: string;

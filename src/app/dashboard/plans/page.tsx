@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
 import { motion as m } from 'framer-motion';
 import { Card, CardBody, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Spinner } from '@heroui/react';
 import { fadeIn, slideIn } from '@/utils/animations';
@@ -15,7 +14,6 @@ import { toast } from 'sonner';
 
 export default function PlansPage() {
   const t = useTranslations('dashboard.plans');
-  const router = useRouter();
   const { user, isLoading: authLoading } = useDashboardAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
 

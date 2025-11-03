@@ -24,7 +24,7 @@ const themeConfigSchema = z.object({
  * GET /api/dashboard/themes
  * Get all themes for the authenticated user's account
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const cookieStore = await cookies();
     const sessionToken = cookieStore.get('dashboard_session')?.value;
@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
         p_created_by: session.user_id,
         p_is_active: false,
       });
-    
+
     const theme = themes && themes.length > 0 ? themes[0] : null;
 
     if (createError || !theme) {
@@ -167,7 +167,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation error', details: error.errors },
+        { error: 'Validation error', details: error.issues },
         { status: 400 }
       );
     }

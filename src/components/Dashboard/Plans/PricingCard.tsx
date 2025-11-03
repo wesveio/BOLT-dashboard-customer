@@ -16,7 +16,7 @@ interface PricingCardProps {
 
 export function PricingCard({
   plan,
-  currentPlanId,
+  currentPlanId: _currentPlanId,
   isCurrentPlan = false,
   onSelect,
   isLoading = false,

@@ -7,7 +7,6 @@ import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { RealtimeIndicator } from '@/components/Dashboard/RealtimeIndicator/RealtimeIndicator';
 import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
 import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
-import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
 import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
 import {
   CurrencyDollarIcon,

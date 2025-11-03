@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
+import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 
 /**
  * GET /api/dashboard/metrics
  * Get aggregated metrics for the authenticated user's account
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const cookieStore = await cookies();
     const sessionToken = cookieStore.get('dashboard_session')?.value;
@@ -50,8 +51,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const { searchParams } = new URL(request.url);
-    const period = searchParams.get('period') || 'week'; // today, week, month, year
+    const { searchParams } = new URL(_request.url);
+    const period = searchParams.get('period') || 'week';
 
     // Calculate date range based on period
     const now = new Date();
@@ -92,25 +93,30 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Helper function to clamp percentage between 0 and 100
+    const clampPercentage = (value: number): number => {
+      return Math.max(0, Math.min(100, value));
+    };
+
     // Aggregate metrics
     const aggregated = {
-      totalSessions: metrics?.filter((e) => e.category === 'checkout_start').length || 0,
-      totalConversions: metrics?.filter((e) => e.category === 'checkout_complete').length || 0,
-      totalRevenue: metrics?.reduce((sum, e) => {
+      totalSessions: metrics?.filter((e: AnalyticsEvent) => e.event_type === 'checkout_start').length || 0,
+      totalConversions: metrics?.filter((e: AnalyticsEvent) => e.event_type === 'checkout_complete').length || 0,
+      totalRevenue: metrics?.reduce((sum: number, e: AnalyticsEvent) => {
         if (e.metadata?.revenue) {
-          return sum + parseFloat(e.metadata.revenue);
+          return sum + parseFloat(String(e.metadata.revenue));
         }
         return sum;
       }, 0) || 0,
-      totalOrders: metrics?.filter((e) => e.category === 'checkout_complete').length || 0,
+      totalOrders: metrics?.filter((e: AnalyticsEvent) => e.event_type === 'checkout_complete').length || 0,
       avgOrderValue: 0,
       conversionRate: 0,
       abandonmentRate: 0,
     };
 
     if (aggregated.totalSessions > 0) {
-      aggregated.conversionRate = (aggregated.totalConversions / aggregated.totalSessions) * 100;
-      aggregated.abandonmentRate = 100 - aggregated.conversionRate;
+      aggregated.conversionRate = clampPercentage((aggregated.totalConversions / aggregated.totalSessions) * 100);
+      aggregated.abandonmentRate = clampPercentage(100 - aggregated.conversionRate);
     }
 
     if (aggregated.totalOrders > 0) {
@@ -119,10 +125,10 @@ export async function GET(request: NextRequest) {
 
     // Calculate funnel metrics
     const funnelSteps = {
-      cart: metrics?.filter((e) => e.event_type === 'cart_view').length || 0,
-      profile: metrics?.filter((e) => e.event_type === 'profile_step').length || 0,
-      shipping: metrics?.filter((e) => e.event_type === 'shipping_step').length || 0,
-      payment: metrics?.filter((e) => e.event_type === 'payment_step').length || 0,
+      cart: metrics?.filter((e: AnalyticsEvent) => e.event_type === 'cart_view').length || 0,
+      profile: metrics?.filter((e: AnalyticsEvent) => e.event_type === 'profile_step').length || 0,
+      shipping: metrics?.filter((e: AnalyticsEvent) => e.event_type === 'shipping_step').length || 0,
+      payment: metrics?.filter((e: AnalyticsEvent) => e.event_type === 'payment_step').length || 0,
       confirmed: aggregated.totalConversions,
     };
 

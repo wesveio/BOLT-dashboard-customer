@@ -113,8 +113,8 @@ export function generateInsightsFromMetrics(metrics: CheckoutMetrics): Insight[]
 
   // Sort by impact (high first)
   return insights.sort((a, b) => {
-    const impactOrder = { high: 3, medium: 2, low: 1 };
-    return impactOrder[b.impact] - impactOrder[a.impact];
+    const impactOrder: Record<'high' | 'medium' | 'low', number> = { high: 3, medium: 2, low: 1 };
+    return impactOrder[b.impact as 'high' | 'medium' | 'low'] - impactOrder[a.impact as 'high' | 'medium' | 'low'];
   });
 }
 

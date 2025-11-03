@@ -36,10 +36,10 @@ export default function BrowserAnalyticsPage() {
     );
   }
 
-  const browserData = data?.browsers || [];
-  const platformData = data?.platforms || [];
-  const totalSessions = data?.totalSessions || 0;
-  const avgConversion = data?.avgConversion || '0.0';
+  const browserData = (Array.isArray(data?.browsers) ? data.browsers : []) as Array<{ browser: string; sessions: number; conversion: number; revenue: number; marketShare?: number }>;
+  const platformData = (Array.isArray(data?.platforms) ? data.platforms : []) as Array<{ platform: string; sessions: number; conversion?: number; revenue: number }>;
+  const totalSessions = typeof data?.totalSessions === 'number' ? data.totalSessions : 0;
+  const avgConversion = typeof data?.avgConversion === 'string' ? data.avgConversion : '0.0';
   const topBrowser = browserData.length > 0
     ? browserData.reduce((max: { browser: string; sessions: number }, item: { browser: string; sessions: number }) => item.sessions > max.sessions ? item : max, browserData[0])
     : { browser: 'N/A', sessions: 0 };

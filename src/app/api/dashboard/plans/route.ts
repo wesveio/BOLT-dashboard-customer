@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
  * GET /api/dashboard/plans
  * Get all available plans for the authenticated user
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const validationError = validateSupabaseAdmin();
     if (validationError) return validationError;
@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
  * POST /api/dashboard/plans
  * Create or update a plan (admin only - for future use)
  */
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     const validationError = validateSupabaseAdmin();
     if (validationError) return validationError;

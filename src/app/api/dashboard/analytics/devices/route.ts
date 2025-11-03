@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
+import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 
 /**
  * GET /api/dashboard/analytics/devices
@@ -101,7 +102,7 @@ export async function GET(request: NextRequest) {
       revenue: number;
     }> = {};
 
-    events?.forEach((event) => {
+    events?.forEach((event: AnalyticsEvent) => {
       const device = event.metadata?.deviceType as string || 'Unknown';
       if (!devices[device]) {
         devices[device] = {
@@ -113,14 +114,14 @@ export async function GET(request: NextRequest) {
       }
 
       devices[device].sessions++;
-      
+
       // Check if this session converted (has checkout_complete event)
       if (event.metadata?.converted) {
         devices[device].conversions++;
       }
-      
+
       if (event.metadata?.revenue) {
-        devices[device].revenue += parseFloat(event.metadata.revenue);
+        devices[device].revenue += parseFloat(String(event.metadata.revenue));
       }
     });
 

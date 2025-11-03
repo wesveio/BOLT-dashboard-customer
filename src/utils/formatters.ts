@@ -13,7 +13,6 @@ function getLocale(): LocaleCode {
   if (typeof window === 'undefined') return 'pt-BR';
   
   const browserLocale = navigator.language.split('-')[0];
-  const supportedLocales: LocaleCode[] = ['en', 'pt-BR', 'es'];
   
   // Check if browser locale matches supported locale
   if (browserLocale === 'en' || browserLocale === 'pt' || browserLocale === 'es') {
@@ -38,7 +37,7 @@ export function formatDate(
     const date = new Date(dateString);
     const selectedLocale = locale || getLocale();
 
-    const options: Intl.DateTimeFormatOptions = {
+    const optionsMap: Record<DateFormatStyle, Intl.DateTimeFormatOptions> = {
       short: { year: 'numeric', month: 'short', day: 'numeric' },
       medium: { year: 'numeric', month: 'long', day: 'numeric' },
       long: { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' },
@@ -50,7 +49,8 @@ export function formatDate(
         hour: '2-digit',
         minute: '2-digit',
       },
-    }[style];
+    };
+    const options = optionsMap[style];
 
     return date.toLocaleDateString(selectedLocale, options);
   } catch {

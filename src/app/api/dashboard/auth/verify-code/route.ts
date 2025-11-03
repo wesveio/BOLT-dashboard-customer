@@ -23,11 +23,11 @@ export async function POST(request: NextRequest) {
     // Development bypass - only works in development mode
     if (isAuthBypassEnabled()) {
       console.warn('‼️ [DEBUG] Auth bypass enabled - skipping code verification');
-      
+
       const mockUser = getMockUser();
       const sessionToken = generateSessionToken();
       const refreshToken = generateSessionToken();
-      
+
       const sessionDurationHours = parseInt(
         process.env.AUTH_SESSION_DURATION_HOURS || '24',
         10
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       );
 
       // Set HTTP-only cookies
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       cookieStore.set('dashboard_session', sessionToken, {
         httpOnly: true,
         secure: false,
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     // Find valid auth code
     const { data: authCodes, error: findError } = await supabaseAdmin
       .rpc('get_auth_code_for_verification', { p_email: email });
-    
+
     const authCode = authCodes && authCodes.length > 0 ? authCodes[0] : null;
 
     if (findError || !authCode) {
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
     // Find user
     const { data: users, error: userError } = await supabaseAdmin
       .rpc('get_user_by_email', { p_email: email });
-    
+
     const user = users && users.length > 0 ? users[0] : null;
 
     // If user doesn't exist, they need to be invited first
@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
     // Generate session tokens
     const sessionToken = generateSessionToken();
     const refreshToken = generateSessionToken();
-    
+
     const sessionDurationHours = parseInt(
       process.env.AUTH_SESSION_DURATION_HOURS || '24',
       10
@@ -159,7 +159,7 @@ export async function POST(request: NextRequest) {
       .rpc('update_user_last_login', { p_user_id: user.id });
 
     // Set HTTP-only cookies
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     cookieStore.set('dashboard_session', sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -188,7 +188,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
+        { error: 'Invalid request data', details: error.issues },
         { status: 400 }
       );
     }

@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { motion as m, AnimatePresence } from 'framer-motion';
 import { Card, CardBody, Input, Button, Spinner } from '@heroui/react';
 import { SignUpForm } from '@/components/Auth/SignUpForm';
+import { OtpInput } from '@/components/Auth/OtpInput';
 import { useApiPost } from '@/hooks/useApi';
 import { ApiError } from '@/utils/api-client';
 
@@ -360,27 +361,16 @@ function LoginContent() {
                     {step === 'code' && (
                       <form onSubmit={handleVerifyCode} className="space-y-6">
                         <div>
-                          <Input
-                            type="text"
+                          <OtpInput
+                            value={code}
+                            onChange={setCode}
                             label={t('codeLabel')}
                             placeholder={t('codePlaceholder')}
-                            value={code}
-                            onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                            variant="bordered"
-                            size="lg"
-                            isRequired
                             isDisabled={isLoading}
-                            maxLength={6}
-                            classNames={{
-                              input: 'text-base font-mono text-center text-2xl tracking-widest',
-                              label: 'text-sm font-semibold mb-2',
-                              inputWrapper: 'mt-1',
-                              base: 'mb-4',
-                            }}
+                            isInvalid={!!errorMessage}
+                            length={6}
+                            autoFocus={true}
                           />
-                          <p className="text-xs text-gray-500 mt-2 text-center">
-                            {t('codePlaceholder')}
-                          </p>
                         </div>
 
                         <Button

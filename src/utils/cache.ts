@@ -61,7 +61,12 @@ export function setCachedData<T>(key: string, data: T, ttlMinutes: number = 60):
       clearOldCacheEntries();
       // Retry once
       try {
-        localStorage.setItem(`${CACHE_PREFIX}${key}_v${CACHE_VERSION}`, JSON.stringify(entry));
+        const retryEntry: CacheEntry<T> = {
+          data,
+          timestamp: Date.now(),
+          expiresAt: Date.now() + ttlMinutes * 60 * 1000,
+        };
+        localStorage.setItem(`${CACHE_PREFIX}${key}_v${CACHE_VERSION}`, JSON.stringify(retryEntry));
       } catch (retryError) {
         console.error('Failed to cache after cleanup:', retryError);
       }

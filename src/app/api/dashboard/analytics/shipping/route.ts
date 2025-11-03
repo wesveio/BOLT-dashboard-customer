@@ -3,6 +3,7 @@ import { getSupabaseAdmin } from '@/lib/supabase';
 import { getAuthenticatedUser } from '@/lib/api/auth';
 import { getDateRange, parsePeriod } from '@/utils/date-ranges';
 import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
+import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 
 /**
  * GET /api/dashboard/analytics/shipping
@@ -47,7 +48,7 @@ export async function GET(request: NextRequest) {
       avgDays: number;
     }> = {};
 
-    events?.forEach((event) => {
+    events?.forEach((event: AnalyticsEvent) => {
       const method = event.metadata?.shippingMethod as string || 'Unknown';
       if (!shippingMethods[method]) {
         shippingMethods[method] = {
@@ -60,10 +61,10 @@ export async function GET(request: NextRequest) {
 
       shippingMethods[method].count++;
       if (event.metadata?.shippingCost) {
-        shippingMethods[method].totalCost += parseFloat(event.metadata.shippingCost);
+        shippingMethods[method].totalCost += parseFloat(String(event.metadata.shippingCost));
       }
       if (event.metadata?.deliveryDays) {
-        shippingMethods[method].avgDays += parseInt(event.metadata.deliveryDays);
+        shippingMethods[method].avgDays += parseInt(String(event.metadata.deliveryDays as string));
       }
     });
 

@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import { generateInsightsFromMetrics, generateBenchmarkInsights } from '@/utils/dashboard/insights-generator';
+import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 
 /**
  * GET /api/dashboard/insights
  * Generate insights based on real checkout data
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const cookieStore = await cookies();
     const sessionToken = cookieStore.get('dashboard_session')?.value;
@@ -82,54 +83,56 @@ export async function GET(request: NextRequest) {
     }
 
     // Calculate metrics
-    const totalSessions = currentEvents?.filter((e) => e.event_type === 'checkout_start').length || 0;
-    const totalConversions = currentEvents?.filter((e) => e.event_type === 'checkout_complete').length || 0;
-    const previousConversions = previousEvents?.filter((e) => e.event_type === 'checkout_complete').length || 0;
-    const previousSessions = previousEvents?.filter((e) => e.event_type === 'checkout_start').length || 1;
+    const totalSessions = currentEvents?.filter((e: AnalyticsEvent) => e.event_type === 'checkout_start').length || 0;
+    const totalConversions = currentEvents?.filter((e: AnalyticsEvent) => e.event_type === 'checkout_complete').length || 0;
+    const previousConversions = previousEvents?.filter((e: AnalyticsEvent) => e.event_type === 'checkout_complete').length || 0;
+    const previousSessions = previousEvents?.filter((e: AnalyticsEvent) => e.event_type === 'checkout_start').length || 1;
 
-    const conversionRate = totalSessions > 0 ? (totalConversions / totalSessions) * 100 : 0;
-    const previousConversionRate = previousSessions > 0 ? (previousConversions / previousSessions) * 100 : 0;
+    // Helper function to clamp percentage between 0 and 100
+    const clampPercentage = (value: number): number => {
+      return Math.max(0, Math.min(100, value));
+    };
+
+    const conversionRate = clampPercentage(totalSessions > 0 ? (totalConversions / totalSessions) * 100 : 0);
+    const previousConversionRate = clampPercentage(previousSessions > 0 ? (previousConversions / previousSessions) * 100 : 0);
 
     // Calculate abandonment rates
-    const cartViews = currentEvents?.filter((e) => e.event_type === 'cart_view').length || 0;
-    const profileSteps = currentEvents?.filter((e) => e.event_type === 'profile_step').length || 0;
-    const shippingSteps = currentEvents?.filter((e) => e.event_type === 'shipping_step').length || 0;
-    const paymentSteps = currentEvents?.filter((e) => e.event_type === 'payment_step').length || 0;
+    const paymentSteps = currentEvents?.filter((e: AnalyticsEvent) => e.event_type === 'payment_step').length || 0;
 
-    const paymentAbandonment = paymentSteps > 0
+    const paymentAbandonment = clampPercentage(paymentSteps > 0
       ? ((paymentSteps - totalConversions) / paymentSteps) * 100
-      : 0;
+      : 0);
 
     // Calculate device metrics
-    const mobileSessions = currentEvents?.filter((e) => 
+    const mobileSessions = currentEvents?.filter((e: AnalyticsEvent) =>
       e.event_type === 'checkout_start' && e.metadata?.deviceType === 'mobile'
     ).length || 0;
-    const desktopSessions = currentEvents?.filter((e) => 
+    const desktopSessions = currentEvents?.filter((e: AnalyticsEvent) =>
       e.event_type === 'checkout_start' && e.metadata?.deviceType === 'desktop'
     ).length || 0;
-    const mobileConversions = currentEvents?.filter((e) => 
+    const mobileConversions = currentEvents?.filter((e: AnalyticsEvent) =>
       e.event_type === 'checkout_complete' && e.metadata?.deviceType === 'mobile'
     ).length || 0;
-    const desktopConversions = currentEvents?.filter((e) => 
+    const desktopConversions = currentEvents?.filter((e: AnalyticsEvent) =>
       e.event_type === 'checkout_complete' && e.metadata?.deviceType === 'desktop'
     ).length || 0;
 
-    const mobileConversionRate = mobileSessions > 0 ? (mobileConversions / mobileSessions) * 100 : 0;
-    const desktopConversionRate = desktopSessions > 0 ? (desktopConversions / desktopSessions) * 100 : 0;
+    const mobileConversionRate = clampPercentage(mobileSessions > 0 ? (mobileConversions / mobileSessions) * 100 : 0);
+    const desktopConversionRate = clampPercentage(desktopSessions > 0 ? (desktopConversions / desktopSessions) * 100 : 0);
 
     // Calculate AOV
     let totalRevenue = 0;
     let previousRevenue = 0;
 
-    currentEvents?.forEach((event) => {
+    currentEvents?.forEach((event: AnalyticsEvent) => {
       if (event.event_type === 'checkout_complete' && event.metadata?.revenue) {
-        totalRevenue += parseFloat(event.metadata.revenue);
+        totalRevenue += parseFloat(String(event.metadata.revenue));
       }
     });
 
-    previousEvents?.forEach((event) => {
+    previousEvents?.forEach((event: AnalyticsEvent) => {
       if (event.event_type === 'checkout_complete' && event.metadata?.revenue) {
-        previousRevenue += parseFloat(event.metadata.revenue);
+        previousRevenue += parseFloat(String(event.metadata.revenue));
       }
     });
 
@@ -140,7 +143,7 @@ export async function GET(request: NextRequest) {
     const checkoutTimes: number[] = [];
     const sessionsMap: Record<string, Date> = {};
 
-    currentEvents?.forEach((event) => {
+    currentEvents?.forEach((event: AnalyticsEvent) => {
       if (event.event_type === 'checkout_start') {
         sessionsMap[event.session_id] = new Date(event.timestamp);
       }
@@ -158,7 +161,7 @@ export async function GET(request: NextRequest) {
 
     // Calculate peak hours (simplified - could be more sophisticated)
     const hourCounts: Record<number, number> = {};
-    currentEvents?.forEach((event) => {
+    currentEvents?.forEach((event: AnalyticsEvent) => {
       if (event.event_type === 'checkout_start') {
         const hour = new Date(event.timestamp).getHours();
         hourCounts[hour] = (hourCounts[hour] || 0) + 1;
@@ -174,7 +177,7 @@ export async function GET(request: NextRequest) {
     const metrics = {
       conversionRate,
       previousConversionRate,
-      abandonmentRate: 100 - conversionRate,
+      abandonmentRate: clampPercentage(100 - conversionRate),
       mobileConversionRate,
       desktopConversionRate,
       avgOrderValue,
@@ -193,7 +196,7 @@ export async function GET(request: NextRequest) {
     const sortedInsights = insights
       .sort((a, b) => {
         const impactOrder = { high: 3, medium: 2, low: 1 };
-        return impactOrder[b.impact] - impactOrder[a.impact];
+        return impactOrder[b.impact as keyof typeof impactOrder] - impactOrder[a.impact as keyof typeof impactOrder];
       })
       .slice(0, 10);
 

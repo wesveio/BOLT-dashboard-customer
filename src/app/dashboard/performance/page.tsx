@@ -85,34 +85,41 @@ export default function PerformancePage() {
 
       {/* Step Performance */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {stepMetrics.map((step) => (
-          <ChartCard
-            key={step.step}
-            title={step.label}
-            subtitle={`Average time: ${step.avgTime}s | Abandonment: ${step.abandonment}%`}
-          >
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Average Time</span>
-                <span className="text-lg font-bold text-gray-900">
-                  {step.avgTime}s
-                </span>
+        {stepMetrics.map((step) => {
+          const abandonmentValue = typeof step.abandonment === 'number' ? step.abandonment : parseFloat(String(step.abandonment)) || 0;
+          const clampedAbandonment = Math.max(0, Math.min(100, abandonmentValue));
+          const progressWidth = Math.max(0, Math.min(100, 100 - clampedAbandonment));
+          const formattedAbandonment = formatPercentage(clampedAbandonment, 1);
+
+          return (
+            <ChartCard
+              key={step.step}
+              title={step.label}
+              subtitle={`Average time: ${step.avgTime}s | Abandonment: ${formattedAbandonment}`}
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Average Time</span>
+                  <span className="text-lg font-bold text-gray-900">
+                    {step.avgTime}s
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Abandonment Rate</span>
+                  <span className="text-lg font-bold text-red-600">
+                    {formattedAbandonment}
+                  </span>
+                </div>
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-blue-600 to-purple-600 rounded-full transition-all duration-200"
+                    style={{ width: `${progressWidth}%` }}
+                  />
+                </div>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Abandonment Rate</span>
-                <span className="text-lg font-bold text-red-600">
-                  {step.abandonment}%
-                </span>
-              </div>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"
-                  style={{ width: `${100 - step.abandonment}%` }}
-                />
-              </div>
-            </div>
-          </ChartCard>
-        ))}
+            </ChartCard>
+          );
+        })}
       </div>
     </PageWrapper>
   );

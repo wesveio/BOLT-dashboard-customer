@@ -62,6 +62,49 @@ interface AnalyticsResponse {
   [key: string]: unknown;
 }
 
+// Analytics Events API Response Types
+export interface AnalyticsEvent {
+  id: string;
+  session_id: string;
+  order_form_id: string | null;
+  event_type: string;
+  category: 'user_action' | 'api_call' | 'metric' | 'error';
+  step: string | null;
+  metadata: Record<string, unknown> | null;
+  timestamp: string;
+}
+
+export interface AnalyticsEventsResponse {
+  summary: {
+    totalEvents: number;
+    uniqueSessions: number;
+    eventsByCategory: {
+      user_action: number;
+      api_call: number;
+      metric: number;
+      error: number;
+    };
+    topEventTypes: Array<{
+      type: string;
+      count: number;
+    }>;
+    errorCount: number;
+  };
+  events: AnalyticsEvent[];
+  pagination: {
+    page: number;
+    limit: number;
+    totalEvents: number;
+    totalPages: number;
+    hasMore: boolean;
+  };
+  period: Period;
+  dateRange: {
+    start: string;
+    end: string;
+  };
+}
+
 interface UseRevenueDataOptions {
   period?: Period;
   enabled?: boolean;
@@ -209,6 +252,61 @@ export function useAnalyticsData(options: UseAnalyticsDataOptions) {
 
   return {
     data: metrics,
+    isLoading,
+    error,
+    refetch,
+  };
+}
+
+interface UseAnalyticsEventsDataOptions {
+  period?: Period;
+  page?: number;
+  limit?: number;
+  eventType?: string | null;
+  category?: string | null;
+  step?: string | null;
+  enabled?: boolean;
+}
+
+/**
+ * Hook for fetching analytics events data
+ * Supports period, pagination, and filtering
+ */
+export function useAnalyticsEventsData(options: UseAnalyticsEventsDataOptions = {}) {
+  const {
+    period = 'week',
+    page = 1,
+    limit = 50,
+    eventType = null,
+    category = null,
+    step = null,
+    enabled = true,
+  } = options;
+
+  const endpoint = useMemo(() => {
+    const params = new URLSearchParams({ period, page: page.toString(), limit: limit.toString() });
+    if (eventType) params.set('event_type', eventType);
+    if (category) params.set('category', category);
+    if (step) params.set('step', step);
+    return `/api/dashboard/analytics/events?${params.toString()}`;
+  }, [period, page, limit, eventType, category, step]);
+
+  const { data, isLoading, error, refetch } = useApi<AnalyticsEventsResponse>(
+    endpoint,
+    {
+      enabled,
+      cacheKey: `analytics_events_${period}_${page}_${limit}_${eventType || ''}_${category || ''}_${step || ''}`,
+      cacheTTL: 5,
+      deduplicateRequests: true,
+      refetchOnMount: true,
+    }
+  );
+
+  return {
+    summary: data?.summary,
+    events: data?.events || [],
+    pagination: data?.pagination,
+    dateRange: data?.dateRange,
     isLoading,
     error,
     refetch,

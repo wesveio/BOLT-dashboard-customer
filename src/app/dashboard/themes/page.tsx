@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
 import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
 import { useApi } from '@/hooks/useApi';
-import { Card, CardBody, Button, Spinner } from '@heroui/react';
+import { Card, CardBody, Button } from '@heroui/react';
 import { ThemeEditor } from '@/components/Dashboard/ThemeEditor/ThemeEditor';
 import { RoleGuard } from '@/components/Dashboard/RoleGuard/RoleGuard';
 import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';

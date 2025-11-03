@@ -18,7 +18,7 @@ import { FontSelector } from './FontSelector';
 import { PreviewPane } from './PreviewPane';
 import { useRolePermissions } from '@/hooks/useRolePermissions';
 
-interface ThemeConfig {
+export interface ThemeConfig {
   name: string;
   layout: 'default' | 'single-page' | 'liquid-glass';
   colors: {

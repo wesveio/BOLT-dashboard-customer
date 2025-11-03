@@ -3,6 +3,7 @@ import { getSupabaseAdmin } from '@/lib/supabase';
 import { getAuthenticatedUser } from '@/lib/api/auth';
 import { getDateRange, parsePeriod } from '@/utils/date-ranges';
 import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
+import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 
 /**
  * GET /api/dashboard/analytics/payment
@@ -48,7 +49,7 @@ export async function GET(request: NextRequest) {
       failedCount: number;
     }> = {};
 
-    events?.forEach((event) => {
+    events?.forEach((event: AnalyticsEvent) => {
       const method = event.metadata?.paymentMethod as string || 'Unknown';
       if (!paymentMethods[method]) {
         paymentMethods[method] = {
@@ -65,7 +66,7 @@ export async function GET(request: NextRequest) {
       if (event.event_type === 'payment_completed') {
         paymentMethods[method].successCount++;
         if (event.metadata?.revenue) {
-          paymentMethods[method].revenue += parseFloat(event.metadata.revenue);
+          paymentMethods[method].revenue += parseFloat(String(event.metadata.revenue));
         }
       } else if (event.event_type === 'payment_failed') {
         paymentMethods[method].failedCount++;

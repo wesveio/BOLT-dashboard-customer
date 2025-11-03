@@ -15,15 +15,15 @@ import {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     // Validate input with Zod schema
     const validationResult = signupSchema.safeParse(body);
-    
+
     if (!validationResult.success) {
       return NextResponse.json(
-        { 
-          error: 'Invalid request data', 
-          details: validationResult.error.errors 
+        {
+          error: 'Invalid request data',
+          details: validationResult.error.issues
         },
         { status: 400 }
       );
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
 
       if (accountError) {
         console.error('Error creating account:', accountError);
-        
+
         // Check if it's a unique constraint violation
         if (accountError.code === '23505' || accountError.message?.includes('unique')) {
           return NextResponse.json(
@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
             { status: 409 }
           );
         }
-        
+
         return NextResponse.json(
           { error: 'Failed to create account' },
           { status: 500 }
@@ -146,7 +146,7 @@ export async function POST(request: NextRequest) {
 
       if (userError) {
         console.error('Error creating user:', userError);
-        
+
         // If user creation fails, try to clean up the account
         // (best effort, don't fail if cleanup fails)
         await supabaseAdmin
@@ -159,7 +159,7 @@ export async function POST(request: NextRequest) {
             { status: 409 }
           );
         }
-        
+
         return NextResponse.json(
           { error: 'Failed to create user account' },
           { status: 500 }
@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
         // Cleanup account if user creation failed
         await supabaseAdmin
           .rpc('delete_account', { p_account_id: newAccount.id });
-        
+
         return NextResponse.json(
           { error: 'Failed to create user account' },
           { status: 500 }

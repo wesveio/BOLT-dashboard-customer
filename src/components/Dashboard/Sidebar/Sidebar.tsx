@@ -16,6 +16,7 @@ import {
   UserCircleIcon,
   ArrowTopRightOnSquareIcon,
   CreditCardIcon,
+  KeyIcon,
 } from '@heroicons/react/24/outline';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useDashboardAuth } from '@/hooks/useDashboardAuth';
@@ -41,6 +42,7 @@ export function Sidebar() {
     { href: '/dashboard/themes', icon: PaintBrushIcon, label: t('themes') },
     { href: '/dashboard/insights', icon: LightBulbIcon, label: t('insights') },
     { href: '/dashboard/plans', icon: CreditCardIcon, label: t('plans') },
+    { href: '/dashboard/integrations', icon: KeyIcon, label: t('integrations') },
     { href: '/dashboard/settings', icon: Cog6ToothIcon, label: t('settings') },
   ];
 

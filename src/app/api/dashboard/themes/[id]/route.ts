@@ -25,7 +25,7 @@ const themeConfigSchema = z.object({
  * Get a specific theme
  */
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -77,7 +77,7 @@ export async function GET(
         p_theme_id: id,
         p_account_id: user.account_id,
       });
-    
+
     const theme = themes && themes.length > 0 ? themes[0] : null;
 
     if (themeError || !theme) {
@@ -156,7 +156,7 @@ export async function PATCH(
         p_name: validated.name,
         p_config: validated,
       });
-    
+
     const theme = themes && themes.length > 0 ? themes[0] : null;
 
     if (updateError || !theme) {
@@ -171,7 +171,7 @@ export async function PATCH(
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation error', details: error.errors },
+        { error: 'Validation error', details: error.issues },
         { status: 400 }
       );
     }
@@ -188,7 +188,7 @@ export async function PATCH(
  * Activate a theme (special route - when method is POST to /themes/[id], it activates)
  */
 export async function POST(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -255,7 +255,7 @@ export async function POST(
         p_theme_id: id,
         p_account_id: user.account_id,
       });
-    
+
     const theme = themes && themes.length > 0 ? themes[0] : null;
 
     if (activateError || !theme) {

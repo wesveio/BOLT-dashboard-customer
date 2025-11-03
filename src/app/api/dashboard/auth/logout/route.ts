@@ -6,11 +6,11 @@ import { cookies } from 'next/headers';
  * POST /api/dashboard/auth/logout
  * Logout user and invalidate session
  */
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     const supabaseAdmin = getSupabaseAdmin();
 
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const sessionToken = cookieStore.get('dashboard_session')?.value;
     const refreshToken = cookieStore.get('dashboard_refresh')?.value;
 

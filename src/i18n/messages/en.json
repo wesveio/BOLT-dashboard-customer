@@ -43,6 +43,7 @@
       "themes": "Themes",
       "insights": "Insights",
       "plans": "Plans",
+      "integrations": "Integrations",
       "settings": "Settings",
       "account": "Account",
       "role": "Role",
@@ -240,6 +241,46 @@
       "cancelled": "Cancelled",
       "expired": "Expired",
       "pending": "Pending"
+    },
+    "integrations": {
+      "title": "Integrations",
+      "subtitle": "Manage API keys for integrations",
+      "createNew": "Create New API Key",
+      "loadError": "Failed to load API keys",
+      "copySuccess": "API key copied to clipboard",
+      "copyError": "Failed to copy API key",
+      "createSuccess": "API key created successfully",
+      "createError": "Failed to create API key",
+      "deleteSuccess": "API key deleted successfully",
+      "deleteError": "Failed to delete API key",
+      "regenerateError": "Failed to regenerate metrics API key",
+      "regenerated": "Metrics API key regenerated successfully",
+      "unauthorized": "You are not authorized to perform this action",
+      "metricsApiKey": {
+        "title": "Metrics API Key",
+        "description": "API key for Bolt plugin to send metrics from checkout",
+        "copy": "Copy",
+        "regenerate": "Regenerate",
+        "generate": "Generate Metrics API Key",
+        "regenerateConfirm": "Are you sure you want to regenerate the metrics API key? The old key will stop working immediately.",
+        "noKey": "No metrics API key found. Generate one to start receiving metrics.",
+        "instructions": {
+          "title": "Integration Instructions",
+          "description": "Add this key to your checkout application's environment variables:"
+        }
+      },
+      "customKeys": {
+        "title": "Custom API Keys",
+        "subtitle": "Manage your custom API keys for integrations",
+        "noKeys": "No custom API keys yet. Create your first one to get started.",
+        "table": {
+          "name": "Name",
+          "key": "API Key",
+          "created": "Created",
+          "lastUsed": "Last Used"
+        },
+        "deleteConfirm": "Are you sure you want to delete this API key? This action cannot be undone."
+      }
     }
   },
   "pricing": {

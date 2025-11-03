@@ -52,7 +52,7 @@ export function SignUpForm({ onSuccess, onSwitchToLogin }: SignUpFormProps) {
     
     if (!result.success) {
       const fieldErrors: Partial<Record<keyof SignupInput, string>> = {};
-      result.error.errors.forEach((err) => {
+      result.error.issues.forEach((err) => {
         if (err.path[0]) {
           fieldErrors[err.path[0] as keyof SignupInput] = err.message;
         }

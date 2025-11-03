@@ -57,7 +57,7 @@ export function LanguageSwitcher() {
       }}
     >
       {locales.map((loc) => (
-        <SelectItem key={loc} value={loc}>
+        <SelectItem key={loc}>
           {localeNames[loc]}
         </SelectItem>
       ))}

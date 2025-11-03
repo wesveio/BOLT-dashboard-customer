@@ -34,9 +34,9 @@ export default function ShippingAnalyticsPage() {
     );
   }
 
-  const shippingMethodsData = data?.shippingMethods || [];
-  const totalShipments = data?.totalShipments || 0;
-  const avgShippingCost = data?.avgShippingCost || '0.00';
+  const shippingMethodsData = (Array.isArray(data?.shippingMethods) ? data.shippingMethods : []) as Array<{ method: string; count: number; avgDays?: number; avgCost?: number }>;
+  const totalShipments = typeof data?.totalShipments === 'number' ? data.totalShipments : 0;
+  const avgShippingCost = typeof data?.avgShippingCost === 'string' ? data.avgShippingCost : '0.00';
 
   return (
     <PageWrapper>
@@ -96,7 +96,7 @@ export default function ShippingAnalyticsPage() {
 
       {/* Shipping Methods Details */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {shippingMethodsData.map((method) => (
+        {shippingMethodsData.map((method: { method: string; count: number; avgDays?: number; avgCost?: number }) => (
           <ChartCard key={method.method} title={method.method}>
             <div className="space-y-4">
               <div className="flex items-center justify-between">

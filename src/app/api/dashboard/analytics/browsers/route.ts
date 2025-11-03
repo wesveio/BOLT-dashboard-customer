@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
+import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 
 /**
  * GET /api/dashboard/analytics/browsers
@@ -109,7 +110,7 @@ export async function GET(request: NextRequest) {
       revenue: number;
     }> = {};
 
-    events?.forEach((event) => {
+    events?.forEach((event: AnalyticsEvent) => {
       // Browser data
       const browser = event.metadata?.browser as string || 'Unknown';
       if (!browsers[browser]) {
@@ -125,7 +126,7 @@ export async function GET(request: NextRequest) {
         browsers[browser].conversions++;
       }
       if (event.metadata?.revenue) {
-        browsers[browser].revenue += parseFloat(event.metadata.revenue);
+        browsers[browser].revenue += parseFloat(String(event.metadata.revenue));
       }
 
       // Platform data
@@ -143,7 +144,7 @@ export async function GET(request: NextRequest) {
         platforms[platform].conversions++;
       }
       if (event.metadata?.revenue) {
-        platforms[platform].revenue += parseFloat(event.metadata.revenue);
+        platforms[platform].revenue += parseFloat(String(event.metadata.revenue));
       }
     });
 

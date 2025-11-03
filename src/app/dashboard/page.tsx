@@ -12,7 +12,6 @@ import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
 import { formatDate, getUserDisplayName } from '@/utils/formatters';
 
 export default function DashboardPage() {
-  const tSidebar = useTranslations('dashboard.sidebar');
   const tOverview = useTranslations('dashboard.overview');
   const { user, isLoading } = useDashboardAuth();
 

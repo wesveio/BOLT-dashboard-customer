@@ -7,7 +7,7 @@ import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
 import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
 import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
 import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { CreditCardIcon } from '@heroicons/react/24/outline';
 import { useAnalyticsData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
@@ -82,7 +82,7 @@ export default function PaymentAnalyticsPage() {
                 fill="#8884d8"
                 dataKey="value"
               >
-                {paymentMethodsData.map((entry, index) => (
+                {paymentMethodsData.map((_entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>

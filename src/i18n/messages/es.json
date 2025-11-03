@@ -42,6 +42,8 @@
       "analytics": "Analíticas",
       "themes": "Temas",
       "insights": "Insights",
+      "plans": "Planes",
+      "integrations": "Integraciones",
       "settings": "Configuración",
       "account": "Cuenta",
       "role": "Rol",
@@ -211,6 +213,46 @@
       "saveChanges": "Guardar Cambios",
       "saveSuccess": "Configuración guardada exitosamente",
       "saveError": "Error al guardar la configuración"
+    },
+    "integrations": {
+      "title": "Integraciones",
+      "subtitle": "Gestiona las claves de API para integraciones",
+      "createNew": "Crear Nueva Clave de API",
+      "loadError": "Error al cargar las claves de API",
+      "copySuccess": "Clave de API copiada al portapapeles",
+      "copyError": "Error al copiar la clave de API",
+      "createSuccess": "Clave de API creada exitosamente",
+      "createError": "Error al crear la clave de API",
+      "deleteSuccess": "Clave de API eliminada exitosamente",
+      "deleteError": "Error al eliminar la clave de API",
+      "regenerateError": "Error al regenerar la clave de API de métricas",
+      "regenerated": "Clave de API de métricas regenerada exitosamente",
+      "unauthorized": "No está autorizado para realizar esta acción",
+      "metricsApiKey": {
+        "title": "Clave de API de Métricas",
+        "description": "Clave de API para que el plugin Bolt envíe métricas del checkout",
+        "copy": "Copiar",
+        "regenerate": "Regenerar",
+        "generate": "Generar Clave de API de Métricas",
+        "regenerateConfirm": "¿Está seguro de que desea regenerar la clave de API de métricas? La clave antigua dejará de funcionar inmediatamente.",
+        "noKey": "No se encontró ninguna clave de API de métricas. Genere una para comenzar a recibir métricas.",
+        "instructions": {
+          "title": "Instrucciones de Integración",
+          "description": "Agregue esta clave a las variables de entorno de su aplicación de checkout:"
+        }
+      },
+      "customKeys": {
+        "title": "Claves de API Personalizadas",
+        "subtitle": "Gestiona tus claves de API personalizadas para integraciones",
+        "noKeys": "Aún no hay claves de API personalizadas. Crea tu primera para comenzar.",
+        "table": {
+          "name": "Nombre",
+          "key": "Clave de API",
+          "created": "Creada",
+          "lastUsed": "Último Uso"
+        },
+        "deleteConfirm": "¿Está seguro de que desea eliminar esta clave de API? Esta acción no se puede deshacer."
+      }
     }
   },
   "auth": {

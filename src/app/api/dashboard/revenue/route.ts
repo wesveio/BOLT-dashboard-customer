@@ -3,12 +3,13 @@ import { getSupabaseAdmin } from '@/lib/supabase';
 import { getAuthenticatedUser } from '@/lib/api/auth';
 import { getDateRange, getPreviousDateRange, parsePeriod } from '@/utils/date-ranges';
 import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
+import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 
 /**
  * GET /api/dashboard/revenue
  * Get revenue analytics for the authenticated user's account
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const { user } = await getAuthenticatedUser();
 
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest) {
     const supabaseAdmin = getSupabaseAdmin();
 
     // Get revenue data from analytics.events
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(_request.url);
     const period = parsePeriod(searchParams.get('period'));
 
     // Calculate date range
@@ -44,8 +45,8 @@ export async function GET(request: NextRequest) {
     let totalOrders = 0;
     const revenueByDate: Record<string, number> = {};
 
-    events?.forEach((event) => {
-      const revenue = event.metadata?.revenue ? parseFloat(event.metadata.revenue) : 0;
+    events?.forEach((event: AnalyticsEvent) => {
+      const revenue = event.metadata?.revenue ? parseFloat(String(event.metadata?.revenue as string)) : 0;
       totalRevenue += revenue;
       totalOrders++;
 
@@ -84,8 +85,8 @@ export async function GET(request: NextRequest) {
       });
 
     let previousRevenue = 0;
-    previousEvents?.forEach((event) => {
-      const revenue = event.metadata?.revenue ? parseFloat(event.metadata.revenue) : 0;
+    previousEvents?.forEach((event: AnalyticsEvent) => {
+      const revenue = event.metadata?.revenue ? parseFloat(String(event.metadata?.revenue as string)) : 0;
       previousRevenue += revenue;
     });
 

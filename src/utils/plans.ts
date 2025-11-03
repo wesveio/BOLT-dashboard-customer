@@ -127,8 +127,8 @@ export function formatPercentage(value: number): string {
  */
 export function calculateMonthlyCost(
   monthlyPrice: number,
-  transactionFeePercent: number,
-  estimatedMonthlyTransactions: number = 0
+  _transactionFeePercent: number,
+  _estimatedMonthlyTransactions: number = 0
 ): number {
   // This is a simplified calculation
   // In reality, transaction fees would be calculated per transaction
@@ -176,7 +176,7 @@ export function getPlanFeatures(featureCodes: string[]): Array<{ code: string; n
       const feature = BOLT_FEATURES[code as keyof typeof BOLT_FEATURES];
       return feature ? { code: feature.code, name: feature.name, description: feature.description } : null;
     })
-    .filter((f): f is { code: string; name: string; description: string } => f !== null);
+    .filter((f): f is NonNullable<typeof f> => f !== null);
 }
 
 /**

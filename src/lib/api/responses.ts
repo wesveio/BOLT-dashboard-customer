@@ -42,7 +42,7 @@ export function apiValidationError(zodError: z.ZodError): NextResponse {
   return NextResponse.json(
     {
       error: 'Validation error',
-      details: zodError.errors,
+      details: zodError.issues,
     },
     { status: 400 }
   );

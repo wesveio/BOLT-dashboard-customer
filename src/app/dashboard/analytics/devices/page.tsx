@@ -36,9 +36,9 @@ export default function DeviceAnalyticsPage() {
     );
   }
 
-  const deviceData = data?.devices || [];
-  const totalSessions = data?.totalSessions || 0;
-  const avgConversion = data?.avgConversion || '0.0';
+  const deviceData = (Array.isArray(data?.devices) ? data.devices : []) as Array<{ device: string; sessions: number; conversion: number; revenue: number }>;
+  const totalSessions = typeof data?.totalSessions === 'number' ? data.totalSessions : 0;
+  const avgConversion = typeof data?.avgConversion === 'string' ? data.avgConversion : '0.0';
   const mobileSessions = deviceData.find((d: { device: string }) => d.device === 'Mobile')?.sessions || 0;
   const mobileShare = totalSessions > 0 ? (mobileSessions / totalSessions) * 100 : 0;
 

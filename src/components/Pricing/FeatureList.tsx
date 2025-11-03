@@ -1,7 +1,7 @@
 'use client';
 
 import { CheckIcon } from '@heroicons/react/24/solid';
-import { getPlanFeatures, BOLT_FEATURES } from '@/utils/plans';
+import { getPlanFeatures } from '@/utils/plans';
 
 interface FeatureListProps {
   featureCodes: string[];

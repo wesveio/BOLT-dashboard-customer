@@ -7,14 +7,14 @@ import { withAuthAndValidation } from '@/lib/api/route-handler';
 
 const settingsSchema = z.object({
   category: z.enum(['general', 'notifications', 'security', 'analytics']),
-  settings: z.record(z.any()),
+  settings: z.record(z.string(), z.any()),
 });
 
 /**
  * GET /api/dashboard/settings
  * Get user settings
  */
-export const GET = async (request: NextRequest) => {
+export const GET = async (_request: NextRequest) => {
   try {
     const { user } = await getAuthenticatedUser();
 
@@ -32,7 +32,7 @@ export const GET = async (request: NextRequest) => {
  */
 export const PATCH = withAuthAndValidation(
   settingsSchema,
-  async (request, { user: authUser, body }) => {
+  async (_request: NextRequest, { user: authUser, body }) => {
     try {
       const supabaseAdmin = getSupabaseAdmin();
 
@@ -47,7 +47,7 @@ export const PATCH = withAuthAndValidation(
       }
 
       // Merge new settings with existing
-      const currentSettings = (user.settings || {}) as Record<string, any>;
+      const currentSettings = (user.settings || {}) as Record<string, string>;
       const updatedSettings = {
         ...currentSettings,
         [body.category]: body.settings,

@@ -15,8 +15,61 @@ interface EventPayload {
   metadata?: Record<string, any>;
 }
 
-interface BatchEventsPayload {
-  events: EventPayload[];
+
+/**
+ * Get allowed origins for CORS
+ */
+function getAllowedOrigins(): string[] {
+  const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS?.split(',') || [];
+  
+  // In development, allow localhost on any port
+  if (process.env.NODE_ENV === 'development') {
+    return ['http://localhost', 'http://127.0.0.1', ...allowedOrigins];
+  }
+  
+  return allowedOrigins;
+}
+
+/**
+ * Get CORS headers
+ */
+function getCorsHeaders(origin: string | null): Record<string, string> {
+  const allowedOrigins = getAllowedOrigins();
+  
+  // Check if origin is allowed (supports wildcards like localhost:*)
+  const isAllowed = origin && (
+    allowedOrigins.some(allowed => {
+      if (allowed === '*') return true;
+      if (origin === allowed) return true;
+      // Support localhost:* pattern
+      if (allowed.includes('localhost') && origin.includes('localhost')) {
+        return true;
+      }
+      return false;
+    })
+  );
+
+  const corsOrigin = isAllowed ? origin : allowedOrigins[0] || '*';
+
+  return {
+    'Access-Control-Allow-Origin': corsOrigin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, X-API-Key',
+    'Access-Control-Max-Age': '86400', // 24 hours
+  };
+}
+
+/**
+ * Handle OPTIONS request (preflight)
+ */
+export async function OPTIONS(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  const headers = getCorsHeaders(origin);
+
+  return new NextResponse(null, {
+    status: 204,
+    headers,
+  });
 }
 
 /**
@@ -24,23 +77,56 @@ interface BatchEventsPayload {
  * Receives metrics/events from checkout and stores them in analytics.events table
  */
 export async function POST(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+
   try {
     // Validate API Key
     const apiKey = request.headers.get('X-API-Key');
     const expectedApiKey = process.env.METRICS_API_KEY;
 
+    // Debug logging in development
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('‼️ [DEBUG] Metrics API Key Check:', {
+        hasReceivedKey: !!apiKey,
+        receivedKeyLength: apiKey?.length || 0,
+        hasExpectedKey: !!expectedApiKey,
+        expectedKeyLength: expectedApiKey?.length || 0,
+        keysMatch: apiKey === expectedApiKey,
+        origin: request.headers.get('origin'),
+      });
+    }
+
     if (!expectedApiKey) {
-      console.error('METRICS_API_KEY not configured');
+      console.error('❌ [ERROR] METRICS_API_KEY not configured in server environment');
       return NextResponse.json(
         { error: 'Server configuration error' },
-        { status: 500 }
+        { 
+          status: 500,
+          headers: corsHeaders,
+        }
       );
     }
 
-    if (!apiKey || apiKey !== expectedApiKey) {
+    if (!apiKey) {
+      console.warn('⚠️ [WARN] No X-API-Key header provided');
       return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
+        { error: 'Unauthorized: API key is required' },
+        { 
+          status: 401,
+          headers: corsHeaders,
+        }
+      );
+    }
+
+    if (apiKey !== expectedApiKey) {
+      console.warn('⚠️ [WARN] API key mismatch');
+      return NextResponse.json(
+        { error: 'Unauthorized: Invalid API key' },
+        { 
+          status: 401,
+          headers: corsHeaders,
+        }
       );
     }
 
@@ -57,7 +143,10 @@ export async function POST(request: NextRequest) {
     if (!events || events.length === 0) {
       return NextResponse.json(
         { error: 'No events provided' },
-        { status: 400 }
+        { 
+          status: 400,
+          headers: corsHeaders,
+        }
       );
     }
 
@@ -84,42 +173,57 @@ export async function POST(request: NextRequest) {
     if (validationErrors.length > 0) {
       return NextResponse.json(
         { error: 'Validation failed', details: validationErrors },
-        { status: 400 }
+        { 
+          status: 400,
+          headers: corsHeaders,
+        }
       );
     }
 
     const supabaseAdmin = getSupabaseAdmin();
 
-    // Prepare events for insertion
-    const insertData = events.map((event) => ({
-      session_id: event.sessionId,
-      order_form_id: event.orderFormId || null,
-      customer_id: null, // Will be populated later if customer is identified
-      event_type: event.type,
-      category: event.category,
-      step: event.step || null,
-      metadata: event.metadata || {},
-      timestamp: event.timestamp || new Date().toISOString(),
-    }));
+    // Prepare events for insertion as JSONB
+    const eventsJson = events.map((event) => {
+      // Extract step from top level or metadata (step may be in metadata from useEventTracker)
+      const step = event.step || (event.metadata?.step as string) || null;
+      
+      // Remove step from metadata to avoid duplication (it's now in the step column)
+      const { step: _, ...metadata } = event.metadata || {};
+      
+      return {
+        session_id: event.sessionId,
+        order_form_id: event.orderFormId || null,
+        event_type: event.type,
+        category: event.category,
+        step,
+        metadata,
+        timestamp: event.timestamp || new Date().toISOString(),
+      };
+    });
 
-    // Insert events into analytics.events table
+    // Insert events using RPC function (required for analytics schema)
     const { data, error } = await supabaseAdmin
-      .from('analytics.events')
-      .insert(insertData)
-      .select('id');
+      .rpc('insert_analytics_events', {
+        p_events: eventsJson,
+      });
 
     if (error) {
       console.error('Failed to insert events:', error);
       return NextResponse.json(
         { error: 'Failed to store events', details: error.message },
-        { status: 500 }
+        { 
+          status: 500,
+          headers: corsHeaders,
+        }
       );
     }
 
     return NextResponse.json({
       success: true,
       inserted: data?.length || 0,
-      eventIds: data?.map((e) => e.id) || [],
+      eventIds: data?.map((e: { id: string }) => e.id) || [],
+    }, {
+      headers: corsHeaders,
     });
   } catch (error) {
     console.error('Error processing events:', error);
@@ -128,13 +232,19 @@ export async function POST(request: NextRequest) {
     if (error instanceof SyntaxError) {
       return NextResponse.json(
         { error: 'Invalid JSON payload' },
-        { status: 400 }
+        { 
+          status: 400,
+          headers: corsHeaders,
+        }
       );
     }
 
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: corsHeaders,
+      }
     );
   }
 }
