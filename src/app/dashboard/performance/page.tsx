@@ -26,7 +26,7 @@ export default function PerformancePage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <LoadingState message="Loading performance data..." fullScreen />
+        <LoadingState message={t('messages.loading')} fullScreen />
       </PageWrapper>
     );
   }
@@ -35,7 +35,7 @@ export default function PerformancePage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <ErrorState message="Failed to load performance data" onRetry={refetch} />
+        <ErrorState message={t('messages.failedToLoad')} onRetry={refetch} />
       </PageWrapper>
     );
   }
@@ -53,25 +53,25 @@ export default function PerformancePage() {
         <MetricCard
           title={t('conversionRate')}
           value={formatPercentage(parseFloat(metrics.conversionRate))}
-          subtitle="Overall checkout completion"
+          subtitle={t('subtitles.overallCompletion')}
           icon={<CheckCircleIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('avgCheckoutTime')}
           value={formatDuration(metrics.avgCheckoutTime)}
-          subtitle="Time to complete checkout"
+          subtitle={t('subtitles.timeToComplete')}
           icon={<ClockIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('abandonmentRate')}
           value={formatPercentage(parseFloat(metrics.abandonmentRate))}
-          subtitle="Checkouts abandoned"
+          subtitle={t('subtitles.checkoutsAbandoned')}
           icon={<ExclamationTriangleIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('totalSessions')}
           value={metrics.totalSessions?.toLocaleString() || '0'}
-          subtitle="Checkout sessions started"
+          subtitle={t('subtitles.sessionsStarted')}
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />
       </div>
@@ -99,13 +99,13 @@ export default function PerformancePage() {
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Average Time</span>
+                  <span className="text-sm text-gray-600">{t('labels.averageTime')}</span>
                   <span className="text-lg font-bold text-gray-900">
                     {step.avgTime}s
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Abandonment Rate</span>
+                  <span className="text-sm text-gray-600">{t('labels.abandonmentRate')}</span>
                   <span className="text-lg font-bold text-red-600">
                     {formattedAbandonment}
                   </span>

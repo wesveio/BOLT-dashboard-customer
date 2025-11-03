@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { useTranslations } from 'next-intl';
 import { Spinner } from '@heroui/react';
 
 interface LoadingStateProps {
@@ -14,14 +15,17 @@ interface LoadingStateProps {
  * Consistent loading UI across pages with customizable messages
  */
 export const LoadingState = memo(function LoadingState({
-  message = 'Loading...',
+  message,
   fullScreen = false,
   className = '',
 }: LoadingStateProps) {
+  const t = useTranslations('dashboard.common');
+  const displayMessage = message || t('loading');
+  
   const content = (
     <div className={`text-center ${className}`}>
       <Spinner size="lg" />
-      {message && <p className="mt-4 text-gray-600">{message}</p>}
+      {displayMessage && <p className="mt-4 text-gray-600">{displayMessage}</p>}
     </div>
   );
 

@@ -35,6 +35,20 @@
     }
   },
   "dashboard": {
+    "common": {
+      "loading": "Carregando...",
+      "error": "Erro",
+      "retry": "Tentar novamente",
+      "cancel": "Cancelar",
+      "duplicate": "Duplicar",
+      "active": "Ativo",
+      "inactive": "Inativo",
+      "default": "Padrão",
+      "errorOccurred": "Ocorreu um erro ao carregar os dados. Por favor, tente novamente.",
+      "failedToLoad": "Falha ao carregar dados",
+      "failedToSave": "Falha ao salvar",
+      "failedToDelete": "Falha ao excluir"
+    },
     "sidebar": {
       "overview": "Visão Geral",
       "performance": "Desempenho",
@@ -69,7 +83,21 @@
       "abandonmentRate": "Taxa de Abandono",
       "totalSessions": "Total de Sessões",
       "funnelTitle": "Funil de Checkout",
-      "funnelSubtitle": "Taxa de conversão por etapa"
+      "funnelSubtitle": "Taxa de conversão por etapa",
+      "subtitles": {
+        "overallCompletion": "Conclusão geral do checkout",
+        "timeToComplete": "Tempo para concluir o checkout",
+        "checkoutsAbandoned": "Checkouts abandonados",
+        "sessionsStarted": "Sessões de checkout iniciadas"
+      },
+      "labels": {
+        "averageTime": "Tempo Médio",
+        "abandonmentRate": "Taxa de Abandono"
+      },
+      "messages": {
+        "loading": "Carregando dados de desempenho...",
+        "failedToLoad": "Falha ao carregar dados de desempenho"
+      }
     },
     "revenue": {
       "title": "Receita",
@@ -79,7 +107,25 @@
       "totalOrders": "Total de Pedidos",
       "revenuePerHour": "Receita por Hora",
       "trendTitle": "Tendência de Receita",
-      "trendSubtitle": "Receita ao longo do tempo"
+      "trendSubtitle": "Receita ao longo do tempo",
+      "subtitles": {
+        "forSelectedPeriod": "Receita para o período selecionado",
+        "averageTransactionValue": "Valor médio da transação",
+        "ordersProcessed": "Pedidos processados",
+        "averageHourlyRevenue": "Receita média por hora"
+      },
+      "charts": {
+        "revenueByHour": "Receita por Hora",
+        "peakHoursAnalysis": "Análise de horários de pico",
+        "revenueByDay": "Receita por Dia",
+        "weeklyPattern": "Padrão semanal",
+        "hourlyBreakdownComingSoon": "Gráfico de receita por hora em breve",
+        "dailyBreakdownComingSoon": "Gráfico de receita por dia em breve",
+        "revenueTooltip": "Receita"
+      },
+      "messages": {
+        "failedToLoad": "Falha ao carregar dados de receita"
+      }
     },
     "analytics": {
       "title": "Analytics",
@@ -138,13 +184,74 @@
       "headingFont": "Fonte de Títulos",
       "bodyFont": "Fonte do Corpo",
       "preview": "Pré-visualização",
-      "save": "Salvar Tema"
+      "save": "Salvar Tema",
+      "delete": "Deletar",
+      "confirmDelete": "Confirmar Exclusão",
+      "deleteTheme": "Deletar Tema",
+      "deleteSuccess": "Tema deletado com sucesso",
+      "deleteError": "Falha ao deletar tema",
+      "cannotDeleteActive": "Não é possível deletar um tema ativo. Por favor, ative outro tema primeiro.",
+      "deleteWarning": "Esta ação não pode ser desfeita.",
+      "sections": {
+        "defaultThemes": "Temas Padrão",
+        "customThemes": "Temas Personalizados"
+      },
+      "labels": {
+        "active": "Ativo",
+        "currentlyActive": "Atualmente Ativo",
+        "useThisTheme": "Usar Este Tema",
+        "default": "Padrão",
+        "basedOn": "Baseado em",
+        "updatedAt": "Atualizado em:",
+        "noCustomThemes": "Ainda Não Há Temas Personalizados",
+        "noCustomThemesDesc": "Use um tema padrão acima ou crie seu primeiro tema personalizado",
+        "loading": "Carregando temas..."
+      },
+      "defaultThemes": {
+        "default": {
+          "name": "Padrão",
+          "description": "Layout padrão de checkout passo a passo com barra lateral"
+        },
+        "singlePage": {
+          "name": "Página Única",
+          "description": "Todas as etapas do checkout visíveis simultaneamente com rolagem suave"
+        },
+        "liquidGlass": {
+          "name": "Liquid Glass",
+          "description": "Design glassmorfismo com sobreposições transparentes e fundo animado"
+        }
+      },
+      "duplicateModal": {
+        "title": "Duplicar Tema",
+        "newThemeName": "Nome do Novo Tema",
+        "placeholder": "Digite o nome do tema",
+        "duplicate": "Duplicar"
+      },
+      "toast": {
+        "activateSuccess": "Tema ativado com sucesso",
+        "activateError": "Falha ao ativar tema",
+        "duplicateSuccess": "Tema duplicado com sucesso",
+        "duplicateError": "Falha ao duplicar tema",
+        "alreadyActive": "O tema \"{name}\" já está ativo",
+        "createdAndActivated": "Tema \"{name}\" criado e ativado com sucesso"
+      }
     },
     "insights": {
       "title": "Insights",
       "subtitle": "Recomendações acionáveis baseadas nos dados do seu checkout",
       "noInsights": "Sem Insights Ainda",
-      "noInsightsDescription": "Insights aparecerão aqui conforme analisamos os dados do seu checkout."
+      "noInsightsDescription": "Insights aparecerão aqui conforme analisamos os dados do seu checkout.",
+      "labels": {
+        "totalInsights": "Total de Insights",
+        "highImpact": "Alto Impacto",
+        "mediumImpact": "Médio Impacto",
+        "lowImpact": "Baixo Impacto",
+        "noInsightsAvailable": "Nenhum insight disponível"
+      },
+      "messages": {
+        "generating": "Gerando insights...",
+        "failedToLoad": "Falha ao carregar insights"
+      }
     },
     "profile": {
       "title": "Perfil",
@@ -214,6 +321,34 @@
       "saveSuccess": "Configurações salvas com sucesso",
       "saveError": "Falha ao salvar configurações"
     },
+    "plans": {
+      "title": "Planos e Preços",
+      "subtitle": "Gerencie sua assinatura e visualize planos disponíveis",
+      "currentPlan": "Plano Atual",
+      "availablePlans": "Planos Disponíveis",
+      "history": "Histórico de Assinatura",
+      "upgrade": "Upgrade",
+      "downgrade": "Downgrade",
+      "changePlan": "Alterar Plano",
+      "selectPlan": "Selecionar Plano",
+      "contactSales": "Falar com Vendas",
+      "confirmChange": "Confirmar Alteração",
+      "cancel": "Cancelar",
+      "startedAt": "Iniciado",
+      "endedAt": "Finalizado",
+      "billingCycle": "Ciclo de Cobrança",
+      "monthly": "Mensal",
+      "yearly": "Anual",
+      "active": "Ativo",
+      "cancelled": "Cancelado",
+      "expired": "Expirado",
+      "pending": "Pendente",
+      "toast": {
+        "failedToLoad": "Falha ao carregar dados dos planos",
+        "updateSuccess": "Plano atualizado com sucesso",
+        "updateError": "Falha ao atualizar plano"
+      }
+    },
     "integrations": {
       "title": "Integrações",
       "subtitle": "Gerencie chaves de API para integrações",
@@ -252,6 +387,27 @@
           "lastUsed": "Último Uso"
         },
         "deleteConfirm": "Tem certeza de que deseja excluir esta chave de API? Esta ação não pode ser desfeita."
+      }
+    },
+    "themeEditor": {
+      "textsTab": {
+        "stepTitlesDescriptions": "Títulos e Descrições das Etapas",
+        "cartTitle": "Título do Carrinho",
+        "cartDescription": "Descrição do Carrinho",
+        "profileTitle": "Título do Perfil",
+        "profileDescription": "Descrição do Perfil",
+        "shippingTitle": "Título do Envio",
+        "shippingDescription": "Descrição do Envio",
+        "paymentTitle": "Título do Pagamento",
+        "paymentDescription": "Descrição do Pagamento",
+        "pageContent": "Conteúdo da Página (Texto Rico)",
+        "emptyCartMessage": "Mensagem de Carrinho Vazio",
+        "confirmationPageContent": "Conteúdo da Página de Confirmação",
+        "thankYouMessage": "Mensagem de Agradecimento",
+        "termsAndConditions": "Termos e Condições",
+        "termsPlaceholder": "Digite os termos e condições aqui...",
+        "privacyPolicyPreview": "Pré-visualização da Política de Privacidade",
+        "privacyPlaceholder": "Digite a pré-visualização da política de privacidade aqui..."
       }
     }
   },

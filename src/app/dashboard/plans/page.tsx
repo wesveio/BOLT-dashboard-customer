@@ -57,8 +57,8 @@ export default function PlansPage() {
         setTransactions(transactionsData.transactions || []);
       }
     } catch (error) {
-      console.error('Failed to fetch plans data:', error);
-      toast.error('Failed to load plans data');
+      console.error('❌ [DEBUG] Failed to fetch plans data:', error);
+      toast.error(t('toast.failedToLoad'));
     } finally {
       setIsLoading(false);
     }
@@ -85,17 +85,17 @@ export default function PlansPage() {
       });
 
       if (response.ok) {
-        toast.success('Plan updated successfully');
+        toast.success(t('toast.updateSuccess'));
         onClose();
         setSelectedPlan(null);
         fetchData(); // Refresh data
       } else {
         const error = await response.json();
-        toast.error(error.error || 'Failed to update plan');
+        toast.error(error.error || t('toast.updateError'));
       }
     } catch (error) {
-      console.error('Failed to update plan:', error);
-      toast.error('Failed to update plan');
+      console.error('❌ [DEBUG] Failed to update plan:', error);
+      toast.error(t('toast.updateError'));
     } finally {
       setIsUpdating(false);
     }

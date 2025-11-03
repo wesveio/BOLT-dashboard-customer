@@ -131,14 +131,24 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validated = themeConfigSchema.parse(body);
 
+    // Extract baseTheme if present (can be in root or in config)
+    const baseTheme = validated.baseTheme || validated.config?.baseTheme || null;
+    
+    // Remove baseTheme from config if it's at root level to avoid duplication
+    const configForStorage = { ...validated };
+    if (configForStorage.baseTheme && configForStorage.baseTheme === baseTheme) {
+      // Keep it in config, but also pass as separate parameter
+    }
+
     // Create theme using RPC function (required for custom schema)
     const { data: themes, error: createError } = await supabaseAdmin
       .rpc('create_theme', {
         p_account_id: user.account_id,
         p_name: validated.name,
-        p_config: validated,
+        p_config: configForStorage,
         p_created_by: session.user_id,
         p_is_active: false,
+        p_base_theme: baseTheme,
       });
 
     const theme = themes && themes.length > 0 ? themes[0] : null;

@@ -32,7 +32,7 @@ export default function RevenuePage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <ErrorState message="Failed to load revenue data" onRetry={refetch} />
+        <ErrorState message={t('messages.failedToLoad')} onRetry={refetch} />
       </PageWrapper>
     );
   }
@@ -50,7 +50,7 @@ export default function RevenuePage() {
         <MetricCard
           title={t('totalRevenue')}
           value={formatCurrency(displayMetrics.totalRevenue)}
-          subtitle="Revenue for selected period"
+          subtitle={t('subtitles.forSelectedPeriod')}
           trend={{
             value: parseFloat(displayMetrics.revenueGrowth || '0'),
             isPositive: parseFloat(displayMetrics.revenueGrowth || '0') > 0,
@@ -61,21 +61,21 @@ export default function RevenuePage() {
         <MetricCard
           title={t('avgOrderValue')}
           value={formatCurrency(displayMetrics.avgOrderValue)}
-          subtitle="Average transaction value"
+          subtitle={t('subtitles.averageTransactionValue')}
           icon={<ShoppingBagIcon className="w-6 h-6 text-white" />}
           isLoading={isLoading}
         />
         <MetricCard
           title={t('totalOrders')}
           value={formatNumber(displayMetrics.totalOrders)}
-          subtitle="Orders processed"
+          subtitle={t('subtitles.ordersProcessed')}
           icon={<ArrowTrendingUpIcon className="w-6 h-6 text-white" />}
           isLoading={isLoading}
         />
         <MetricCard
           title={t('revenuePerHour')}
           value={formatCurrency(displayMetrics.revenuePerHour)}
-          subtitle="Average hourly revenue"
+          subtitle={t('subtitles.averageHourlyRevenue')}
           icon={<ClockIcon className="w-6 h-6 text-white" />}
           isLoading={isLoading}
         />
@@ -123,7 +123,7 @@ export default function RevenuePage() {
                   border: '1px solid #e5e7eb',
                   borderRadius: '8px',
                 }}
-                formatter={(value: number) => [`$${value.toLocaleString()}`, 'Revenue']}
+                formatter={(value: number) => [`$${value.toLocaleString()}`, t('charts.revenueTooltip')]}
               />
               <Line
                 type="monotone"
@@ -140,14 +140,14 @@ export default function RevenuePage() {
 
       {/* Additional Revenue Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ChartCard title="Revenue by Hour" subtitle="Peak hours analysis">
+        <ChartCard title={t('charts.revenueByHour')} subtitle={t('charts.peakHoursAnalysis')}>
           <div className="text-center py-8 text-gray-500">
-            Hourly breakdown chart coming soon
+            {t('charts.hourlyBreakdownComingSoon')}
           </div>
         </ChartCard>
-        <ChartCard title="Revenue by Day" subtitle="Weekly pattern">
+        <ChartCard title={t('charts.revenueByDay')} subtitle={t('charts.weeklyPattern')}>
           <div className="text-center py-8 text-gray-500">
-            Daily breakdown chart coming soon
+            {t('charts.dailyBreakdownComingSoon')}
           </div>
         </ChartCard>
       </div>

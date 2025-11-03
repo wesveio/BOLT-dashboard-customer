@@ -137,7 +137,7 @@ export default function InsightsPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <LoadingState message="Generating insights..." fullScreen />
+        <LoadingState message={t('messages.generating')} fullScreen />
       </PageWrapper>
     );
   }
@@ -146,7 +146,7 @@ export default function InsightsPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <ErrorState message="Failed to load insights" onRetry={refetch} />
+        <ErrorState message={t('messages.failedToLoad')} onRetry={refetch} />
       </PageWrapper>
     );
   }
@@ -161,7 +161,7 @@ export default function InsightsPage() {
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Total Insights</p>
+                <p className="text-sm text-gray-600 mb-1">{t('labels.totalInsights')}</p>
                 <p className="text-2xl font-bold text-gray-900">{insights.length}</p>
               </div>
               <LightBulbIcon className="w-8 h-8 text-yellow-500" />
@@ -172,7 +172,7 @@ export default function InsightsPage() {
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-red-700 mb-1">High Impact</p>
+                <p className="text-sm text-red-700 mb-1">{t('labels.highImpact')}</p>
                 <p className="text-2xl font-bold text-red-900">{filteredInsights.high.length}</p>
               </div>
               <ExclamationTriangleIcon className="w-8 h-8 text-red-600" />
@@ -183,7 +183,7 @@ export default function InsightsPage() {
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-blue-700 mb-1">Medium Impact</p>
+                <p className="text-sm text-blue-700 mb-1">{t('labels.mediumImpact')}</p>
                 <p className="text-2xl font-bold text-blue-900">{filteredInsights.medium.length}</p>
               </div>
               <InformationCircleIcon className="w-8 h-8 text-blue-600" />
@@ -194,7 +194,7 @@ export default function InsightsPage() {
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Low Impact</p>
+                <p className="text-sm text-gray-600 mb-1">{t('labels.lowImpact')}</p>
                 <p className="text-2xl font-bold text-gray-900">{filteredInsights.low.length}</p>
               </div>
               <InformationCircleIcon className="w-8 h-8 text-gray-600" />
