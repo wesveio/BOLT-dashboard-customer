@@ -11,13 +11,22 @@ import {
   Input,
   Select,
   SelectItem,
+  Tabs,
+  Tab,
 } from '@heroui/react';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { ColorPicker } from './ColorPicker';
-import { FontSelector } from './FontSelector';
 import { PreviewPane } from './PreviewPane';
 import { useRolePermissions } from '@/hooks/useRolePermissions';
+import type { ExpandedThemeConfig } from './types';
+import { getDefaultThemeConfig } from './defaults';
+import { VisualTab } from './tabs/VisualTab';
+import { LayoutTab } from './tabs/LayoutTab';
+import { BrandingTab } from './tabs/BrandingTab';
+import { FeaturesTab } from './tabs/FeaturesTab';
+import { TextsTab } from './tabs/TextsTab';
+import { ComponentsTab } from './tabs/ComponentsTab';
 
+// Keep old interface for backwards compatibility
 export interface ThemeConfig {
   name: string;
   layout: 'default' | 'single-page' | 'liquid-glass';
@@ -44,21 +53,7 @@ interface ThemeEditorProps {
 export function ThemeEditor({ themeId, onBack, onSave }: ThemeEditorProps) {
   const t = useTranslations('dashboard.themes');
   const { canWrite } = useRolePermissions();
-  const [config, setConfig] = useState<ThemeConfig>({
-    name: '',
-    layout: 'default',
-    colors: {
-      primary: '#2563eb',
-      secondary: '#9333ea',
-      accent: '#f59e0b',
-      background: '#ffffff',
-      text: '#111827',
-    },
-    fonts: {
-      heading: 'Inter',
-      body: 'Inter',
-    },
-  });
+  const [config, setConfig] = useState<ExpandedThemeConfig>(getDefaultThemeConfig());
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(themeId !== 'new');
 
@@ -80,13 +75,32 @@ export function ThemeEditor({ themeId, onBack, onSave }: ThemeEditorProps) {
         const themeConfig = data.theme.config;
 
         if (themeConfig) {
-          setConfig({
-            name: themeConfig.name || data.theme.name || '',
-            layout: themeConfig.layout || 'default',
-            colors: themeConfig.colors || config.colors,
-            fonts: themeConfig.fonts || config.fonts,
-            logo: themeConfig.logo,
-          });
+          // Check if it's expanded config or old format
+          if (themeConfig.visual && themeConfig.layout && themeConfig.features) {
+            // Expanded format
+            setConfig(themeConfig as ExpandedThemeConfig);
+          } else {
+            // Old format - migrate to expanded
+            const baseTheme = themeConfig.layout === 'single-page' ? 'single-page' : 
+                            themeConfig.layout === 'liquid-glass' ? 'liquid-glass' : 'default';
+            const expandedConfig = getDefaultThemeConfig(baseTheme);
+            expandedConfig.name = themeConfig.name || data.theme.name || '';
+            if (themeConfig.colors) {
+              expandedConfig.visual.colors.primary.from = themeConfig.colors.primary || expandedConfig.visual.colors.primary.from;
+              expandedConfig.visual.colors.secondary.from = themeConfig.colors.secondary || expandedConfig.visual.colors.secondary.from;
+              expandedConfig.visual.colors.accent = themeConfig.colors.accent || expandedConfig.visual.colors.accent;
+              expandedConfig.visual.colors.background.primary = themeConfig.colors.background || expandedConfig.visual.colors.background.primary;
+              expandedConfig.visual.colors.text.primary = themeConfig.colors.text || expandedConfig.visual.colors.text.primary;
+            }
+            if (themeConfig.fonts) {
+              expandedConfig.visual.typography.heading.family = themeConfig.fonts.heading || expandedConfig.visual.typography.heading.family;
+              expandedConfig.visual.typography.primary.family = themeConfig.fonts.body || expandedConfig.visual.typography.primary.family;
+            }
+            if (themeConfig.logo) {
+              expandedConfig.branding.logo.url = themeConfig.logo;
+            }
+            setConfig(expandedConfig);
+          }
         }
       } catch (error) {
         console.error('Failed to load theme:', error);
@@ -172,152 +186,65 @@ export function ThemeEditor({ themeId, onBack, onSave }: ThemeEditorProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Panel - Controls */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Theme Name */}
-          <Card className="border border-gray-100">
-            <CardBody className="p-6">
-              <Input
-                label={t('themeName')}
-                value={config.name}
-                onChange={(e) => setConfig({ ...config, name: e.target.value })}
-                variant="bordered"
-                size="lg"
-                isRequired
-                classNames={{
-                  input: 'text-base',
-                  label: 'text-sm font-semibold',
-                }}
-              />
-            </CardBody>
-          </Card>
+      {/* Theme Name - Always visible */}
+      <Card className="border border-gray-100 mb-6">
+        <CardBody className="p-6">
+          <Input
+            label={t('themeName')}
+            value={config.name}
+            onChange={(e) => setConfig({ ...config, name: e.target.value })}
+            variant="bordered"
+            size="lg"
+            isRequired
+            classNames={{
+              input: 'text-base',
+              label: 'text-sm font-semibold',
+            }}
+          />
+        </CardBody>
+      </Card>
 
-          {/* Layout Selection */}
-          <Card className="border border-gray-100">
-            <CardBody className="p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">{t('layout')}</h3>
-              <Select
-                selectedKeys={[config.layout]}
-                onSelectionChange={(keys) => {
-                  const selected = Array.from(keys)[0] as ThemeConfig['layout'];
-                  setConfig({ ...config, layout: selected });
-                }}
-                variant="bordered"
-                size="lg"
-              >
-                <SelectItem key="default" textValue="default">
-                  Default
-                </SelectItem>
-                <SelectItem key="single-page" textValue="single-page">
-                  Single Page
-                </SelectItem>
-                <SelectItem key="liquid-glass" textValue="liquid-glass">
-                  Liquid Glass
-                </SelectItem>
-              </Select>
-            </CardBody>
-          </Card>
-
-          {/* Colors */}
-          <Card className="border border-gray-100">
-            <CardBody className="p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">{t('colors')}</h3>
-              <div className="space-y-4">
-                <ColorPicker
-                  label={t('primaryColor')}
-                  value={config.colors.primary}
-                  onChange={(color) =>
-                    setConfig({
-                      ...config,
-                      colors: { ...config.colors, primary: color },
-                    })
-                  }
-                />
-                <ColorPicker
-                  label={t('secondaryColor')}
-                  value={config.colors.secondary}
-                  onChange={(color) =>
-                    setConfig({
-                      ...config,
-                      colors: { ...config.colors, secondary: color },
-                    })
-                  }
-                />
-                <ColorPicker
-                  label={t('accentColor')}
-                  value={config.colors.accent}
-                  onChange={(color) =>
-                    setConfig({
-                      ...config,
-                      colors: { ...config.colors, accent: color },
-                    })
-                  }
-                />
-                <ColorPicker
-                  label={t('backgroundColor')}
-                  value={config.colors.background}
-                  onChange={(color) =>
-                    setConfig({
-                      ...config,
-                      colors: { ...config.colors, background: color },
-                    })
-                  }
-                />
-                <ColorPicker
-                  label={t('textColor')}
-                  value={config.colors.text}
-                  onChange={(color) =>
-                    setConfig({
-                      ...config,
-                      colors: { ...config.colors, text: color },
-                    })
-                  }
-                />
-              </div>
-            </CardBody>
-          </Card>
-
-          {/* Fonts */}
-          <Card className="border border-gray-100">
-            <CardBody className="p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">{t('fonts')}</h3>
-              <div className="space-y-4">
-                <FontSelector
-                  label={t('headingFont')}
-                  value={config.fonts.heading}
-                  onChange={(font) =>
-                    setConfig({
-                      ...config,
-                      fonts: { ...config.fonts, heading: font },
-                    })
-                  }
-                />
-                <FontSelector
-                  label={t('bodyFont')}
-                  value={config.fonts.body}
-                  onChange={(font) =>
-                    setConfig({
-                      ...config,
-                      fonts: { ...config.fonts, body: font },
-                    })
-                  }
-                />
-              </div>
-            </CardBody>
-          </Card>
-        </div>
-
-        {/* Right Panel - Preview */}
-        <div className="lg:col-span-1">
-          <Card className="border border-gray-100 sticky top-6">
-            <CardBody className="p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">{t('preview')}</h3>
-              <PreviewPane config={config} />
-            </CardBody>
-          </Card>
-        </div>
-      </div>
+      <Tabs aria-label="Theme Editor Tabs" className="w-full">
+        <Tab key="visual" title="Visual">
+          <div className="mt-6">
+            <VisualTab config={config} onChange={setConfig} />
+          </div>
+        </Tab>
+        <Tab key="layout" title="Layout">
+          <div className="mt-6">
+            <LayoutTab config={config} onChange={setConfig} />
+          </div>
+        </Tab>
+        <Tab key="branding" title="Branding">
+          <div className="mt-6">
+            <BrandingTab config={config} onChange={setConfig} />
+          </div>
+        </Tab>
+        <Tab key="features" title="Features">
+          <div className="mt-6">
+            <FeaturesTab config={config} onChange={setConfig} />
+          </div>
+        </Tab>
+        <Tab key="texts" title="Texts">
+          <div className="mt-6">
+            <TextsTab config={config} onChange={setConfig} />
+          </div>
+        </Tab>
+        <Tab key="components" title="Components">
+          <div className="mt-6">
+            <ComponentsTab config={config} onChange={setConfig} />
+          </div>
+        </Tab>
+        <Tab key="preview" title="Preview">
+          <div className="mt-6">
+            <Card className="border border-gray-100">
+              <CardBody className="p-6">
+                <PreviewPane config={config} />
+              </CardBody>
+            </Card>
+          </div>
+        </Tab>
+      </Tabs>
     </m.div>
   );
 }
