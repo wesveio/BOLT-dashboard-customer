@@ -20,9 +20,11 @@ import {
   GlobeAltIcon,
   ChartBarIcon,
   TrashIcon,
+  UserGroupIcon,
 } from '@heroicons/react/24/outline';
 import { toast } from 'sonner';
 import { useRolePermissions } from '@/hooks/useRolePermissions';
+import { UserManagementTab } from '@/components/Dashboard/UserManagementTab/UserManagementTab';
 
 export default function SettingsPage() {
   const t = useTranslations('dashboard.settings');
@@ -545,6 +547,20 @@ export default function SettingsPage() {
             </CardBody>
           </Card>
         </Tab>
+
+        {isAdmin && (
+          <Tab
+            key="users"
+            title={
+              <div className="flex items-center gap-2">
+                <UserGroupIcon className="w-5 h-5" />
+                <span>Users</span>
+              </div>
+            }
+          >
+            <UserManagementTab />
+          </Tab>
+        )}
 
         {isAdmin && (
           <Tab
