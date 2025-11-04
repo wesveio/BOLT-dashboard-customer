@@ -86,13 +86,14 @@ export default function BrowserAnalyticsPage() {
                 outerRadius={120}
                 fill="#8884d8"
                 dataKey="sessions"
+                nameKey="browser"
               >
                 {browserData.map((_entry: unknown, index: number) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
               <Tooltip />
-              <Legend />
+              <Legend formatter={(value: string) => value} />
             </PieChart>
           </ResponsiveContainer>
         </ChartCard>
