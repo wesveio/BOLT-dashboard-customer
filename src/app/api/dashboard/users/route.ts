@@ -1,6 +1,4 @@
-import { NextRequest } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
-import { getAuthenticatedUser } from '@/lib/api/auth';
 import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
 import { withAuth } from '@/lib/api/route-handler';
 import { canRoleInviteUsers } from '@/utils/users';
@@ -47,7 +45,7 @@ export const GET = withAuth(async (_request, { user }) => {
     const planType = account?.plan_type || 'basic';
 
     // Get user count
-    const { data: userCountData, error: countError } = await supabaseAdmin.rpc(
+    const { data: userCountData } = await supabaseAdmin.rpc(
       'get_account_user_count',
       { p_account_id: user.account_id }
     );

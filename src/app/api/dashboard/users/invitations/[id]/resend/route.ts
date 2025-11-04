@@ -13,7 +13,7 @@ import { generateInvitationEmail } from '@/utils/auth/email-service';
 export const dynamic = 'force-dynamic';
 
 export async function POST(
-  request: NextRequest,
+  _request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   try {

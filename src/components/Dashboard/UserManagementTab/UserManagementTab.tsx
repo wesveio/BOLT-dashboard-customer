@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
 import {
   Card,
   CardBody,
@@ -43,14 +42,13 @@ interface Invitation {
  * Displays users and invitations for the account
  */
 export function UserManagementTab() {
-  const t = useTranslations('dashboard.users');
   const { user: currentUser } = useDashboardAuth();
   const { role } = useRolePermissions();
   const [isLoading, setIsLoading] = useState(true);
   const [isInviting, setIsInviting] = useState(false);
-  const [isResending, setIsResending] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isDeletingInvitation, setIsDeletingInvitation] = useState(false);
+  const [, setIsResending] = useState(false);
+  const [, setIsDeleting] = useState(false);
+  const [, setIsDeletingInvitation] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
@@ -166,7 +164,7 @@ export function UserManagementTab() {
     }
   };
 
-  const handleCancelInvitation = async (invitationId: string) => {
+  const handleCancelInvitation = async () => {
     if (!confirm('Are you sure you want to cancel this invitation?')) {
       return;
     }

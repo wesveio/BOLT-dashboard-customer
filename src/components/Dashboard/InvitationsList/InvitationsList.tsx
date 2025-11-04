@@ -102,7 +102,7 @@ export function InvitationsList({
         <TableColumn>ROLE</TableColumn>
         <TableColumn>STATUS</TableColumn>
         <TableColumn>EXPIRES</TableColumn>
-        {(onResend || onCancel) && <TableColumn>ACTIONS</TableColumn>}
+        {(onResend || onCancel) ? <TableColumn>ACTIONS</TableColumn> : <></>}
       </TableHeader>
       <TableBody>
         {pendingInvitations.map((invitation) => (
@@ -139,7 +139,7 @@ export function InvitationsList({
                 )}
               </span>
             </TableCell>
-            {(onResend || onCancel) && (
+            {(onResend || onCancel) ? (
               <TableCell>
                 <div className="flex items-center gap-2">
                   {invitation.status === 'expired' && onResend && (
@@ -183,7 +183,7 @@ export function InvitationsList({
                   )}
                 </div>
               </TableCell>
-            )}
+            ) : <></>}
           </TableRow>
         ))}
       </TableBody>

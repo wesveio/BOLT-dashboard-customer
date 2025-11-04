@@ -29,7 +29,7 @@ export async function DELETE(
       }
 
       // Delete user using RPC function (all validation is done inside the function)
-      const { data: deleteResult, error: deleteError } = await supabaseAdmin.rpc(
+      const { error: deleteError } = await supabaseAdmin.rpc(
         'delete_user',
         {
           p_user_id: userIdToDelete,

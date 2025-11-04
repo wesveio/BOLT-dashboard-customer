@@ -1,4 +1,3 @@
-import { NextRequest } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { z } from 'zod';
 import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
@@ -9,9 +8,7 @@ import { generateInvitationEmail } from '@/utils/auth/email-service';
 
 const inviteSchema = z.object({
   email: z.string().email('Invalid email format'),
-  role: z.enum(['owner', 'admin', 'editor', 'viewer'], {
-    errorMap: () => ({ message: 'Invalid role' }),
-  }),
+  role: z.enum(['owner', 'admin', 'editor', 'viewer']),
 });
 
 /**

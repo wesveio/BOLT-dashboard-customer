@@ -84,7 +84,7 @@ export function UsersList({
         <TableColumn>ROLE</TableColumn>
         <TableColumn>JOINED</TableColumn>
         <TableColumn>LAST LOGIN</TableColumn>
-        {onDelete && <TableColumn>ACTIONS</TableColumn>}
+        {onDelete ? <TableColumn>ACTIONS</TableColumn> : <></>}
       </TableHeader>
       <TableBody emptyContent="No users found">
         {users.map((user) => (
@@ -111,7 +111,7 @@ export function UsersList({
             <TableCell>
               <span className="text-sm text-gray-600">{formatDate(user.last_login_at)}</span>
             </TableCell>
-            {onDelete && (
+            {onDelete ? (
               <TableCell>
                 {user.id !== currentUserId && canDelete && canDelete(user.role) && (
                   <Tooltip content="Remove user" placement="left">
@@ -127,7 +127,7 @@ export function UsersList({
                   </Tooltip>
                 )}
               </TableCell>
-            )}
+            ) : <></>}
           </TableRow>
         ))}
       </TableBody>

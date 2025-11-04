@@ -1,6 +1,4 @@
-import { NextRequest } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
-import { getAuthenticatedUser } from '@/lib/api/auth';
 import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
 import { withAuth } from '@/lib/api/route-handler';
 import { canRoleInviteUsers } from '@/utils/users';
