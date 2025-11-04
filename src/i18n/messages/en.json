@@ -100,14 +100,44 @@
       "totalOrders": "Total Orders",
       "conversionRate": "Conversion Rate",
       "totalSessions": "Total Sessions",
+      "avgOrderValue": "Average Order Value",
+      "abandonmentRate": "Abandonment Rate",
+      "avgCheckoutTime": "Avg Checkout Time",
+      "revenueGrowth": "Revenue Growth",
+      "revenueTrendTitle": "Revenue Trend",
+      "revenueTrendSubtitle": "Revenue over time",
+      "funnelTitle": "Conversion Funnel",
+      "funnelSubtitle": "Conversion rate by step",
+      "topInsights": "Top Insights",
+      "viewAllInsights": "View All Insights",
+      "quickLinks": "Quick Links",
       "subtitles": {
         "totalRevenue": "Revenue for selected period",
         "totalOrders": "Orders processed",
         "conversionRate": "Overall checkout completion",
-        "totalSessions": "Checkout sessions started"
+        "totalSessions": "Checkout sessions started",
+        "avgOrderValue": "Average transaction value",
+        "abandonmentRate": "Checkouts abandoned",
+        "avgCheckoutTime": "Time to complete checkout",
+        "revenueGrowth": "Growth vs previous period"
+      },
+      "quickLinks": {
+        "revenue": "Revenue",
+        "revenueDesc": "Track sales and revenue",
+        "performance": "Performance",
+        "performanceDesc": "Monitor checkout funnel",
+        "analytics": "Analytics",
+        "analyticsDesc": "Deep dive into data",
+        "insights": "Insights",
+        "insightsDesc": "Actionable recommendations"
+      },
+      "charts": {
+        "revenueTooltip": "Revenue"
       },
       "messages": {
-        "failedToLoad": "Failed to load metrics"
+        "failedToLoad": "Failed to load metrics",
+        "loading": "Loading...",
+        "noData": "No data available"
       }
     },
     "performance": {

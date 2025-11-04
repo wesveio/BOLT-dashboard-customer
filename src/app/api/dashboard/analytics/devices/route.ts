@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import type { AnalyticsEvent } from '@/hooks/useDashboardData';
+import { extractRevenue } from '@/utils/analytics';
 
 /**
  * GET /api/dashboard/analytics/devices
@@ -78,10 +79,11 @@ export async function GET(request: NextRequest) {
     const range = dateRanges[period] || dateRanges.week;
 
     // Query device-related events using RPC function (required for custom schema)
+    // Get both checkout_start and checkout_complete events
     const { data: events, error: eventsError } = await supabaseAdmin
       .rpc('get_analytics_events_by_types', {
         p_customer_id: user.account_id,
-        p_event_types: ['checkout_start'],
+        p_event_types: ['checkout_start', 'checkout_complete'],
         p_start_date: range.start.toISOString(),
         p_end_date: range.end.toISOString(),
       });
@@ -94,7 +96,34 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Aggregate by device type
+    // Separate events by type
+    const checkoutStartEvents: AnalyticsEvent[] = [];
+    const checkoutCompleteEvents: AnalyticsEvent[] = [];
+
+    events?.forEach((event: AnalyticsEvent) => {
+      if (event.event_type === 'checkout_start') {
+        checkoutStartEvents.push(event);
+      } else if (event.event_type === 'checkout_complete') {
+        checkoutCompleteEvents.push(event);
+      }
+    });
+
+    // Create maps for conversions and revenue by session_id
+    const convertedSessions = new Set<string>();
+    const revenueBySession = new Map<string, number>();
+
+    checkoutCompleteEvents.forEach((event: AnalyticsEvent) => {
+      const sessionId = event.session_id;
+      if (sessionId) {
+        convertedSessions.add(sessionId);
+        const revenue = extractRevenue(event);
+        if (revenue > 0) {
+          revenueBySession.set(sessionId, revenue);
+        }
+      }
+    });
+
+    // Aggregate by device type from checkout_start events
     const devices: Record<string, {
       device: string;
       sessions: number;
@@ -102,8 +131,10 @@ export async function GET(request: NextRequest) {
       revenue: number;
     }> = {};
 
-    events?.forEach((event: AnalyticsEvent) => {
+    checkoutStartEvents.forEach((event: AnalyticsEvent) => {
       const device = event.metadata?.deviceType as string || 'Unknown';
+      const sessionId = event.session_id;
+
       if (!devices[device]) {
         devices[device] = {
           device,
@@ -116,12 +147,14 @@ export async function GET(request: NextRequest) {
       devices[device].sessions++;
 
       // Check if this session converted (has checkout_complete event)
-      if (event.metadata?.converted) {
+      if (sessionId && convertedSessions.has(sessionId)) {
         devices[device].conversions++;
       }
 
-      if (event.metadata?.revenue) {
-        devices[device].revenue += parseFloat(String(event.metadata.revenue));
+      // Get revenue from checkout_complete event
+      if (sessionId && revenueBySession.has(sessionId)) {
+        const revenue = revenueBySession.get(sessionId) || 0;
+        devices[device].revenue += revenue;
       }
     });
 

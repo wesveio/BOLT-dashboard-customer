@@ -30,14 +30,27 @@ export async function GET(request: NextRequest) {
     const { data: events, error: eventsError } = await supabaseAdmin
       .rpc('get_analytics_events_by_types', {
         p_customer_id: user.account_id,
-        p_event_types: ['shipping_method_selected'],
+        p_event_types: ['shipping_option_selected'],
         p_start_date: range.start.toISOString(),
         p_end_date: range.end.toISOString(),
       });
 
     if (eventsError) {
-      console.error('Get shipping analytics error:', eventsError);
+      console.error('❌ [DEBUG] Get shipping analytics error:', eventsError);
       return apiError('Failed to fetch shipping analytics', 500);
+    }
+
+    // Debug logging to verify events are being returned
+    if (process.env.NODE_ENV === 'development') {
+      console.info('✅ [DEBUG] Shipping analytics query:', {
+        customerId: user.account_id,
+        period,
+        dateRange: {
+          start: range.start.toISOString(),
+          end: range.end.toISOString(),
+        },
+        eventsFound: events?.length || 0,
+      });
     }
 
     // Aggregate shipping methods

@@ -95,14 +95,44 @@
       "totalOrders": "Total de Pedidos",
       "conversionRate": "Taxa de Conversão",
       "totalSessions": "Total de Sessões",
+      "avgOrderValue": "Ticket Médio",
+      "abandonmentRate": "Taxa de Abandono",
+      "avgCheckoutTime": "Tempo Médio de Checkout",
+      "revenueGrowth": "Crescimento de Receita",
+      "revenueTrendTitle": "Tendência de Receita",
+      "revenueTrendSubtitle": "Receita ao longo do tempo",
+      "funnelTitle": "Funil de Conversão",
+      "funnelSubtitle": "Taxa de conversão por etapa",
+      "topInsights": "Insights Principais",
+      "viewAllInsights": "Ver Todos os Insights",
+      "quickLinks": "Links Rápidos",
       "subtitles": {
         "totalRevenue": "Receita para o período selecionado",
         "totalOrders": "Pedidos processados",
         "conversionRate": "Completude geral do checkout",
-        "totalSessions": "Sessões de checkout iniciadas"
+        "totalSessions": "Sessões de checkout iniciadas",
+        "avgOrderValue": "Valor médio da transação",
+        "abandonmentRate": "Checkouts abandonados",
+        "avgCheckoutTime": "Tempo para concluir o checkout",
+        "revenueGrowth": "Crescimento vs período anterior"
+      },
+      "quickLinks": {
+        "revenue": "Receita",
+        "revenueDesc": "Acompanhe vendas e receita",
+        "performance": "Desempenho",
+        "performanceDesc": "Monitore o funil de checkout",
+        "analytics": "Analytics",
+        "analyticsDesc": "Análise detalhada dos dados",
+        "insights": "Insights",
+        "insightsDesc": "Recomendações acionáveis"
+      },
+      "charts": {
+        "revenueTooltip": "Receita"
       },
       "messages": {
-        "failedToLoad": "Falha ao carregar métricas"
+        "failedToLoad": "Falha ao carregar métricas",
+        "loading": "Carregando...",
+        "noData": "Nenhum dado disponível"
       }
     },
     "performance": {

@@ -6,6 +6,39 @@ import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
 import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 
 /**
+ * Extract revenue from event metadata with multiple fallbacks
+ * Tries different field names and validates the value
+ */
+function extractRevenue(event: AnalyticsEvent): number {
+  const metadata = event.metadata || {};
+
+  // Try different revenue field names
+  const revenueValue =
+    metadata.revenue ??
+    metadata.value ??
+    metadata.orderValue ??
+    metadata.totalValue ??
+    metadata.amount ??
+    null;
+
+  if (revenueValue === null || revenueValue === undefined) {
+    return 0;
+  }
+
+  // Convert to number
+  const numValue = typeof revenueValue === 'number'
+    ? revenueValue
+    : parseFloat(String(revenueValue));
+
+  // Validate and return
+  if (isNaN(numValue) || numValue < 0) {
+    return 0;
+  }
+
+  return numValue;
+}
+
+/**
  * GET /api/dashboard/analytics/payment
  * Get payment method analytics for the authenticated user's account
  */
@@ -65,8 +98,10 @@ export async function GET(request: NextRequest) {
 
       if (event.event_type === 'payment_completed') {
         paymentMethods[method].successCount++;
-        if (event.metadata?.revenue) {
-          paymentMethods[method].revenue += parseFloat(String(event.metadata.revenue));
+        // Use extractRevenue function to get revenue with multiple fallbacks
+        const revenue = extractRevenue(event);
+        if (revenue > 0) {
+          paymentMethods[method].revenue += revenue;
         }
       } else if (event.event_type === 'payment_failed') {
         paymentMethods[method].failedCount++;

@@ -11,7 +11,6 @@ import {
   Button,
 } from '@heroui/react';
 import { LanguageSwitcher } from '../LanguageSwitcher/LanguageSwitcher';
-import { ActiveThemeBadge } from '../ActiveThemeBadge/ActiveThemeBadge';
 import { useSidebar } from '@/contexts/SidebarContext';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -58,7 +57,6 @@ export function DashboardHeader() {
 
           {/* Right side - User menu and language switcher */}
           <div className="flex items-center gap-4">
-            <ActiveThemeBadge />
             <LanguageSwitcher />
 
             <Dropdown placement="bottom-end">
