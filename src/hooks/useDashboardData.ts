@@ -9,6 +9,7 @@ import {
   defaultFunnelData,
   defaultStepMetrics,
   defaultAnalyticsMetrics,
+  defaultOverviewMetrics,
   Period,
 } from '@/utils/default-data';
 
@@ -23,6 +24,14 @@ interface RevenueResponse {
   };
   chartData: Array<{
     date: string;
+    revenue: number;
+  }>;
+  revenueByHour?: Array<{
+    hour: string;
+    revenue: number;
+  }>;
+  revenueByDay?: Array<{
+    day: string;
     revenue: number;
   }>;
 }
@@ -105,6 +114,31 @@ export interface AnalyticsEventsResponse {
   };
 }
 
+// Metrics API Response Types
+interface MetricsResponse {
+  metrics: {
+    totalSessions: number;
+    totalConversions: number;
+    totalRevenue: number;
+    totalOrders: number;
+    avgOrderValue: number;
+    conversionRate: number;
+    abandonmentRate: number;
+  };
+  funnel: {
+    cart: number;
+    profile: number;
+    shipping: number;
+    payment: number;
+    confirmed: number;
+  };
+  period: Period;
+  dateRange: {
+    start: string;
+    end: string;
+  };
+}
+
 interface UseRevenueDataOptions {
   period?: Period;
   enabled?: boolean;
@@ -145,9 +179,19 @@ export function useRevenueData(options: UseRevenueDataOptions = {}) {
       : defaultRevenueChartData;
   }, [data]);
 
+  const revenueByHour = useMemo(() => {
+    return data?.revenueByHour || [];
+  }, [data]);
+
+  const revenueByDay = useMemo(() => {
+    return data?.revenueByDay || [];
+  }, [data]);
+
   return {
     metrics,
     chartData,
+    revenueByHour,
+    revenueByDay,
     isLoading,
     error,
     refetch,
@@ -310,6 +354,57 @@ export function useAnalyticsEventsData(options: UseAnalyticsEventsDataOptions = 
     isLoading,
     error,
     refetch,
+  };
+}
+
+interface UseMetricsDataOptions {
+  period?: Period;
+  enabled?: boolean;
+}
+
+/**
+ * Hook for fetching overview metrics data
+ * Pre-configured endpoint with period parameter handling
+ */
+export function useMetricsData(options: UseMetricsDataOptions = {}) {
+  const { period = 'week', enabled = true } = options;
+
+  // Build URL with period param
+  const endpoint = useMemo(() => {
+    const params = new URLSearchParams({ period });
+    return `/api/dashboard/metrics?${params.toString()}`;
+  }, [period]);
+
+  const { data, isLoading, error, refetch } = useApi<MetricsResponse>(
+    endpoint,
+    {
+      enabled,
+      cacheKey: `metrics_${period}`,
+      cacheTTL: 5,
+      deduplicateRequests: true,
+      refetchOnMount: true,
+    }
+  );
+
+  // Merge data with defaults and ensure non-negative values
+  const metrics = useMemo(() => {
+    if (!data?.metrics) return defaultOverviewMetrics;
+
+    return {
+      totalRevenue: Math.max(0, data.metrics.totalRevenue || 0),
+      totalOrders: Math.max(0, data.metrics.totalOrders || 0),
+      conversionRate: Math.max(0, Math.min(100, data.metrics.conversionRate || 0)),
+      totalSessions: Math.max(0, data.metrics.totalSessions || 0),
+    };
+  }, [data]);
+
+  return {
+    metrics,
+    isLoading,
+    error,
+    refetch,
+    period: data?.period || period,
+    dateRange: data?.dateRange,
   };
 }
 

@@ -63,6 +63,23 @@
       "role": "Função",
       "vtexAccount": "Conta VTEX"
     },
+    "breadcrumbs": {
+      "dashboard": "Dashboard",
+      "overview": "Visão Geral",
+      "performance": "Desempenho",
+      "revenue": "Receita",
+      "analytics": "Analytics",
+      "payment": "Métodos de Pagamento",
+      "shipping": "Frete e Entrega",
+      "devices": "Distribuição por Dispositivo",
+      "browsers": "Navegador e Plataforma",
+      "themes": "Temas",
+      "insights": "Insights",
+      "plans": "Planos e Preços",
+      "integrations": "Integrações",
+      "settings": "Configurações",
+      "profile": "Perfil"
+    },
     "header": {
       "profile": "Perfil",
       "logout": "Sair",
@@ -73,7 +90,20 @@
       "title": "Visão Geral",
       "welcome": "Bem-vindo ao seu Dashboard BOLT",
       "quickStart": "Início Rápido",
-      "description": "Seu dashboard está pronto! Métricas e analytics aparecerão aqui assim que você começar a receber dados de checkout."
+      "description": "Seu dashboard está pronto! Métricas e analytics aparecerão aqui assim que você começar a receber dados de checkout.",
+      "totalRevenue": "Receita Total",
+      "totalOrders": "Total de Pedidos",
+      "conversionRate": "Taxa de Conversão",
+      "totalSessions": "Total de Sessões",
+      "subtitles": {
+        "totalRevenue": "Receita para o período selecionado",
+        "totalOrders": "Pedidos processados",
+        "conversionRate": "Completude geral do checkout",
+        "totalSessions": "Sessões de checkout iniciadas"
+      },
+      "messages": {
+        "failedToLoad": "Falha ao carregar métricas"
+      }
     },
     "performance": {
       "title": "Desempenho do Checkout",
@@ -121,7 +151,8 @@
         "weeklyPattern": "Padrão semanal",
         "hourlyBreakdownComingSoon": "Gráfico de receita por hora em breve",
         "dailyBreakdownComingSoon": "Gráfico de receita por dia em breve",
-        "revenueTooltip": "Receita"
+        "revenueTooltip": "Receita",
+        "noData": "Nenhum dado disponível"
       },
       "messages": {
         "failedToLoad": "Falha ao carregar dados de receita"

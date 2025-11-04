@@ -9,6 +9,8 @@ import { Plan } from '@/utils/plans';
 import { useApi } from '@/hooks/useApi';
 import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
 import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
+import { PublicHeader } from '@/components/Public/PublicHeader/PublicHeader';
+import { PublicFooter } from '@/components/Public/PublicFooter/PublicFooter';
 
 const CACHE_KEY = 'pricing_plans';
 const CACHE_TTL_MINUTES = 60 * 6; // Cache for 6 hours
@@ -28,8 +30,10 @@ export default function PricingPage() {
 
   return (
     <AnimatedWrapper>
-      <div className="min-h-screen bg-gray-50">
-        {/* Hero Section */}
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <PublicHeader />
+        <main className="flex-1">
+          {/* Hero Section */}
         <m.section
           className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20 md:py-32"
           variants={staggerContainer}
@@ -152,6 +156,8 @@ export default function PricingPage() {
             </m.div>
           </div>
         </m.section>
+        </main>
+        <PublicFooter />
       </div>
     </AnimatedWrapper>
   );

@@ -91,33 +91,47 @@ export function formatRelativeTime(dateString: string | null | undefined): strin
 
 /**
  * Format currency with locale handling
+ * Ensures negative values are clamped to 0
+ * Preserves exact values - formatting is only for display purposes
  */
 export function formatCurrency(
   amount: number | string,
   currency: string = 'USD',
-  locale?: LocaleCode
+  locale?: LocaleCode,
+  options?: {
+    minimumFractionDigits?: number;
+    maximumFractionDigits?: number;
+  }
 ): string {
   const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
   
   if (isNaN(numAmount)) return '$0.00';
 
+  // Clamp negative values to 0
+  const clampedAmount = Math.max(0, numAmount);
+
   const selectedLocale = locale || getLocale();
+  
+  // Use provided options or default to 2 decimal places for currency
+  const minFractionDigits = options?.minimumFractionDigits ?? 2;
+  const maxFractionDigits = options?.maximumFractionDigits ?? 2;
   
   try {
     return new Intl.NumberFormat(selectedLocale, {
       style: 'currency',
       currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(numAmount);
+      minimumFractionDigits: minFractionDigits,
+      maximumFractionDigits: maxFractionDigits,
+    }).format(clampedAmount);
   } catch {
-    // Fallback formatting
-    return `${currency === 'USD' ? '$' : currency} ${numAmount.toFixed(2)}`;
+    // Fallback formatting - preserve exact value
+    return `${currency === 'USD' ? '$' : currency} ${clampedAmount.toFixed(maxFractionDigits)}`;
   }
 }
 
 /**
  * Format number with locale-specific separators
+ * Ensures negative values are clamped to 0
  */
 export function formatNumber(
   value: number | string,
@@ -125,11 +139,15 @@ export function formatNumber(
     minimumFractionDigits?: number;
     maximumFractionDigits?: number;
     locale?: LocaleCode;
+    allowNegative?: boolean;
   }
 ): string {
   const numValue = typeof value === 'string' ? parseFloat(value) : value;
   
   if (isNaN(numValue)) return '0';
+
+  // Clamp negative values to 0 unless explicitly allowed
+  const clampedValue = options?.allowNegative ? numValue : Math.max(0, numValue);
 
   const selectedLocale = options?.locale || getLocale();
   const {
@@ -141,9 +159,9 @@ export function formatNumber(
     return new Intl.NumberFormat(selectedLocale, {
       minimumFractionDigits,
       maximumFractionDigits,
-    }).format(numValue);
+    }).format(clampedValue);
   } catch {
-    return numValue.toFixed(maximumFractionDigits);
+    return clampedValue.toFixed(maximumFractionDigits);
   }
 }
 
@@ -176,17 +194,21 @@ export function formatFileSize(bytes: number): string {
 
 /**
  * Format duration (seconds to human-readable)
+ * Ensures negative values are clamped to 0
  */
 export function formatDuration(seconds: number): string {
-  if (seconds < 60) {
-    return `${Math.round(seconds)}s`;
-  } else if (seconds < 3600) {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = Math.round(seconds % 60);
+  // Clamp negative values to 0
+  const clampedSeconds = Math.max(0, seconds);
+  
+  if (clampedSeconds < 60) {
+    return `${Math.round(clampedSeconds)}s`;
+  } else if (clampedSeconds < 3600) {
+    const minutes = Math.floor(clampedSeconds / 60);
+    const remainingSeconds = Math.round(clampedSeconds % 60);
     return remainingSeconds > 0 ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
   } else {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
+    const hours = Math.floor(clampedSeconds / 3600);
+    const minutes = Math.floor((clampedSeconds % 3600) / 60);
     return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`;
   }
 }

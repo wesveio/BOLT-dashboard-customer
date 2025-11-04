@@ -52,19 +52,66 @@ export async function POST(
     const body = await request.json();
     const validated = duplicateSchema.parse(body);
 
-    // Duplicate theme using RPC function
-    const { data: themes, error: duplicateError } = await supabaseAdmin
-      .rpc('duplicate_theme', {
+    // For default themes (special IDs), we need to handle differently
+    const isDefaultTheme = id.startsWith('default-') || id.includes('theme');
+    
+    let duplicateResult;
+    
+    if (isDefaultTheme && (id === 'default-theme' || id === 'single-page-theme' || id === 'liquid-glass-theme')) {
+      // Handle default theme duplication by creating from default config
+      const baseThemeMap: Record<string, 'default' | 'single-page' | 'liquid-glass'> = {
+        'default-theme': 'default',
+        'single-page-theme': 'single-page',
+        'liquid-glass-theme': 'liquid-glass',
+      };
+      
+      const baseTheme = baseThemeMap[id];
+      
+      if (!baseTheme) {
+        return NextResponse.json(
+          { error: 'Invalid default theme ID' },
+          { status: 400 }
+        );
+      }
+
+      // Import getDefaultThemeConfig
+      const { getDefaultThemeConfig } = await import('@/components/Dashboard/ThemeEditor/defaults');
+      const defaultConfig = getDefaultThemeConfig(baseTheme);
+      
+      // Create theme using default config
+      const { data: themes, error: createError } = await supabaseAdmin.rpc('create_theme', {
+        p_account_id: user.account_id,
+        p_name: validated.newName,
+        p_config: {
+          ...defaultConfig,
+          baseTheme: baseTheme,
+        },
+        p_created_by: session.user_id,
+        p_is_active: false,
+        p_base_theme: baseTheme,
+        p_is_default: false,
+        p_is_readonly: false,
+      });
+
+      duplicateResult = { themes, error: createError };
+    } else {
+      // Duplicate existing theme using RPC function
+      const result = await supabaseAdmin.rpc('duplicate_theme', {
         p_theme_id: id,
         p_account_id: user.account_id,
         p_new_name: validated.newName,
         p_created_by: session.user_id,
       });
 
-    const theme = themes && themes.length > 0 ? themes[0] : null;
+      duplicateResult = { themes: result.data, error: result.error };
+    }
 
-    if (duplicateError || !theme) {
-      console.error('Duplicate theme error:', duplicateError);
+    const theme = duplicateResult.themes && Array.isArray(duplicateResult.themes) && duplicateResult.themes.length > 0 
+      ? duplicateResult.themes[0] 
+      : duplicateResult.themes;
+
+    if (duplicateResult.error || !theme) {
+      console.error('Duplicate theme error:', duplicateResult.error);
       return NextResponse.json(
         { error: 'Failed to duplicate theme' },
         { status: 500 }

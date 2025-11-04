@@ -5,6 +5,8 @@ import { AnimatedWrapper } from '@/components/Dashboard/AnimatedWrapper/Animated
 import { motion as m } from 'framer-motion';
 import { fadeIn, staggerContainer } from '@/utils/animations';
 import { NextSeo } from 'next-seo';
+import { PublicHeader } from '@/components/Public/PublicHeader/PublicHeader';
+import { PublicFooter } from '@/components/Public/PublicFooter/PublicFooter';
 
 export default function Home() {
   const router = useRouter();
@@ -95,8 +97,10 @@ export default function Home() {
         canonical="https://pivotree.myvtex.com/"
       />
       <AnimatedWrapper>
-        <div className="min-h-screen">
-          {/* Hero Section */}
+        <div className="min-h-screen flex flex-col">
+          <PublicHeader />
+          <main className="flex-1">
+            {/* Hero Section */}
           <m.section
             className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20 md:py-32"
             variants={staggerContainer}
@@ -988,6 +992,8 @@ export default function Home() {
               </m.button>
             </div>
           </m.section>
+          </main>
+          <PublicFooter />
         </div>
       </AnimatedWrapper>
     </>

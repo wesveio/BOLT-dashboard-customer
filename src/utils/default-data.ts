@@ -67,6 +67,16 @@ export const defaultAnalyticsMetrics = {
 };
 
 /**
+ * Default overview metrics structure
+ */
+export const defaultOverviewMetrics = {
+  totalRevenue: 0,
+  totalOrders: 0,
+  conversionRate: 0,
+  totalSessions: 0,
+};
+
+/**
  * Period options for data filtering
  */
 export const periodOptions = [

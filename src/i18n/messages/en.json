@@ -63,6 +63,23 @@
       "role": "Role",
       "vtexAccount": "VTEX Account"
     },
+    "breadcrumbs": {
+      "dashboard": "Dashboard",
+      "overview": "Overview",
+      "performance": "Performance",
+      "revenue": "Revenue",
+      "analytics": "Analytics",
+      "payment": "Payment Methods",
+      "shipping": "Shipping & Delivery",
+      "devices": "Device Breakdown",
+      "browsers": "Browser & Platform",
+      "themes": "Themes",
+      "insights": "Insights",
+      "plans": "Plans & Pricing",
+      "integrations": "Integrations",
+      "settings": "Settings",
+      "profile": "Profile"
+    },
     "header": {
       "profile": "Profile",
       "logout": "Logout",
@@ -78,7 +95,20 @@
       "title": "Overview",
       "welcome": "Welcome to your BOLT Dashboard",
       "quickStart": "Quick Start",
-      "description": "Your dashboard is ready! Metrics and analytics will appear here once you start receiving checkout data."
+      "description": "Your dashboard is ready! Metrics and analytics will appear here once you start receiving checkout data.",
+      "totalRevenue": "Total Revenue",
+      "totalOrders": "Total Orders",
+      "conversionRate": "Conversion Rate",
+      "totalSessions": "Total Sessions",
+      "subtitles": {
+        "totalRevenue": "Revenue for selected period",
+        "totalOrders": "Orders processed",
+        "conversionRate": "Overall checkout completion",
+        "totalSessions": "Checkout sessions started"
+      },
+      "messages": {
+        "failedToLoad": "Failed to load metrics"
+      }
     },
     "performance": {
       "title": "Checkout Performance",
@@ -126,7 +156,8 @@
         "weeklyPattern": "Weekly pattern",
         "hourlyBreakdownComingSoon": "Hourly breakdown chart coming soon",
         "dailyBreakdownComingSoon": "Daily breakdown chart coming soon",
-        "revenueTooltip": "Revenue"
+        "revenueTooltip": "Revenue",
+        "noData": "No data available"
       },
       "messages": {
         "failedToLoad": "Failed to load revenue data"

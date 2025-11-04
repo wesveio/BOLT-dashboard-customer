@@ -63,6 +63,23 @@
       "role": "Rol",
       "vtexAccount": "Cuenta VTEX"
     },
+    "breadcrumbs": {
+      "dashboard": "Dashboard",
+      "overview": "Resumen",
+      "performance": "Rendimiento",
+      "revenue": "Ingresos",
+      "analytics": "Analíticas",
+      "payment": "Métodos de Pago",
+      "shipping": "Envío y Entrega",
+      "devices": "Distribución por Dispositivo",
+      "browsers": "Navegador y Plataforma",
+      "themes": "Temas",
+      "insights": "Insights",
+      "plans": "Planes y Precios",
+      "integrations": "Integraciones",
+      "settings": "Configuración",
+      "profile": "Perfil"
+    },
     "header": {
       "profile": "Perfil",
       "logout": "Cerrar sesión",
@@ -73,7 +90,20 @@
       "title": "Resumen",
       "welcome": "Bienvenido a tu Dashboard BOLT",
       "quickStart": "Inicio Rápido",
-      "description": "¡Tu dashboard está listo! Las métricas y analytics aparecerán aquí una vez que comiences a recibir datos de checkout."
+      "description": "¡Tu dashboard está listo! Las métricas y analytics aparecerán aquí una vez que comiences a recibir datos de checkout.",
+      "totalRevenue": "Ingresos Totales",
+      "totalOrders": "Total de Pedidos",
+      "conversionRate": "Tasa de Conversión",
+      "totalSessions": "Total de Sesiones",
+      "subtitles": {
+        "totalRevenue": "Ingresos para el período seleccionado",
+        "totalOrders": "Pedidos procesados",
+        "conversionRate": "Finalización general del checkout",
+        "totalSessions": "Sesiones de checkout iniciadas"
+      },
+      "messages": {
+        "failedToLoad": "Error al cargar métricas"
+      }
     },
     "performance": {
       "title": "Rendimiento del Checkout",
@@ -121,7 +151,8 @@
         "weeklyPattern": "Patrón semanal",
         "hourlyBreakdownComingSoon": "Gráfico de ingresos por hora próximamente",
         "dailyBreakdownComingSoon": "Gráfico de ingresos por día próximamente",
-        "revenueTooltip": "Ingresos"
+        "revenueTooltip": "Ingresos",
+        "noData": "No hay datos disponibles"
       },
       "messages": {
         "failedToLoad": "Error al cargar datos de ingresos"

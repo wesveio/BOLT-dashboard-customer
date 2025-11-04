@@ -9,6 +9,7 @@ import { SignUpForm } from '@/components/Auth/SignUpForm';
 import { OtpInput } from '@/components/Auth/OtpInput';
 import { useApiPost } from '@/hooks/useApi';
 import { ApiError } from '@/utils/api-client';
+import Image from 'next/image';
 
 interface SendCodeResponse {
   success?: boolean;
@@ -113,6 +114,28 @@ function LoginContent() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
       >
+        {/* Back Button */}
+        <button
+          onClick={() => router.push('/')}
+          className="absolute top-4 left-4 md:top-8 md:left-8 flex items-center gap-2 text-white/90 hover:text-white transition-colors duration-200 group z-10"
+          aria-label="Go back to the home"
+        >
+          <svg
+            className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          <span className="text-sm font-semibold">Go back</span>
+        </button>
+
         {/* Decorative elements */}
         <div className="absolute inset-0">
           <div className="absolute top-20 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
@@ -125,11 +148,19 @@ function LoginContent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
+            <Image
+              src="/bolt.svg"
+              alt="Bolt Logo"
+              width={150}
+              height={150}
+              className="object-contain mb-6"
+              priority
+            />
             <h1 className="text-4xl lg:text-5xl font-bold mb-6">
-              {mode === 'login' ? 'Welcome Back' : 'Welcome'}
+              Are you ready to be faster?
             </h1>
             <p className="text-xl text-blue-100 mb-12">
-              {mode === 'login' 
+              {mode === 'login'
                 ? 'Sign in to access your dashboard and manage your checkout analytics.'
                 : 'Create your account and start tracking your checkout performance.'}
             </p>
@@ -254,11 +285,10 @@ function LoginContent() {
                   setStep('email');
                   setCodeSent(false);
                 }}
-                className={`px-6 py-2 rounded-md font-semibold text-sm transition-all ${
-                  mode === 'login'
+                className={`px-6 py-2 rounded-md font-semibold text-sm transition-all ${mode === 'login'
                     ? 'bg-white text-gray-900 shadow-sm'
                     : 'text-gray-600 hover:text-gray-900'
-                }`}
+                  }`}
               >
                 {t('title')}
               </button>
@@ -267,11 +297,10 @@ function LoginContent() {
                 onClick={() => {
                   setMode('signup');
                 }}
-                className={`px-6 py-2 rounded-md font-semibold text-sm transition-all ${
-                  mode === 'signup'
+                className={`px-6 py-2 rounded-md font-semibold text-sm transition-all ${mode === 'signup'
                     ? 'bg-white text-gray-900 shadow-sm'
                     : 'text-gray-600 hover:text-gray-900'
-                }`}
+                  }`}
               >
                 {tSignup('title')}
               </button>

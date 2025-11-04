@@ -6,6 +6,39 @@ import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
 import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 
 /**
+ * Extract revenue from event metadata with multiple fallbacks
+ * Tries different field names and validates the value
+ */
+function extractRevenue(event: AnalyticsEvent): number {
+  const metadata = event.metadata || {};
+
+  // Try different revenue field names
+  const revenueValue =
+    metadata.revenue ??
+    metadata.value ??
+    metadata.orderValue ??
+    metadata.totalValue ??
+    metadata.amount ??
+    null;
+
+  if (revenueValue === null || revenueValue === undefined) {
+    return 0;
+  }
+
+  // Convert to number
+  const numValue = typeof revenueValue === 'number'
+    ? revenueValue
+    : parseFloat(String(revenueValue));
+
+  // Validate and return
+  if (isNaN(numValue) || numValue < 0) {
+    return 0;
+  }
+
+  return numValue;
+}
+
+/**
  * GET /api/dashboard/revenue
  * Get revenue analytics for the authenticated user's account
  */
@@ -36,24 +69,103 @@ export async function GET(_request: NextRequest) {
       });
 
     if (eventsError) {
-      console.error('Get revenue analytics error:', eventsError);
+      console.error('❌ [DEBUG] Get revenue analytics error:', eventsError);
       return apiError('Failed to fetch revenue analytics', 500);
+    }
+
+    // Debug logging in development
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('‼️ [DEBUG] Revenue Analytics Query:', {
+        customerId: user.account_id,
+        period,
+        dateRange: {
+          start: range.start.toISOString(),
+          end: range.end.toISOString(),
+        },
+        eventsCount: events?.length || 0,
+        eventsFound: !!events,
+      });
     }
 
     // Aggregate revenue data
     let totalRevenue = 0;
     let totalOrders = 0;
     const revenueByDate: Record<string, number> = {};
+    // Initialize revenue by hour (0-23) with zeros
+    const revenueByHour: Record<number, number> = {};
+    for (let i = 0; i < 24; i++) {
+      revenueByHour[i] = 0;
+    }
+    // Revenue by day - will be populated based on period
+    const revenueByDay: Record<string, number> = {};
+    const eventsWithRevenue: Array<{ eventId: string; revenue: number; metadata: any }> = [];
+    const eventsWithoutRevenue: Array<{ eventId: string; metadata: any }> = [];
 
     events?.forEach((event: AnalyticsEvent) => {
-      const revenue = event.metadata?.revenue ? parseFloat(String(event.metadata?.revenue as string)) : 0;
-      totalRevenue += revenue;
-      totalOrders++;
+      const revenue = extractRevenue(event);
 
-      // Group by date for chart
-      const date = new Date(event.timestamp).toLocaleDateString('en-US', { weekday: 'short' });
-      revenueByDate[date] = (revenueByDate[date] || 0) + revenue;
+      // Debug logging for each event
+      if (process.env.NODE_ENV === 'development') {
+        if (revenue > 0) {
+          eventsWithRevenue.push({
+            eventId: event.id,
+            revenue,
+            metadata: event.metadata,
+          });
+        } else {
+          eventsWithoutRevenue.push({
+            eventId: event.id,
+            metadata: event.metadata,
+          });
+        }
+      }
+
+      // Only count orders with valid revenue > 0
+      if (revenue > 0) {
+        totalRevenue += revenue;
+        totalOrders++;
+
+        const eventDate = new Date(event.timestamp);
+
+        // Group by date for main chart
+        const date = eventDate.toLocaleDateString('en-US', { weekday: 'short' });
+        revenueByDate[date] = (revenueByDate[date] || 0) + revenue;
+
+        // Group by hour (0-23)
+        const hour = eventDate.getHours();
+        revenueByHour[hour] = (revenueByHour[hour] || 0) + revenue;
+
+        // Group by day based on period
+        let dayKey: string;
+        if (period === 'week') {
+          // Day of week (Mon-Sun)
+          dayKey = eventDate.toLocaleDateString('en-US', { weekday: 'short' });
+        } else if (period === 'month') {
+          // Day of month (1-31)
+          dayKey = eventDate.getDate().toString();
+        } else if (period === 'year') {
+          // Month name
+          dayKey = eventDate.toLocaleDateString('en-US', { month: 'short' });
+        } else {
+          // For "today", use day of week
+          dayKey = eventDate.toLocaleDateString('en-US', { weekday: 'short' });
+        }
+        revenueByDay[dayKey] = (revenueByDay[dayKey] || 0) + revenue;
+      }
     });
+
+    // Debug logging summary
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('‼️ [DEBUG] Revenue Extraction Summary:', {
+        totalEvents: events?.length || 0,
+        eventsWithRevenue: eventsWithRevenue.length,
+        eventsWithoutRevenue: eventsWithoutRevenue.length,
+        totalRevenue,
+        totalOrders,
+        sampleEventsWithRevenue: eventsWithRevenue.slice(0, 3),
+        sampleEventsWithoutRevenue: eventsWithoutRevenue.slice(0, 3),
+      });
+    }
 
     const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
@@ -67,11 +179,54 @@ export async function GET(_request: NextRequest) {
       revenuePerHour = hoursElapsed > 0 ? totalRevenue / hoursElapsed : 0;
     }
 
-    // Format data for line chart
+    // Format data for line chart - preserve exact values
     const revenueData = Object.entries(revenueByDate).map(([date, revenue]) => ({
       date,
-      revenue: Math.round(revenue),
+      revenue, // Preserve exact value, no rounding
     }));
+
+    // Format revenue by hour - preserve exact values, ensure all 24 hours are present
+    const revenueByHourData = Object.keys(revenueByHour)
+      .map(Number)
+      .sort((a, b) => a - b)
+      .map((hour) => ({
+        hour: hour.toString().padStart(2, '0') + ':00',
+        revenue: Math.max(0, revenueByHour[hour] || 0), // Ensure non-negative
+      }));
+
+    // Format revenue by day - preserve exact values
+    let revenueByDayData: Array<{ day: string; revenue: number }> = [];
+    if (period === 'week') {
+      // Order by day of week
+      const dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      revenueByDayData = dayOrder.map((day) => ({
+        day,
+        revenue: Math.max(0, revenueByDay[day] || 0),
+      }));
+    } else if (period === 'month') {
+      // Order by day of month (1-31)
+      revenueByDayData = Object.keys(revenueByDay)
+        .map(Number)
+        .sort((a, b) => a - b)
+        .map((day) => ({
+          day: day.toString(),
+          revenue: Math.max(0, revenueByDay[day.toString()] || 0),
+        }));
+    } else if (period === 'year') {
+      // Order by month
+      const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      revenueByDayData = monthOrder.map((month) => ({
+        day: month,
+        revenue: Math.max(0, revenueByDay[month] || 0),
+      }));
+    } else {
+      // For "today", use day of week
+      const dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      revenueByDayData = dayOrder.map((day) => ({
+        day,
+        revenue: Math.max(0, revenueByDay[day] || 0),
+      }));
+    }
 
     // Calculate growth (compare with previous period)
     const previousRange = getPreviousDateRange(range);
@@ -86,7 +241,7 @@ export async function GET(_request: NextRequest) {
 
     let previousRevenue = 0;
     previousEvents?.forEach((event: AnalyticsEvent) => {
-      const revenue = event.metadata?.revenue ? parseFloat(String(event.metadata?.revenue as string)) : 0;
+      const revenue = extractRevenue(event);
       previousRevenue += revenue;
     });
 
@@ -96,13 +251,15 @@ export async function GET(_request: NextRequest) {
 
     return apiSuccess({
       metrics: {
-        totalRevenue: Math.round(totalRevenue),
-        avgOrderValue: avgOrderValue.toFixed(2),
+        totalRevenue, // Preserve exact value, no rounding
+        avgOrderValue, // Preserve exact value as number
         totalOrders,
-        revenuePerHour: revenuePerHour.toFixed(2),
-        revenueGrowth: revenueGrowth.toFixed(1),
+        revenuePerHour, // Preserve exact value as number
+        revenueGrowth, // Preserve exact value as number
       },
       chartData: revenueData,
+      revenueByHour: revenueByHourData,
+      revenueByDay: revenueByDayData,
       period,
       dateRange: {
         start: range.start.toISOString(),

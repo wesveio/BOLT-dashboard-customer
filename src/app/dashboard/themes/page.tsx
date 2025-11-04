@@ -92,15 +92,19 @@ export default function ThemesPage() {
   const handleUseDefaultTheme = async (baseTheme: 'default' | 'single-page' | 'liquid-glass') => {
     try {
       // Check if there's already a theme with this baseTheme that's active
-      const existingTheme = themes.find((t) => t.baseTheme === baseTheme && t.isActive);
+      const existingActiveTheme = themes.find(
+        (t) => (t.baseTheme === baseTheme || t.base_theme === baseTheme) && t.isActive
+      );
       
-      if (existingTheme) {
-        toast.success(t('toast.alreadyActive', { name: existingTheme.name }));
+      if (existingActiveTheme) {
+        toast.success(t('toast.alreadyActive', { name: existingActiveTheme.name }));
         return;
       }
 
       // Check if there's a theme with this baseTheme (even if not active)
-      const themeWithSameBase = themes.find((t) => t.baseTheme === baseTheme);
+      const themeWithSameBase = themes.find(
+        (t) => t.baseTheme === baseTheme || t.base_theme === baseTheme
+      );
       
       if (themeWithSameBase) {
         // Activate the existing theme
@@ -109,7 +113,7 @@ export default function ThemesPage() {
         });
         
         if (response.ok) {
-          toast.success(t('toast.createdAndActivated', { name: themeWithSameBase.name }));
+          toast.success(t('toast.activateSuccess'));
           refetch();
         } else {
           throw new Error('Failed to activate theme');
@@ -117,7 +121,8 @@ export default function ThemesPage() {
       } else {
         // Create a new theme based on the default theme config
         const defaultConfig = getDefaultThemeConfig(baseTheme);
-        const themeName = `Default ${baseTheme.charAt(0).toUpperCase() + baseTheme.slice(1)}`;
+        const themeName = defaultThemes.find((dt) => dt.baseTheme === baseTheme)?.name || 
+                          `Default ${baseTheme.charAt(0).toUpperCase() + baseTheme.slice(1)}`;
         
         // Ensure baseTheme is set in the config
         const configWithBaseTheme = {
@@ -131,7 +136,6 @@ export default function ThemesPage() {
           body: JSON.stringify({
             ...configWithBaseTheme,
             name: themeName,
-            baseTheme: baseTheme,
           }),
         });
 
@@ -143,9 +147,9 @@ export default function ThemesPage() {
             method: 'POST',
           });
           
-        if (activateResponse.ok) {
-          toast.success(t('toast.createdAndActivated', { name: themeName }));
-          refetch();
+          if (activateResponse.ok) {
+            toast.success(t('toast.createdAndActivated', { name: themeName }));
+            refetch();
           } else {
             throw new Error('Failed to activate theme');
           }
@@ -155,7 +159,7 @@ export default function ThemesPage() {
         }
       }
     } catch (error: any) {
-      console.error('Use default theme error:', error);
+      console.error('❌ [DEBUG] Use default theme error:', error);
       toast.error(error.message || 'Failed to use default theme');
     }
   };

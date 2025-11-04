@@ -22,6 +22,21 @@ export default function PerformancePage() {
   const t = useTranslations('dashboard.performance');
   const { metrics, funnelData, stepMetrics, isLoading, error, refetch } = usePerformanceData();
 
+  // Ensure all metrics are non-negative before displaying
+  const safeMetrics = {
+    conversionRate: Math.max(0, parseFloat(metrics.conversionRate) || 0),
+    avgCheckoutTime: Math.max(0, metrics.avgCheckoutTime || 0),
+    abandonmentRate: Math.max(0, parseFloat(metrics.abandonmentRate) || 0),
+    totalSessions: Math.max(0, metrics.totalSessions || 0),
+  };
+
+  // Ensure step metrics have non-negative times
+  const safeStepMetrics = stepMetrics.map(step => ({
+    ...step,
+    avgTime: Math.max(0, step.avgTime || 0),
+    abandonment: Math.max(0, Math.min(100, step.abandonment || 0)),
+  }));
+
   if (isLoading) {
     return (
       <PageWrapper>
@@ -52,25 +67,25 @@ export default function PerformancePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
           title={t('conversionRate')}
-          value={formatPercentage(parseFloat(metrics.conversionRate))}
+          value={formatPercentage(safeMetrics.conversionRate)}
           subtitle={t('subtitles.overallCompletion')}
           icon={<CheckCircleIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('avgCheckoutTime')}
-          value={formatDuration(metrics.avgCheckoutTime)}
+          value={formatDuration(safeMetrics.avgCheckoutTime)}
           subtitle={t('subtitles.timeToComplete')}
           icon={<ClockIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('abandonmentRate')}
-          value={formatPercentage(parseFloat(metrics.abandonmentRate))}
+          value={formatPercentage(safeMetrics.abandonmentRate)}
           subtitle={t('subtitles.checkoutsAbandoned')}
           icon={<ExclamationTriangleIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('totalSessions')}
-          value={metrics.totalSessions?.toLocaleString() || '0'}
+          value={safeMetrics.totalSessions.toLocaleString()}
           subtitle={t('subtitles.sessionsStarted')}
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />
@@ -85,23 +100,23 @@ export default function PerformancePage() {
 
       {/* Step Performance */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {stepMetrics.map((step) => {
-          const abandonmentValue = typeof step.abandonment === 'number' ? step.abandonment : parseFloat(String(step.abandonment)) || 0;
-          const clampedAbandonment = Math.max(0, Math.min(100, abandonmentValue));
+        {safeStepMetrics.map((step) => {
+          const clampedAbandonment = Math.max(0, Math.min(100, step.abandonment));
           const progressWidth = Math.max(0, Math.min(100, 100 - clampedAbandonment));
           const formattedAbandonment = formatPercentage(clampedAbandonment, 1);
+          const safeAvgTime = Math.max(0, step.avgTime);
 
           return (
             <ChartCard
               key={step.step}
               title={step.label}
-              subtitle={`Average time: ${step.avgTime}s | Abandonment: ${formattedAbandonment}`}
+              subtitle={`Average time: ${safeAvgTime}s | Abandonment: ${formattedAbandonment}`}
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">{t('labels.averageTime')}</span>
                   <span className="text-lg font-bold text-gray-900">
-                    {step.avgTime}s
+                    {safeAvgTime}s
                   </span>
                 </div>
                 <div className="flex items-center justify-between">

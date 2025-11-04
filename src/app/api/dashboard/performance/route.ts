@@ -93,21 +93,33 @@ export async function GET(_request: NextRequest) {
           funnelSteps.profile++;
           session.steps.push('profile');
           if (session.steps.includes('cart')) {
-            stepTimes.profile.push((eventTime - sessionStart) / 1000);
+            const timeDiff = (eventTime - sessionStart) / 1000;
+            // Only add positive time differences
+            if (timeDiff >= 0) {
+              stepTimes.profile.push(timeDiff);
+            }
           }
           break;
         case 'shipping_step':
           funnelSteps.shipping++;
           session.steps.push('shipping');
           if (session.steps.includes('profile')) {
-            stepTimes.shipping.push((eventTime - sessionStart) / 1000);
+            const timeDiff = (eventTime - sessionStart) / 1000;
+            // Only add positive time differences
+            if (timeDiff >= 0) {
+              stepTimes.shipping.push(timeDiff);
+            }
           }
           break;
         case 'payment_step':
           funnelSteps.payment++;
           session.steps.push('payment');
           if (session.steps.includes('shipping')) {
-            stepTimes.payment.push((eventTime - sessionStart) / 1000);
+            const timeDiff = (eventTime - sessionStart) / 1000;
+            // Only add positive time differences
+            if (timeDiff >= 0) {
+              stepTimes.payment.push(timeDiff);
+            }
           }
           break;
         case 'checkout_complete':
@@ -117,20 +129,18 @@ export async function GET(_request: NextRequest) {
       }
     });
 
-    // Calculate average times
+    // Calculate average times, filtering out negative values and ensuring non-negative results
+    const calculateAvgTime = (times: number[]): number => {
+      const validTimes = times.filter(t => t >= 0);
+      if (validTimes.length === 0) return 0;
+      return Math.max(0, validTimes.reduce((a, b) => a + b, 0) / validTimes.length);
+    };
+
     const avgTimes = {
-      cart: stepTimes.cart.length > 0
-        ? stepTimes.cart.reduce((a, b) => a + b, 0) / stepTimes.cart.length
-        : 0,
-      profile: stepTimes.profile.length > 0
-        ? stepTimes.profile.reduce((a, b) => a + b, 0) / stepTimes.profile.length
-        : 0,
-      shipping: stepTimes.shipping.length > 0
-        ? stepTimes.shipping.reduce((a, b) => a + b, 0) / stepTimes.shipping.length
-        : 0,
-      payment: stepTimes.payment.length > 0
-        ? stepTimes.payment.reduce((a, b) => a + b, 0) / stepTimes.payment.length
-        : 0,
+      cart: calculateAvgTime(stepTimes.cart),
+      profile: calculateAvgTime(stepTimes.profile),
+      shipping: calculateAvgTime(stepTimes.shipping),
+      payment: calculateAvgTime(stepTimes.payment),
     };
 
     // Helper functions for percentage calculations
@@ -146,7 +156,8 @@ export async function GET(_request: NextRequest) {
     const totalSessions = funnelSteps.cart || 1;
     const conversionRate = clampPercentage((funnelSteps.confirmed / totalSessions) * 100);
     const abandonmentRate = clampPercentage(100 - conversionRate);
-    const avgCheckoutTime = Object.values(avgTimes).reduce((a, b) => a + b, 0);
+    // Ensure average checkout time is never negative
+    const avgCheckoutTime = Math.max(0, Object.values(avgTimes).reduce((a, b) => a + b, 0));
 
     // Calculate abandonment by step (clamped to 0-100% and rounded)
     const stepAbandonment = {
@@ -198,30 +209,30 @@ export async function GET(_request: NextRequest) {
       },
     ];
 
-    // Step performance details
+    // Step performance details - ensure all times are non-negative
     const stepMetrics = [
       {
         step: 'cart',
         label: 'Cart',
-        avgTime: Math.round(avgTimes.cart),
+        avgTime: Math.max(0, Math.round(avgTimes.cart)),
         abandonment: stepAbandonment.cart,
       },
       {
         step: 'profile',
         label: 'Profile',
-        avgTime: Math.round(avgTimes.profile),
+        avgTime: Math.max(0, Math.round(avgTimes.profile)),
         abandonment: stepAbandonment.profile,
       },
       {
         step: 'shipping',
         label: 'Shipping',
-        avgTime: Math.round(avgTimes.shipping),
+        avgTime: Math.max(0, Math.round(avgTimes.shipping)),
         abandonment: stepAbandonment.shipping,
       },
       {
         step: 'payment',
         label: 'Payment',
-        avgTime: Math.round(avgTimes.payment),
+        avgTime: Math.max(0, Math.round(avgTimes.payment)),
         abandonment: stepAbandonment.payment,
       },
     ];
@@ -230,8 +241,9 @@ export async function GET(_request: NextRequest) {
       metrics: {
         conversionRate: conversionRate.toFixed(1),
         abandonmentRate: abandonmentRate.toFixed(1),
-        avgCheckoutTime: Math.round(avgCheckoutTime),
-        totalSessions,
+        // Ensure avgCheckoutTime is never negative
+        avgCheckoutTime: Math.max(0, Math.round(avgCheckoutTime)),
+        totalSessions: Math.max(0, totalSessions),
       },
       funnel: funnelData,
       stepMetrics,

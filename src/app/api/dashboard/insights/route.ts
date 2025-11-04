@@ -139,7 +139,7 @@ export async function GET(_request: NextRequest) {
     const avgOrderValue = totalConversions > 0 ? totalRevenue / totalConversions : 0;
     const previousAOV = previousConversions > 0 ? previousRevenue / previousConversions : 0;
 
-    // Calculate checkout time
+    // Calculate checkout time - only include positive durations
     const checkoutTimes: number[] = [];
     const sessionsMap: Record<string, Date> = {};
 
@@ -151,12 +151,16 @@ export async function GET(_request: NextRequest) {
         const startTime = sessionsMap[event.session_id];
         const endTime = new Date(event.timestamp);
         const duration = (endTime.getTime() - startTime.getTime()) / 1000; // in seconds
-        checkoutTimes.push(duration);
+        // Only add positive durations to avoid negative values
+        if (duration >= 0) {
+          checkoutTimes.push(duration);
+        }
       }
     });
 
+    // Ensure average checkout time is never negative
     const avgCheckoutTime = checkoutTimes.length > 0
-      ? checkoutTimes.reduce((a, b) => a + b, 0) / checkoutTimes.length
+      ? Math.max(0, checkoutTimes.reduce((a, b) => a + b, 0) / checkoutTimes.length)
       : 0;
 
     // Calculate peak hours (simplified - could be more sophisticated)
@@ -173,17 +177,17 @@ export async function GET(_request: NextRequest) {
       .slice(0, 2)
       .map(([hour]) => `${hour}:00`);
 
-    // Generate insights
+    // Generate insights - ensure all values are valid
     const metrics = {
-      conversionRate,
-      previousConversionRate,
+      conversionRate: Math.max(0, conversionRate),
+      previousConversionRate: Math.max(0, previousConversionRate),
       abandonmentRate: clampPercentage(100 - conversionRate),
-      mobileConversionRate,
-      desktopConversionRate,
-      avgOrderValue,
-      previousAOV,
+      mobileConversionRate: Math.max(0, mobileConversionRate),
+      desktopConversionRate: Math.max(0, desktopConversionRate),
+      avgOrderValue: Math.max(0, avgOrderValue),
+      previousAOV: Math.max(0, previousAOV),
       paymentAbandonmentRate: paymentAbandonment,
-      avgCheckoutTime,
+      avgCheckoutTime: Math.max(0, avgCheckoutTime),
       peakHours,
     };
 

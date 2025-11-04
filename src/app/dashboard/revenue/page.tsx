@@ -14,7 +14,7 @@ import {
   ArrowTrendingUpIcon,
   ClockIcon,
 } from '@heroicons/react/24/outline';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { Select, SelectItem } from '@heroui/react';
 import { useRevenueData } from '@/hooks/useDashboardData';
 import { periodOptions, Period } from '@/utils/default-data';
@@ -23,10 +23,57 @@ import { formatCurrency, formatNumber } from '@/utils/formatters';
 export default function RevenuePage() {
   const t = useTranslations('dashboard.revenue');
   const [period, setPeriod] = useState<Period>('week');
-  const { metrics, chartData, isLoading, error, refetch } = useRevenueData({ period });
+  const { metrics, chartData, revenueByHour, revenueByDay, isLoading, error, refetch } = useRevenueData({ period });
 
-  const displayMetrics = useMemo(() => metrics, [metrics]);
-  const displayRevenueData = useMemo(() => chartData, [chartData]);
+  // Ensure all metrics are non-negative before displaying
+  // Preserve exact financial values - no rounding
+  const displayMetrics = useMemo(() => {
+    return {
+      ...metrics,
+      totalRevenue: Math.max(0, typeof metrics.totalRevenue === 'string' ? parseFloat(metrics.totalRevenue) : metrics.totalRevenue || 0),
+      avgOrderValue: Math.max(0, typeof metrics.avgOrderValue === 'string' ? parseFloat(metrics.avgOrderValue) : metrics.avgOrderValue || 0),
+      totalOrders: Math.max(0, typeof metrics.totalOrders === 'string' ? parseFloat(metrics.totalOrders) : metrics.totalOrders || 0),
+      revenuePerHour: Math.max(0, typeof metrics.revenuePerHour === 'string' ? parseFloat(metrics.revenuePerHour) : metrics.revenuePerHour || 0),
+      // revenueGrowth can be number or string, preserve exact value
+      revenueGrowth: typeof metrics.revenueGrowth === 'number' 
+        ? metrics.revenueGrowth 
+        : (typeof metrics.revenueGrowth === 'string' ? parseFloat(metrics.revenueGrowth) : 0),
+    };
+  }, [metrics]);
+  
+  // Ensure chart data values are non-negative
+  const displayRevenueData = useMemo(() => {
+    return chartData.map(item => ({
+      ...item,
+      revenue: Math.max(0, item.revenue || 0),
+    }));
+  }, [chartData]);
+
+  // Process revenue by hour data - ensure non-negative and preserve exact values
+  const displayRevenueByHour = useMemo(() => {
+    if (!revenueByHour || revenueByHour.length === 0) {
+      // Return empty array with all 24 hours at 0
+      return Array.from({ length: 24 }, (_, i) => ({
+        hour: i.toString().padStart(2, '0') + ':00',
+        revenue: 0,
+      }));
+    }
+    return revenueByHour.map(item => ({
+      ...item,
+      revenue: Math.max(0, item.revenue || 0),
+    }));
+  }, [revenueByHour]);
+
+  // Process revenue by day data - ensure non-negative and preserve exact values
+  const displayRevenueByDay = useMemo(() => {
+    if (!revenueByDay || revenueByDay.length === 0) {
+      return [];
+    }
+    return revenueByDay.map(item => ({
+      ...item,
+      revenue: Math.max(0, item.revenue || 0),
+    }));
+  }, [revenueByDay]);
 
   if (error) {
     return (
@@ -52,8 +99,12 @@ export default function RevenuePage() {
           value={formatCurrency(displayMetrics.totalRevenue)}
           subtitle={t('subtitles.forSelectedPeriod')}
           trend={{
-            value: parseFloat(displayMetrics.revenueGrowth || '0'),
-            isPositive: parseFloat(displayMetrics.revenueGrowth || '0') > 0,
+            value: typeof displayMetrics.revenueGrowth === 'number' 
+              ? displayMetrics.revenueGrowth 
+              : parseFloat(String(displayMetrics.revenueGrowth || '0')),
+            isPositive: (typeof displayMetrics.revenueGrowth === 'number' 
+              ? displayMetrics.revenueGrowth 
+              : parseFloat(String(displayMetrics.revenueGrowth || '0'))) > 0,
           }}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
           isLoading={isLoading}
@@ -141,14 +192,90 @@ export default function RevenuePage() {
       {/* Additional Revenue Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <ChartCard title={t('charts.revenueByHour')} subtitle={t('charts.peakHoursAnalysis')}>
-          <div className="text-center py-8 text-gray-500">
-            {t('charts.hourlyBreakdownComingSoon')}
-          </div>
+          {isLoading ? (
+            <div className="text-center py-8 text-gray-500">
+              {t('messages.loading')}
+            </div>
+          ) : displayRevenueByHour.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              {t('charts.noData')}
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={displayRevenueByHour}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis
+                  dataKey="hour"
+                  stroke="#6b7280"
+                  style={{ fontSize: '12px' }}
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                />
+                <YAxis
+                  stroke="#6b7280"
+                  style={{ fontSize: '12px' }}
+                  tickFormatter={(value) => `$${value / 1000}k`}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#fff',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px',
+                  }}
+                  formatter={(value: number) => [formatCurrency(value), t('charts.revenueTooltip')]}
+                />
+                <Bar
+                  dataKey="revenue"
+                  fill="#2563eb"
+                  radius={[8, 8, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </ChartCard>
         <ChartCard title={t('charts.revenueByDay')} subtitle={t('charts.weeklyPattern')}>
-          <div className="text-center py-8 text-gray-500">
-            {t('charts.dailyBreakdownComingSoon')}
-          </div>
+          {isLoading ? (
+            <div className="text-center py-8 text-gray-500">
+              {t('messages.loading')}
+            </div>
+          ) : displayRevenueByDay.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              {t('charts.noData')}
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={displayRevenueByDay}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis
+                  dataKey="day"
+                  stroke="#6b7280"
+                  style={{ fontSize: '12px' }}
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                />
+                <YAxis
+                  stroke="#6b7280"
+                  style={{ fontSize: '12px' }}
+                  tickFormatter={(value) => `$${value / 1000}k`}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#fff',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px',
+                  }}
+                  formatter={(value: number) => [formatCurrency(value), t('charts.revenueTooltip')]}
+                />
+                <Bar
+                  dataKey="revenue"
+                  fill="#2563eb"
+                  radius={[8, 8, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </ChartCard>
       </div>
     </PageWrapper>

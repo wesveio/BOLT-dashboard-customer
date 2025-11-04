@@ -13,6 +13,8 @@ import {
   HomeIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
   UserCircleIcon,
   ArrowTopRightOnSquareIcon,
   CreditCardIcon,
@@ -22,15 +24,23 @@ import { useSidebar } from '@/contexts/SidebarContext';
 import { useDashboardAuth } from '@/hooks/useDashboardAuth';
 import { Avatar } from '@heroui/react';
 
+interface NavSubItem {
+  href: string;
+  label: string;
+  translationKey: string;
+}
+
 interface NavItem {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   label: string;
+  subItems?: NavSubItem[];
 }
 
 export function Sidebar() {
   const { isCollapsed, toggleCollapse } = useSidebar();
   const t = useTranslations('dashboard.sidebar');
+  const tAnalytics = useTranslations('dashboard.analytics');
   const pathname = usePathname();
   const { user, isLoading } = useDashboardAuth();
 
@@ -38,7 +48,33 @@ export function Sidebar() {
     { href: '/dashboard', icon: HomeIcon, label: t('overview') },
     { href: '/dashboard/performance', icon: ChartBarIcon, label: t('performance') },
     { href: '/dashboard/revenue', icon: CurrencyDollarIcon, label: t('revenue') },
-    { href: '/dashboard/analytics', icon: ChartBarIcon, label: t('analytics') },
+    {
+      href: '/dashboard/analytics',
+      icon: ChartBarIcon,
+      label: t('analytics'),
+      subItems: [
+        {
+          href: '/dashboard/analytics/payment',
+          label: tAnalytics('payment.title'),
+          translationKey: 'dashboard.analytics.payment.title',
+        },
+        {
+          href: '/dashboard/analytics/shipping',
+          label: tAnalytics('shipping.title'),
+          translationKey: 'dashboard.analytics.shipping.title',
+        },
+        {
+          href: '/dashboard/analytics/devices',
+          label: tAnalytics('devices.title'),
+          translationKey: 'dashboard.analytics.devices.title',
+        },
+        {
+          href: '/dashboard/analytics/browsers',
+          label: tAnalytics('browsers.title'),
+          translationKey: 'dashboard.analytics.browsers.title',
+        },
+      ],
+    },
     { href: '/dashboard/themes', icon: PaintBrushIcon, label: t('themes') },
     { href: '/dashboard/insights', icon: LightBulbIcon, label: t('insights') },
     { href: '/dashboard/plans', icon: CreditCardIcon, label: t('plans') },
@@ -150,46 +186,100 @@ export function Sidebar() {
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.href);
+            const hasSubItems = item.subItems && item.subItems.length > 0;
+            const isSubItemActive = hasSubItems && item.subItems?.some((subItem) => isActive(subItem.href));
+            const shouldExpand = !isCollapsed && hasSubItems && (active || isSubItemActive);
 
             return (
-              <Link key={item.href} href={item.href} title={isCollapsed ? item.label : ''}>
-                <motion.div
-                  className={`flex items-center gap-3 rounded-lg transition-all duration-200 ${
-                    isCollapsed ? 'justify-center px-2 py-3' : 'px-4 py-3'
-                  } ${
-                    active
-                      ? 'bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 shadow-sm'
-                      : 'hover:bg-gray-50 hover:border-gray-200 border border-transparent'
-                  }`}
-                  whileHover={isCollapsed ? {} : { x: 4 }}
-                  transition={{ type: 'spring', stiffness: 300 }}
-                >
-                  <Icon
-                    className={`flex-shrink-0 ${
-                      isCollapsed ? 'w-6 h-6' : 'w-5 h-5'
+              <div key={item.href}>
+                <Link href={item.href} title={isCollapsed ? item.label : ''}>
+                  <motion.div
+                    className={`flex items-center gap-3 rounded-lg transition-all duration-200 ${
+                      isCollapsed ? 'justify-center px-2 py-3' : 'px-4 py-3'
                     } ${
-                      active
-                        ? 'text-blue-600'
-                        : 'text-gray-400 group-hover:text-gray-600'
+                      active || isSubItemActive
+                        ? 'bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 shadow-sm'
+                        : 'hover:bg-gray-50 hover:border-gray-200 border border-transparent'
                     }`}
-                  />
-                  <AnimatePresence>
-                    {!isCollapsed && (
-                      <motion.span
-                        initial={{ opacity: 0, width: 0 }}
-                        animate={{ opacity: 1, width: 'auto' }}
-                        exit={{ opacity: 0, width: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className={`font-semibold whitespace-nowrap overflow-hidden ${
-                          active ? 'text-blue-600' : 'text-gray-700'
-                        }`}
-                      >
-                        {item.label}
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              </Link>
+                    whileHover={isCollapsed ? {} : { x: 4 }}
+                    transition={{ type: 'spring', stiffness: 300 }}
+                  >
+                    <Icon
+                      className={`flex-shrink-0 ${
+                        isCollapsed ? 'w-6 h-6' : 'w-5 h-5'
+                      } ${
+                        active || isSubItemActive
+                          ? 'text-blue-600'
+                          : 'text-gray-400 group-hover:text-gray-600'
+                      }`}
+                    />
+                    <AnimatePresence>
+                      {!isCollapsed && (
+                        <>
+                          <motion.span
+                            initial={{ opacity: 0, width: 0 }}
+                            animate={{ opacity: 1, width: 'auto' }}
+                            exit={{ opacity: 0, width: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className={`font-semibold whitespace-nowrap overflow-hidden flex-1 ${
+                              active || isSubItemActive ? 'text-blue-600' : 'text-gray-700'
+                            }`}
+                          >
+                            {item.label}
+                          </motion.span>
+                          {hasSubItems && (
+                            <motion.div
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                            >
+                              {shouldExpand ? (
+                                <ChevronUpIcon className="w-4 h-4 text-gray-500" />
+                              ) : (
+                                <ChevronDownIcon className="w-4 h-4 text-gray-500" />
+                              )}
+                            </motion.div>
+                          )}
+                        </>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                </Link>
+
+                {/* Sub-items */}
+                <AnimatePresence>
+                  {shouldExpand && item.subItems && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="ml-4 mt-1 space-y-1 border-l-2 border-gray-200 pl-4">
+                        {item.subItems.map((subItem) => {
+                          const subActive = isActive(subItem.href);
+                          return (
+                            <Link key={subItem.href} href={subItem.href}>
+                              <motion.div
+                                className={`px-3 py-2 rounded-md transition-all duration-200 ${
+                                  subActive
+                                    ? 'bg-blue-50 border border-blue-200 text-blue-700 font-medium'
+                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                }`}
+                                whileHover={{ x: 2 }}
+                                transition={{ type: 'spring', stiffness: 300 }}
+                              >
+                                <span className="text-sm">{subItem.label}</span>
+                              </motion.div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             );
           })}
         </nav>
