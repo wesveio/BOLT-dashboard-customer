@@ -14,6 +14,8 @@ const settingsSchema = z.object({
  * GET /api/dashboard/settings
  * Get user settings
  */
+export const dynamic = 'force-dynamic';
+
 export const GET = async (_request: NextRequest) => {
   try {
     const { user } = await getAuthenticatedUser();

@@ -8,8 +8,10 @@ const nextConfig = {
   images: {
     domains: ['localhost'],
   },
-  // Netlify compatibility
-  serverComponentsExternalPackages: ['@netlify/plugin-nextjs'],
+  // Netlify compatibility - moved to experimental for Next.js 14
+  experimental: {
+    serverComponentsExternalPackages: ['@netlify/plugin-nextjs'],
+  },
 };
 
 export default withNextIntl(nextConfig);

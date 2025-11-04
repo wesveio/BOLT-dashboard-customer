@@ -6,6 +6,8 @@ import { cookies } from 'next/headers';
  * GET /api/dashboard/themes/[id]/export
  * Export theme as JSON
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

@@ -16,6 +16,8 @@ const profileSchema = z.object({
  * GET /api/dashboard/profile
  * Get user profile data
  */
+export const dynamic = 'force-dynamic';
+
 export const GET = async (_request: NextRequest) => {
   try {
     const { user } = await getAuthenticatedUser();

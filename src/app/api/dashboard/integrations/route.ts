@@ -18,6 +18,7 @@ const createApiKeySchema = z.object({
  * GET /api/dashboard/integrations
  * Get all API keys for the authenticated user's account (masked)
  */
+export const dynamic = 'force-dynamic';
 export const GET = withAuth(async (_request: NextRequest, { user }) => {
   try {
     const supabaseAdmin = getSupabaseAdmin();

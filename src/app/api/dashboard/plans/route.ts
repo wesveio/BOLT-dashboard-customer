@@ -6,6 +6,8 @@ import { cookies } from 'next/headers';
  * GET /api/dashboard/plans
  * Get all available plans for the authenticated user
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(_request: NextRequest) {
   try {
     const validationError = validateSupabaseAdmin();

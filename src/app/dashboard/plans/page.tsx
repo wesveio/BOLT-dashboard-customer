@@ -128,7 +128,7 @@ export default function PlansPage() {
                 <div>
                   <h2 className="text-xl font-bold text-gray-900 mb-2">Current Plan</h2>
                   <p className="text-gray-700">
-                    You're currently on the <strong>{getPlanDisplayName(currentPlanCode as any)}</strong> plan.
+                    You&apos;re currently on the <strong>{getPlanDisplayName(currentPlanCode as any)}</strong> plan.
                     {currentSubscription.started_at && (
                       <span className="text-sm text-gray-600 ml-2">
                         Started {new Date(currentSubscription.started_at).toLocaleDateString()}

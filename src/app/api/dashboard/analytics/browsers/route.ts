@@ -8,6 +8,8 @@ import { extractRevenue } from '@/utils/analytics';
  * GET /api/dashboard/analytics/browsers
  * Get browser and platform analytics for the authenticated user's account
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const cookieStore = await cookies();

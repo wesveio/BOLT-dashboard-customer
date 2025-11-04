@@ -7,6 +7,8 @@ import type { AnalyticsEvent } from '@/hooks/useDashboardData';
  * GET /api/dashboard/metrics
  * Get aggregated metrics for the authenticated user's account
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(_request: NextRequest) {
   try {
     const cookieStore = await cookies();

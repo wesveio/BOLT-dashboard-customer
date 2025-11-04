@@ -10,6 +10,8 @@ import { predictAbandonment, getTypicalCheckoutDuration, type AbandonmentRiskFac
  * GET /api/dashboard/analytics/abandonment-prediction
  * Get abandonment prediction analytics and risk scores
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const { user } = await getAuthenticatedUser();

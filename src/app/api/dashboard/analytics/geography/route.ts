@@ -5,6 +5,8 @@ import { getDateRange, parsePeriod } from '@/utils/date-ranges';
 import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
 import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Extract revenue from event metadata with multiple fallbacks
  */

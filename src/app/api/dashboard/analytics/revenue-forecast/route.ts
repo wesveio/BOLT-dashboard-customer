@@ -6,6 +6,8 @@ import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
 import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 import { generateForecast, type ForecastDataPoint } from '@/utils/dashboard/forecast-model';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Extract revenue from event metadata with multiple fallbacks
  */

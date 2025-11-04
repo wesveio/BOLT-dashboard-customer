@@ -8,6 +8,8 @@ import type { AnalyticsEvent } from '@/hooks/useDashboardData';
  * GET /api/dashboard/insights
  * Generate insights based on real checkout data
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(_request: NextRequest) {
   try {
     const cookieStore = await cookies();

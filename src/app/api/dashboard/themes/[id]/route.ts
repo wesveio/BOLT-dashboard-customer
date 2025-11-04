@@ -10,6 +10,8 @@ const themeConfigSchema = z.any(); // Use z.any() to accept both old and expande
  * GET /api/dashboard/themes/[id]
  * Get a specific theme
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

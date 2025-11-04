@@ -107,7 +107,7 @@ export default function PricingPage() {
                     Compare Plans
                   </h2>
                   <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                    See what's included in each plan and choose what works best for your needs.
+                    See what&apos;s included in each plan and choose what works best for your needs.
                   </p>
                 </m.div>
                 <PlanComparison plans={plans} />

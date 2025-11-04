@@ -14,6 +14,8 @@ import {
  * GET /api/dashboard/analytics/friction-score
  * Get friction score analytics
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const { user } = await getAuthenticatedUser();

@@ -12,6 +12,7 @@ import {
  * GET /api/dashboard/integrations/metrics
  * Get metrics API key (masked) for account
  */
+export const dynamic = 'force-dynamic';
 export const GET = withAuth(async (_request: NextRequest, { user }) => {
   try {
     const supabaseAdmin = getSupabaseAdmin();

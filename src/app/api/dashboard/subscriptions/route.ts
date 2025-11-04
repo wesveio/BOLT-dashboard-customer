@@ -6,6 +6,8 @@ import { cookies } from 'next/headers';
  * GET /api/dashboard/subscriptions
  * Get all subscriptions for the authenticated user's account
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(_request: NextRequest) {
   try {
     const validationError = validateSupabaseAdmin();

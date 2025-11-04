@@ -53,7 +53,7 @@ export function RoleGuard({
                 <div>
                   <p className="text-red-700 font-semibold">Access Denied</p>
                   <p className="text-red-600 text-sm">
-                    You don't have permission to access this resource. Required role: {requiredRole}
+                    You don&apos;t have permission to access this resource. Required role: {requiredRole}
                   </p>
                 </div>
               </div>
@@ -88,7 +88,7 @@ export function RoleGuard({
                 <div>
                   <p className="text-red-700 font-semibold">Access Denied</p>
                   <p className="text-red-600 text-sm">
-                    You don't have permission to {requiredPermission.action} this resource.
+                    You don&apos;t have permission to {requiredPermission.action} this resource.
                   </p>
                 </div>
               </div>

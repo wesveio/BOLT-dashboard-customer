@@ -7,6 +7,8 @@ import { Subscription } from '@/utils/plans';
  * GET /api/dashboard/subscriptions/transactions
  * Get transaction history for the authenticated user's subscriptions
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(_request: NextRequest) {
   try {
     const validationError = validateSupabaseAdmin();

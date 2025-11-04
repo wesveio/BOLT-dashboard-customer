@@ -142,7 +142,7 @@ export function ApiKeyDisplayModal({
             {keyName ? `API Key Created: ${keyName}` : 'API Key Created'}
           </h2>
           <p className="text-sm text-red-600 font-semibold">
-            ⚠️ Important: Copy this key now. You won't be able to see it again!
+            ⚠️ Important: Copy this key now. You won&apos;t be able to see it again!
           </p>
         </ModalHeader>
         <ModalBody>
@@ -183,7 +183,7 @@ export function ApiKeyDisplayModal({
             onPress={onClose}
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
           >
-            I've Copied the Key
+            I&apos;ve Copied the Key
           </Button>
         </ModalFooter>
       </ModalContent>

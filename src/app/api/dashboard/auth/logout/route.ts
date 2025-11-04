@@ -6,6 +6,8 @@ import { cookies } from 'next/headers';
  * POST /api/dashboard/auth/logout
  * Logout user and invalidate session
  */
+export const dynamic = 'force-dynamic';
+
 export async function POST(_request: NextRequest) {
   try {
     const supabaseAdmin = getSupabaseAdmin();

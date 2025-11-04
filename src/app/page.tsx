@@ -454,7 +454,7 @@ export default function Home() {
                     Enterprise-Grade Security
                   </h2>
                   <p className="text-xl text-gray-600 mb-6">
-                    PCI DSS Level 1 compliant with comprehensive security controls. Your customers'
+                    PCI DSS Level 1 compliant with comprehensive security controls. Your customers&apos;
                     sensitive data is protected with bank-level encryption and industry-leading
                     security practices.
                   </p>

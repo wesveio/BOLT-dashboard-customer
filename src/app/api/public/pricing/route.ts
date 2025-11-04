@@ -17,6 +17,8 @@ const CACHE_STALE_WHILE_REVALIDATE = 86400; // 24 hours (stale content is accept
  * - HTTP cache headers (CDN/browser cache)
  * - Stale-while-revalidate pattern
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const supabase = getSupabaseAdmin();

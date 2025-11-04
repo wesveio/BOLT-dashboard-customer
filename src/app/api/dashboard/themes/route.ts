@@ -12,6 +12,8 @@ const themeConfigSchema = z.any(); // Use z.any() to accept both old and expande
  * GET /api/dashboard/themes
  * Get all themes for the authenticated user's account
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(_request: NextRequest) {
   try {
     const cookieStore = await cookies();

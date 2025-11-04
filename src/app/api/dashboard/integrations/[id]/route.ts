@@ -9,6 +9,7 @@ import type { AuthResult } from '@/lib/api/auth';
  * Delete custom API key by ID (admin/owner only)
  * Cannot delete metrics key via this endpoint
  */
+export const dynamic = 'force-dynamic';
 export const DELETE = withAuth(
   async (
     _request: NextRequest,

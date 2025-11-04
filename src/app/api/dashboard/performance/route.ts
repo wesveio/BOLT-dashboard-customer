@@ -9,6 +9,8 @@ import type { AnalyticsEvent } from '@/hooks/useDashboardData';
  * GET /api/dashboard/performance
  * Get detailed performance metrics for the authenticated user's account
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(_request: NextRequest) {
   try {
     const { user } = await getAuthenticatedUser();

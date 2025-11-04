@@ -9,6 +9,8 @@ import { apiSuccess, apiInternalError } from '@/lib/api/responses';
  * GET /api/dashboard/auth/me
  * Get current authenticated user
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(_: NextRequest) {
   try {
     // Development bypass - only works in development mode

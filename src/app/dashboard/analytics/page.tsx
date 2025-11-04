@@ -499,7 +499,9 @@ export default function AnalyticsPage() {
                 <div className="pt-2 border-t border-gray-200">
                   <FilterBar
                     period="week"
-                    onPeriodChange={() => {}}
+                    onPeriodChange={() => {
+                      // No-op handler for modal filter
+                    }}
                     category={modalCategory}
                     categoryOptions={modalFilterOptions.categories}
                     onCategoryChange={(selectedCategory) => {

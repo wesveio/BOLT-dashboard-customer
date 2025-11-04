@@ -9,6 +9,8 @@ import type { AnalyticsEvent } from '@/hooks/useDashboardData';
  * GET /api/dashboard/analytics/shipping
  * Get shipping method analytics for the authenticated user's account
  */
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const { user } = await getAuthenticatedUser();
