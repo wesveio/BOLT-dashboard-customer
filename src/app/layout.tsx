@@ -2,6 +2,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { cookies } from 'next/headers';
 import { routing } from '@/i18n/routing';
+import { GoogleTagManager } from '@/components/GoogleTagManager';
 import './globals.css';
 
 export default async function RootLayout({
@@ -22,6 +23,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body>
+        <GoogleTagManager />
         <NextIntlClientProvider messages={messages} locale={locale}>
           {children}
         </NextIntlClientProvider>
