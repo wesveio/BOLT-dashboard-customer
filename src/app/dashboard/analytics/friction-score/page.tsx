@@ -33,6 +33,32 @@ export default function FrictionScorePage() {
   const [period, setPeriod] = useState<Period>('week');
   const { summary, frictionScores, frictionTrend, isLoading, error, refetch } = useFrictionScoreData({ period });
 
+  // Prepare chart data - ALL hooks must be called before any conditional returns
+  const frictionDistributionData = useMemo(() => {
+    if (!summary?.frictionDistribution) return [];
+    return [
+      { name: t('low'), value: summary.frictionDistribution.low, color: COLORS.low },
+      { name: t('medium'), value: summary.frictionDistribution.medium, color: COLORS.medium },
+      { name: t('high'), value: summary.frictionDistribution.high, color: COLORS.high },
+      { name: t('critical'), value: summary.frictionDistribution.critical, color: COLORS.critical },
+    ].filter(item => item.value > 0);
+  }, [summary?.frictionDistribution, t]);
+
+  const breakdownData = useMemo(() => {
+    if (!summary?.frictionBreakdown) return [];
+    return [
+      { name: t('time'), value: summary.frictionBreakdown.timeScore },
+      { name: t('errors'), value: summary.frictionBreakdown.errorScore },
+      { name: t('navigation'), value: summary.frictionBreakdown.navigationScore },
+      { name: t('completion'), value: summary.frictionBreakdown.completionScore },
+    ];
+  }, [summary?.frictionBreakdown, t]);
+
+  const highFrictionSessions = useMemo(() => 
+    (frictionScores || []).filter(s => s.score.level === 'high' || s.score.level === 'critical'),
+    [frictionScores]
+  );
+
   if (isLoading) {
     return (
       <PageWrapper>
@@ -50,26 +76,6 @@ export default function FrictionScorePage() {
       </PageWrapper>
     );
   }
-
-  // Prepare chart data
-  const frictionDistributionData = useMemo(() => [
-    { name: t('low'), value: summary.frictionDistribution.low, color: COLORS.low },
-    { name: t('medium'), value: summary.frictionDistribution.medium, color: COLORS.medium },
-    { name: t('high'), value: summary.frictionDistribution.high, color: COLORS.high },
-    { name: t('critical'), value: summary.frictionDistribution.critical, color: COLORS.critical },
-  ].filter(item => item.value > 0), [summary.frictionDistribution, t]);
-
-  const breakdownData = useMemo(() => [
-    { name: t('time'), value: summary.frictionBreakdown.timeScore },
-    { name: t('errors'), value: summary.frictionBreakdown.errorScore },
-    { name: t('navigation'), value: summary.frictionBreakdown.navigationScore },
-    { name: t('completion'), value: summary.frictionBreakdown.completionScore },
-  ], [summary.frictionBreakdown, t]);
-
-  const highFrictionSessions = useMemo(() => 
-    frictionScores.filter(s => s.score.level === 'high' || s.score.level === 'critical'),
-    [frictionScores]
-  );
 
   return (
     <PageWrapper>

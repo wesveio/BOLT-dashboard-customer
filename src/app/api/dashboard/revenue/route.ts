@@ -179,11 +179,27 @@ export async function GET(_request: NextRequest) {
       revenuePerHour = hoursElapsed > 0 ? totalRevenue / hoursElapsed : 0;
     }
 
-    // Format data for line chart - preserve exact values
-    const revenueData = Object.entries(revenueByDate).map(([date, revenue]) => ({
-      date,
-      revenue, // Preserve exact value, no rounding
-    }));
+    // Format data for line chart - preserve exact values and sort chronologically
+    const dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const revenueData = Object.entries(revenueByDate)
+      .map(([date, revenue]) => ({
+        date,
+        revenue, // Preserve exact value, no rounding
+      }))
+      .sort((a, b) => {
+        // Sort by day of week order when period is 'week' or 'today'
+        if (period === 'week' || period === 'today') {
+          const aIndex = dayOrder.indexOf(a.date);
+          const bIndex = dayOrder.indexOf(b.date);
+          // If not found in dayOrder, fall back to string comparison
+          if (aIndex === -1 && bIndex === -1) return a.date.localeCompare(b.date);
+          if (aIndex === -1) return 1;
+          if (bIndex === -1) return -1;
+          return aIndex - bIndex;
+        }
+        // For other periods, sort by date string (chronological)
+        return a.date.localeCompare(b.date);
+      });
 
     // Format revenue by hour - preserve exact values, ensure all 24 hours are present
     const revenueByHourData = Object.keys(revenueByHour)
