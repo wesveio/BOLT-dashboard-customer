@@ -64,6 +64,21 @@ export function Sidebar() {
           translationKey: 'dashboard.analytics.shipping.title',
         },
         {
+          href: '/dashboard/analytics/coupons',
+          label: tAnalytics('coupons.title'),
+          translationKey: 'dashboard.analytics.coupons.title',
+        },
+        {
+          href: '/dashboard/analytics/micro-conversions',
+          label: tAnalytics('microConversions.title'),
+          translationKey: 'dashboard.analytics.microConversions.title',
+        },
+        {
+          href: '/dashboard/analytics/geography',
+          label: tAnalytics('geography.title'),
+          translationKey: 'dashboard.analytics.geography.title',
+        },
+        {
           href: '/dashboard/analytics/devices',
           label: tAnalytics('devices.title'),
           translationKey: 'dashboard.analytics.devices.title',

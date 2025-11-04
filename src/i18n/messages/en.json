@@ -208,6 +208,18 @@
         "title": "Device Breakdown",
         "subtitle": "Conversion rates by device type"
       },
+      "coupons": {
+        "title": "Coupons & Discounts",
+        "subtitle": "Track coupon usage and discount impact on revenue"
+      },
+      "microConversions": {
+        "title": "Micro-conversions",
+        "subtitle": "Detailed step-by-step conversion analysis"
+      },
+      "geography": {
+        "title": "Geographic Analysis",
+        "subtitle": "Conversion and revenue metrics by location"
+      },
       "browsers": {
         "title": "Browser & Platform",
         "subtitle": "Performance metrics by browser and platform",

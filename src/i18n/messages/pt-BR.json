@@ -203,6 +203,18 @@
         "title": "Distribuição por Dispositivo",
         "subtitle": "Taxas de conversão por tipo de dispositivo"
       },
+      "coupons": {
+        "title": "Cupons e Descontos",
+        "subtitle": "Acompanhe o uso de cupons e o impacto dos descontos na receita"
+      },
+      "microConversions": {
+        "title": "Micro-conversões",
+        "subtitle": "Análise detalhada de conversão passo a passo"
+      },
+      "geography": {
+        "title": "Análise Geográfica",
+        "subtitle": "Métricas de conversão e receita por localização"
+      },
       "browsers": {
         "title": "Navegador e Plataforma",
         "subtitle": "Métricas de desempenho por navegador e plataforma",

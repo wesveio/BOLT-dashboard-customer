@@ -408,3 +408,213 @@ export function useMetricsData(options: UseMetricsDataOptions = {}) {
   };
 }
 
+// Coupons API Response Types
+interface CouponsResponse {
+  coupons: Array<{
+    code: string;
+    count: number;
+    totalDiscount: number;
+    avgDiscount: number;
+    revenue: number;
+    orders: number;
+    avgOrderValue: number;
+  }>;
+  summary: {
+    totalDiscounts: number;
+    totalDiscountAmount: number;
+    avgDiscountAmount: number;
+    couponUsageRate: number;
+    revenueWithDiscount: number;
+    revenueWithoutDiscount: number;
+    ordersWithDiscount: number;
+    ordersWithoutDiscount: number;
+  };
+  period: Period;
+}
+
+interface UseCouponsDataOptions {
+  period?: Period;
+  enabled?: boolean;
+}
+
+/**
+ * Hook for fetching coupons/discounts analytics data
+ */
+export function useCouponsData(options: UseCouponsDataOptions = {}) {
+  const { period = 'week', enabled = true } = options;
+
+  const endpoint = useMemo(() => {
+    const params = new URLSearchParams({ period });
+    return `/api/dashboard/analytics/coupons?${params.toString()}`;
+  }, [period]);
+
+  const { data, isLoading, error, refetch } = useApi<CouponsResponse>(
+    endpoint,
+    {
+      enabled,
+      cacheKey: `coupons_${period}`,
+      cacheTTL: 5,
+      deduplicateRequests: true,
+      refetchOnMount: true,
+    }
+  );
+
+  return {
+    coupons: data?.coupons || [],
+    summary: data?.summary || {
+      totalDiscounts: 0,
+      totalDiscountAmount: 0,
+      avgDiscountAmount: 0,
+      couponUsageRate: 0,
+      revenueWithDiscount: 0,
+      revenueWithoutDiscount: 0,
+      ordersWithDiscount: 0,
+      ordersWithoutDiscount: 0,
+    },
+    isLoading,
+    error,
+    refetch,
+    period: data?.period || period,
+  };
+}
+
+// Micro-conversions API Response Types
+interface MicroConversionsResponse {
+  microConversions: Array<{
+    step: string;
+    label: string;
+    reached: number;
+    completed: number;
+    conversionRate: number;
+    description: string;
+  }>;
+  dropOffs: Array<{
+    step: string;
+    dropOff: number;
+    dropOffRate?: number;
+  }>;
+  summary: {
+    totalSessions: number;
+    overallConversionRate: number;
+  };
+  period: Period;
+}
+
+interface UseMicroConversionsDataOptions {
+  period?: Period;
+  enabled?: boolean;
+}
+
+/**
+ * Hook for fetching micro-conversions analytics data
+ */
+export function useMicroConversionsData(options: UseMicroConversionsDataOptions = {}) {
+  const { period = 'week', enabled = true } = options;
+
+  const endpoint = useMemo(() => {
+    const params = new URLSearchParams({ period });
+    return `/api/dashboard/analytics/micro-conversions?${params.toString()}`;
+  }, [period]);
+
+  const { data, isLoading, error, refetch } = useApi<MicroConversionsResponse>(
+    endpoint,
+    {
+      enabled,
+      cacheKey: `micro_conversions_${period}`,
+      cacheTTL: 5,
+      deduplicateRequests: true,
+      refetchOnMount: true,
+    }
+  );
+
+  return {
+    microConversions: data?.microConversions || [],
+    dropOffs: data?.dropOffs || [],
+    summary: data?.summary || {
+      totalSessions: 0,
+      overallConversionRate: 0,
+    },
+    isLoading,
+    error,
+    refetch,
+    period: data?.period || period,
+  };
+}
+
+// Geography API Response Types
+interface GeographyResponse {
+  countries: Array<{
+    country: string;
+    sessions: number;
+    orders: number;
+    revenue: number;
+    conversions: number;
+    conversionRate: number;
+    avgOrderValue: number;
+  }>;
+  states: Array<{
+    country: string;
+    state: string;
+    sessions: number;
+    orders: number;
+    revenue: number;
+    conversions: number;
+    conversionRate: number;
+    avgOrderValue: number;
+  }>;
+  summary: {
+    totalSessions: number;
+    totalOrders: number;
+    totalRevenue: number;
+    overallConversionRate: number;
+    countriesCount: number;
+    statesCount: number;
+  };
+  period: Period;
+}
+
+interface UseGeographyDataOptions {
+  period?: Period;
+  enabled?: boolean;
+}
+
+/**
+ * Hook for fetching geography analytics data
+ */
+export function useGeographyData(options: UseGeographyDataOptions = {}) {
+  const { period = 'week', enabled = true } = options;
+
+  const endpoint = useMemo(() => {
+    const params = new URLSearchParams({ period });
+    return `/api/dashboard/analytics/geography?${params.toString()}`;
+  }, [period]);
+
+  const { data, isLoading, error, refetch } = useApi<GeographyResponse>(
+    endpoint,
+    {
+      enabled,
+      cacheKey: `geography_${period}`,
+      cacheTTL: 5,
+      deduplicateRequests: true,
+      refetchOnMount: true,
+    }
+  );
+
+  return {
+    countries: data?.countries || [],
+    states: data?.states || [],
+    summary: data?.summary || {
+      totalSessions: 0,
+      totalOrders: 0,
+      totalRevenue: 0,
+      overallConversionRate: 0,
+      countriesCount: 0,
+      statesCount: 0,
+    },
+    isLoading,
+    error,
+    refetch,
+    period: data?.period || period,
+  };
+}
+
