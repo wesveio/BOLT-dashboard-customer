@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin, validateSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
+import { withAuth } from '@/lib/api/route-handler';
+import { apiError, apiInternalError } from '@/lib/api/responses';
 
 /**
  * GET /api/dashboard/plans
@@ -60,25 +62,21 @@ export async function GET(_request: NextRequest) {
  * POST /api/dashboard/plans
  * Create or update a plan (admin only - for future use)
  */
-export async function POST(_request: NextRequest) {
+export const POST = withAuth(async (_request: NextRequest, { user }) => {
   try {
     const validationError = validateSupabaseAdmin();
     if (validationError) return validationError;
 
-    // Verify session
-    const cookieStore = await cookies();
-    const sessionToken = cookieStore.get('dashboard_session')?.value;
-
-    if (!sessionToken) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // Check permissions: only admin and owner can manage plans
+    if (user.role !== 'admin' && user.role !== 'owner') {
+      return apiError('Insufficient permissions to manage plans', 403);
     }
 
-    // TODO: Add admin role check when RBAC is fully implemented
     // For now, return not implemented
     return NextResponse.json({ error: 'Not implemented' }, { status: 501 });
   } catch (error) {
     console.error('❌ [DEBUG] Unexpected error in plans POST endpoint:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return apiInternalError(error);
   }
-}
+});
 

@@ -1,10 +1,12 @@
 import { NextRequest } from 'next/server';
+import { headers } from 'next/headers';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
 import { getAuthenticatedUser, AuthError } from '@/lib/api/auth';
 import { canRoleInviteUsers } from '@/utils/users';
 import { getEmailService } from '@/utils/auth/email-service';
 import { generateInvitationEmail } from '@/utils/auth/email-service';
+import { routing } from '@/i18n/routing';
 
 /**
  * POST /api/dashboard/users/invitations/[id]/resend
@@ -69,7 +71,17 @@ export async function POST(
     try {
       const emailService = getEmailService();
       const inviterName = user.name || user.email || 'Team Member';
-      const locale = 'en'; // TODO: Get from user preferences or request
+
+      // Get locale from user preferences, request header, or default
+      const headersList = headers();
+      const userSettings = (user.settings || {}) as Record<string, any>;
+      const settingsLocale = userSettings?.general?.language;
+      const headerLocale = headersList.get('x-locale');
+      const detectedLocale = settingsLocale || headerLocale || routing.defaultLocale;
+      const locale = routing.locales.includes(detectedLocale as any)
+        ? detectedLocale
+        : routing.defaultLocale;
+
       const { html, text, subject } = generateInvitationEmail(
         invitation.token,
         inviterName,

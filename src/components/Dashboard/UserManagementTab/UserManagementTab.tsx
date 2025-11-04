@@ -164,20 +164,27 @@ export function UserManagementTab() {
     }
   };
 
-  const handleCancelInvitation = async () => {
+  const handleCancelInvitation = async (invitationId: string) => {
     if (!confirm('Are you sure you want to cancel this invitation?')) {
       return;
     }
 
     setIsDeletingInvitation(true);
     try {
-      // TODO: Implement cancel invitation endpoint
-      // For now, we'll just reload the data
-      toast.error('Cancel invitation not yet implemented');
+      const response = await fetch(`/api/dashboard/users/invitations/${invitationId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to cancel invitation');
+      }
+
+      toast.success('Invitation cancelled successfully');
       await loadData();
     } catch (error) {
       console.error('Cancel invitation error:', error);
-      toast.error('Failed to cancel invitation');
+      toast.error(error instanceof Error ? error.message : 'Failed to cancel invitation');
     } finally {
       setIsDeletingInvitation(false);
     }

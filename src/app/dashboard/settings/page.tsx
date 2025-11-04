@@ -13,6 +13,12 @@ import {
   SelectItem,
   Tabs,
   Tab,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from '@heroui/react';
 import {
   BellIcon,
@@ -24,13 +30,18 @@ import {
 } from '@heroicons/react/24/outline';
 import { toast } from 'sonner';
 import { useRolePermissions } from '@/hooks/useRolePermissions';
+import { useDashboardAuth } from '@/hooks/useDashboardAuth';
 import { UserManagementTab } from '@/components/Dashboard/UserManagementTab/UserManagementTab';
 
 export default function SettingsPage() {
   const t = useTranslations('dashboard.settings');
+  const tCommon = useTranslations('dashboard.common');
   const { isAdmin } = useRolePermissions();
+  const { logout } = useDashboardAuth();
   const [activeTab, setActiveTab] = useState('general');
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const { isOpen: isDeleteModalOpen, onOpen: onDeleteModalOpen, onClose: onDeleteModalClose } = useDisclosure();
 
   // General Settings
   const [generalSettings, setGeneralSettings] = useState({
@@ -192,6 +203,33 @@ export default function SettingsPage() {
       toast.error(t('saveError'));
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setIsDeletingAccount(true);
+    try {
+      const response = await fetch('/api/dashboard/account/delete', {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to delete account');
+      }
+
+      toast.success(t('deleteAccountSuccess'));
+      onDeleteModalClose();
+      
+      // Logout and redirect after a short delay
+      setTimeout(async () => {
+        await logout();
+      }, 1000);
+    } catch (error) {
+      console.error('Delete account error:', error);
+      toast.error(error instanceof Error ? error.message : t('deleteAccountError'));
+    } finally {
+      setIsDeletingAccount(false);
     }
   };
 
@@ -583,10 +621,7 @@ export default function SettingsPage() {
                       color="danger"
                       variant="flat"
                       startContent={<TrashIcon className="w-5 h-5" />}
-                      onPress={() => {
-                        // TODO: Implement account deletion
-                        toast.error(t('deleteAccountComingSoon'));
-                      }}
+                      onPress={onDeleteModalOpen}
                     >
                       {t('deleteAccountButton')}
                     </Button>
@@ -597,6 +632,39 @@ export default function SettingsPage() {
           </Tab>
         )}
       </Tabs>
+
+      {/* Delete Account Confirmation Modal */}
+      <Modal isOpen={isDeleteModalOpen} onClose={onDeleteModalClose}>
+        <ModalContent>
+          {(onDeleteModalClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                {t('deleteAccountConfirm')}
+              </ModalHeader>
+              <ModalBody>
+                <p className="text-gray-600">
+                  {t('deleteAccountWarning')}
+                </p>
+                <p className="text-sm text-red-600 mt-2 font-semibold">
+                  {t('deleteAccountDesc')}
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onDeleteModalClose} disabled={isDeletingAccount}>
+                  {tCommon('cancel')}
+                </Button>
+                <Button
+                  color="danger"
+                  onPress={handleDeleteAccount}
+                  isLoading={isDeletingAccount}
+                >
+                  {t('deleteAccountButton')}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </PageWrapper>
   );
 }

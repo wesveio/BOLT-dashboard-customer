@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { z } from 'zod';
 import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
@@ -5,6 +6,7 @@ import { withAuthAndValidation } from '@/lib/api/route-handler';
 import { canRoleInviteUsers, isValidEmail, isValidRole, getPlanUserLimit, canInviteUser } from '@/utils/users';
 import { getEmailService } from '@/utils/auth/email-service';
 import { generateInvitationEmail } from '@/utils/auth/email-service';
+import { routing } from '@/i18n/routing';
 
 const inviteSchema = z.object({
   email: z.string().email('Invalid email format'),
@@ -134,7 +136,17 @@ export const POST = withAuthAndValidation(
       try {
         const emailService = getEmailService();
         const inviterName = user.name || user.email || 'Team Member';
-        const locale = 'en'; // TODO: Get from user preferences or request
+        
+        // Get locale from user preferences, request header, or default
+        const headersList = headers();
+        const userSettings = (user.settings || {}) as Record<string, any>;
+        const settingsLocale = userSettings?.general?.language;
+        const headerLocale = headersList.get('x-locale');
+        const detectedLocale = settingsLocale || headerLocale || routing.defaultLocale;
+        const locale = routing.locales.includes(detectedLocale as any) 
+          ? detectedLocale 
+          : routing.defaultLocale;
+        
         const { html, text, subject } = generateInvitationEmail(
           invitation.token,
           inviterName,

@@ -69,43 +69,11 @@ export async function GET(request: NextRequest) {
 
     console.log('✅ [DEBUG] Retrieved events count with customer_id:', allEvents?.length || 0);
 
-    // If no events found with customer_id, query events with NULL customer_id
-    // This handles the case where events were inserted without customer_id set
-    // TODO: This is a temporary workaround - the insert function should set customer_id properly
-    if ((!allEvents || allEvents.length === 0) && user.account_id) {
-      console.warn('⚠️ [DEBUG] No events found with customer_id. Trying to fetch events with NULL customer_id...');
-      
-      // Query events with NULL customer_id in the date range
-      let query = supabaseAdmin
-        .from('analytics.events')
-        .select('*')
-        .is('customer_id', null)
-        .gte('timestamp', range.start.toISOString())
-        .lte('timestamp', range.end.toISOString())
-        .order('timestamp', { ascending: false });
-
-      // Apply event type filter if provided
-      if (eventTypes && eventTypes.length > 0) {
-        query = query.in('event_type', eventTypes);
-      }
-
-      // Apply category filter if provided
-      if (categories && categories.length > 0) {
-        query = query.in('category', categories);
-      }
-
-      const { data: eventsWithNullCustomer, error: nullCustomerError } = await query;
-
-      if (!nullCustomerError && eventsWithNullCustomer && eventsWithNullCustomer.length > 0) {
-        console.warn('⚠️ [DEBUG] Found events with NULL customer_id. Using these events as fallback:', eventsWithNullCustomer.length);
-        allEvents = eventsWithNullCustomer;
-      } else {
-        console.warn('⚠️ [DEBUG] No events found with NULL customer_id either. Total events in range:', eventsWithNullCustomer?.length || 0);
-      }
-    }
+    // Ensure allEvents is an array (default to empty array if null)
+    allEvents = allEvents || [];
 
     // Filter by step if provided (since RPC doesn't support step filtering directly)
-    let filteredEvents = allEvents || [];
+    let filteredEvents = allEvents;
     if (step) {
       filteredEvents = filteredEvents.filter((e) => e.step === step);
     }

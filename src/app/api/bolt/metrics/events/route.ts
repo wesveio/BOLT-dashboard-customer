@@ -21,12 +21,12 @@ interface EventPayload {
  */
 function getAllowedOrigins(): string[] {
   const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS?.split(',') || [];
-  
+
   // In development, allow localhost on any port
   if (process.env.NODE_ENV === 'development') {
     return ['http://localhost', 'http://127.0.0.1', ...allowedOrigins];
   }
-  
+
   return allowedOrigins;
 }
 
@@ -35,7 +35,7 @@ function getAllowedOrigins(): string[] {
  */
 function getCorsHeaders(origin: string | null): Record<string, string> {
   const allowedOrigins = getAllowedOrigins();
-  
+
   // Check if origin is allowed (supports wildcards like localhost:*)
   const isAllowed = origin && (
     allowedOrigins.some(allowed => {
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
       console.error('❌ [ERROR] METRICS_API_KEY not configured in server environment');
       return NextResponse.json(
         { error: 'Server configuration error' },
-        { 
+        {
           status: 500,
           headers: corsHeaders,
         }
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
       console.warn('⚠️ [WARN] No X-API-Key header provided');
       return NextResponse.json(
         { error: 'Unauthorized: API key is required' },
-        { 
+        {
           status: 401,
           headers: corsHeaders,
         }
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
       console.warn('⚠️ [WARN] API key mismatch');
       return NextResponse.json(
         { error: 'Unauthorized: Invalid API key' },
-        { 
+        {
           status: 401,
           headers: corsHeaders,
         }
@@ -134,16 +134,16 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     // Support both single event and batch of events
-    const events: EventPayload[] = Array.isArray(body) 
-      ? body 
-      : body.events 
-        ? body.events 
+    const events: EventPayload[] = Array.isArray(body)
+      ? body
+      : body.events
+        ? body.events
         : [body];
 
     if (!events || events.length === 0) {
       return NextResponse.json(
         { error: 'No events provided' },
-        { 
+        {
           status: 400,
           headers: corsHeaders,
         }
@@ -173,7 +173,7 @@ export async function POST(request: NextRequest) {
     if (validationErrors.length > 0) {
       return NextResponse.json(
         { error: 'Validation failed', details: validationErrors },
-        { 
+        {
           status: 400,
           headers: corsHeaders,
         }
@@ -182,14 +182,59 @@ export async function POST(request: NextRequest) {
 
     const supabaseAdmin = getSupabaseAdmin();
 
+    // Extract unique vtex_account_name values from events
+    const vtexAccountNames = new Set<string>();
+    events.forEach((event) => {
+      const vtexAccountName = event.metadata?.vtex_account_name as string | undefined;
+      if (vtexAccountName && typeof vtexAccountName === 'string') {
+        vtexAccountNames.add(vtexAccountName);
+      }
+    });
+
+    // Look up customer_id for each unique vtex_account_name
+    const customerIdMap = new Map<string, string | null>();
+
+    if (vtexAccountNames.size > 0) {
+      for (const vtexAccountName of Array.from(vtexAccountNames)) {
+        try {
+          const { data: accounts, error: lookupError } = await supabaseAdmin
+            .rpc('get_account_by_vtex_name', { p_vtex_account_name: vtexAccountName });
+
+          if (lookupError) {
+            console.warn('⚠️ [DEBUG] Failed to lookup customer_id for vtex_account_name:', vtexAccountName, lookupError);
+            customerIdMap.set(vtexAccountName, null);
+          } else if (accounts && accounts.length > 0 && accounts[0]?.id) {
+            customerIdMap.set(vtexAccountName, accounts[0].id);
+            console.info('✅ [DEBUG] Found customer_id for vtex_account_name:', vtexAccountName, 'customer_id:', accounts[0].id);
+          } else {
+            console.warn('⚠️ [DEBUG] No account found for vtex_account_name:', vtexAccountName);
+            customerIdMap.set(vtexAccountName, null);
+          }
+        } catch (error) {
+          console.error('❌ [DEBUG] Error looking up customer_id for vtex_account_name:', vtexAccountName, error);
+          customerIdMap.set(vtexAccountName, null);
+        }
+      }
+    }
+
     // Prepare events for insertion as JSONB
     const eventsJson = events.map((event) => {
       // Extract step from top level or metadata (step may be in metadata from useEventTracker)
       const step = event.step || (event.metadata?.step as string) || null;
-      
+
+      // Extract vtex_account_name and get customer_id
+      const vtexAccountName = event.metadata?.vtex_account_name as string | undefined;
+      const customerId = vtexAccountName ? customerIdMap.get(vtexAccountName) || null : null;
+
       // Remove step from metadata to avoid duplication (it's now in the step column)
-      const { step: _, ...metadata } = event.metadata || {};
-      
+      const { step: _, ...metadataWithoutStep } = event.metadata || {};
+
+      // Add customer_id to metadata so the RPC function can extract it
+      const metadata = {
+        ...metadataWithoutStep,
+        ...(customerId && { customer_id: customerId }),
+      };
+
       return {
         session_id: event.sessionId,
         order_form_id: event.orderFormId || null,
@@ -211,7 +256,7 @@ export async function POST(request: NextRequest) {
       console.error('Failed to insert events:', error);
       return NextResponse.json(
         { error: 'Failed to store events', details: error.message },
-        { 
+        {
           status: 500,
           headers: corsHeaders,
         }
@@ -227,12 +272,12 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error processing events:', error);
-    
+
     // Don't expose internal error details
     if (error instanceof SyntaxError) {
       return NextResponse.json(
         { error: 'Invalid JSON payload' },
-        { 
+        {
           status: 400,
           headers: corsHeaders,
         }
@@ -241,7 +286,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { error: 'Internal server error' },
-      { 
+      {
         status: 500,
         headers: corsHeaders,
       }
