@@ -19,10 +19,11 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { useRetentionData } from '@/hooks/useDashboardData';
 import { formatNumber, formatPercentage } from '@/utils/formatters';
-import { periodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
 
 export default function RetentionAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.retention');
+  const tPeriods = useTranslations('dashboard.common.periods');
   const [period, setPeriod] = useState<Period>('month');
   const { summary, cohorts, isLoading, error, refetch } = useRetentionData({ period });
 
@@ -30,7 +31,7 @@ export default function RetentionAnalyticsPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <LoadingState message="Loading retention analytics..." fullScreen />
+        <LoadingState message={t('loading')} fullScreen />
       </PageWrapper>
     );
   }
@@ -39,7 +40,7 @@ export default function RetentionAnalyticsPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <ErrorState message="Failed to load retention analytics" onRetry={refetch} />
+        <ErrorState message={t('failedToLoad')} onRetry={refetch} />
       </PageWrapper>
     );
   }
@@ -75,7 +76,7 @@ export default function RetentionAnalyticsPage() {
             }}
             className="w-40"
           >
-            {periodOptions.map((option) => (
+            {getTranslatedPeriodOptions(tPeriods).map((option) => (
               <SelectItem key={option.value} textValue={option.value}>
                 {option.label}
               </SelectItem>
@@ -87,27 +88,27 @@ export default function RetentionAnalyticsPage() {
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
-          title="Retention Rate"
+          title={t('retentionRate')}
           value={formatPercentage(summary.retentionRate)}
-          subtitle={`${summary.returningCustomers} returning customers`}
+          subtitle={t('returningCustomers', { count: summary.returningCustomers })}
           icon={<ArrowPathIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Churn Rate"
+          title={t('churnRate')}
           value={formatPercentage(summary.churnRate)}
-          subtitle={`${summary.churnedCustomers} churned customers`}
+          subtitle={t('churnedCustomers', { count: summary.churnedCustomers })}
           icon={<XCircleIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Avg Purchase Frequency"
+          title={t('avgPurchaseFrequency')}
           value={formatNumber(summary.avgPurchaseFrequency, { maximumFractionDigits: 1 })}
-          subtitle="Orders per customer"
+          subtitle={t('ordersPerCustomer')}
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Avg Days Between Orders"
+          title={t('avgDaysBetweenOrders')}
           value={formatNumber(summary.avgDaysBetweenPurchases)}
-          subtitle="For returning customers"
+          subtitle={t('forReturningCustomers')}
           icon={<ClockIcon className="w-6 h-6 text-white" />}
         />
       </div>
@@ -115,21 +116,21 @@ export default function RetentionAnalyticsPage() {
       {/* Customer Breakdown */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <MetricCard
-          title="New Customers"
+          title={t('newCustomers')}
           value={formatNumber(summary.newCustomers)}
-          subtitle="First-time buyers"
+          subtitle={t('firstTimeBuyers')}
           icon={<UserGroupIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Returning Customers"
+          title={t('returningCustomersLabel')}
           value={formatNumber(summary.returningCustomers)}
-          subtitle="Repeat buyers"
+          subtitle={t('repeatBuyers')}
           icon={<ArrowPathIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Total Customers"
+          title={t('totalCustomers')}
           value={formatNumber(summary.totalCustomers)}
-          subtitle="All customers"
+          subtitle={t('allCustomers')}
           icon={<UserGroupIcon className="w-6 h-6 text-white" />}
         />
       </div>
@@ -137,8 +138,8 @@ export default function RetentionAnalyticsPage() {
       {/* Retention Rates by Period */}
       <div className="mb-8">
         <ChartCard
-          title="Retention Rates by Period"
-          subtitle="Customer retention after first purchase"
+          title={t('retentionRatesByPeriodTitle')}
+          subtitle={t('retentionRatesByPeriodSubtitle')}
         >
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={retentionRatesData}>
@@ -160,7 +161,7 @@ export default function RetentionAnalyticsPage() {
                   border: '1px solid #e5e7eb',
                   borderRadius: '8px',
                 }}
-                formatter={(value: number) => [`${value.toFixed(1)}%`, 'Retention Rate']}
+                formatter={(value: number) => [`${value.toFixed(1)}%`, t('retentionRateLabel')]}
               />
               <Line
                 type="monotone"
@@ -179,8 +180,8 @@ export default function RetentionAnalyticsPage() {
       {cohorts.length > 0 && (
         <div className="mb-8">
           <ChartCard
-            title="Cohort Retention Analysis"
-            subtitle="Retention rates by customer cohort (month of first purchase)"
+            title={t('cohortRetentionAnalysisTitle')}
+            subtitle={t('cohortRetentionAnalysisSubtitle')}
           >
             <ResponsiveContainer width="100%" height={400}>
               <BarChart data={cohortChartData}>
@@ -205,7 +206,7 @@ export default function RetentionAnalyticsPage() {
                     border: '1px solid #e5e7eb',
                     borderRadius: '8px',
                   }}
-                  formatter={(value: number) => [`${value.toFixed(1)}%`, 'Retention']}
+                  formatter={(value: number) => [`${value.toFixed(1)}%`, t('retention')]}
                 />
                 <Bar dataKey="d30" fill="#2563eb" radius={[8, 8, 0, 0]} name="D30" />
                 <Bar dataKey="d60" fill="#9333ea" radius={[8, 8, 0, 0]} name="D60" />
@@ -219,17 +220,17 @@ export default function RetentionAnalyticsPage() {
       {/* Cohort Details Table */}
       {cohorts.length > 0 ? (
         <ChartCard
-          title="Cohort Details"
-          subtitle="Detailed retention metrics by cohort"
+          title={t('cohortDetailsTitle')}
+          subtitle={t('cohortDetailsSubtitle')}
         >
           <div className="overflow-x-auto">
             <Table aria-label="Cohorts table" removeWrapper>
               <TableHeader>
-                <TableColumn>COHORT</TableColumn>
-                <TableColumn>CUSTOMERS</TableColumn>
-                <TableColumn>D30 RETENTION</TableColumn>
-                <TableColumn>D60 RETENTION</TableColumn>
-                <TableColumn>D90 RETENTION</TableColumn>
+                <TableColumn>{t('cohort')}</TableColumn>
+                <TableColumn>{t('customers')}</TableColumn>
+                <TableColumn>{t('d30Retention')}</TableColumn>
+                <TableColumn>{t('d60Retention')}</TableColumn>
+                <TableColumn>{t('d90Retention')}</TableColumn>
               </TableHeader>
               <TableBody>
                 {cohorts.map((cohort) => (
@@ -276,11 +277,11 @@ export default function RetentionAnalyticsPage() {
           </div>
         </ChartCard>
       ) : (
-        <ChartCard title="No Cohort Data" subtitle="No cohort data available in the selected period">
+        <ChartCard title={t('noCohortDataTitle')} subtitle={t('noCohortDataSubtitle')}>
           <div className="text-center py-12 text-gray-500">
             <UserGroupIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-            <p className="text-lg font-semibold mb-2">No cohorts found</p>
-            <p className="text-sm">Try selecting a different time period.</p>
+            <p className="text-lg font-semibold mb-2">{t('noCohortsFound')}</p>
+            <p className="text-sm">{t('tryDifferentPeriod')}</p>
           </div>
         </ChartCard>
       )}

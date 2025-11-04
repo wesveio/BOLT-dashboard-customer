@@ -349,7 +349,7 @@ export default function DashboardPage() {
 
       {/* Quick Links */}
       <div className="mb-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">{tOverview('quickLinks')}</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">{tOverview('quickLinksTitle')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Link href="/dashboard/revenue">
             <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 cursor-pointer h-full">

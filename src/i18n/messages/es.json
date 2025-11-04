@@ -105,7 +105,7 @@
       "funnelSubtitle": "Tasa de conversión por paso",
       "topInsights": "Insights Principales",
       "viewAllInsights": "Ver Todos los Insights",
-      "quickLinks": "Enlaces Rápidos",
+      "quickLinksTitle": "Enlaces Rápidos",
       "subtitles": {
         "totalRevenue": "Ingresos para el período seleccionado",
         "totalOrders": "Pedidos procesados",

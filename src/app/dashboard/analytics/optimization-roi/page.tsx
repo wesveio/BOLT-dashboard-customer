@@ -18,10 +18,11 @@ import {
 } from '@heroicons/react/24/outline';
 import { useOptimizationROIData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
-import { periodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
 
 export default function OptimizationROIPage() {
   const t = useTranslations('dashboard.analytics.optimizationROI');
+  const tPeriods = useTranslations('dashboard.common.periods');
   const [period, setPeriod] = useState<Period>('month');
   const [optimizationDate, setOptimizationDate] = useState<string>('');
   const { summary, isLoading, error, refetch, optimizationDate: apiOptimizationDate } = useOptimizationROIData({
@@ -33,7 +34,7 @@ export default function OptimizationROIPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <LoadingState message="Loading optimization ROI..." fullScreen />
+        <LoadingState message={t('loading')} fullScreen />
       </PageWrapper>
     );
   }
@@ -42,7 +43,7 @@ export default function OptimizationROIPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <ErrorState message="Failed to load optimization ROI" onRetry={refetch} />
+        <ErrorState message={t('failedToLoad')} onRetry={refetch} />
       </PageWrapper>
     );
   }
@@ -59,7 +60,7 @@ export default function OptimizationROIPage() {
           <div className="flex gap-4">
             <Input
               type="date"
-              label="Optimization Date"
+              label={t('optimizationDate')}
               value={optimizationDate || apiOptimizationDate.split('T')[0]}
               onValueChange={(value) => setOptimizationDate(value)}
               className="w-48"
@@ -74,7 +75,7 @@ export default function OptimizationROIPage() {
               }}
               className="w-40"
             >
-              {periodOptions.map((option) => (
+              {getTranslatedPeriodOptions(tPeriods).map((option) => (
                 <SelectItem key={option.value} textValue={option.value}>
                   {option.label}
                 </SelectItem>
@@ -90,14 +91,14 @@ export default function OptimizationROIPage() {
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">ROI Summary</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('roiSummary')}</h3>
                 <p className="text-sm text-gray-600">
-                  Optimization Date: {new Date(apiOptimizationDate).toLocaleDateString()}
+                  {t('optimizationDate')}: {new Date(apiOptimizationDate).toLocaleDateString()}
                 </p>
               </div>
               <div className="text-right">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-2xl font-bold text-gray-900">ROI</span>
+                  <span className="text-2xl font-bold text-gray-900">{t('roi')}</span>
                   <Chip
                     color={isROIPositive ? 'success' : 'danger'}
                     variant="flat"
@@ -107,7 +108,7 @@ export default function OptimizationROIPage() {
                   </Chip>
                 </div>
                 <p className="text-sm text-gray-600">
-                  Additional Revenue: {formatCurrency(summary.changes.additionalRevenue)}
+                  {t('additionalRevenue')}: {formatCurrency(summary.changes.additionalRevenue)}
                 </p>
               </div>
             </div>
@@ -118,9 +119,9 @@ export default function OptimizationROIPage() {
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
-          title="Revenue Change"
+          title={t('revenueChange')}
           value={formatCurrency(summary.changes.revenueChange)}
-          subtitle={`${formatPercentage(Math.abs(summary.changes.revenueChangePercent))} ${isPositive ? 'increase' : 'decrease'}`}
+          subtitle={`${formatPercentage(Math.abs(summary.changes.revenueChangePercent))} ${isPositive ? t('increase') : t('decrease')}`}
           icon={
             isPositive ? (
               <ArrowTrendingUpIcon className="w-6 h-6 text-white" />
@@ -130,21 +131,21 @@ export default function OptimizationROIPage() {
           }
         />
         <MetricCard
-          title="Conversion Rate Change"
+          title={t('conversionRateChange')}
           value={formatPercentage(Math.abs(summary.changes.conversionRateChange))}
           subtitle={`${summary.changes.conversionRateChangePercent >= 0 ? '+' : ''}${formatPercentage(summary.changes.conversionRateChangePercent)}`}
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Additional Orders"
+          title={t('additionalOrders')}
           value={formatNumber(summary.changes.additionalOrders)}
-          subtitle="Orders gained"
+          subtitle={t('ordersGained')}
           icon={<CheckCircleIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="AOV Change"
+          title={t('aovChange')}
           value={formatCurrency(summary.changes.aovChange)}
-          subtitle={`${formatPercentage(Math.abs(summary.changes.aovChangePercent))} change`}
+          subtitle={`${formatPercentage(Math.abs(summary.changes.aovChangePercent))} ${t('change')}`}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />
       </div>
@@ -152,42 +153,42 @@ export default function OptimizationROIPage() {
       {/* Before/After Comparison */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <ChartCard
-          title="Before Period"
+          title={t('beforePeriod')}
           subtitle={`${new Date(summary.beforePeriod.start).toLocaleDateString()} - ${new Date(summary.beforePeriod.end).toLocaleDateString()}`}
         >
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Sessions</span>
+              <span className="text-sm text-gray-600">{t('sessions')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatNumber(summary.beforePeriod.sessions)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Conversions</span>
+              <span className="text-sm text-gray-600">{t('conversions')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatNumber(summary.beforePeriod.conversions)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Conversion Rate</span>
+              <span className="text-sm text-gray-600">{t('conversionRate')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatPercentage(summary.beforePeriod.conversionRate)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Revenue</span>
+              <span className="text-sm text-gray-600">{t('revenue')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatCurrency(summary.beforePeriod.revenue)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Orders</span>
+              <span className="text-sm text-gray-600">{t('orders')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatNumber(summary.beforePeriod.orders)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">AOV</span>
+              <span className="text-sm text-gray-600">{t('aov')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatCurrency(summary.beforePeriod.aov)}
               </span>
@@ -196,42 +197,42 @@ export default function OptimizationROIPage() {
         </ChartCard>
 
         <ChartCard
-          title="After Period"
+          title={t('afterPeriod')}
           subtitle={`${new Date(summary.afterPeriod.start).toLocaleDateString()} - ${new Date(summary.afterPeriod.end).toLocaleDateString()}`}
         >
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Sessions</span>
+              <span className="text-sm text-gray-600">{t('sessions')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatNumber(summary.afterPeriod.sessions)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Conversions</span>
+              <span className="text-sm text-gray-600">{t('conversions')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatNumber(summary.afterPeriod.conversions)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Conversion Rate</span>
+              <span className="text-sm text-gray-600">{t('conversionRate')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatPercentage(summary.afterPeriod.conversionRate)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Revenue</span>
+              <span className="text-sm text-gray-600">{t('revenue')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatCurrency(summary.afterPeriod.revenue)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Orders</span>
+              <span className="text-sm text-gray-600">{t('orders')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatNumber(summary.afterPeriod.orders)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">AOV</span>
+              <span className="text-sm text-gray-600">{t('aov')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatCurrency(summary.afterPeriod.aov)}
               </span>
@@ -242,40 +243,40 @@ export default function OptimizationROIPage() {
 
       {/* Changes Summary */}
       <ChartCard
-        title="Impact Summary"
-        subtitle="Detailed changes breakdown"
+        title={t('impactSummaryTitle')}
+        subtitle={t('impactSummarySubtitle')}
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="text-center">
-            <p className="text-sm text-gray-600 mb-2">Revenue Impact</p>
+            <p className="text-sm text-gray-600 mb-2">{t('revenueImpact')}</p>
             <p className={`text-2xl font-bold ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
               {isPositive ? '+' : ''}{formatCurrency(summary.changes.revenueChange)}
             </p>
             <p className="text-xs text-gray-500 mt-1">
-              {formatPercentage(Math.abs(summary.changes.revenueChangePercent))} change
+              {formatPercentage(Math.abs(summary.changes.revenueChangePercent))} {t('change')}
             </p>
           </div>
           <div className="text-center">
-            <p className="text-sm text-gray-600 mb-2">Conversion Impact</p>
+            <p className="text-sm text-gray-600 mb-2">{t('conversionImpact')}</p>
             <p className={`text-2xl font-bold ${
               summary.changes.conversionRateChange >= 0 ? 'text-green-600' : 'text-red-600'
             }`}>
               {summary.changes.conversionRateChange >= 0 ? '+' : ''}
-              {formatPercentage(summary.changes.conversionRateChange)} pp
+              {formatPercentage(summary.changes.conversionRateChange)} {t('pp')}
             </p>
             <p className="text-xs text-gray-500 mt-1">
-              {formatPercentage(Math.abs(summary.changes.conversionRateChangePercent))} change
+              {formatPercentage(Math.abs(summary.changes.conversionRateChangePercent))} {t('change')}
             </p>
           </div>
           <div className="text-center">
-            <p className="text-sm text-gray-600 mb-2">Additional Orders</p>
+            <p className="text-sm text-gray-600 mb-2">{t('additionalOrdersMetric')}</p>
             <p className={`text-2xl font-bold ${
               summary.changes.additionalOrders >= 0 ? 'text-green-600' : 'text-red-600'
             }`}>
               {summary.changes.additionalOrders >= 0 ? '+' : ''}{formatNumber(summary.changes.additionalOrders)}
             </p>
             <p className="text-xs text-gray-500 mt-1">
-              {formatCurrency(summary.changes.additionalRevenue)} additional revenue
+              {formatCurrency(summary.changes.additionalRevenue)} {t('additionalRevenueLabel')}
             </p>
           </div>
         </div>

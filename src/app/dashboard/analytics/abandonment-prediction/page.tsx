@@ -19,7 +19,7 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useAbandonmentPredictionData } from '@/hooks/useDashboardData';
 import { formatNumber, formatPercentage, formatDuration } from '@/utils/formatters';
-import { periodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
 
 const COLORS = {
   low: '#10b981',
@@ -30,6 +30,7 @@ const COLORS = {
 
 export default function AbandonmentPredictionPage() {
   const t = useTranslations('dashboard.analytics.abandonmentPrediction');
+  const tPeriods = useTranslations('dashboard.common.periods');
   const [period, setPeriod] = useState<Period>('week');
   const { summary, predictions, isLoading, error, refetch } = useAbandonmentPredictionData({ period });
 
@@ -37,7 +38,7 @@ export default function AbandonmentPredictionPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <LoadingState message="Loading abandonment predictions..." fullScreen />
+        <LoadingState message={t('loading')} fullScreen />
       </PageWrapper>
     );
   }
@@ -46,17 +47,17 @@ export default function AbandonmentPredictionPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <ErrorState message="Failed to load abandonment predictions" onRetry={refetch} />
+        <ErrorState message={t('failedToLoad')} onRetry={refetch} />
       </PageWrapper>
     );
   }
 
   // Prepare chart data
   const riskDistributionData = [
-    { name: 'Low', value: summary.riskDistribution.low, color: COLORS.low },
-    { name: 'Medium', value: summary.riskDistribution.medium, color: COLORS.medium },
-    { name: 'High', value: summary.riskDistribution.high, color: COLORS.high },
-    { name: 'Critical', value: summary.riskDistribution.critical, color: COLORS.critical },
+    { name: t('low'), value: summary.riskDistribution.low, color: COLORS.low },
+    { name: t('medium'), value: summary.riskDistribution.medium, color: COLORS.medium },
+    { name: t('high'), value: summary.riskDistribution.high, color: COLORS.high },
+    { name: t('critical'), value: summary.riskDistribution.critical, color: COLORS.critical },
   ].filter(item => item.value > 0);
 
   const abandonmentByRiskData = Object.entries(summary.abandonmentByRisk)
@@ -87,7 +88,7 @@ export default function AbandonmentPredictionPage() {
             }}
             className="w-40"
           >
-            {periodOptions.map((option) => (
+            {getTranslatedPeriodOptions(tPeriods).map((option) => (
               <SelectItem key={option.value} textValue={option.value}>
                 {option.label}
               </SelectItem>
@@ -105,10 +106,10 @@ export default function AbandonmentPredictionPage() {
           startContent={<ExclamationTriangleIcon className="w-5 h-5" />}
         >
           <p className="text-sm font-semibold">
-            {highRiskSessions.length} high-risk session{highRiskSessions.length !== 1 ? 's' : ''} detected
+            {highRiskSessions.length} {t('highRiskSessionsDetected').replace('{plural}', highRiskSessions.length !== 1 ? 's' : '')}
           </p>
           <p className="text-xs mt-1">
-            Consider implementing intervention strategies for these sessions.
+            {t('implementInterventions')}
           </p>
         </Alert>
       )}
@@ -116,29 +117,29 @@ export default function AbandonmentPredictionPage() {
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
-          title="Average Risk Score"
+          title={t('averageRiskScore')}
           value={summary.avgRiskScore.toFixed(1)}
-          subtitle={`${summary.totalSessions} sessions analyzed`}
+          subtitle={`${summary.totalSessions} ${t('sessionsAnalyzed')}`}
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="High Risk Sessions"
+          title={t('highRiskSessions')}
           value={formatNumber(summary.highRiskSessions)}
           subtitle={`${formatPercentage(
             summary.totalSessions > 0 ? (summary.highRiskSessions / summary.totalSessions) * 100 : 0
-          )} of total`}
+          )} ${t('ofTotal')}`}
           icon={<ExclamationTriangleIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Typical Checkout Time"
+          title={t('typicalCheckoutTime')}
           value={formatDuration(summary.typicalCheckoutDuration)}
-          subtitle="Based on historical data"
+          subtitle={t('basedOnHistorical')}
           icon={<ClockIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Avg Checkout Time"
+          title={t('avgCheckoutTime')}
           value={formatDuration(summary.avgCheckoutTime)}
-          subtitle="Actual average time"
+          subtitle={t('actualAverageTime')}
           icon={<ClockIcon className="w-6 h-6 text-white" />}
         />
       </div>
@@ -146,8 +147,8 @@ export default function AbandonmentPredictionPage() {
       {/* Risk Distribution */}
       <div className="mb-8">
         <ChartCard
-          title="Risk Distribution"
-          subtitle="Sessions by risk level"
+          title={t('riskDistributionTitle')}
+          subtitle={t('riskDistributionSubtitle')}
         >
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -175,8 +176,8 @@ export default function AbandonmentPredictionPage() {
       {abandonmentByRiskData.length > 0 && (
         <div className="mb-8">
           <ChartCard
-            title="Abandonment Rate by Risk Level"
-            subtitle="Actual abandonment rates by predicted risk"
+            title={t('abandonmentByRiskTitle')}
+            subtitle={t('abandonmentByRiskSubtitle')}
           >
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={abandonmentByRiskData}>
@@ -200,7 +201,7 @@ export default function AbandonmentPredictionPage() {
                   }}
                   formatter={(value: number, name: string) => [
                     name === 'abandonmentRate' ? `${value.toFixed(1)}%` : formatNumber(value),
-                    name === 'abandonmentRate' ? 'Abandonment Rate' : name === 'total' ? 'Total' : 'Abandoned',
+                    name === 'abandonmentRate' ? t('abandonmentRate') : name === 'total' ? t('total') : t('abandoned'),
                   ]}
                 />
                 <Bar dataKey="abandonmentRate" fill="#ef4444" radius={[8, 8, 0, 0]} />
@@ -213,20 +214,20 @@ export default function AbandonmentPredictionPage() {
       {/* High Risk Sessions Table */}
       {highRiskSessions.length > 0 ? (
         <ChartCard
-          title="High Risk Sessions"
-          subtitle="Sessions with high or critical abandonment risk"
+          title={t('highRiskSessionsTitle')}
+          subtitle={t('highRiskSessionsSubtitle')}
         >
           <div className="overflow-x-auto">
             <Table aria-label="High risk sessions table" removeWrapper>
               <TableHeader>
-                <TableColumn>SESSION</TableColumn>
-                <TableColumn>RISK SCORE</TableColumn>
-                <TableColumn>RISK LEVEL</TableColumn>
-                <TableColumn>CURRENT STEP</TableColumn>
-                <TableColumn>DURATION</TableColumn>
-                <TableColumn>ERRORS</TableColumn>
-                <TableColumn>STATUS</TableColumn>
-                <TableColumn>RECOMMENDATIONS</TableColumn>
+                <TableColumn>{t('session')}</TableColumn>
+                <TableColumn>{t('riskScore')}</TableColumn>
+                <TableColumn>{t('riskLevel')}</TableColumn>
+                <TableColumn>{t('currentStep')}</TableColumn>
+                <TableColumn>{t('duration')}</TableColumn>
+                <TableColumn>{t('errors')}</TableColumn>
+                <TableColumn>{t('status')}</TableColumn>
+                <TableColumn>{t('recommendations')}</TableColumn>
               </TableHeader>
               <TableBody>
                 {highRiskSessions.slice(0, 20).map((prediction) => {
@@ -281,15 +282,15 @@ export default function AbandonmentPredictionPage() {
                       <TableCell>
                         {prediction.isCompleted ? (
                           <Chip color="success" variant="flat" size="sm" startContent={<CheckCircleIcon className="w-3 h-3" />}>
-                            Completed
+                            {t('completed')}
                           </Chip>
                         ) : prediction.isAbandoned ? (
                           <Chip color="danger" variant="flat" size="sm" startContent={<XCircleIcon className="w-3 h-3" />}>
-                            Abandoned
+                            {t('abandoned')}
                           </Chip>
                         ) : (
                           <Chip color="warning" variant="flat" size="sm">
-                            Active
+                            {t('active')}
                           </Chip>
                         )}
                       </TableCell>
@@ -310,11 +311,11 @@ export default function AbandonmentPredictionPage() {
           </div>
         </ChartCard>
       ) : (
-        <ChartCard title="No High Risk Sessions" subtitle="No high-risk sessions detected in the selected period">
+        <ChartCard title={t('noHighRiskTitle')} subtitle={t('noHighRiskSubtitle')}>
           <div className="text-center py-12 text-gray-500">
             <CheckCircleIcon className="w-12 h-12 mx-auto mb-4 text-green-300" />
-            <p className="text-lg font-semibold mb-2">All sessions look good!</p>
-            <p className="text-sm">No high-risk abandonment patterns detected.</p>
+            <p className="text-lg font-semibold mb-2">{t('allSessionsGood')}</p>
+            <p className="text-sm">{t('noHighRiskPatterns')}</p>
           </div>
         </ChartCard>
       )}

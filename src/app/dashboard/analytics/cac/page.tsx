@@ -19,10 +19,11 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useCACData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
-import { periodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
 
 export default function CACAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.cac');
+  const tPeriods = useTranslations('dashboard.common.periods');
   const [period, setPeriod] = useState<Period>('month');
   const { summary, channels, note, isLoading, error, refetch } = useCACData({ period });
 
@@ -30,7 +31,7 @@ export default function CACAnalyticsPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <LoadingState message="Loading CAC analytics..." fullScreen />
+        <LoadingState message={t('loading')} fullScreen />
       </PageWrapper>
     );
   }
@@ -39,7 +40,7 @@ export default function CACAnalyticsPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <ErrorState message="Failed to load CAC analytics" onRetry={refetch} />
+        <ErrorState message={t('failedToLoad')} onRetry={refetch} />
       </PageWrapper>
     );
   }
@@ -59,10 +60,10 @@ export default function CACAnalyticsPage() {
     : 'danger';
 
   const efficiencyLabel = summary.acquisitionEfficiency.excellent
-    ? 'Excellent'
+    ? t('excellent')
     : summary.acquisitionEfficiency.good
-    ? 'Good'
-    : 'Needs Improvement';
+    ? t('good')
+    : t('needsImprovement');
 
   return (
     <PageWrapper>
@@ -79,7 +80,7 @@ export default function CACAnalyticsPage() {
             }}
             className="w-40"
           >
-            {periodOptions.map((option) => (
+            {getTranslatedPeriodOptions(tPeriods).map((option) => (
               <SelectItem key={option.value} textValue={option.value}>
                 {option.label}
               </SelectItem>
@@ -103,27 +104,27 @@ export default function CACAnalyticsPage() {
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
-          title="Average CAC"
+          title={t('averageCAC')}
           value={formatCurrency(summary.avgCAC)}
-          subtitle="Customer acquisition cost"
+          subtitle={t('customerAcquisitionCost')}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="LTV:CAC Ratio"
+          title={t('ltvCacRatio')}
           value={summary.ltvCacRatio.toFixed(1)}
           subtitle={efficiencyLabel}
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="New Customers"
+          title={t('newCustomers')}
           value={formatNumber(summary.totalNewCustomers)}
-          subtitle="Acquired in period"
+          subtitle={t('acquiredInPeriod')}
           icon={<UserPlusIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Total Marketing Spend"
+          title={t('totalMarketingSpend')}
           value={formatCurrency(summary.totalEstimatedMarketingSpend)}
-          subtitle="Estimated spend"
+          subtitle={t('estimatedSpend')}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />
       </div>
@@ -131,12 +132,12 @@ export default function CACAnalyticsPage() {
       {/* Acquisition Efficiency Indicator */}
       <div className="mb-8">
         <ChartCard
-          title="Acquisition Efficiency"
-          subtitle={`LTV:CAC Ratio: ${summary.ltvCacRatio.toFixed(2)}:1`}
+          title={t('acquisitionEfficiencyTitle')}
+          subtitle={t('acquisitionEfficiencySubtitle', { ratio: summary.ltvCacRatio.toFixed(2) })}
         >
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Target: 3:1 or higher</span>
+              <span className="text-sm text-gray-600">{t('target')}</span>
               <Chip color={efficiencyColor} variant="flat" size="lg">
                 {efficiencyLabel}
               </Chip>
@@ -156,15 +157,15 @@ export default function CACAnalyticsPage() {
               />
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="text-xs font-semibold text-gray-700">
-                  {summary.ltvCacRatio.toFixed(2)}:1 Ratio
+                  {t('ratio', { ratio: summary.ltvCacRatio.toFixed(2) })}
                 </span>
               </div>
             </div>
             <div className="flex items-center justify-between text-xs text-gray-500">
               <span>0:1</span>
-              <span>2:1 (Good)</span>
-              <span>3:1 (Excellent)</span>
-              <span>5:1+</span>
+              <span>{t('goodRatio')}</span>
+              <span>{t('excellentRatio')}</span>
+              <span>{t('ratio5Plus')}</span>
             </div>
           </div>
         </ChartCard>
@@ -173,8 +174,8 @@ export default function CACAnalyticsPage() {
       {/* CAC by Channel */}
       <div className="mb-8">
         <ChartCard
-          title="CAC by Acquisition Channel"
-          subtitle="Customer acquisition cost by channel"
+          title={t('cacByChannelTitle')}
+          subtitle={t('cacByChannelSubtitle')}
         >
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={channelCACData}>
@@ -200,7 +201,7 @@ export default function CACAnalyticsPage() {
                 }}
                 formatter={(value: number, name: string) => [
                   name === 'cac' ? formatCurrency(value) : formatNumber(value),
-                  name === 'cac' ? 'CAC' : name === 'ltvCacRatio' ? 'LTV:CAC' : 'Conversions',
+                  name === 'cac' ? t('cac') : name === 'ltvCacRatio' ? t('ltvCac') : t('conversions'),
                 ]}
               />
               <Bar dataKey="cac" fill="#2563eb" radius={[8, 8, 0, 0]} />
@@ -212,19 +213,19 @@ export default function CACAnalyticsPage() {
       {/* Channels Table */}
       {channels.length > 0 ? (
         <ChartCard
-          title="Channel Performance"
-          subtitle="Detailed metrics by acquisition channel"
+          title={t('channelPerformanceTitle')}
+          subtitle={t('channelPerformanceSubtitle')}
         >
           <div className="overflow-x-auto">
             <Table aria-label="Channels table" removeWrapper>
               <TableHeader>
-                <TableColumn>CHANNEL</TableColumn>
-                <TableColumn>SESSIONS</TableColumn>
-                <TableColumn>CONVERSIONS</TableColumn>
-                <TableColumn>CONVERSION RATE</TableColumn>
-                <TableColumn>ESTIMATED CAC</TableColumn>
-                <TableColumn>LTV:CAC RATIO</TableColumn>
-                <TableColumn>STATUS</TableColumn>
+                <TableColumn>{t('channel')}</TableColumn>
+                <TableColumn>{t('sessions')}</TableColumn>
+                <TableColumn>{t('conversionsCol')}</TableColumn>
+                <TableColumn>{t('conversionRate')}</TableColumn>
+                <TableColumn>{t('estimatedCAC')}</TableColumn>
+                <TableColumn>{t('ltvCacRatioCol')}</TableColumn>
+                <TableColumn>{t('status')}</TableColumn>
               </TableHeader>
               <TableBody>
                 {channels.map((channel, index) => {
@@ -271,7 +272,7 @@ export default function CACAnalyticsPage() {
                           variant="flat"
                           size="sm"
                         >
-                          {isEfficient ? 'Excellent' : isGood ? 'Good' : 'Needs Work'}
+                          {isEfficient ? t('excellent') : isGood ? t('good') : t('needsWork')}
                         </Chip>
                       </TableCell>
                     </TableRow>
@@ -282,11 +283,11 @@ export default function CACAnalyticsPage() {
           </div>
         </ChartCard>
       ) : (
-        <ChartCard title="No Channel Data" subtitle="No acquisition channel data available in the selected period">
+        <ChartCard title={t('noChannelDataTitle')} subtitle={t('noChannelDataSubtitle')}>
           <div className="text-center py-12 text-gray-500">
             <UserPlusIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-            <p className="text-lg font-semibold mb-2">No channel data found</p>
-            <p className="text-sm">Try selecting a different time period.</p>
+            <p className="text-lg font-semibold mb-2">{t('noChannelDataFound')}</p>
+            <p className="text-sm">{t('tryDifferentPeriod')}</p>
           </div>
         </ChartCard>
       )}

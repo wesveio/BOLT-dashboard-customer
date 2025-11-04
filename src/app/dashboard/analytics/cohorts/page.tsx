@@ -18,10 +18,11 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { useCohortsData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
-import { periodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
 
 export default function CohortsAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.cohorts');
+  const tPeriods = useTranslations('dashboard.common.periods');
   const [period, setPeriod] = useState<Period>('year');
   const { summary, cohorts, isLoading, error, refetch } = useCohortsData({ period });
 
@@ -46,7 +47,7 @@ export default function CohortsAnalyticsPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <LoadingState message="Loading cohorts analysis..." fullScreen />
+        <LoadingState message={t('loading')} fullScreen />
       </PageWrapper>
     );
   }
@@ -55,7 +56,7 @@ export default function CohortsAnalyticsPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <ErrorState message="Failed to load cohorts analysis" onRetry={refetch} />
+        <ErrorState message={t('failedToLoad')} onRetry={refetch} />
       </PageWrapper>
     );
   }
@@ -75,7 +76,7 @@ export default function CohortsAnalyticsPage() {
             }}
             className="w-40"
           >
-            {periodOptions.map((option) => (
+            {getTranslatedPeriodOptions(tPeriods).map((option) => (
               <SelectItem key={option.value} textValue={option.value}>
                 {option.label}
               </SelectItem>
@@ -87,27 +88,27 @@ export default function CohortsAnalyticsPage() {
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
-          title="Total Cohorts"
+          title={t('totalCohorts')}
           value={formatNumber(summary.totalCohorts)}
-          subtitle="Cohorts analyzed"
+          subtitle={t('cohortsAnalyzed')}
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Total Customers"
+          title={t('totalCustomers')}
           value={formatNumber(summary.totalCustomers)}
-          subtitle={`Avg ${formatNumber(summary.avgCohortSize, { maximumFractionDigits: 0 })} per cohort`}
+          subtitle={t('avgPerCohort', { count: formatNumber(summary.avgCohortSize, { maximumFractionDigits: 0 }) })}
           icon={<UserGroupIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Average LTV"
+          title={t('averageLTV')}
           value={formatCurrency(summary.avgLTV)}
-          subtitle="Per cohort"
+          subtitle={t('perCohort')}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="M1 Retention"
+          title={t('m1Retention')}
           value={formatPercentage(summary.avgRetentionByPeriod[1] || 0)}
-          subtitle="First month retention"
+          subtitle={t('firstMonthRetention')}
           icon={<ArrowTrendingUpIcon className="w-6 h-6 text-white" />}
         />
       </div>
@@ -115,8 +116,8 @@ export default function CohortsAnalyticsPage() {
       {/* Average Retention Trend */}
       <div className="mb-8">
         <ChartCard
-          title="Average Retention Trend"
-          subtitle="Retention rate by period (months since first purchase)"
+          title={t('avgRetentionTrendTitle')}
+          subtitle={t('avgRetentionTrendSubtitle')}
         >
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={avgRetentionTrend}>
@@ -138,7 +139,7 @@ export default function CohortsAnalyticsPage() {
                   border: '1px solid #e5e7eb',
                   borderRadius: '8px',
                 }}
-                formatter={(value: number) => [`${value.toFixed(1)}%`, 'Retention Rate']}
+                formatter={(value: number) => [`${value.toFixed(1)}%`, t('retentionRate')]}
               />
               <Line
                 type="monotone"
@@ -157,14 +158,14 @@ export default function CohortsAnalyticsPage() {
       {cohorts.length > 0 && (
         <div className="mb-8">
           <ChartCard
-            title="Cohort Retention Matrix"
-            subtitle="Retention rates by cohort and period"
+            title={t('cohortRetentionMatrixTitle')}
+            subtitle={t('cohortRetentionMatrixSubtitle')}
           >
             <div className="overflow-x-auto">
               <Table aria-label="Cohort retention matrix" removeWrapper>
                 <TableHeader>
-                  <TableColumn>COHORT</TableColumn>
-                  <TableColumn>SIZE</TableColumn>
+                  <TableColumn>{t('cohort')}</TableColumn>
+                  <TableColumn>{t('size')}</TableColumn>
                   <TableColumn>M0</TableColumn>
                   <TableColumn>M1</TableColumn>
                   <TableColumn>M2</TableColumn>
@@ -172,7 +173,7 @@ export default function CohortsAnalyticsPage() {
                   <TableColumn>M4</TableColumn>
                   <TableColumn>M5</TableColumn>
                   <TableColumn>M6</TableColumn>
-                  <TableColumn>AVG LTV</TableColumn>
+                  <TableColumn>{t('avgLTV')}</TableColumn>
                 </TableHeader>
                 <TableBody>
                   {cohorts.map((cohort) => (
@@ -221,8 +222,8 @@ export default function CohortsAnalyticsPage() {
       {/* Cohort LTV Comparison */}
       <div className="mb-8">
         <ChartCard
-          title="Cohort LTV Comparison"
-          subtitle="Average LTV by cohort"
+          title={t('cohortLTVComparisonTitle')}
+          subtitle={t('cohortLTVComparisonSubtitle')}
         >
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={cohortLTVData}>
@@ -248,7 +249,7 @@ export default function CohortsAnalyticsPage() {
                 }}
                 formatter={(value: number, name: string) => [
                   name === 'avgLTV' ? formatCurrency(value) : formatNumber(value),
-                  name === 'avgLTV' ? 'Avg LTV' : 'Cohort Size',
+                  name === 'avgLTV' ? t('avgLTV') : t('cohortSize'),
                 ]}
               />
               <Legend />
@@ -259,7 +260,7 @@ export default function CohortsAnalyticsPage() {
                 strokeWidth={3}
                 dot={{ fill: '#2563eb', r: 5 }}
                 activeDot={{ r: 7 }}
-                name="Avg LTV"
+                name={t('avgLTV')}
               />
               <Line
                 type="monotone"
@@ -267,7 +268,7 @@ export default function CohortsAnalyticsPage() {
                 stroke="#9333ea"
                 strokeWidth={2}
                 dot={{ fill: '#9333ea', r: 4 }}
-                name="Cohort Size"
+                name={t('cohortSize')}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -275,11 +276,11 @@ export default function CohortsAnalyticsPage() {
       </div>
 
       {cohorts.length === 0 && (
-        <ChartCard title="No Cohort Data" subtitle="No cohort data available in the selected period">
+        <ChartCard title={t('noCohortDataTitle')} subtitle={t('noCohortDataSubtitle')}>
           <div className="text-center py-12 text-gray-500">
             <UserGroupIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-            <p className="text-lg font-semibold mb-2">No cohorts found</p>
-            <p className="text-sm">Try selecting a longer time period (month or year).</p>
+            <p className="text-lg font-semibold mb-2">{t('noCohortsFound')}</p>
+            <p className="text-sm">{t('tryLongerPeriod')}</p>
           </div>
         </ChartCard>
       )}

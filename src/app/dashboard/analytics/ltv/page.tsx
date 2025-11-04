@@ -19,12 +19,13 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useLTVData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
-import { periodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
 
 const COLORS = ['#2563eb', '#10b981', '#f59e0b', '#ef4444'];
 
 export default function LTVAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.ltv');
+  const tPeriods = useTranslations('dashboard.common.periods');
   const [period, setPeriod] = useState<Period>('month');
   const { summary, customers, ltvBySegment, isLoading, error, refetch } = useLTVData({ period });
 
@@ -32,7 +33,7 @@ export default function LTVAnalyticsPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <LoadingState message="Loading LTV analytics..." fullScreen />
+        <LoadingState message={t('loading')} fullScreen />
       </PageWrapper>
     );
   }
@@ -41,7 +42,7 @@ export default function LTVAnalyticsPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <ErrorState message="Failed to load LTV analytics" onRetry={refetch} />
+        <ErrorState message={t('failedToLoad')} onRetry={refetch} />
       </PageWrapper>
     );
   }
@@ -55,9 +56,9 @@ export default function LTVAnalyticsPage() {
   }));
 
   const ltvDistributionData = [
-    { name: 'High LTV', value: summary.ltvSegments.high, color: '#10b981' },
-    { name: 'Medium LTV', value: summary.ltvSegments.medium, color: '#f59e0b' },
-    { name: 'Low LTV', value: summary.ltvSegments.low, color: '#ef4444' },
+    { name: t('highLTV'), value: summary.ltvSegments.high, color: '#10b981' },
+    { name: t('mediumLTV'), value: summary.ltvSegments.medium, color: '#f59e0b' },
+    { name: t('lowLTV'), value: summary.ltvSegments.low, color: '#ef4444' },
   ].filter(item => item.value > 0);
 
   const topCustomers = customers.slice(0, 10);
@@ -77,7 +78,7 @@ export default function LTVAnalyticsPage() {
             }}
             className="w-40"
           >
-            {periodOptions.map((option) => (
+            {getTranslatedPeriodOptions(tPeriods).map((option) => (
               <SelectItem key={option.value} textValue={option.value}>
                 {option.label}
               </SelectItem>
@@ -89,27 +90,27 @@ export default function LTVAnalyticsPage() {
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
-          title="Average LTV"
+          title={t('averageLTV')}
           value={formatCurrency(summary.avgLTV)}
-          subtitle="Customer lifetime value"
+          subtitle={t('customerLifetimeValue')}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Total Customers"
+          title={t('totalCustomers')}
           value={formatNumber(summary.totalCustomers)}
-          subtitle="Unique customers analyzed"
+          subtitle={t('uniqueCustomersAnalyzed')}
           icon={<UserGroupIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Avg Orders/Customer"
+          title={t('avgOrdersCustomer')}
           value={formatNumber(summary.avgOrdersPerCustomer, { maximumFractionDigits: 1 })}
-          subtitle="Average purchase frequency"
+          subtitle={t('averagePurchaseFrequency')}
           icon={<ShoppingBagIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Recurring Rate"
+          title={t('recurringRate')}
           value={formatPercentage(summary.recurringRate)}
-          subtitle={`${customers.filter(c => c.isRecurring).length} repeat customers`}
+          subtitle={t('repeatCustomers', { count: customers.filter(c => c.isRecurring).length })}
           icon={<ArrowTrendingUpIcon className="w-6 h-6 text-white" />}
         />
       </div>
@@ -117,8 +118,8 @@ export default function LTVAnalyticsPage() {
       {/* LTV Distribution */}
       <div className="mb-8">
         <ChartCard
-          title="LTV Distribution"
-          subtitle="Customer segments by lifetime value"
+          title={t('ltvDistributionTitle')}
+          subtitle={t('ltvDistributionSubtitle')}
         >
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -146,8 +147,8 @@ export default function LTVAnalyticsPage() {
       {segmentData.length > 0 && (
         <div className="mb-8">
           <ChartCard
-            title="LTV by Customer Segment"
-            subtitle="Average LTV by customer type"
+            title={t('ltvBySegmentTitle')}
+            subtitle={t('ltvBySegmentSubtitle')}
           >
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={segmentData}>
@@ -170,7 +171,7 @@ export default function LTVAnalyticsPage() {
                   }}
                   formatter={(value: number, name: string) => [
                     name === 'avgLTV' ? formatCurrency(value) : formatNumber(value),
-                    name === 'avgLTV' ? 'Avg LTV' : name === 'customers' ? 'Customers' : 'Revenue',
+                    name === 'avgLTV' ? t('avgLTV') : name === 'customers' ? t('customers') : t('revenue'),
                   ]}
                 />
                 <Bar dataKey="avgLTV" fill="#2563eb" radius={[8, 8, 0, 0]} />
@@ -183,18 +184,18 @@ export default function LTVAnalyticsPage() {
       {/* Top Customers Table */}
       {customers.length > 0 ? (
         <ChartCard
-          title="Top Customers by LTV"
-          subtitle="Highest lifetime value customers"
+          title={t('topCustomersTitle')}
+          subtitle={t('topCustomersSubtitle')}
         >
           <div className="overflow-x-auto">
             <Table aria-label="Top customers table" removeWrapper>
               <TableHeader>
-                <TableColumn>CUSTOMER</TableColumn>
-                <TableColumn>ORDERS</TableColumn>
-                <TableColumn>LTV</TableColumn>
-                <TableColumn>AVG ORDER VALUE</TableColumn>
-                <TableColumn>FREQUENCY</TableColumn>
-                <TableColumn>STATUS</TableColumn>
+                <TableColumn>{t('customer')}</TableColumn>
+                <TableColumn>{t('orders')}</TableColumn>
+                <TableColumn>{t('ltv')}</TableColumn>
+                <TableColumn>{t('avgOrderValue')}</TableColumn>
+                <TableColumn>{t('frequency')}</TableColumn>
+                <TableColumn>{t('status')}</TableColumn>
               </TableHeader>
               <TableBody>
                 {topCustomers.map((customer, index) => (
@@ -202,11 +203,11 @@ export default function LTVAnalyticsPage() {
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-mono text-gray-600">
-                          {customer.customerId ? customer.customerId.substring(0, 8) + '...' : 'Anonymous'}
+                          {customer.customerId ? customer.customerId.substring(0, 8) + '...' : t('anonymous')}
                         </span>
                         {customer.isRecurring && (
                           <Chip color="success" variant="flat" size="sm">
-                            Recurring
+                            {t('recurring')}
                           </Chip>
                         )}
                       </div>
@@ -228,7 +229,7 @@ export default function LTVAnalyticsPage() {
                     </TableCell>
                     <TableCell>
                       <span className="text-sm text-gray-600">
-                        {formatNumber(customer.purchaseFrequency, { maximumFractionDigits: 1 })} orders/mo
+                        {formatNumber(customer.purchaseFrequency, { maximumFractionDigits: 1 })} {t('ordersPerMonth')}
                       </span>
                     </TableCell>
                     <TableCell>
@@ -237,7 +238,7 @@ export default function LTVAnalyticsPage() {
                         variant="flat"
                         size="sm"
                       >
-                        {customer.isRecurring ? 'Recurring' : 'New'}
+                        {customer.isRecurring ? t('recurring') : t('new')}
                       </Chip>
                     </TableCell>
                   </TableRow>
@@ -247,11 +248,11 @@ export default function LTVAnalyticsPage() {
           </div>
         </ChartCard>
       ) : (
-        <ChartCard title="No Customer Data" subtitle="No customer data available in the selected period">
+        <ChartCard title={t('noCustomerDataTitle')} subtitle={t('noCustomerDataSubtitle')}>
           <div className="text-center py-12 text-gray-500">
             <UserGroupIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-            <p className="text-lg font-semibold mb-2">No customers found</p>
-            <p className="text-sm">Try selecting a different time period.</p>
+            <p className="text-lg font-semibold mb-2">{t('noCustomersFound')}</p>
+            <p className="text-sm">{t('tryDifferentPeriod')}</p>
           </div>
         </ChartCard>
       )}

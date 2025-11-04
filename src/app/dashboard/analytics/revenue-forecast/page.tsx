@@ -19,10 +19,11 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { useRevenueForecastData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber } from '@/utils/formatters';
-import { periodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
 
 export default function RevenueForecastPage() {
   const t = useTranslations('dashboard.analytics.revenueForecast');
+  const tPeriods = useTranslations('dashboard.common.periods');
   const [period, setPeriod] = useState<Period>('month');
   const [forecastDays, setForecastDays] = useState<number>(30);
   const { summary, historical, forecast, accuracy, isLoading, error, refetch } = useRevenueForecastData({
@@ -34,7 +35,7 @@ export default function RevenueForecastPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <LoadingState message="Loading revenue forecast..." fullScreen />
+        <LoadingState message={t('loading')} fullScreen />
       </PageWrapper>
     );
   }
@@ -43,7 +44,7 @@ export default function RevenueForecastPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <ErrorState message="Failed to load revenue forecast" onRetry={refetch} />
+        <ErrorState message={t('failedToLoad')} onRetry={refetch} />
       </PageWrapper>
     );
   }
@@ -96,13 +97,13 @@ export default function RevenueForecastPage() {
               className="w-32"
             >
               <SelectItem key="7" textValue="7">
-                7 Days
+                {t('days7')}
               </SelectItem>
               <SelectItem key="30" textValue="30">
-                30 Days
+                {t('days30')}
               </SelectItem>
               <SelectItem key="90" textValue="90">
-                90 Days
+                {t('days90')}
               </SelectItem>
             </Select>
             <Select
@@ -114,7 +115,7 @@ export default function RevenueForecastPage() {
               }}
               className="w-40"
             >
-              {periodOptions.map((option) => (
+              {getTranslatedPeriodOptions(tPeriods).map((option) => (
                 <SelectItem key={option.value} textValue={option.value}>
                   {option.label}
                 </SelectItem>
@@ -127,27 +128,27 @@ export default function RevenueForecastPage() {
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
-          title="7-Day Forecast"
+          title={t('forecast7')}
           value={formatCurrency(summary.forecast7Revenue)}
-          subtitle="Next 7 days"
+          subtitle={t('next7Days')}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="30-Day Forecast"
+          title={t('forecast30')}
           value={formatCurrency(summary.forecast30Revenue)}
-          subtitle="Next 30 days"
+          subtitle={t('next30Days')}
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="90-Day Forecast"
+          title={t('forecast90')}
           value={formatCurrency(summary.forecast90Revenue)}
-          subtitle="Next 90 days"
+          subtitle={t('next90Days')}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Trend"
+          title={t('trend')}
           value={summary.trend.charAt(0).toUpperCase() + summary.trend.slice(1)}
-          subtitle={`${summary.avgGrowth >= 0 ? '+' : ''}${formatCurrency(summary.avgGrowth)}/day`}
+          subtitle={`${summary.avgGrowth >= 0 ? '+' : ''}${formatCurrency(summary.avgGrowth)}${t('perDay')}`}
           icon={trendIcon}
         />
       </div>
@@ -155,8 +156,8 @@ export default function RevenueForecastPage() {
       {/* Revenue Forecast Chart */}
       <div className="mb-8">
         <ChartCard
-          title="Revenue Forecast"
-          subtitle="Historical data and forecasted revenue with confidence intervals"
+          title={t('forecastChartTitle')}
+          subtitle={t('forecastChartSubtitle')}
         >
           <ResponsiveContainer width="100%" height={400}>
             <AreaChart data={chartData}>
@@ -205,7 +206,7 @@ export default function RevenueForecastPage() {
                 stroke="#2563eb"
                 strokeWidth={3}
                 fill="url(#colorHistorical)"
-                name="Historical Revenue"
+                name={t('historicalRevenue')}
                 connectNulls={false}
               />
               {/* Forecast */}
@@ -216,7 +217,7 @@ export default function RevenueForecastPage() {
                 strokeWidth={3}
                 strokeDasharray="5 5"
                 fill="url(#colorForecast)"
-                name="Forecast"
+                name={t('forecast')}
                 connectNulls={false}
               />
               {/* Confidence Interval Upper */}
@@ -227,7 +228,7 @@ export default function RevenueForecastPage() {
                 strokeWidth={1}
                 strokeDasharray="3 3"
                 dot={false}
-                name="Upper Bound"
+                name={t('upperBound')}
               />
               {/* Confidence Interval Lower */}
               <Line
@@ -237,7 +238,7 @@ export default function RevenueForecastPage() {
                 strokeWidth={1}
                 strokeDasharray="3 3"
                 dot={false}
-                name="Lower Bound"
+                name={t('lowerBound')}
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -247,30 +248,30 @@ export default function RevenueForecastPage() {
       {/* Forecast Summary */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <ChartCard
-          title="Forecast Summary"
-          subtitle="Revenue projections by period"
+          title={t('forecastSummaryTitle')}
+          subtitle={t('forecastSummarySubtitle')}
         >
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">7-Day Forecast</span>
+              <span className="text-sm text-gray-600">{t('forecast7')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatCurrency(summary.forecast7Revenue)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">30-Day Forecast</span>
+              <span className="text-sm text-gray-600">{t('forecast30')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatCurrency(summary.forecast30Revenue)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">90-Day Forecast</span>
+              <span className="text-sm text-gray-600">{t('forecast90')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatCurrency(summary.forecast90Revenue)}
               </span>
             </div>
             <div className="flex items-center justify-between pt-4 border-t">
-              <span className="text-sm text-gray-600">Average Daily Forecast</span>
+              <span className="text-sm text-gray-600">{t('averageDailyForecast')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatCurrency(summary.avgForecastRevenue)}
               </span>
@@ -279,24 +280,24 @@ export default function RevenueForecastPage() {
         </ChartCard>
 
         <ChartCard
-          title="Historical Summary"
-          subtitle="Past performance metrics"
+          title={t('historicalSummaryTitle')}
+          subtitle={t('historicalSummarySubtitle')}
         >
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Total Historical Revenue</span>
+              <span className="text-sm text-gray-600">{t('totalHistoricalRevenue')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatCurrency(summary.totalHistoricalRevenue)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Average Daily Revenue</span>
+              <span className="text-sm text-gray-600">{t('averageDailyRevenue')}</span>
               <span className="text-lg font-semibold text-gray-900">
                 {formatCurrency(summary.avgDailyRevenue)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Trend</span>
+              <span className="text-sm text-gray-600">{t('trend')}</span>
               <Chip
                 color={
                   summary.trend === 'increasing' ? 'success' :
@@ -310,7 +311,7 @@ export default function RevenueForecastPage() {
               </Chip>
             </div>
             <div className="flex items-center justify-between pt-4 border-t">
-              <span className="text-sm text-gray-600">Daily Growth</span>
+              <span className="text-sm text-gray-600">{t('dailyGrowth')}</span>
               <span className={`text-lg font-semibold ${
                 summary.avgGrowth >= 0 ? 'text-green-600' : 'text-red-600'
               }`}>
@@ -324,20 +325,20 @@ export default function RevenueForecastPage() {
       {/* Forecast Accuracy */}
       {accuracy && (
         <ChartCard
-          title="Forecast Accuracy"
-          subtitle="Model performance metrics (when available)"
+          title={t('forecastAccuracyTitle')}
+          subtitle={t('forecastAccuracySubtitle')}
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center">
-              <p className="text-sm text-gray-600 mb-2">Mean Absolute Error</p>
+              <p className="text-sm text-gray-600 mb-2">{t('meanAbsoluteError')}</p>
               <p className="text-2xl font-bold text-gray-900">{formatCurrency(accuracy.mae)}</p>
             </div>
             <div className="text-center">
-              <p className="text-sm text-gray-600 mb-2">Mean Absolute % Error</p>
+              <p className="text-sm text-gray-600 mb-2">{t('meanAbsolutePercentError')}</p>
               <p className="text-2xl font-bold text-gray-900">{formatNumber(accuracy.mape, { maximumFractionDigits: 2 })}%</p>
             </div>
             <div className="text-center">
-              <p className="text-sm text-gray-600 mb-2">Root Mean Squared Error</p>
+              <p className="text-sm text-gray-600 mb-2">{t('rootMeanSquaredError')}</p>
               <p className="text-2xl font-bold text-gray-900">{formatCurrency(accuracy.rmse)}</p>
             </div>
           </div>

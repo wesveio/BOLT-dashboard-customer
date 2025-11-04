@@ -23,7 +23,7 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useSegmentsData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
-import { periodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
 
 const COLORS = ['#2563eb', '#9333ea', '#10b981', '#f59e0b', '#ef4444'];
 
@@ -45,6 +45,7 @@ const SEGMENT_COLORS: Record<string, string> = {
 
 export default function SegmentsAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.segments');
+  const tPeriods = useTranslations('dashboard.common.periods');
   const [period, setPeriod] = useState<Period>('month');
   const { summary, segments, isLoading, error, refetch } = useSegmentsData({ period });
 
@@ -52,7 +53,7 @@ export default function SegmentsAnalyticsPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <LoadingState message="Loading segments analysis..." fullScreen />
+        <LoadingState message={t('loading')} fullScreen />
       </PageWrapper>
     );
   }
@@ -61,7 +62,7 @@ export default function SegmentsAnalyticsPage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <ErrorState message="Failed to load segments analysis" onRetry={refetch} />
+        <ErrorState message={t('failedToLoad')} onRetry={refetch} />
       </PageWrapper>
     );
   }
@@ -104,7 +105,7 @@ export default function SegmentsAnalyticsPage() {
             }}
             className="w-40"
           >
-            {periodOptions.map((option) => (
+            {getTranslatedPeriodOptions(tPeriods).map((option) => (
               <SelectItem key={option.value} textValue={option.value}>
                 {option.label}
               </SelectItem>
@@ -116,27 +117,27 @@ export default function SegmentsAnalyticsPage() {
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
-          title="Total Customers"
+          title={t('totalCustomers')}
           value={formatNumber(summary.totalCustomers)}
-          subtitle="Across all segments"
+          subtitle={t('acrossAllSegments')}
           icon={<UserGroupIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Overall Avg LTV"
+          title={t('overallAvgLTV')}
           value={formatCurrency(summary.overallAvgLTV)}
-          subtitle="Average lifetime value"
+          subtitle={t('averageLifetimeValue')}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Average AOV"
+          title={t('averageAOV')}
           value={formatCurrency(summary.avgAOV)}
-          subtitle="Average order value"
+          subtitle={t('averageOrderValue')}
           icon={<ShoppingBagIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Avg Orders"
+          title={t('avgOrders')}
           value={formatNumber(summary.avgOrders, { maximumFractionDigits: 1 })}
-          subtitle="Orders per customer"
+          subtitle={t('ordersPerCustomer')}
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />
       </div>
@@ -144,8 +145,8 @@ export default function SegmentsAnalyticsPage() {
       {/* Segment Distribution */}
       <div className="mb-8">
         <ChartCard
-          title="Customer Segments Distribution"
-          subtitle="Percentage of customers in each segment"
+          title={t('distributionTitle')}
+          subtitle={t('distributionSubtitle')}
         >
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -173,8 +174,8 @@ export default function SegmentsAnalyticsPage() {
       {segmentLTVData.length > 0 && (
         <div className="mb-8">
           <ChartCard
-            title="LTV by Segment"
-            subtitle="Average lifetime value and AOV by customer segment"
+            title={t('ltvBySegmentTitle')}
+            subtitle={t('ltvBySegmentSubtitle')}
           >
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={segmentLTVData}>
@@ -200,11 +201,11 @@ export default function SegmentsAnalyticsPage() {
                   }}
                   formatter={(value: number, name: string) => [
                     formatCurrency(value),
-                    name === 'avgLTV' ? 'Avg LTV' : 'Avg AOV',
+                    name === 'avgLTV' ? t('avgLTV') : t('avgAOV'),
                   ]}
                 />
-                <Bar dataKey="avgLTV" fill="#2563eb" radius={[8, 8, 0, 0]} name="Avg LTV" />
-                <Bar dataKey="avgAOV" fill="#9333ea" radius={[8, 8, 0, 0]} name="Avg AOV" />
+                <Bar dataKey="avgLTV" fill="#2563eb" radius={[8, 8, 0, 0]} name={t('avgLTV')} />
+                <Bar dataKey="avgAOV" fill="#9333ea" radius={[8, 8, 0, 0]} name={t('avgAOV')} />
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>
@@ -237,25 +238,25 @@ export default function SegmentsAnalyticsPage() {
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Customers</span>
+                    <span className="text-sm text-gray-600">{t('customers')}</span>
                     <span className="text-lg font-bold text-gray-900">
                       {formatNumber(segment.metrics.count)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Avg LTV</span>
+                    <span className="text-sm text-gray-600">{t('avgLTV')}</span>
                     <span className="text-lg font-bold text-gray-900">
                       {formatCurrency(segment.metrics.avgLTV)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Total Revenue</span>
+                    <span className="text-sm text-gray-600">{t('totalRevenue')}</span>
                     <span className="text-lg font-bold text-gray-900">
                       {formatCurrency(segment.metrics.totalRevenue)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Segment Share</span>
+                    <span className="text-sm text-gray-600">{t('segmentShare')}</span>
                     <Chip color={color as any} variant="flat" size="sm">
                       {formatPercentage(segment.metrics.conversionRate)}
                     </Chip>
@@ -270,19 +271,19 @@ export default function SegmentsAnalyticsPage() {
       {/* Segments Details Table */}
       {segments.length > 0 ? (
         <ChartCard
-          title="Segment Details"
-          subtitle="Detailed metrics for each customer segment"
+          title={t('segmentDetailsTitle')}
+          subtitle={t('segmentDetailsSubtitle')}
         >
           <div className="overflow-x-auto">
             <Table aria-label="Segments table" removeWrapper>
               <TableHeader>
-                <TableColumn>SEGMENT</TableColumn>
-                <TableColumn>CUSTOMERS</TableColumn>
-                <TableColumn>SEGMENT SHARE</TableColumn>
-                <TableColumn>TOTAL REVENUE</TableColumn>
-                <TableColumn>AVG LTV</TableColumn>
-                <TableColumn>AVG AOV</TableColumn>
-                <TableColumn>AVG ORDERS</TableColumn>
+                <TableColumn>{t('segment')}</TableColumn>
+                <TableColumn>{t('customers')}</TableColumn>
+                <TableColumn>{t('segmentShareCol')}</TableColumn>
+                <TableColumn>{t('totalRevenue')}</TableColumn>
+                <TableColumn>{t('avgLTVCol')}</TableColumn>
+                <TableColumn>{t('avgAOVCol')}</TableColumn>
+                <TableColumn>{t('avgOrdersCol')}</TableColumn>
               </TableHeader>
               <TableBody>
                 {segments.map((segment) => {
@@ -356,11 +357,11 @@ export default function SegmentsAnalyticsPage() {
           </div>
         </ChartCard>
       ) : (
-        <ChartCard title="No Segment Data" subtitle="No segment data available in the selected period">
+        <ChartCard title={t('noSegmentDataTitle')} subtitle={t('noSegmentDataSubtitle')}>
           <div className="text-center py-12 text-gray-500">
             <UserGroupIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-            <p className="text-lg font-semibold mb-2">No segments found</p>
-            <p className="text-sm">Try selecting a different time period.</p>
+            <p className="text-lg font-semibold mb-2">{t('noSegmentsFound')}</p>
+            <p className="text-sm">{t('tryDifferentPeriod')}</p>
           </div>
         </ChartCard>
       )}

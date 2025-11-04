@@ -78,6 +78,7 @@ export const defaultOverviewMetrics = {
 
 /**
  * Period options for data filtering
+ * Note: For translated labels, use getTranslatedPeriodOptions() helper
  */
 export const periodOptions = [
   { value: 'today', label: 'Today' },
@@ -87,4 +88,15 @@ export const periodOptions = [
 ] as const;
 
 export type Period = typeof periodOptions[number]['value'];
+
+/**
+ * Get translated period options
+ * @param t - Translation function from useTranslations('dashboard.common.periods')
+ */
+export function getTranslatedPeriodOptions(t: (key: string) => string) {
+  return periodOptions.map(option => ({
+    ...option,
+    label: t(option.value),
+  }));
+}
 

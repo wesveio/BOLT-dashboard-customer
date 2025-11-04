@@ -18,7 +18,7 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { useFrictionScoreData } from '@/hooks/useDashboardData';
 import { formatNumber, formatPercentage } from '@/utils/formatters';
-import { periodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
 
 const COLORS = {
   low: '#10b981',
@@ -29,6 +29,7 @@ const COLORS = {
 
 export default function FrictionScorePage() {
   const t = useTranslations('dashboard.analytics.frictionScore');
+  const tCommon = useTranslations('dashboard.common.periods');
   const [period, setPeriod] = useState<Period>('week');
   const { summary, frictionScores, frictionTrend, isLoading, error, refetch } = useFrictionScoreData({ period });
 
@@ -36,7 +37,7 @@ export default function FrictionScorePage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <LoadingState message="Loading friction score..." fullScreen />
+        <LoadingState message={t('loading')} fullScreen />
       </PageWrapper>
     );
   }
@@ -45,25 +46,25 @@ export default function FrictionScorePage() {
     return (
       <PageWrapper>
         <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <ErrorState message="Failed to load friction score" onRetry={refetch} />
+        <ErrorState message={t('failedToLoad')} onRetry={refetch} />
       </PageWrapper>
     );
   }
 
   // Prepare chart data
   const frictionDistributionData = useMemo(() => [
-    { name: 'Low', value: summary.frictionDistribution.low, color: COLORS.low },
-    { name: 'Medium', value: summary.frictionDistribution.medium, color: COLORS.medium },
-    { name: 'High', value: summary.frictionDistribution.high, color: COLORS.high },
-    { name: 'Critical', value: summary.frictionDistribution.critical, color: COLORS.critical },
-  ].filter(item => item.value > 0), [summary.frictionDistribution]);
+    { name: t('low'), value: summary.frictionDistribution.low, color: COLORS.low },
+    { name: t('medium'), value: summary.frictionDistribution.medium, color: COLORS.medium },
+    { name: t('high'), value: summary.frictionDistribution.high, color: COLORS.high },
+    { name: t('critical'), value: summary.frictionDistribution.critical, color: COLORS.critical },
+  ].filter(item => item.value > 0), [summary.frictionDistribution, t]);
 
   const breakdownData = useMemo(() => [
-    { name: 'Time', value: summary.frictionBreakdown.timeScore },
-    { name: 'Errors', value: summary.frictionBreakdown.errorScore },
-    { name: 'Navigation', value: summary.frictionBreakdown.navigationScore },
-    { name: 'Completion', value: summary.frictionBreakdown.completionScore },
-  ], [summary.frictionBreakdown]);
+    { name: t('time'), value: summary.frictionBreakdown.timeScore },
+    { name: t('errors'), value: summary.frictionBreakdown.errorScore },
+    { name: t('navigation'), value: summary.frictionBreakdown.navigationScore },
+    { name: t('completion'), value: summary.frictionBreakdown.completionScore },
+  ], [summary.frictionBreakdown, t]);
 
   const highFrictionSessions = useMemo(() => 
     frictionScores.filter(s => s.score.level === 'high' || s.score.level === 'critical'),
@@ -85,7 +86,7 @@ export default function FrictionScorePage() {
             }}
             className="w-40"
           >
-            {periodOptions.map((option) => (
+            {getTranslatedPeriodOptions(tCommon).map((option) => (
               <SelectItem key={option.value} textValue={option.value}>
                 {option.label}
               </SelectItem>
@@ -97,29 +98,29 @@ export default function FrictionScorePage() {
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
-          title="Average Friction Score"
+          title={t('averageFrictionScore')}
           value={summary.avgFrictionScore.toFixed(1)}
-          subtitle={`${summary.totalSessions} sessions analyzed`}
+          subtitle={`${summary.totalSessions} ${t('sessionsAnalyzed')}`}
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="High Friction Sessions"
+          title={t('highFrictionSessions')}
           value={formatNumber(highFrictionSessions.length)}
           subtitle={`${formatPercentage(
             summary.totalSessions > 0 ? (highFrictionSessions.length / summary.totalSessions) * 100 : 0
-          )} of total`}
+          )} ${t('ofTotal')}`}
           icon={<ExclamationTriangleIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="Low Friction Conversion"
+          title={t('lowFrictionConversion')}
           value={formatPercentage(summary.lowFrictionConversionRate)}
-          subtitle="Conversion rate"
+          subtitle={t('conversionRate')}
           icon={<CheckCircleIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
-          title="High Friction Conversion"
+          title={t('highFrictionConversion')}
           value={formatPercentage(summary.highFrictionConversionRate)}
-          subtitle="Conversion rate"
+          subtitle={t('conversionRate')}
           icon={<XCircleIcon className="w-6 h-6 text-white" />}
         />
       </div>
@@ -128,8 +129,8 @@ export default function FrictionScorePage() {
       {frictionTrend.length > 0 && (
         <div className="mb-8">
           <ChartCard
-            title="Friction Score Trend"
-            subtitle="Average friction score and conversion rate over time"
+            title={t('frictionTrendTitle')}
+            subtitle={t('frictionTrendSubtitle')}
           >
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={frictionTrend}>
@@ -162,7 +163,7 @@ export default function FrictionScorePage() {
                   }}
                   formatter={(value: number, name: string) => [
                     name === 'avgFriction' ? value.toFixed(1) : `${value.toFixed(1)}%`,
-                    name === 'avgFriction' ? 'Friction Score' : 'Conversion Rate',
+                    name === 'avgFriction' ? t('frictionScoreLabel') : t('conversionRate'),
                   ]}
                 />
                 <Line
@@ -173,7 +174,7 @@ export default function FrictionScorePage() {
                   strokeWidth={3}
                   dot={{ fill: '#ef4444', r: 5 }}
                   activeDot={{ r: 7 }}
-                  name="Friction Score"
+                  name={t('frictionScoreLabel')}
                 />
                 <Line
                   yAxisId="right"
@@ -182,7 +183,7 @@ export default function FrictionScorePage() {
                   stroke="#9333ea"
                   strokeWidth={2}
                   dot={{ fill: '#9333ea', r: 4 }}
-                  name="Conversion Rate"
+                  name={t('conversionRate')}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -193,8 +194,8 @@ export default function FrictionScorePage() {
       {/* Friction Distribution */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <ChartCard
-          title="Friction Distribution"
-          subtitle="Sessions by friction level"
+          title={t('frictionDistributionTitle')}
+          subtitle={t('frictionDistributionSubtitle')}
         >
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
@@ -218,8 +219,8 @@ export default function FrictionScorePage() {
         </ChartCard>
 
         <ChartCard
-          title="Friction Breakdown"
-          subtitle="Contributors to friction score"
+          title={t('frictionBreakdownTitle')}
+          subtitle={t('frictionBreakdownSubtitle')}
         >
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={breakdownData}>
@@ -250,19 +251,19 @@ export default function FrictionScorePage() {
       {/* High Friction Sessions */}
       {highFrictionSessions.length > 0 ? (
         <ChartCard
-          title="High Friction Sessions"
-          subtitle="Sessions with high or critical friction scores"
+          title={t('highFrictionSessionsTitle')}
+          subtitle={t('highFrictionSessionsSubtitle')}
         >
           <div className="overflow-x-auto">
             <Table aria-label="High friction sessions table" removeWrapper>
               <TableHeader>
-                <TableColumn>SESSION</TableColumn>
-                <TableColumn>FRICTION SCORE</TableColumn>
-                <TableColumn>LEVEL</TableColumn>
-                <TableColumn>DURATION</TableColumn>
-                <TableColumn>ERRORS</TableColumn>
-                <TableColumn>BACK NAVS</TableColumn>
-                <TableColumn>CONVERSION</TableColumn>
+                <TableColumn>{t('session')}</TableColumn>
+                <TableColumn>{t('frictionScore')}</TableColumn>
+                <TableColumn>{t('level')}</TableColumn>
+                <TableColumn>{t('duration')}</TableColumn>
+                <TableColumn>{t('errors')}</TableColumn>
+                <TableColumn>{t('backNavs')}</TableColumn>
+                <TableColumn>{t('conversion')}</TableColumn>
               </TableHeader>
               <TableBody>
                 {highFrictionSessions.slice(0, 20).map((session) => {
@@ -317,11 +318,11 @@ export default function FrictionScorePage() {
                       <TableCell>
                         {session.conversion ? (
                           <Chip color="success" variant="flat" size="sm" startContent={<CheckCircleIcon className="w-3 h-3" />}>
-                            Yes
+                            {t('yes')}
                           </Chip>
                         ) : (
                           <Chip color="danger" variant="flat" size="sm" startContent={<XCircleIcon className="w-3 h-3" />}>
-                            No
+                            {t('no')}
                           </Chip>
                         )}
                       </TableCell>
@@ -333,11 +334,11 @@ export default function FrictionScorePage() {
           </div>
         </ChartCard>
       ) : (
-        <ChartCard title="No High Friction Sessions" subtitle="No high-friction sessions detected in the selected period">
+        <ChartCard title={t('noHighFrictionTitle')} subtitle={t('noHighFrictionSubtitle')}>
           <div className="text-center py-12 text-gray-500">
             <CheckCircleIcon className="w-12 h-12 mx-auto mb-4 text-green-300" />
-            <p className="text-lg font-semibold mb-2">Low friction detected!</p>
-            <p className="text-sm">No high-friction patterns found.</p>
+            <p className="text-lg font-semibold mb-2">{t('lowFrictionDetected')}</p>
+            <p className="text-sm">{t('noHighFrictionPatterns')}</p>
           </div>
         </ChartCard>
       )}

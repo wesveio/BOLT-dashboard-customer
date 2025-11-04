@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Select, SelectItem, Button } from '@heroui/react';
 import {
   CalendarIcon,
@@ -7,7 +8,7 @@ import {
   FunnelIcon,
   ArrowPathIcon,
 } from '@heroicons/react/24/outline';
-import { Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
 
 interface FilterBarProps {
   // Time period filter
@@ -47,6 +48,9 @@ export function FilterBar({
   isEventTypeDisabled = false,
   className = '',
 }: FilterBarProps) {
+  const t = useTranslations('dashboard.common.filterBar');
+  const tPeriods = useTranslations('dashboard.common.periods');
+  
   return (
     <div
       className={`bg-gray-50 border border-gray-200 rounded-lg p-4 flex flex-wrap items-center gap-3 ${className}`}
@@ -64,13 +68,14 @@ export function FilterBar({
           }}
           size="sm"
           variant="bordered"
-          label="Time Period"
+          label={t('timePeriod')}
           className="min-w-[150px]"
         >
-          <SelectItem key="today">Today</SelectItem>
-          <SelectItem key="week">Last 7 Days</SelectItem>
-          <SelectItem key="month">Last 30 Days</SelectItem>
-          <SelectItem key="year">Last Year</SelectItem>
+          {getTranslatedPeriodOptions(tPeriods).map((option) => (
+            <SelectItem key={option.value} textValue={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
         </Select>
       </div>
 
@@ -89,11 +94,11 @@ export function FilterBar({
           }}
           size="sm"
           variant="bordered"
-          label="Category"
-          placeholder="All Categories"
+          label={t('category')}
+          placeholder={t('allCategories')}
           className="min-w-[150px]"
         >
-          <SelectItem key="all">All Categories</SelectItem>
+          <SelectItem key="all">{t('allCategories')}</SelectItem>
           {(categoryOptions.map((cat) => (
             <SelectItem key={cat} textValue={cat}>
               {cat.replace('_', ' ').toUpperCase()}
@@ -117,12 +122,12 @@ export function FilterBar({
           }}
           size="sm"
           variant="bordered"
-          label="Event Type"
-          placeholder="All Event Types"
+          label={t('eventType')}
+          placeholder={t('allEventTypes')}
           className="min-w-[200px]"
           isDisabled={isEventTypeDisabled || eventTypeOptions.length === 0}
         >
-          <SelectItem key="all">All Event Types</SelectItem>
+          <SelectItem key="all">{t('allEventTypes')}</SelectItem>
           {(eventTypeOptions.slice(0, 20).map((type) => (
             <SelectItem key={type} textValue={type}>
               {type}
@@ -141,7 +146,7 @@ export function FilterBar({
           size="sm"
           className="ml-auto border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 font-semibold"
         >
-          Refresh
+          {t('refresh')}
         </Button>
       )}
     </div>

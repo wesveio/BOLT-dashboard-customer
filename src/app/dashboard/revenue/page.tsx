@@ -17,11 +17,12 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { Select, SelectItem } from '@heroui/react';
 import { useRevenueData } from '@/hooks/useDashboardData';
-import { periodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
 import { formatCurrency, formatNumber } from '@/utils/formatters';
 
 export default function RevenuePage() {
   const t = useTranslations('dashboard.revenue');
+  const tPeriods = useTranslations('dashboard.common.periods');
   const [period, setPeriod] = useState<Period>('week');
   const { metrics, chartData, revenueByHour, revenueByDay, isLoading, error, refetch } = useRevenueData({ period });
 
@@ -147,7 +148,7 @@ export default function RevenuePage() {
               }}
               className="w-40"
             >
-              {periodOptions.map((option) => (
+              {getTranslatedPeriodOptions(tPeriods).map((option) => (
                 <SelectItem key={option.value} textValue={option.value}>
                   {option.label}
                 </SelectItem>
