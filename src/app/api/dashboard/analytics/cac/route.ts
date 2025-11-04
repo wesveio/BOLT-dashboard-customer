@@ -96,16 +96,16 @@ export async function GET(request: NextRequest) {
 
     checkoutStartEvents?.forEach((event: AnalyticsEvent) => {
       const metadata = event.metadata || {};
-      
+
       // Try to identify acquisition channel from metadata
-      const channel = 
+      const channel =
         (metadata.utm_source as string) ||
         (metadata.referrer as string) ||
         (metadata.channel as string) ||
         'direct';
-      
+
       const normalizedChannel = channel.toLowerCase().replace(/[^a-z0-9]/g, '_');
-      
+
       if (!channelStats[normalizedChannel]) {
         channelStats[normalizedChannel] = {
           sessions: new Set(),
@@ -113,7 +113,7 @@ export async function GET(request: NextRequest) {
           revenue: 0,
         };
       }
-      
+
       channelStats[normalizedChannel].sessions.add(event.session_id);
     });
 
@@ -129,14 +129,14 @@ export async function GET(request: NextRequest) {
 
       if (sessionStartEvent) {
         const metadata = sessionStartEvent.metadata || {};
-        const channel = 
+        const channel =
           (metadata.utm_source as string) ||
           (metadata.referrer as string) ||
           (metadata.channel as string) ||
           'direct';
-        
+
         const normalizedChannel = channel.toLowerCase().replace(/[^a-z0-9]/g, '_');
-        
+
         if (channelStats[normalizedChannel]) {
           channelStats[normalizedChannel].conversions++;
           channelStats[normalizedChannel].revenue += revenue;
@@ -182,7 +182,7 @@ export async function GET(request: NextRequest) {
     // Calculate average LTV (simplified - would ideally come from LTV endpoint)
     const totalRevenue = channelData.reduce((sum, c) => sum + c.revenue, 0);
     const avgLTV = totalNewCustomers > 0 ? (totalRevenue / totalNewCustomers) * 2 : 0; // Simplified: 2x first order value
-    
+
     const ltvCacRatio = avgCAC > 0 ? avgLTV / avgCAC : 0;
 
     // Calculate acquisition efficiency
@@ -215,7 +215,7 @@ export async function GET(request: NextRequest) {
  * Estimate CAC for a given channel
  * This is a placeholder function - in production, this should fetch actual marketing spend
  */
-function estimateCACForChannel(channel: string, conversions: number): number {
+function estimateCACForChannel(channel: string, _: number): number {
   // Default estimated CAC values by channel type (in USD)
   // These are industry averages and should be replaced with actual data
   const channelEstimates: Record<string, number> = {

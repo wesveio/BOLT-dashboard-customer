@@ -57,14 +57,13 @@ function calculateTrend(data: ForecastDataPoint[]): {
   }
 
   const n = data.length;
-  const dates = data.map((d, i) => i);
+  const dates = data.map((_d, i) => i);
   const revenues = data.map(d => d.revenue);
 
   const sumX = dates.reduce((a, b) => a + b, 0);
   const sumY = revenues.reduce((a, b) => a + b, 0);
   const sumXY = dates.reduce((sum, x, i) => sum + x * revenues[i], 0);
   const sumX2 = dates.reduce((sum, x) => sum + x * x, 0);
-  const sumY2 = revenues.reduce((sum, y) => sum + y * y, 0);
 
   const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
   const intercept = (sumY - slope * sumX) / n;

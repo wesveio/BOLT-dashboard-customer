@@ -12,7 +12,6 @@ import { Select, SelectItem, Table, TableHeader, TableColumn, TableBody, TableRo
 import {
   GlobeAltIcon,
   CurrencyDollarIcon,
-  ShoppingBagIcon,
   ChartBarIcon,
   MapPinIcon,
 } from '@heroicons/react/24/outline';

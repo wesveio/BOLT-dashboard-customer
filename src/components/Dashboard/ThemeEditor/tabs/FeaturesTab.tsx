@@ -18,7 +18,7 @@ export function FeaturesTab({ config, onChange }: FeaturesTabProps) {
   // Build feature toggles from config
   const allFeatures: FeatureToggle[] = [
     // Checkout features
-    ...Object.entries(config.features.checkout).map(([key, value]) => ({
+    ...Object.entries(config.features.checkout).map(([key]) => ({
       id: `checkout.${key}`,
       label: key
         .replace(/([A-Z])/g, ' $1')
@@ -28,7 +28,7 @@ export function FeaturesTab({ config, onChange }: FeaturesTabProps) {
       category: 'Checkout',
     })),
     // Cart features
-    ...Object.entries(config.features.cart).map(([key, value]) => ({
+    ...Object.entries(config.features.cart).map(([key]) => ({
       id: `cart.${key}`,
       label: key
         .replace(/([A-Z])/g, ' $1')
@@ -38,7 +38,7 @@ export function FeaturesTab({ config, onChange }: FeaturesTabProps) {
       category: 'Cart',
     })),
     // Profile features
-    ...Object.entries(config.features.profile).map(([key, value]) => ({
+    ...Object.entries(config.features.profile).map(([key]) => ({
       id: `profile.${key}`,
       label: key
         .replace(/([A-Z])/g, ' $1')
@@ -48,7 +48,7 @@ export function FeaturesTab({ config, onChange }: FeaturesTabProps) {
       category: 'Profile',
     })),
     // Shipping features
-    ...Object.entries(config.features.shipping).map(([key, value]) => ({
+    ...Object.entries(config.features.shipping).map(([key]) => ({
       id: `shipping.${key}`,
       label: key
         .replace(/([A-Z])/g, ' $1')
@@ -58,7 +58,7 @@ export function FeaturesTab({ config, onChange }: FeaturesTabProps) {
       category: 'Shipping',
     })),
     // Payment features
-    ...Object.entries(config.features.payment).map(([key, value]) => ({
+    ...Object.entries(config.features.payment).map(([key]) => ({
       id: `payment.${key}`,
       label: key
         .replace(/([A-Z])/g, ' $1')
@@ -68,7 +68,7 @@ export function FeaturesTab({ config, onChange }: FeaturesTabProps) {
       category: 'Payment',
     })),
     // UX features
-    ...Object.entries(config.features.ux).map(([key, value]) => ({
+    ...Object.entries(config.features.ux).map(([key]) => ({
       id: `ux.${key}`,
       label: key
         .replace(/([A-Z])/g, ' $1')
@@ -78,7 +78,7 @@ export function FeaturesTab({ config, onChange }: FeaturesTabProps) {
       category: 'User Experience',
     })),
     // Analytics features
-    ...Object.entries(config.features.analytics).map(([key, value]) => ({
+    ...Object.entries(config.features.analytics).map(([key]) => ({
       id: `analytics.${key}`,
       label: key
         .replace(/([A-Z])/g, ' $1')
@@ -88,7 +88,7 @@ export function FeaturesTab({ config, onChange }: FeaturesTabProps) {
       category: 'Analytics',
     })),
     // Security features
-    ...Object.entries(config.features.security).map(([key, value]) => ({
+    ...Object.entries(config.features.security).map(([key]) => ({
       id: `security.${key}`,
       label: key
         .replace(/([A-Z])/g, ' $1')

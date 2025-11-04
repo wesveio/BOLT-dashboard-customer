@@ -1,6 +1,6 @@
 'use client';
 
-import { Select, SelectItem, Slider } from '@heroui/react';
+import { Select, SelectItem } from '@heroui/react';
 
 interface SpacingEditorProps {
   config: {

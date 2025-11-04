@@ -42,7 +42,6 @@ export function calculateFrictionScore(factors: FrictionFactors): FrictionScore 
   // Normalize time (0-40 points)
   // Assume typical checkout takes 3 minutes (180 seconds)
   // If > 5 minutes, max friction
-  const typicalTime = 180; // 3 minutes
   const maxTime = 300; // 5 minutes
   const normalizedTime = Math.min(factors.totalDuration / maxTime, 1);
   const timeScore = normalizedTime * 40;

@@ -16,7 +16,7 @@ import {
   ArrowTrendingDownIcon,
   MinusIcon,
 } from '@heroicons/react/24/outline';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
+import { Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart, CartesianGrid } from 'recharts';
 import { useRevenueForecastData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber } from '@/utils/formatters';
 import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
@@ -193,9 +193,11 @@ export default function RevenueForecastPage() {
                   border: '1px solid #e5e7eb',
                   borderRadius: '8px',
                 }}
-                formatter={(value: number | null, name: string) => {
-                  if (value === null) return ['N/A', name];
-                  return [formatCurrency(value), name];
+                formatter={(value: number | string, name: string) => {
+                  if (value === null || value === undefined) return ['N/A', name];
+                  const numValue = typeof value === 'number' ? value : parseFloat(String(value));
+                  if (isNaN(numValue)) return ['N/A', name];
+                  return [formatCurrency(numValue), name];
                 }}
                 labelFormatter={(label) => new Date(label).toLocaleDateString()}
               />

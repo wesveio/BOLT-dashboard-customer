@@ -13,15 +13,12 @@ import {
   UserGroupIcon,
   CurrencyDollarIcon,
   ShoppingBagIcon,
-  ChartBarIcon,
   ArrowTrendingUpIcon,
 } from '@heroicons/react/24/outline';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useLTVData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
 import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
-
-const COLORS = ['#2563eb', '#10b981', '#f59e0b', '#ef4444'];
 
 export default function LTVAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.ltv');

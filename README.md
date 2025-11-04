@@ -101,7 +101,58 @@ src/
 
 ## Environment Variables
 
-See `.env.local.example` for all required environment variables.
+See `env.sample` for all required environment variables.
+
+### Required Environment Variables for Production
+
+- `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase anonymous key
+- `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key (server-side only)
+- `EMAIL_SERVICE_PROVIDER` - Email service provider (resend or sendgrid)
+- `EMAIL_SERVICE_API_KEY` - Email service API key
+- `EMAIL_SERVICE_FROM` - From email address
+- `METRICS_API_KEY` - API key for metrics endpoint authentication
+
+## Deployment
+
+### Netlify Deployment
+
+This project is configured for deployment on Netlify.
+
+1. **Install Netlify CLI** (optional):
+```bash
+npm install -g netlify-cli
+```
+
+2. **Connect to Netlify**:
+   - Go to [Netlify](https://app.netlify.com)
+   - Click "Add new site" → "Import an existing project"
+   - Connect your Git repository
+   - Netlify will auto-detect the Next.js configuration
+
+3. **Configure Environment Variables**:
+   - Go to Site settings → Environment variables
+   - Add all required environment variables from `env.sample`
+   - Set them for Production, Deploy Preview, and Branch Deploy as needed
+
+4. **Build Settings** (auto-detected from `netlify.toml`):
+   - Build command: `yarn build`
+   - Publish directory: `.next`
+   - Node version: 22
+
+5. **Deploy**:
+   - Netlify will automatically deploy on push to main branch
+   - Deploy previews are created for pull requests
+
+### Manual Deployment
+
+```bash
+# Build the project
+yarn build
+
+# Deploy using Netlify CLI
+netlify deploy --prod
+```
 
 ## Documentation
 

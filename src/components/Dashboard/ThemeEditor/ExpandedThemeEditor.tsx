@@ -11,5 +11,5 @@
  * - Preview (live preview)
  */
 
-export { ExpandedThemeEditor } from './ThemeEditorTabs';
+export { ThemeEditor as ExpandedThemeEditor } from './ThemeEditor';
 

@@ -9,8 +9,6 @@ import {
   CardBody,
   Button,
   Input,
-  Select,
-  SelectItem,
   Tabs,
   Tab,
 } from '@heroui/react';

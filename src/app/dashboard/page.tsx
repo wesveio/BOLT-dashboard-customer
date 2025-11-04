@@ -40,7 +40,7 @@ export default function DashboardPage() {
   const { metrics, isLoading: isLoadingMetrics, error: metricsError, refetch: refetchMetrics } = useMetricsData({ period });
   const { metrics: revenueMetrics, chartData, isLoading: isLoadingRevenue } = useRevenueData({ period });
   const { metrics: performanceMetrics, isLoading: isLoadingPerformance } = usePerformanceData({ period });
-  const { data: insightsData, isLoading: isLoadingInsights } = useApi<{ insights: Insight[] }>('/api/dashboard/insights', {
+  const { data: insightsData } = useApi<{ insights: Insight[] }>('/api/dashboard/insights', {
     cacheKey: 'insights',
     cacheTTL: 5,
   });

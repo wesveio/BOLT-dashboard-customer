@@ -86,12 +86,15 @@ export async function GET(request: NextRequest) {
       const revenue = extractRevenue(event);
       if (revenue <= 0) return;
 
-      const customerKey = event.customer_id || event.order_form_id || event.session_id;
+      // Extract customer_id from metadata if available, otherwise use fallback
+      const metadata = event.metadata || {};
+      const customerId = (metadata.customer_id as string) || null;
+      const customerKey = customerId || event.order_form_id || event.session_id;
       const orderDate = new Date(event.timestamp);
 
       if (!customerOrders[customerKey]) {
         customerOrders[customerKey] = {
-          customerId: event.customer_id,
+          customerId,
           orders: [],
           firstOrderDate: orderDate,
           lastOrderDate: orderDate,

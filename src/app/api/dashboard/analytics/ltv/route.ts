@@ -85,12 +85,15 @@ export async function GET(request: NextRequest) {
       const revenue = extractRevenue(event);
       if (revenue <= 0) return;
 
+      // Extract customer_id from metadata if available, otherwise use fallback
+      const metadata = event.metadata || {};
+      const customerId = (metadata.customer_id as string) || null;
       // Use customer_id if available, otherwise use order_form_id as proxy
-      const customerKey = event.customer_id || event.order_form_id || event.session_id;
-      
+      const customerKey = customerId || event.order_form_id || event.session_id;
+
       if (!customerStats[customerKey]) {
         customerStats[customerKey] = {
-          customerId: event.customer_id,
+          customerId,
           orderFormIds: new Set(),
           orders: 0,
           revenue: 0,
@@ -102,7 +105,7 @@ export async function GET(request: NextRequest) {
       const stats = customerStats[customerKey];
       stats.orders++;
       stats.revenue += revenue;
-      
+
       if (event.order_form_id) {
         stats.orderFormIds.add(event.order_form_id);
       }
@@ -171,7 +174,7 @@ export async function GET(request: NextRequest) {
       // For now, we'll use a simple segmentation
       // In the future, this could be enhanced with device/channel data
       const segment = customer.isRecurring ? 'recurring' : 'new';
-      
+
       if (!ltvBySegment[segment]) {
         ltvBySegment[segment] = {
           customers: 0,

@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardBody, Switch, Select, SelectItem, Input } from '@heroui/react';
+import { Card, CardBody, Switch, Select, SelectItem } from '@heroui/react';
 import type { ExpandedThemeConfig } from '../types';
 
 interface LayoutTabProps {

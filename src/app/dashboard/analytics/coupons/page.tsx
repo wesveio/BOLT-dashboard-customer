@@ -14,14 +14,11 @@ import {
   CurrencyDollarIcon,
   ShoppingBagIcon,
   ChartBarIcon,
-  ArrowTrendingUpIcon,
 } from '@heroicons/react/24/outline';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useCouponsData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
 import { periodOptions, Period } from '@/utils/default-data';
-
-const COLORS = ['#2563eb', '#9333ea', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 export default function CouponsAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.coupons');

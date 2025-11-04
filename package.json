@@ -11,11 +11,17 @@
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "type-check": "tsc --noEmit",
     "migrate:list": "tsx scripts/run-migrations-simple.ts",
-    "migrate": "tsx scripts/run-migrations.ts"
+    "migrate": "tsx scripts/run-migrations.ts",
+    "analyze": "ANALYZE=true next build",
+    "audit": "npm audit --production",
+    "audit:console": "grep -r 'console\\.\\(log\\|error\\|warn\\|info\\)' src/ || echo 'No console statements found'",
+    "audit:security": "./scripts/security-audit.sh",
+    "audit:fix": "npm audit fix"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@heroui/react": "^2.8.5",
+    "@netlify/plugin-nextjs": "^5.11.2",
     "@supabase/supabase-js": "^2.39.0",
     "@tanstack/react-query": "^5.17.0",
     "@tiptap/extension-link": "^3.10.1",

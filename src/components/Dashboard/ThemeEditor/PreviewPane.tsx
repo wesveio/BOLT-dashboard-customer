@@ -12,8 +12,7 @@ export function PreviewPane({ config }: PreviewPaneProps) {
   const colors = config?.visual?.colors || {};
   const typography = config?.visual?.typography || {};
   const layout = config?.layout || {};
-  const features = config?.features || {};
-  const borderRadius = config?.visual?.borderRadius || {};
+  const animations = config?.visual?.animations || {};
   
   const backgroundColor = colors.background?.primary || '#f9fafb';
   const textColor = colors.text?.primary || '#111827';
@@ -26,11 +25,12 @@ export function PreviewPane({ config }: PreviewPaneProps) {
   const headingFont = typography.heading?.family || 'Inter';
   const bodyFont = typography.primary?.family || 'Inter';
   const layoutType = layout.type || config?.baseTheme || 'step-by-step';
-  const cardRadius = borderRadius.md || '0.75rem';
-  const buttonRadius = borderRadius.lg || borderRadius.md || '0.5rem';
+  // Use fallback values for borderRadius since it's not in the VisualConfig type
+  const cardRadius = '0.75rem';
+  const buttonRadius = '0.5rem';
 
-  // Check if glassmorphism is enabled
-  const isGlassmorphism = features.glassmorphism === true;
+  // Check if glassmorphism is enabled (it's in colors, not features)
+  const isGlassmorphism = !!colors.glassmorphism;
   const glassStyle = isGlassmorphism
     ? {
         backdropFilter: 'blur(12px)',
@@ -58,13 +58,11 @@ export function PreviewPane({ config }: PreviewPaneProps) {
       <div
         className="rounded-xl border-2 border-gray-200 p-6 min-h-[500px] relative overflow-hidden"
         style={{
-          backgroundColor: colors.background?.gradient
-            ? `linear-gradient(to bottom right, ${colors.background.gradient.from}, ${colors.background.gradient.to})`
-            : backgroundColor,
+          backgroundColor: backgroundColor,
         }}
       >
         {/* Animated background overlay if enabled */}
-        {features.animatedBackground && (
+        {animations.animatedBackground && (
           <div
             className="absolute inset-0 opacity-20"
             style={{
@@ -102,7 +100,7 @@ export function PreviewPane({ config }: PreviewPaneProps) {
               <div className="w-12 h-12 rounded-lg bg-white flex items-center justify-center shadow-sm">
                 <img
                   src={config.branding.logo.url}
-                  alt={config.branding.logo.alt || 'Logo'}
+                  alt={config.branding.logo.altText || 'Logo'}
                   className="max-w-full max-h-full"
                 />
               </div>
@@ -154,7 +152,7 @@ export function PreviewPane({ config }: PreviewPaneProps) {
                   style={{
                     borderColor: colors.border?.default || `${primaryColor}40`,
                     backgroundColor: isGlassmorphism ? 'rgba(255, 255, 255, 0.1)' : backgroundColor,
-                    borderRadius: borderRadius.sm || '0.5rem',
+                    borderRadius: '0.5rem',
                   }}
                 >
                   <span
@@ -276,17 +274,17 @@ export function PreviewPane({ config }: PreviewPaneProps) {
 
           {/* Feature Indicators */}
           <div className="flex flex-wrap gap-2 pt-2">
-            {features.glassmorphism && (
+            {colors.glassmorphism && (
               <Chip size="sm" variant="flat" color="default">
                 Glassmorphism
               </Chip>
             )}
-            {features.animatedBackground && (
+            {animations.animatedBackground && (
               <Chip size="sm" variant="flat" color="default">
                 Animated BG
               </Chip>
             )}
-            {features.smoothScroll && (
+            {animations.scrollBehavior === 'smooth' && (
               <Chip size="sm" variant="flat" color="default">
                 Smooth Scroll
               </Chip>
@@ -315,7 +313,7 @@ export function PreviewPane({ config }: PreviewPaneProps) {
       </div>
 
       {/* Add CSS animation for animated background */}
-      {features.animatedBackground && (
+      {animations.animatedBackground && (
         <style jsx>{`
           @keyframes gradient {
             0% {

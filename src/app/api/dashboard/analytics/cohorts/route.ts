@@ -88,13 +88,16 @@ export async function GET(request: NextRequest) {
       const revenue = extractRevenue(event);
       if (revenue <= 0) return;
 
-      const customerKey = event.customer_id || event.order_form_id || event.session_id;
+      // Extract customer_id from metadata if available, otherwise use fallback
+      const metadata = event.metadata || {};
+      const customerId = (metadata.customer_id as string) || null;
+      const customerKey = customerId || event.order_form_id || event.session_id;
       const orderDate = new Date(event.timestamp);
       const cohortMonth = `${orderDate.getFullYear()}-${String(orderDate.getMonth() + 1).padStart(2, '0')}`;
 
       if (!customerCohorts[customerKey]) {
         customerCohorts[customerKey] = {
-          customerId: event.customer_id,
+          customerId,
           customerKey,
           cohortMonth,
           firstOrderDate: orderDate,
@@ -105,7 +108,7 @@ export async function GET(request: NextRequest) {
       }
 
       const customer = customerCohorts[customerKey];
-      
+
       // Use first order date as cohort month
       if (orderDate < customer.firstOrderDate) {
         customer.firstOrderDate = orderDate;
@@ -121,7 +124,7 @@ export async function GET(request: NextRequest) {
         revenue,
         period: monthsDiff,
       });
-      
+
       customer.totalRevenue += revenue;
       customer.totalOrders++;
     });
@@ -172,10 +175,10 @@ export async function GET(request: NextRequest) {
     // Calculate retention rates for each period
     Object.values(cohorts).forEach((cohort) => {
       const cohortSize = cohort.cohortSize;
-      
+
       Object.entries(cohort.retentionByPeriod).forEach(([periodStr, periodData]) => {
         const period = parseInt(periodStr);
-        
+
         // Count unique customers who made purchases in this period
         const customersInPeriod = new Set<string>();
         Object.values(cohort.customers).forEach((customer) => {
@@ -183,7 +186,7 @@ export async function GET(request: NextRequest) {
             customersInPeriod.add(customer.customerKey);
           }
         });
-        
+
         periodData.customers = customersInPeriod.size;
         periodData.retentionRate = cohortSize > 0 ? (customersInPeriod.size / cohortSize) * 100 : 0;
       });
