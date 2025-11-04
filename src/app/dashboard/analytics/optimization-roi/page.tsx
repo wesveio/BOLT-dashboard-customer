@@ -1,0 +1,286 @@
+'use client';
+
+import { useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
+import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
+import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
+import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
+import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
+import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
+import { Select, SelectItem, Input, Chip, Card, CardBody } from '@heroui/react';
+import {
+  CurrencyDollarIcon,
+  ChartBarIcon,
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon,
+  CheckCircleIcon,
+} from '@heroicons/react/24/outline';
+import { useOptimizationROIData } from '@/hooks/useDashboardData';
+import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
+import { periodOptions, Period } from '@/utils/default-data';
+
+export default function OptimizationROIPage() {
+  const t = useTranslations('dashboard.analytics.optimizationROI');
+  const [period, setPeriod] = useState<Period>('month');
+  const [optimizationDate, setOptimizationDate] = useState<string>('');
+  const { summary, isLoading, error, refetch, optimizationDate: apiOptimizationDate } = useOptimizationROIData({
+    period,
+    optimizationDate: optimizationDate || undefined,
+  });
+
+  if (isLoading) {
+    return (
+      <PageWrapper>
+        <PageHeader title={t('title')} subtitle={t('subtitle')} />
+        <LoadingState message="Loading optimization ROI..." fullScreen />
+      </PageWrapper>
+    );
+  }
+
+  if (error) {
+    return (
+      <PageWrapper>
+        <PageHeader title={t('title')} subtitle={t('subtitle')} />
+        <ErrorState message="Failed to load optimization ROI" onRetry={refetch} />
+      </PageWrapper>
+    );
+  }
+
+  const isPositive = summary.changes.revenueChange > 0;
+  const isROIPositive = summary.roi.roi > 0;
+
+  return (
+    <PageWrapper>
+      <PageHeader
+        title={t('title')}
+        subtitle={t('subtitle')}
+        action={
+          <div className="flex gap-4">
+            <Input
+              type="date"
+              label="Optimization Date"
+              value={optimizationDate || apiOptimizationDate.split('T')[0]}
+              onValueChange={(value) => setOptimizationDate(value)}
+              className="w-48"
+              size="sm"
+            />
+            <Select
+              size="sm"
+              selectedKeys={[period]}
+              onSelectionChange={(keys) => {
+                const selected = Array.from(keys)[0] as Period;
+                setPeriod(selected);
+              }}
+              className="w-40"
+            >
+              {periodOptions.map((option) => (
+                <SelectItem key={option.value} textValue={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
+        }
+      />
+
+      {/* ROI Summary */}
+      <div className="mb-8">
+        <Card className="border border-gray-100">
+          <CardBody className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">ROI Summary</h3>
+                <p className="text-sm text-gray-600">
+                  Optimization Date: {new Date(apiOptimizationDate).toLocaleDateString()}
+                </p>
+              </div>
+              <div className="text-right">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-2xl font-bold text-gray-900">ROI</span>
+                  <Chip
+                    color={isROIPositive ? 'success' : 'danger'}
+                    variant="flat"
+                    size="lg"
+                  >
+                    {summary.roi.roiFormatted}
+                  </Chip>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Additional Revenue: {formatCurrency(summary.changes.additionalRevenue)}
+                </p>
+              </div>
+            </div>
+          </CardBody>
+        </Card>
+      </div>
+
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <MetricCard
+          title="Revenue Change"
+          value={formatCurrency(summary.changes.revenueChange)}
+          subtitle={`${formatPercentage(Math.abs(summary.changes.revenueChangePercent))} ${isPositive ? 'increase' : 'decrease'}`}
+          icon={
+            isPositive ? (
+              <ArrowTrendingUpIcon className="w-6 h-6 text-white" />
+            ) : (
+              <ArrowTrendingDownIcon className="w-6 h-6 text-white" />
+            )
+          }
+        />
+        <MetricCard
+          title="Conversion Rate Change"
+          value={formatPercentage(Math.abs(summary.changes.conversionRateChange))}
+          subtitle={`${summary.changes.conversionRateChangePercent >= 0 ? '+' : ''}${formatPercentage(summary.changes.conversionRateChangePercent)}`}
+          icon={<ChartBarIcon className="w-6 h-6 text-white" />}
+        />
+        <MetricCard
+          title="Additional Orders"
+          value={formatNumber(summary.changes.additionalOrders)}
+          subtitle="Orders gained"
+          icon={<CheckCircleIcon className="w-6 h-6 text-white" />}
+        />
+        <MetricCard
+          title="AOV Change"
+          value={formatCurrency(summary.changes.aovChange)}
+          subtitle={`${formatPercentage(Math.abs(summary.changes.aovChangePercent))} change`}
+          icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
+        />
+      </div>
+
+      {/* Before/After Comparison */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <ChartCard
+          title="Before Period"
+          subtitle={`${new Date(summary.beforePeriod.start).toLocaleDateString()} - ${new Date(summary.beforePeriod.end).toLocaleDateString()}`}
+        >
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Sessions</span>
+              <span className="text-lg font-semibold text-gray-900">
+                {formatNumber(summary.beforePeriod.sessions)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Conversions</span>
+              <span className="text-lg font-semibold text-gray-900">
+                {formatNumber(summary.beforePeriod.conversions)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Conversion Rate</span>
+              <span className="text-lg font-semibold text-gray-900">
+                {formatPercentage(summary.beforePeriod.conversionRate)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Revenue</span>
+              <span className="text-lg font-semibold text-gray-900">
+                {formatCurrency(summary.beforePeriod.revenue)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Orders</span>
+              <span className="text-lg font-semibold text-gray-900">
+                {formatNumber(summary.beforePeriod.orders)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">AOV</span>
+              <span className="text-lg font-semibold text-gray-900">
+                {formatCurrency(summary.beforePeriod.aov)}
+              </span>
+            </div>
+          </div>
+        </ChartCard>
+
+        <ChartCard
+          title="After Period"
+          subtitle={`${new Date(summary.afterPeriod.start).toLocaleDateString()} - ${new Date(summary.afterPeriod.end).toLocaleDateString()}`}
+        >
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Sessions</span>
+              <span className="text-lg font-semibold text-gray-900">
+                {formatNumber(summary.afterPeriod.sessions)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Conversions</span>
+              <span className="text-lg font-semibold text-gray-900">
+                {formatNumber(summary.afterPeriod.conversions)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Conversion Rate</span>
+              <span className="text-lg font-semibold text-gray-900">
+                {formatPercentage(summary.afterPeriod.conversionRate)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Revenue</span>
+              <span className="text-lg font-semibold text-gray-900">
+                {formatCurrency(summary.afterPeriod.revenue)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Orders</span>
+              <span className="text-lg font-semibold text-gray-900">
+                {formatNumber(summary.afterPeriod.orders)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">AOV</span>
+              <span className="text-lg font-semibold text-gray-900">
+                {formatCurrency(summary.afterPeriod.aov)}
+              </span>
+            </div>
+          </div>
+        </ChartCard>
+      </div>
+
+      {/* Changes Summary */}
+      <ChartCard
+        title="Impact Summary"
+        subtitle="Detailed changes breakdown"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="text-center">
+            <p className="text-sm text-gray-600 mb-2">Revenue Impact</p>
+            <p className={`text-2xl font-bold ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+              {isPositive ? '+' : ''}{formatCurrency(summary.changes.revenueChange)}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              {formatPercentage(Math.abs(summary.changes.revenueChangePercent))} change
+            </p>
+          </div>
+          <div className="text-center">
+            <p className="text-sm text-gray-600 mb-2">Conversion Impact</p>
+            <p className={`text-2xl font-bold ${
+              summary.changes.conversionRateChange >= 0 ? 'text-green-600' : 'text-red-600'
+            }`}>
+              {summary.changes.conversionRateChange >= 0 ? '+' : ''}
+              {formatPercentage(summary.changes.conversionRateChange)} pp
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              {formatPercentage(Math.abs(summary.changes.conversionRateChangePercent))} change
+            </p>
+          </div>
+          <div className="text-center">
+            <p className="text-sm text-gray-600 mb-2">Additional Orders</p>
+            <p className={`text-2xl font-bold ${
+              summary.changes.additionalOrders >= 0 ? 'text-green-600' : 'text-red-600'
+            }`}>
+              {summary.changes.additionalOrders >= 0 ? '+' : ''}{formatNumber(summary.changes.additionalOrders)}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              {formatCurrency(summary.changes.additionalRevenue)} additional revenue
+            </p>
+          </div>
+        </div>
+      </ChartCard>
+    </PageWrapper>
+  );
+}
+

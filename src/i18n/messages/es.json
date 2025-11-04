@@ -215,6 +215,42 @@
         "title": "Análisis Geográfico",
         "subtitle": "Métricas de conversión e ingresos por ubicación"
       },
+      "ltv": {
+        "title": "Valor de Vida del Cliente",
+        "subtitle": "Analiza el valor de vida del cliente y clientes recurrentes"
+      },
+      "cac": {
+        "title": "Costo de Adquisición",
+        "subtitle": "Rastrea CAC y relación LTV:CAC por canal de adquisición"
+      },
+      "retention": {
+        "title": "Retención y Abandono",
+        "subtitle": "Tasas de retención de clientes y análisis de cohortes"
+      },
+      "abandonmentPrediction": {
+        "title": "Predicción de Abandono",
+        "subtitle": "Puntuaciones de riesgo en tiempo real para abandono de checkout"
+      },
+      "cohorts": {
+        "title": "Análisis de Cohortes",
+        "subtitle": "Análisis detallado de retención y LTV por cohorte"
+      },
+      "segments": {
+        "title": "Segmentos Conductuales",
+        "subtitle": "Segmentación de clientes por comportamiento y valor"
+      },
+      "optimizationROI": {
+        "title": "ROI de Optimizaciones",
+        "subtitle": "Mide el impacto y ROI de optimizaciones en checkout"
+      },
+      "frictionScore": {
+        "title": "Índice de Fricción",
+        "subtitle": "Rastrea la fricción en checkout y su impacto en conversión"
+      },
+      "revenueForecast": {
+        "title": "Pronóstico de Ingresos",
+        "subtitle": "Pronóstico predictivo de ingresos con intervalos de confianza"
+      },
       "browsers": {
         "title": "Navegador y Plataforma",
         "subtitle": "Métricas de rendimiento por navegador y plataforma",

@@ -220,6 +220,42 @@
         "title": "Geographic Analysis",
         "subtitle": "Conversion and revenue metrics by location"
       },
+      "ltv": {
+        "title": "Customer Lifetime Value",
+        "subtitle": "Analyze customer lifetime value and recurring customers"
+      },
+      "cac": {
+        "title": "Customer Acquisition Cost",
+        "subtitle": "Track CAC and LTV:CAC ratio by acquisition channel"
+      },
+      "retention": {
+        "title": "Retention & Churn",
+        "subtitle": "Customer retention rates and cohort analysis"
+      },
+      "abandonmentPrediction": {
+        "title": "Abandonment Prediction",
+        "subtitle": "Real-time risk scores for checkout abandonment"
+      },
+      "cohorts": {
+        "title": "Cohort Analysis",
+        "subtitle": "Detailed cohort retention and LTV analysis"
+      },
+      "segments": {
+        "title": "Behavioral Segments",
+        "subtitle": "Customer segmentation by behavior and value"
+      },
+      "optimizationROI": {
+        "title": "Optimization ROI",
+        "subtitle": "Measure the impact and ROI of checkout optimizations"
+      },
+      "frictionScore": {
+        "title": "Friction Score",
+        "subtitle": "Track checkout friction and its impact on conversion"
+      },
+      "revenueForecast": {
+        "title": "Revenue Forecast",
+        "subtitle": "Predictive revenue forecasting with confidence intervals"
+      },
       "browsers": {
         "title": "Browser & Platform",
         "subtitle": "Performance metrics by browser and platform",

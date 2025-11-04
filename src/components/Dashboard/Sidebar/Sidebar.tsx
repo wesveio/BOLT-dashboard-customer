@@ -79,6 +79,51 @@ export function Sidebar() {
           translationKey: 'dashboard.analytics.geography.title',
         },
         {
+          href: '/dashboard/analytics/ltv',
+          label: tAnalytics('ltv.title'),
+          translationKey: 'dashboard.analytics.ltv.title',
+        },
+        {
+          href: '/dashboard/analytics/cac',
+          label: tAnalytics('cac.title'),
+          translationKey: 'dashboard.analytics.cac.title',
+        },
+        {
+          href: '/dashboard/analytics/retention',
+          label: tAnalytics('retention.title'),
+          translationKey: 'dashboard.analytics.retention.title',
+        },
+        {
+          href: '/dashboard/analytics/abandonment-prediction',
+          label: tAnalytics('abandonmentPrediction.title'),
+          translationKey: 'dashboard.analytics.abandonmentPrediction.title',
+        },
+        {
+          href: '/dashboard/analytics/cohorts',
+          label: tAnalytics('cohorts.title'),
+          translationKey: 'dashboard.analytics.cohorts.title',
+        },
+        {
+          href: '/dashboard/analytics/segments',
+          label: tAnalytics('segments.title'),
+          translationKey: 'dashboard.analytics.segments.title',
+        },
+        {
+          href: '/dashboard/analytics/optimization-roi',
+          label: tAnalytics('optimizationROI.title'),
+          translationKey: 'dashboard.analytics.optimizationROI.title',
+        },
+        {
+          href: '/dashboard/analytics/friction-score',
+          label: tAnalytics('frictionScore.title'),
+          translationKey: 'dashboard.analytics.frictionScore.title',
+        },
+        {
+          href: '/dashboard/analytics/revenue-forecast',
+          label: tAnalytics('revenueForecast.title'),
+          translationKey: 'dashboard.analytics.revenueForecast.title',
+        },
+        {
           href: '/dashboard/analytics/devices',
           label: tAnalytics('devices.title'),
           translationKey: 'dashboard.analytics.devices.title',
