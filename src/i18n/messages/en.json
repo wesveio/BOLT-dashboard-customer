@@ -404,6 +404,7 @@
         "failedToLoad": "Failed to load cohorts analysis",
         "totalCohorts": "Total Cohorts",
         "cohortsAnalyzed": "Cohorts analyzed",
+        "totalCustomers": "Total Customers",
         "avgPerCohort": "Avg {count} per cohort",
         "averageLTV": "Average LTV",
         "perCohort": "Per cohort",

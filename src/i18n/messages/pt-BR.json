@@ -398,6 +398,7 @@
         "failedToLoad": "Falha ao carregar análise de coortes",
         "totalCohorts": "Total de Coortes",
         "cohortsAnalyzed": "Coortes analisadas",
+        "totalCustomers": "Total de Clientes",
         "avgPerCohort": "Média de {count} por coorte",
         "averageLTV": "Média LTV",
         "perCohort": "Por coorte",

@@ -24,7 +24,6 @@ import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
 import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
 import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
-import { FunnelChart } from '@/components/Dashboard/FunnelChart/FunnelChart';
 import { useMetricsData, useRevenueData, usePerformanceData } from '@/hooks/useDashboardData';
 import { useApi } from '@/hooks/useApi';
 import { formatCurrency, formatNumber, formatPercentage, formatDuration } from '@/utils/formatters';
@@ -40,7 +39,7 @@ export default function DashboardPage() {
   // Fetch all data in parallel
   const { metrics, isLoading: isLoadingMetrics, error: metricsError, refetch: refetchMetrics } = useMetricsData({ period });
   const { metrics: revenueMetrics, chartData, isLoading: isLoadingRevenue } = useRevenueData({ period });
-  const { metrics: performanceMetrics, funnelData, isLoading: isLoadingPerformance } = usePerformanceData({ period });
+  const { metrics: performanceMetrics, isLoading: isLoadingPerformance } = usePerformanceData({ period });
   const { data: insightsData, isLoading: isLoadingInsights } = useApi<{ insights: Insight[] }>('/api/dashboard/insights', {
     cacheKey: 'insights',
     cacheTTL: 5,
@@ -61,17 +60,6 @@ export default function DashboardPage() {
       .filter((i) => i.impact === 'high')
       .slice(0, 3);
   }, [insightsData]);
-
-  // Prepare funnel data for chart
-  const displayFunnelData = useMemo(() => {
-    if (!funnelData || funnelData.length === 0) return [];
-    return funnelData.map((step) => ({
-      step: step.step,
-      label: step.label,
-      count: step.count,
-      percentage: step.percentage,
-    }));
-  }, [funnelData]);
 
   // Prepare revenue chart data
   const displayRevenueChartData = useMemo(() => {
@@ -206,7 +194,7 @@ export default function DashboardPage() {
       )}
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div className="mb-8">
         {/* Revenue Trend Chart */}
         <ChartCard 
           title={tOverview('revenueTrendTitle')} 
@@ -252,27 +240,6 @@ export default function DashboardPage() {
                 />
               </LineChart>
             </ResponsiveContainer>
-          )}
-        </ChartCard>
-
-        {/* Funnel Chart */}
-        <ChartCard 
-          title={tOverview('funnelTitle')} 
-          subtitle={tOverview('funnelSubtitle')}
-        >
-          {isLoadingPerformance ? (
-            <div className="text-center py-8 text-gray-500">
-              {tOverview('messages.loading')}
-            </div>
-          ) : displayFunnelData.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              {tOverview('messages.noData')}
-            </div>
-          ) : (
-            <FunnelChart 
-              data={displayFunnelData} 
-              isLoading={false}
-            />
           )}
         </ChartCard>
       </div>
