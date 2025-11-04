@@ -19,6 +19,7 @@ import {
   ArrowTopRightOnSquareIcon,
   CreditCardIcon,
   KeyIcon,
+  BoltIcon,
 } from '@heroicons/react/24/outline';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useDashboardAuth } from '@/hooks/useDashboardAuth';
@@ -46,7 +47,7 @@ export function Sidebar() {
 
   const navItems: NavItem[] = [
     { href: '/dashboard', icon: HomeIcon, label: t('overview') },
-    { href: '/dashboard/performance', icon: ChartBarIcon, label: t('performance') },
+    { href: '/dashboard/performance', icon: BoltIcon, label: t('performance') },
     { href: '/dashboard/revenue', icon: CurrencyDollarIcon, label: t('revenue') },
     {
       href: '/dashboard/analytics',
@@ -172,7 +173,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className={`bg-white border-r border-gray-100 fixed left-0 top-0 h-screen z-30 transition-all duration-200 flex flex-col ${
+      className={`hidden md:flex bg-white border-r border-gray-100 fixed left-0 top-0 h-screen z-30 transition-all duration-200 flex-col ${
         isCollapsed ? 'w-20' : 'w-64'
       }`}
     >
@@ -346,11 +347,17 @@ export function Sidebar() {
       </div>
 
       {/* Toggle Button - Footer */}
-      <div className={`border-t border-gray-100 p-4 flex ${isCollapsed ? 'justify-center' : 'justify-end'}`}>
+      <div className={`border-t border-gray-100 p-4 flex ${isCollapsed ? 'justify-center' : 'justify-end'} relative z-10`}>
         <button
-          onClick={toggleCollapse}
-          className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleCollapse();
+          }}
+          className="p-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer"
           aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {isCollapsed ? (
             <ChevronRightIcon className="w-5 h-5 text-gray-600" />

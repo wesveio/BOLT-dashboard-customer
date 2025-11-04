@@ -313,7 +313,7 @@ export default function AnalyticsPage() {
           title="Events by Category"
           subtitle="Distribution of events across different categories"
         >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             {summary?.eventsByCategory && (
               <>
                 <div className="text-center p-4 bg-blue-50 rounded-lg">
@@ -348,8 +348,8 @@ export default function AnalyticsPage() {
 
       {/* Sessions Table */}
       <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
-        <CardBody className="p-6">
-          <div className="flex items-center justify-between mb-4">
+        <CardBody className="p-4 md:p-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
             <h3 className="text-xl font-bold text-gray-900">Sessions</h3>
             <div className="text-sm text-gray-500">
               Showing {paginatedSessions.length} of {formatNumber(sessions.length)} sessions
@@ -363,7 +363,87 @@ export default function AnalyticsPage() {
             </div>
           ) : (
             <>
-              <div className="overflow-x-auto">
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-4">
+                {paginatedSessions.map((session) => (
+                  <Card key={session.session_id} className="border border-gray-200">
+                    <CardBody className="p-4 space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-mono text-gray-500 mb-1">Session ID</p>
+                          <p className="text-sm font-semibold text-gray-900 truncate">
+                            {session.session_id.substring(0, 20)}...
+                          </p>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="flat"
+                          color="primary"
+                          isIconOnly
+                          onPress={() => handleSessionClick(session)}
+                          aria-label="View Events"
+                        >
+                          <EyeIcon className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100">
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Events</p>
+                          <p className="text-sm font-semibold text-gray-900">
+                            {formatNumber(session.eventCount)}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Duration</p>
+                          <p className="text-sm text-gray-900">
+                            {formatDuration(session.duration)}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="pt-2 border-t border-gray-100">
+                        <p className="text-xs text-gray-500 mb-2">Last Event</p>
+                        <p className="text-xs font-semibold text-gray-900">
+                          {formatRelativeTime(session.lastEventTime)}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {new Date(session.lastEventTime).toLocaleString()}
+                        </p>
+                      </div>
+
+                      <div className="pt-2 border-t border-gray-100">
+                        <p className="text-xs text-gray-500 mb-2">Categories</p>
+                        <div className="flex gap-1 flex-wrap">
+                          {session.categories.user_action > 0 && (
+                            <Chip color="primary" size="sm" variant="flat">
+                              UA: {session.categories.user_action}
+                            </Chip>
+                          )}
+                          {session.categories.api_call > 0 && (
+                            <Chip color="secondary" size="sm" variant="flat">
+                              API: {session.categories.api_call}
+                            </Chip>
+                          )}
+                          {session.categories.metric > 0 && (
+                            <Chip color="success" size="sm" variant="flat">
+                              M: {session.categories.metric}
+                            </Chip>
+                          )}
+                          {session.categories.error > 0 && (
+                            <Chip color="danger" size="sm" variant="flat">
+                              E: {session.categories.error}
+                            </Chip>
+                          )}
+                        </div>
+                      </div>
+                    </CardBody>
+                  </Card>
+                ))}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
                 <Table aria-label="Analytics sessions table" removeWrapper>
                   <TableHeader>
                     <TableColumn>SESSION ID</TableColumn>
@@ -478,21 +558,21 @@ export default function AnalyticsPage() {
         size="5xl"
         scrollBehavior="inside"
         classNames={{
-          base: 'bg-background',
+          base: 'bg-background max-w-[95vw] md:max-w-5xl',
           header: 'border-b border-divider',
-          body: 'py-6',
+          body: 'py-4 md:py-6',
         }}
       >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
-            <h3 className="text-xl font-bold text-gray-900">Session Events</h3>
+            <h3 className="text-lg md:text-xl font-bold text-gray-900">Session Events</h3>
             {selectedSession && (
               <div className="flex flex-col gap-3">
-                <div className="flex items-center gap-4 text-sm text-gray-600">
-                  <span className="font-mono">{selectedSession.session_id}</span>
-                  <span>•</span>
+                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm text-gray-600">
+                  <span className="font-mono text-xs md:text-sm break-all md:break-normal">{selectedSession.session_id}</span>
+                  <span className="hidden md:inline">•</span>
                   <span>{formatNumber(selectedSession.eventCount)} events</span>
-                  <span>•</span>
+                  <span className="hidden md:inline">•</span>
                   <span>Duration: {formatDuration(selectedSession.duration)}</span>
                 </div>
                 {/* Filter dropdowns */}
@@ -535,32 +615,22 @@ export default function AnalyticsPage() {
                     <p className="text-sm">Try adjusting your filter criteria.</p>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <Table aria-label="Session events table" removeWrapper>
-                      <TableHeader>
-                        <TableColumn>TIMESTAMP</TableColumn>
-                        <TableColumn>EVENT TYPE</TableColumn>
-                        <TableColumn>CATEGORY</TableColumn>
-                        <TableColumn>STEP</TableColumn>
-                        <TableColumn>ACTIONS</TableColumn>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredModalEvents.map((event) => (
-                          <TableRow key={event.id}>
-                            <TableCell>
-                              <div>
+                  <>
+                    {/* Mobile Card View */}
+                    <div className="md:hidden space-y-3">
+                      {filteredModalEvents.map((event) => (
+                        <Card key={event.id} className="border border-gray-200">
+                          <CardBody className="p-4 space-y-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs text-gray-500 mb-1">Timestamp</p>
                                 <p className="text-sm font-semibold text-gray-900">
                                   {formatRelativeTime(event.timestamp)}
                                 </p>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-gray-500 mt-1">
                                   {new Date(event.timestamp).toLocaleString()}
                                 </p>
                               </div>
-                            </TableCell>
-                            <TableCell>
-                              <span className="text-sm font-medium text-gray-900">{event.event_type}</span>
-                            </TableCell>
-                            <TableCell>
                               <Chip
                                 color={getCategoryColor(event.category)}
                                 size="sm"
@@ -568,27 +638,96 @@ export default function AnalyticsPage() {
                               >
                                 {event.category.replace('_', ' ').toUpperCase()}
                               </Chip>
-                            </TableCell>
-                            <TableCell>
-                              <span className="text-sm text-gray-600">
-                                {event.step || '-'}
-                              </span>
-                            </TableCell>
-                            <TableCell>
-                              <Button
-                                size="sm"
-                                variant="light"
-                                onPress={() => handleShowMetadata(event)}
-                                isDisabled={!event.metadata}
-                              >
-                                Show Metadata
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
+                            </div>
+                            
+                            <div className="pt-2 border-t border-gray-100">
+                              <p className="text-xs text-gray-500 mb-1">Event Type</p>
+                              <p className="text-sm font-medium text-gray-900 break-all">
+                                {event.event_type}
+                              </p>
+                            </div>
+
+                            {event.step && (
+                              <div className="pt-2 border-t border-gray-100">
+                                <p className="text-xs text-gray-500 mb-1">Step</p>
+                                <p className="text-sm text-gray-600">{event.step}</p>
+                              </div>
+                            )}
+
+                            {event.metadata && (
+                              <div className="pt-2">
+                                <Button
+                                  size="sm"
+                                  variant="flat"
+                                  color="primary"
+                                  onPress={() => handleShowMetadata(event)}
+                                  className="w-full"
+                                >
+                                  Show Metadata
+                                </Button>
+                              </div>
+                            )}
+                          </CardBody>
+                        </Card>
+                      ))}
+                    </div>
+
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block overflow-x-auto">
+                      <Table aria-label="Session events table" removeWrapper>
+                        <TableHeader>
+                          <TableColumn>TIMESTAMP</TableColumn>
+                          <TableColumn>EVENT TYPE</TableColumn>
+                          <TableColumn>CATEGORY</TableColumn>
+                          <TableColumn>STEP</TableColumn>
+                          <TableColumn>ACTIONS</TableColumn>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredModalEvents.map((event) => (
+                            <TableRow key={event.id}>
+                              <TableCell>
+                                <div>
+                                  <p className="text-sm font-semibold text-gray-900">
+                                    {formatRelativeTime(event.timestamp)}
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    {new Date(event.timestamp).toLocaleString()}
+                                  </p>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <span className="text-sm font-medium text-gray-900">{event.event_type}</span>
+                              </TableCell>
+                              <TableCell>
+                                <Chip
+                                  color={getCategoryColor(event.category)}
+                                  size="sm"
+                                  variant="flat"
+                                >
+                                  {event.category.replace('_', ' ').toUpperCase()}
+                                </Chip>
+                              </TableCell>
+                              <TableCell>
+                                <span className="text-sm text-gray-600">
+                                  {event.step || '-'}
+                                </span>
+                              </TableCell>
+                              <TableCell>
+                                <Button
+                                  size="sm"
+                                  variant="light"
+                                  onPress={() => handleShowMetadata(event)}
+                                  isDisabled={!event.metadata}
+                                >
+                                  Show Metadata
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </>
                 )}
               </div>
             )}
@@ -603,18 +742,18 @@ export default function AnalyticsPage() {
         size="2xl"
         scrollBehavior="inside"
         classNames={{
-          base: 'bg-background',
+          base: 'bg-background max-w-[95vw] md:max-w-2xl',
           header: 'border-b border-divider',
-          body: 'py-6',
+          body: 'py-4 md:py-6',
         }}
       >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
-            <h3 className="text-xl font-bold text-gray-900">Event Metadata</h3>
+            <h3 className="text-lg md:text-xl font-bold text-gray-900">Event Metadata</h3>
             {selectedEventMetadata && (
-              <div className="flex items-center gap-4 text-sm text-gray-600 mt-2">
-                <span className="font-medium">{selectedEventMetadata.event_type}</span>
-                <span>•</span>
+              <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm text-gray-600 mt-2">
+                <span className="font-medium break-all md:break-normal">{selectedEventMetadata.event_type}</span>
+                <span className="hidden md:inline">•</span>
                 <Chip
                   color={getCategoryColor(selectedEventMetadata.category)}
                   size="sm"
@@ -624,7 +763,7 @@ export default function AnalyticsPage() {
                 </Chip>
                 {selectedEventMetadata.step && (
                   <>
-                    <span>•</span>
+                    <span className="hidden md:inline">•</span>
                     <span>Step: {selectedEventMetadata.step}</span>
                   </>
                 )}
@@ -636,7 +775,7 @@ export default function AnalyticsPage() {
               <div className="space-y-4">
                 <div>
                   <h4 className="text-sm font-semibold text-gray-700 mb-2">Metadata</h4>
-                  <pre className="text-xs bg-gray-50 p-4 rounded-lg border border-gray-200 overflow-x-auto">
+                  <pre className="text-xs bg-gray-50 p-3 md:p-4 rounded-lg border border-gray-200 overflow-x-auto">
                     {JSON.stringify(selectedEventMetadata.metadata, null, 2)}
                   </pre>
                 </div>

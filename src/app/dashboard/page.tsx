@@ -17,6 +17,7 @@ import {
   ExclamationTriangleIcon,
   InformationCircleIcon,
   ArrowRightIcon,
+  BoltIcon,
 } from '@heroicons/react/24/outline';
 import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
 import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
@@ -338,7 +339,7 @@ export default function DashboardPage() {
               <CardBody className="p-6">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
-                    <ChartBarIcon className="w-6 h-6 text-white" />
+                    <BoltIcon className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-900">{tOverview('quickLinks.performance')}</h3>

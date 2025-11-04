@@ -27,7 +27,7 @@ export function DashboardHeader() {
   return (
     <header
       className={`sticky top-4 z-20 transition-all duration-200 ${
-        isCollapsed ? 'ml-20' : 'ml-64'
+        isCollapsed ? 'md:ml-20' : 'md:ml-64'
       }`}
     >
       <div className="mx-4">

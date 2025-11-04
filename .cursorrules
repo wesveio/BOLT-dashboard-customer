@@ -1,0 +1,552 @@
+# Dashboard Customer - Cursor AI Context & Rules
+
+## 📋 Visão Geral do Projeto
+
+**Dashboard Customer** é uma aplicação completa de dashboard para clientes BOLT com analytics, performance, insights e editor WYSIWYG de temas.
+
+### Propósito
+Dashboard administrativo para gerenciar e monitorar métricas de checkout, analytics avançados, personalização de temas e configurações de conta.
+
+### Porta
+- **Desenvolvimento**: Porta `3002` (configurado em `package.json`)
+- **Checkout App**: Porta `3000`
+- **Dashboard App**: Porta `3002`
+
+---
+
+## 🛠️ Stack Tecnológico
+
+### Core
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript (strict mode)
+- **Runtime**: Node.js 18+
+
+### UI & Styling
+- **UI Library**: HeroUI (NextUI v2.8.5)
+- **CSS Framework**: Tailwind CSS 3.4
+- **Icons**: Heroicons (v2.2.0)
+- **Animations**: Framer Motion (v12.16.0)
+- **Charts**: Recharts (v2.10.0)
+- **Rich Text Editor**: TipTap (v2.1.0)
+
+### Data & State
+- **Database**: Supabase (PostgreSQL + TimescaleDB)
+- **Data Fetching**: TanStack Query v5 (React Query)
+- **State Management**: Zustand (v4.5.1)
+- **API Client**: Custom hooks (`useApi`, `useDashboardData`)
+
+### Internationalization
+- **i18n**: next-intl (v3.0.0)
+- **Supported Locales**: `en` (default), `pt-BR`, `es`
+- **Locale Storage**: Cookie-based (`NEXT_LOCALE`)
+
+### Authentication & Security
+- **Auth**: Passwordless (código por email)
+- **RBAC**: Role-Based Access Control (owner, admin, editor, viewer)
+- **Session**: Supabase Auth + HTTP-only cookies
+- **Validation**: Zod (v4.1.12)
+
+### Utilities
+- **Notifications**: Sonner (v2.0.7)
+- **SEO**: next-seo (v6.4.0)
+- **Color Picker**: react-color (v2.19.3)
+
+---
+
+## 📁 Estrutura de Pastas
+
+```
+src/
+├── app/                          # Next.js App Router
+│   ├── api/                      # API Routes
+│   │   ├── dashboard/            # Dashboard API endpoints
+│   │   │   ├── analytics/        # Analytics endpoints (payment, shipping, devices, etc.)
+│   │   │   ├── auth/             # Authentication endpoints
+│   │   │   ├── metrics/          # Metrics endpoint
+│   │   │   ├── themes/           # Theme management endpoints
+│   │   │   └── ...               # Other dashboard endpoints
+│   │   └── locale/               # Locale switching
+│   ├── dashboard/                # Dashboard pages (protegidas)
+│   │   ├── analytics/            # Analytics pages
+│   │   ├── performance/          # Performance page
+│   │   ├── revenue/              # Revenue page
+│   │   ├── themes/               # Theme editor page
+│   │   └── ...                   # Other dashboard pages
+│   ├── login/                    # Login page (pública)
+│   ├── pricing/                  # Pricing page (pública)
+│   ├── layout.tsx                # Root layout com i18n
+│   └── page.tsx                  # Home page (pública)
+│
+├── components/                   # Componentes React
+│   ├── Auth/                     # Componentes de autenticação
+│   ├── Dashboard/                # Componentes do dashboard
+│   │   ├── AnimatedWrapper/     # Wrapper para animações
+│   │   ├── AuthGuard/            # Guard de autenticação
+│   │   ├── ChartCard/            # Card para gráficos
+│   │   ├── ErrorState/           # Estado de erro
+│   │   ├── LoadingState/         # Estado de carregamento
+│   │   ├── MetricCard/           # Card de métricas
+│   │   ├── PageHeader/           # Header de página
+│   │   ├── PageWrapper/          # Wrapper de página
+│   │   ├── RoleGuard/            # Guard de permissões
+│   │   ├── Sidebar/              # Sidebar do dashboard
+│   │   ├── ThemeEditor/          # Editor de temas WYSIWYG
+│   │   └── ...                   # Outros componentes
+│   ├── Pricing/                  # Componentes de pricing
+│   └── Public/                   # Componentes públicos
+│
+├── contexts/                     # React Contexts
+│   ├── DashboardAuthContext.tsx  # Context de autenticação
+│   └── SidebarContext.tsx        # Context da sidebar
+│
+├── hooks/                        # Custom Hooks
+│   ├── useApi.ts                 # Hook para chamadas API
+│   ├── useDashboardAuth.ts       # Hook de autenticação
+│   ├── useDashboardData.ts      # Hooks de dados (metrics, revenue, etc.)
+│   └── useRolePermissions.ts    # Hook de permissões
+│
+├── i18n/                         # Internacionalização
+│   ├── messages/                 # Arquivos de tradução (en.json, pt-BR.json, es.json)
+│   ├── config.ts                 # Configuração do next-intl
+│   ├── request.ts                # Request config
+│   └── routing.ts                # Routing configuration
+│
+├── lib/                          # Bibliotecas e utilitários
+│   ├── api/                      # API utilities
+│   │   ├── auth.ts               # Autenticação API
+│   │   ├── responses.ts          # Response helpers
+│   │   └── route-handler.ts      # Route handler wrappers (withAuth, withValidation)
+│   ├── supabase.ts              # Supabase client (client & admin)
+│   └── validations/              # Validações Zod
+│
+└── utils/                        # Utilitários
+    ├── auth/                     # Auth utilities (email, code generator, etc.)
+    ├── dashboard/                # Dashboard utilities (insights, forecasts, etc.)
+    ├── rbac/                     # RBAC utilities
+    ├── analytics.ts              # Analytics helpers
+    ├── animations.ts             # Animation utilities
+    ├── api-client.ts             # API client helpers
+    ├── breadcrumbs.ts            # Breadcrumb helpers
+    ├── cache.ts                  # Cache utilities
+    ├── date-ranges.ts            # Date range helpers
+    ├── default-data.ts           # Default/mock data
+    ├── formatters.ts             # Formatters (currency, numbers, etc.)
+    └── plans.ts                  # Plan utilities
+```
+
+---
+
+## 🔐 Autenticação & Autorização
+
+### Sistema de Autenticação
+- **Tipo**: Passwordless (código por email)
+- **Fluxo**: Email → Código → Session (HTTP-only cookie)
+- **Context**: `DashboardAuthContext` para gerenciar estado global
+- **Guard**: `AuthGuard` component para proteger rotas
+
+### RBAC (Role-Based Access Control)
+**Roles disponíveis**:
+- `owner`: Acesso total (manage *)
+- `admin`: Leitura/escrita em dashboard, analytics, themes, settings (sem gerenciar usuários/billing)
+- `editor`: Leitura de dashboard/analytics, escrita em themes
+- `viewer`: Apenas leitura (dashboard, analytics)
+
+**Permissões**:
+- `read`: Visualizar recursos
+- `write`: Criar/editar recursos
+- `delete`: Deletar recursos
+- `manage`: Controle total
+
+**Arquivos**:
+- `src/utils/rbac/permissions.ts`: Definições de permissões
+- `src/hooks/useRolePermissions.ts`: Hook para verificar permissões
+- `src/components/Dashboard/RoleGuard/RoleGuard.tsx`: Componente guard
+
+### Proteção de Rotas
+- **API Routes**: Use `withAuth()` ou `withAuthAndValidation()` de `lib/api/route-handler.ts`
+- **Pages**: Use `<AuthGuard>` component
+- **Components**: Use `<RoleGuard>` para verificar permissões específicas
+
+---
+
+## 🌐 Internacionalização (i18n)
+
+### Configuração
+- **Provider**: `NextIntlClientProvider` no root layout
+- **Locale Detection**: Cookie (`NEXT_LOCALE`) ou `Accept-Language` header
+- **Middleware**: `src/middleware.ts` gerencia locale automaticamente
+
+### Uso em Componentes
+```typescript
+import { useTranslations } from 'next-intl';
+
+const t = useTranslations('dashboard.overview');
+// t('title'), t('metrics.totalRevenue'), etc.
+```
+
+### Arquivos de Tradução
+- `src/i18n/messages/en.json`
+- `src/i18n/messages/pt-BR.json`
+- `src/i18n/messages/es.json`
+
+### Mudança de Idioma
+- Componente: `<LanguageSwitcher />`
+- API: `POST /api/locale` com `{ locale: 'en' | 'pt-BR' | 'es' }`
+
+---
+
+## 🗄️ Database & Supabase
+
+### Clientes Supabase
+- **Client-side**: `supabase` (anon key, respeita RLS)
+- **Server-side**: `supabaseAdmin` (service role key, bypass RLS)
+
+**Arquivo**: `src/lib/supabase.ts`
+
+### Migrations
+- Localização: `supabase/migrations/`
+- Scripts: `yarn migrate:list` e `yarn migrate`
+
+### Schemas Principais
+- `users`: Usuários do dashboard
+- `sessions`: Sessões de checkout
+- `events`: Eventos de tracking
+- `themes`: Configurações de temas
+- `accounts`: Contas de clientes
+
+---
+
+## 📡 API Routes & Data Fetching
+
+### Padrão de API Routes
+```typescript
+import { withAuth } from '@/lib/api/route-handler';
+import { apiSuccess, apiError } from '@/lib/api/responses';
+
+export const GET = withAuth(async (request, { user }) => {
+  // user está disponível automaticamente
+  return apiSuccess({ data: ... });
+});
+```
+
+### Data Fetching Hooks
+**Hook principal**: `useApi<T>(endpoint, options)`
+- Cache automático (TTL configurável)
+- Deduplicação de requisições
+- Loading/error states
+
+**Hooks específicos** (em `useDashboardData.ts`):
+- `useMetricsData({ period })`: Métricas gerais
+- `useRevenueData({ period })`: Dados de receita
+- `usePerformanceData({ period })`: Dados de performance
+- `useAnalyticsData({ type, period })`: Analytics (payment, shipping, devices, browsers)
+- `useCouponsData({ period })`: Dados de cupons
+- `useGeographyData({ period })`: Dados geográficos
+- `useLTVData({ period })`: Lifetime Value
+- `useCACData({ period })`: Customer Acquisition Cost
+- `useRetentionData({ period })`: Retenção de clientes
+- `useAbandonmentPredictionData({ period })`: Predição de abandono
+- `useCohortsData({ period })`: Análise de coortes
+- `useSegmentsData({ period })`: Segmentos comportamentais
+- `useOptimizationROIData({ period, optimizationDate })`: ROI de otimizações
+- `useFrictionScoreData({ period })`: Score de fricção
+- `useRevenueForecastData({ period, forecastDays })`: Previsão de receita
+
+### Períodos Suportados
+- `'day'`: Último dia
+- `'week'`: Última semana (default)
+- `'month'`: Último mês
+- `'quarter'`: Último trimestre
+- `'year'`: Último ano
+
+---
+
+## 🎨 Design System & UI
+
+### Referência de Design
+- **Design Style Guide**: Ver `../bckstg-checkout/docs/DESIGN-STYLE-GUIDE.md`
+- **Quick Reference**: Ver `../bckstg-checkout/docs/DESIGN-QUICK-REFERENCE.md`
+
+### Paleta de Cores
+- **Primary**: Gradientes azul-roxo (`from-blue-600 to-purple-600`)
+- **Secondary**: Laranja para destaques
+- **Success**: Verde (`green-500`, `green-600`)
+- **Error**: Vermelho (`red-300`, `red-500`, `red-700`)
+
+### Componentes Padrão
+- **Cards**: `border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200`
+- **Botões primários**: Gradiente com efeito lift no hover
+- **Forms**: HeroUI `<Input>` com `variant='bordered' size='lg'`
+- **Spacing**: Tailwind scale (gap-4, gap-6, gap-8)
+
+### Animações
+- **Framer Motion**: Variantes `fadeIn` e `slideIn`
+- **Wrapper**: `<AnimatedWrapper>` para componentes animados
+- **Transitions**: `transition-all duration-200`
+
+### Estados de Loading
+- **Botão**: `isLoading={true}` com `<Spinner size='sm' />`
+- **Full-screen**: Overlay com backdrop blur
+- **Componentes**: `<LoadingState />` para páginas inteiras
+
+### Estados de Erro
+- **Componente**: `<ErrorState />` para exibir erros
+- **API**: `apiError()` e `apiValidationError()` para respostas de erro
+
+---
+
+## 📝 Convenções de Código
+
+### TypeScript
+- **Strict mode**: Ativado
+- **Type safety**: Sempre tipar props, returns, etc.
+- **Interfaces**: Preferir interfaces sobre types quando possível
+
+### Nomenclatura
+- **Components**: PascalCase (`MetricCard.tsx`)
+- **Hooks**: camelCase com prefixo `use` (`useDashboardAuth.ts`)
+- **Utils**: camelCase (`formatters.ts`)
+- **API Routes**: `route.ts` (Next.js App Router)
+- **Types**: PascalCase para tipos, camelCase para valores
+
+### Arquivos e Pastas
+- **Componentes**: Um componente por pasta, `index.tsx` ou `ComponentName.tsx`
+- **Hooks**: Um hook por arquivo
+- **Utils**: Agrupar por funcionalidade (ex: `auth/`, `dashboard/`)
+
+### Imports
+- **Ordem**: React → Next.js → Third-party → Local (absolute paths)
+- **Absolute paths**: Sempre usar `@/` para imports locais
+- **Exemplo**:
+```typescript
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Card, CardBody } from '@heroui/react';
+import { useTranslations } from 'next-intl';
+import { useDashboardAuth } from '@/hooks/useDashboardAuth';
+import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
+```
+
+### Comentários
+- **JSDoc**: Para funções e componentes públicos
+- **Comentários**: Em inglês
+- **Debug logs**: Formato `console.warn('⚠️ [DEBUG] ...')`, `console.error('❌ [DEBUG] ...')`, `console.info('✅ [DEBUG] ...')`
+
+### Error Handling
+- **Try-catch**: Sempre em async functions
+- **API errors**: Retornar `apiError()` ou `apiValidationError()`
+- **Client errors**: Exibir `<ErrorState />` ou toast via Sonner
+
+---
+
+## 🧪 Testing & Quality
+
+### Scripts Disponíveis
+- `yarn lint`: ESLint
+- `yarn type-check`: TypeScript check
+- `yarn format`: Prettier (formatar)
+- `yarn format:check`: Prettier (verificar)
+- `yarn audit`: Security audit
+- `yarn audit:console`: Verificar console statements
+
+### Linting
+- **Config**: `.eslintrc.json`
+- **Framework**: ESLint com Next.js config
+
+### Formatting
+- **Config**: `.prettierrc`
+- **Auto-format**: On save (se configurado no editor)
+
+---
+
+## 🚀 Desenvolvimento
+
+### Setup
+1. `yarn install`
+2. Copiar `.env.sample` para `.env.local`
+3. Configurar variáveis de ambiente (Supabase, email service, etc.)
+4. `yarn dev` (porta 3002)
+
+### Variáveis de Ambiente
+Ver `env.sample` para lista completa. Principais:
+- `NEXT_PUBLIC_SUPABASE_URL`: URL do projeto Supabase
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Chave anônima do Supabase
+- `SUPABASE_SERVICE_ROLE_KEY`: Chave de serviço (server-side only)
+- `EMAIL_SERVICE_PROVIDER`: Provedor de email (resend, sendgrid)
+- `EMAIL_SERVICE_API_KEY`: Chave API do serviço de email
+- `METRICS_API_KEY`: API key para autenticação de endpoints de métricas
+
+### Hot Reload
+- Next.js Fast Refresh ativado
+- Mudanças em componentes, hooks, utils são refletidas automaticamente
+
+---
+
+## 📊 Estrutura de Dados
+
+### Tipos Comuns
+- **Period**: `'day' | 'week' | 'month' | 'quarter' | 'year'`
+- **Role**: `'owner' | 'admin' | 'editor' | 'viewer'`
+- **Locale**: `'en' | 'pt-BR' | 'es'`
+
+### Responses de API
+- **Success**: `{ success: true, data: T }`
+- **Error**: `{ success: false, error: string, details?: unknown }`
+- **Validation Error**: `{ success: false, error: string, validationErrors: ZodError }`
+
+---
+
+## 🔄 Fluxos Principais
+
+### Fluxo de Autenticação
+1. Usuário acessa `/login`
+2. Insere email → `POST /api/dashboard/auth/send-code`
+3. Recebe código por email
+4. Insere código → `POST /api/dashboard/auth/verify-code`
+5. Recebe session cookie
+6. Redirecionado para `/dashboard`
+7. `DashboardAuthContext` verifica autenticação via `GET /api/dashboard/auth/me`
+
+### Fluxo de Dashboard
+1. Usuário acessa `/dashboard`
+2. `<AuthGuard>` verifica autenticação
+3. `<DashboardLayout>` renderiza Sidebar + Header
+4. Página específica carrega dados via hooks (`useMetricsData`, etc.)
+5. Componentes exibem métricas, gráficos, etc.
+
+### Fluxo de Theme Editor
+1. Usuário acessa `/dashboard/themes`
+2. Lista temas existentes
+3. Clica "Edit" ou "Create New"
+4. `<ThemeEditor>` carrega tema (se edit) ou cria novo
+5. Edição WYSIWYG com preview em tempo real
+6. Salva → `POST /api/dashboard/themes` ou `PATCH /api/dashboard/themes/[id]`
+
+---
+
+## 🎯 Padrões Importantes
+
+### 1. Proteção de Rotas
+Sempre usar `withAuth()` ou `withAuthAndValidation()` em API routes protegidas:
+```typescript
+export const GET = withAuth(async (request, { user }) => {
+  // user está disponível
+});
+```
+
+### 2. Validação de Dados
+Sempre validar com Zod:
+```typescript
+const schema = z.object({ email: z.string().email() });
+export const POST = withAuthAndValidation(schema, async (request, { user, body }) => {
+  // body está validado e tipado
+});
+```
+
+### 3. Loading States
+Sempre mostrar loading durante fetch:
+```typescript
+const { data, isLoading } = useMetricsData({ period });
+if (isLoading) return <LoadingState />;
+```
+
+### 4. Error States
+Sempre tratar erros:
+```typescript
+const { data, error } = useMetricsData({ period });
+if (error) return <ErrorState error={error} />;
+```
+
+### 5. Internacionalização
+Sempre usar traduções:
+```typescript
+const t = useTranslations('dashboard.overview');
+return <h1>{t('title')}</h1>;
+```
+
+### 6. Permissões
+Sempre verificar permissões antes de ações:
+```typescript
+const { canWrite } = useRolePermissions();
+if (!canWrite('themes')) return <RoleGuard />;
+```
+
+### 7. Cache de Dados
+Usar cache apropriado nos hooks:
+```typescript
+useApi(endpoint, {
+  cacheKey: 'metrics_week',
+  cacheTTL: 5, // 5 minutos
+  deduplicateRequests: true,
+});
+```
+
+---
+
+## 📚 Recursos Externos
+
+### Documentação
+- **Next.js**: https://nextjs.org/docs
+- **HeroUI**: https://nextui.org/docs
+- **Supabase**: https://supabase.com/docs
+- **TanStack Query**: https://tanstack.com/query/latest
+- **next-intl**: https://next-intl-docs.vercel.app/
+
+### Design Guides
+- `../bckstg-checkout/docs/DESIGN-STYLE-GUIDE.md`
+- `../bckstg-checkout/docs/DESIGN-QUICK-REFERENCE.md`
+
+---
+
+## ⚠️ Avisos Importantes
+
+1. **Nunca expor `SUPABASE_SERVICE_ROLE_KEY` no client-side**
+2. **Sempre validar dados de entrada com Zod**
+3. **Sempre verificar permissões antes de ações destrutivas**
+4. **Sempre tratar erros e mostrar estados apropriados**
+5. **Sempre usar traduções para textos visíveis ao usuário**
+6. **Sempre seguir padrões de design estabelecidos**
+
+---
+
+## 🎨 Checklist de Componentes
+
+Ao criar um novo componente:
+- [ ] TypeScript types definidos
+- [ ] Loading state (se async)
+- [ ] Error state (se aplicável)
+- [ ] Responsive (mobile-first)
+- [ ] Animações (se necessário)
+- [ ] Traduções (textos visíveis)
+- [ ] Acessibilidade (a11y)
+- [ ] Seguir design system
+- [ ] Hover states (elementos interativos)
+- [ ] Documentação (JSDoc se público)
+
+---
+
+## 🔍 Busca e Referências
+
+### Arquivos Importantes para Referência
+- `src/lib/api/route-handler.ts`: Wrappers de API routes
+- `src/lib/supabase.ts`: Clientes Supabase
+- `src/hooks/useApi.ts`: Hook base de data fetching
+- `src/hooks/useDashboardData.ts`: Hooks específicos de dados
+- `src/utils/rbac/permissions.ts`: Definições de RBAC
+- `src/contexts/DashboardAuthContext.tsx`: Context de autenticação
+- `src/components/Dashboard/ThemeEditor/ThemeEditor.tsx`: Editor de temas
+
+---
+
+## 📝 Notas Finais
+
+- Este arquivo serve como contexto base para todas as iterações com Cursor AI
+- Sempre referenciar este arquivo antes de implementar novas features
+- Manter este arquivo atualizado conforme o projeto evolve
+- Seguir os padrões estabelecidos para manter consistência
+
+---
+
+**Última atualização**: 2024
+**Versão do projeto**: 0.1.0
+

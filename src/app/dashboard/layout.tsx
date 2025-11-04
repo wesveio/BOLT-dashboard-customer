@@ -5,6 +5,7 @@ import { Toaster } from 'sonner';
 import { DashboardAuthProvider } from '@/contexts/DashboardAuthContext';
 import { SidebarProvider, useSidebar } from '@/contexts/SidebarContext';
 import { Sidebar } from '@/components/Dashboard/Sidebar/Sidebar';
+import { BottomNav } from '@/components/Dashboard/BottomNav/BottomNav';
 import { DashboardHeader } from '@/components/Dashboard/Header/DashboardHeader';
 import { AuthGuard } from '@/components/Dashboard/AuthGuard/AuthGuard';
 
@@ -18,12 +19,13 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
         <Sidebar />
         <main
           className={`flex-1 p-6 transition-all duration-200 ${
-            isCollapsed ? 'ml-20' : 'ml-64'
-          }`}
+            isCollapsed ? 'md:ml-20' : 'md:ml-64'
+          } pb-20 md:pb-6`}
         >
           {children}
         </main>
       </div>
+      <BottomNav />
     </div>
   );
 }

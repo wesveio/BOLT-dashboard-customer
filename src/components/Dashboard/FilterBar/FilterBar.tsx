@@ -53,10 +53,10 @@ export function FilterBar({
   
   return (
     <div
-      className={`bg-gray-50 border border-gray-200 rounded-lg p-4 flex flex-wrap items-center gap-3 ${className}`}
+      className={`bg-gray-50 border border-gray-200 rounded-lg p-4 flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center gap-3 ${className}`}
     >
       {/* Time Period Filter */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 w-full md:w-auto md:flex-shrink-0">
         <CalendarIcon className="w-5 h-5 text-gray-500 flex-shrink-0" />
         <Select
           selectedKeys={[period]}
@@ -69,7 +69,7 @@ export function FilterBar({
           size="sm"
           variant="bordered"
           label={t('timePeriod')}
-          className="min-w-[150px]"
+          className="flex-1 md:min-w-[150px]"
         >
           {getTranslatedPeriodOptions(tPeriods).map((option) => (
             <SelectItem key={option.value} textValue={option.value}>
@@ -80,7 +80,7 @@ export function FilterBar({
       </div>
 
       {/* Category Filter */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 w-full md:w-auto md:flex-shrink-0">
         <TagIcon className="w-5 h-5 text-gray-500 flex-shrink-0" />
         <Select
           selectedKeys={category ? [category] : []}
@@ -96,7 +96,7 @@ export function FilterBar({
           variant="bordered"
           label={t('category')}
           placeholder={t('allCategories')}
-          className="min-w-[150px]"
+          className="flex-1 md:min-w-[150px]"
         >
           <SelectItem key="all">{t('allCategories')}</SelectItem>
           {(categoryOptions.map((cat) => (
@@ -108,7 +108,7 @@ export function FilterBar({
       </div>
 
       {/* Event Type Filter */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 w-full md:w-auto md:flex-shrink-0">
         <FunnelIcon className="w-5 h-5 text-gray-500 flex-shrink-0" />
         <Select
           selectedKeys={eventType ? [eventType] : []}
@@ -124,7 +124,7 @@ export function FilterBar({
           variant="bordered"
           label={t('eventType')}
           placeholder={t('allEventTypes')}
-          className="min-w-[200px]"
+          className="flex-1 md:min-w-[200px]"
           isDisabled={isEventTypeDisabled || eventTypeOptions.length === 0}
         >
           <SelectItem key="all">{t('allEventTypes')}</SelectItem>
@@ -144,7 +144,7 @@ export function FilterBar({
           startContent={<ArrowPathIcon className="w-4 h-4" />}
           onPress={onRefresh}
           size="sm"
-          className="ml-auto border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 font-semibold"
+          className="w-full md:w-auto md:ml-auto border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 font-semibold"
         >
           {t('refresh')}
         </Button>
