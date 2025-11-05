@@ -5,6 +5,7 @@ import { apiSuccess, apiError } from '@/lib/api/responses';
 import { FormOptimization, UserProfile } from '@/lib/ai/types';
 import { createFormOptimizer } from '@/lib/ai/form-optimizer';
 import { UserProfileBuilder } from '@/lib/ai/user-profile-builder';
+import { getUserPlan } from '@/lib/api/plan-check';
 
 /**
  * POST /api/boltx/optimize
@@ -14,6 +15,15 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
+    // Check Enterprise plan access
+    const { hasEnterpriseAccess, error: planError } = await getUserPlan();
+    if (!hasEnterpriseAccess) {
+      return apiError(
+        planError || 'BoltX is only available on Enterprise plan. Please upgrade to access this feature.',
+        403
+      );
+    }
+
     const { user } = await getAuthenticatedUser();
 
     if (!user.account_id) {
@@ -69,6 +79,15 @@ export async function POST(request: NextRequest) {
  */
 export async function GET(request: NextRequest) {
   try {
+    // Check Enterprise plan access
+    const { hasEnterpriseAccess, error: planError } = await getUserPlan();
+    if (!hasEnterpriseAccess) {
+      return apiError(
+        planError || 'BoltX is only available on Enterprise plan. Please upgrade to access this feature.',
+        403
+      );
+    }
+
     const { user } = await getAuthenticatedUser();
 
     if (!user.account_id) {
@@ -264,6 +283,15 @@ async function getFieldAnalytics(
  */
 export async function PATCH(request: NextRequest) {
   try {
+    // Check Enterprise plan access
+    const { hasEnterpriseAccess, error: planError } = await getUserPlan();
+    if (!hasEnterpriseAccess) {
+      return apiError(
+        planError || 'BoltX is only available on Enterprise plan. Please upgrade to access this feature.',
+        403
+      );
+    }
+
     const { user } = await getAuthenticatedUser();
 
     if (!user.account_id) {

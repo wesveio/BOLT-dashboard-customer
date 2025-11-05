@@ -20,9 +20,11 @@ import {
   CreditCardIcon,
   KeyIcon,
   BoltIcon,
+  CpuChipIcon,
 } from '@heroicons/react/24/outline';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useDashboardAuth } from '@/hooks/useDashboardAuth';
+import { usePlanAccess } from '@/hooks/usePlanAccess';
 import { Avatar } from '@heroui/react';
 
 interface NavSubItem {
@@ -42,8 +44,10 @@ export function Sidebar() {
   const { isCollapsed, toggleCollapse } = useSidebar();
   const t = useTranslations('dashboard.sidebar');
   const tAnalytics = useTranslations('dashboard.analytics');
+  const tBoltX = useTranslations('dashboard.boltx');
   const pathname = usePathname();
   const { user, isLoading } = useDashboardAuth();
+  const { hasEnterpriseAccess } = usePlanAccess();
 
   const navItems: NavItem[] = [
     { href: '/dashboard', icon: HomeIcon, label: t('overview') },
@@ -138,6 +142,43 @@ export function Sidebar() {
     },
     { href: '/dashboard/themes', icon: PaintBrushIcon, label: t('themes') },
     { href: '/dashboard/insights', icon: LightBulbIcon, label: t('insights') },
+    // BoltX - only show for Enterprise plan
+    ...(hasEnterpriseAccess
+      ? [
+          {
+            href: '/dashboard/boltx',
+            icon: CpuChipIcon,
+            label: t('boltx'),
+            subItems: [
+              {
+                href: '/dashboard/boltx/predictions',
+                label: tBoltX('predictions.title'),
+                translationKey: 'dashboard.boltx.predictions.title',
+              },
+              {
+                href: '/dashboard/boltx/interventions',
+                label: tBoltX('interventions.title'),
+                translationKey: 'dashboard.boltx.interventions.title',
+              },
+              {
+                href: '/dashboard/boltx/personalization',
+                label: tBoltX('personalization.title'),
+                translationKey: 'dashboard.boltx.personalization.title',
+              },
+              {
+                href: '/dashboard/boltx/optimization',
+                label: tBoltX('optimization.title'),
+                translationKey: 'dashboard.boltx.optimization.title',
+              },
+              {
+                href: '/dashboard/boltx/settings',
+                label: t('settings'),
+                translationKey: 'dashboard.settings.title',
+              },
+            ],
+          },
+        ]
+      : []),
     { href: '/dashboard/plans', icon: CreditCardIcon, label: t('plans') },
     { href: '/dashboard/integrations', icon: KeyIcon, label: t('integrations') },
     { href: '/dashboard/settings', icon: Cog6ToothIcon, label: t('settings') },

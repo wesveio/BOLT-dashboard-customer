@@ -70,6 +70,7 @@
       "analytics": "Analytics",
       "themes": "Temas",
       "insights": "Insights",
+      "boltx": "BoltX",
       "plans": "Planos",
       "integrations": "Integrações",
       "settings": "Configurações",
@@ -89,6 +90,11 @@
       "browsers": "Navegador e Plataforma",
       "themes": "Temas",
       "insights": "Insights",
+      "boltx": "BoltX",
+      "predictions": "Predições",
+      "interventions": "Intervenções",
+      "personalization": "Personalização",
+      "optimization": "Otimização de Formulários",
       "plans": "Planos e Preços",
       "integrations": "Integrações",
       "settings": "Configurações",
@@ -662,6 +668,72 @@
         "duplicateError": "Falha ao duplicar tema",
         "alreadyActive": "O tema \"{name}\" já está ativo",
         "createdAndActivated": "Tema \"{name}\" criado e ativado com sucesso"
+      }
+    },
+    "boltx": {
+      "title": "BoltX - Otimizações com IA",
+      "description": "Predições e otimizações impulsionadas por inteligência artificial",
+      "enterpriseRequired": "O BoltX está disponível apenas no plano Enterprise. Faça upgrade agora para desbloquear otimizações com IA.",
+      "upgradeButton": "Fazer Upgrade para Enterprise",
+      "predictions": {
+        "title": "Predições de Abandono",
+        "description": "Predições de abandono em tempo real usando IA e aprendizado de máquina"
+      },
+      "interventions": {
+        "title": "Intervenções",
+        "description": "Intervenções automáticas para reduzir o abandono no checkout"
+      },
+      "personalization": {
+        "title": "Personalização",
+        "description": "Personalização dinâmica do checkout baseada no comportamento do usuário"
+      },
+      "optimization": {
+        "title": "Otimização de Formulários",
+        "description": "Otimização de campos de formulário com IA para melhor conversão"
+      },
+      "settings": {
+        "title": "Configurações do BoltX",
+        "description": "Configure otimizações e recursos com IA",
+        "saveChanges": "Salvar Alterações",
+        "saveSuccess": "Configuração salva com sucesso",
+        "saveError": "Falha ao salvar configuração",
+        "general": {
+          "title": "Configurações Gerais",
+          "enabled": "Habilitar BoltX",
+          "enabledDesc": "Habilitar ou desabilitar otimizações com IA do BoltX",
+          "aiProvider": "Provedor de IA",
+          "aiProviderDesc": "Escolha entre OpenAI (IA generativa) ou Local (modelos ML)"
+        },
+        "openai": {
+          "title": "Configuração do OpenAI",
+          "apiKey": "Chave de API do OpenAI",
+          "apiKeyPlaceholder": "sk-...",
+          "apiKeyDesc": "Sua chave de API do OpenAI para recursos de IA generativa",
+          "apiKeyRequired": "Obrigatória quando o provedor OpenAI está habilitado",
+          "apiKeyMasked": "Esta é sua chave de API atual (mascarada por segurança)",
+          "update": "Atualizar Chave",
+          "cancel": "Cancelar",
+          "model": "Modelo",
+          "modelDesc": "Modelo OpenAI a usar para gerar insights",
+          "maxTokens": "Tokens Máximos",
+          "maxTokensDesc": "Número máximo de tokens nas respostas da IA",
+          "temperature": "Temperatura",
+          "temperatureDesc": "Controla a aleatoriedade (0.0 = determinístico, 2.0 = muito criativo)"
+        },
+        "performance": {
+          "title": "Configurações de Performance",
+          "cacheEnabled": "Habilitar Cache",
+          "cacheEnabledDesc": "Armazenar respostas da IA em cache para melhorar performance e reduzir custos",
+          "cacheTtl": "TTL do Cache",
+          "cacheTtlDesc": "Tempo em segundos antes que as respostas em cache expirem",
+          "rateLimit": "Limite de Taxa",
+          "rateLimitDesc": "Número máximo de requisições de IA por minuto"
+        },
+        "advanced": {
+          "title": "Configurações Avançadas",
+          "modelVersion": "Versão do Modelo de Predição",
+          "modelVersionDesc": "Versão do modelo de predição a usar"
+        }
       }
     },
     "insights": {

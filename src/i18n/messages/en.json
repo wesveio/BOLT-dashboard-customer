@@ -70,6 +70,7 @@
       "analytics": "Analytics",
       "themes": "Themes",
       "insights": "Insights",
+      "boltx": "BoltX",
       "plans": "Plans",
       "integrations": "Integrations",
       "settings": "Settings",
@@ -89,6 +90,11 @@
       "browsers": "Browser & Platform",
       "themes": "Themes",
       "insights": "Insights",
+      "boltx": "BoltX",
+      "predictions": "Predictions",
+      "interventions": "Interventions",
+      "personalization": "Personalization",
+      "optimization": "Form Optimization",
       "plans": "Plans & Pricing",
       "integrations": "Integrations",
       "settings": "Settings",
@@ -668,6 +674,72 @@
         "duplicateError": "Failed to duplicate theme",
         "alreadyActive": "Theme \"{name}\" is already active",
         "createdAndActivated": "Theme \"{name}\" created and activated successfully"
+      }
+    },
+    "boltx": {
+      "title": "BoltX - AI Optimizations",
+      "description": "AI-powered predictions and optimizations",
+      "enterpriseRequired": "BoltX is available on Enterprise plan. Upgrade now to unlock AI-powered optimizations.",
+      "upgradeButton": "Upgrade to Enterprise",
+      "predictions": {
+        "title": "Abandonment Predictions",
+        "description": "Real-time abandonment predictions using AI and machine learning"
+      },
+      "interventions": {
+        "title": "Interventions",
+        "description": "Automatic interventions to reduce checkout abandonment"
+      },
+      "personalization": {
+        "title": "Personalization",
+        "description": "Dynamic checkout personalization based on user behavior"
+      },
+      "optimization": {
+        "title": "Form Optimization",
+        "description": "AI-powered form field optimization for better conversion"
+      },
+      "settings": {
+        "title": "BoltX Settings",
+        "description": "Configure AI-powered optimizations and features",
+        "saveChanges": "Save Changes",
+        "saveSuccess": "Configuration saved successfully",
+        "saveError": "Failed to save configuration",
+        "general": {
+          "title": "General Settings",
+          "enabled": "Enable BoltX",
+          "enabledDesc": "Enable or disable BoltX AI-powered optimizations",
+          "aiProvider": "AI Provider",
+          "aiProviderDesc": "Choose between OpenAI (generative AI) or Local (ML models)"
+        },
+        "openai": {
+          "title": "OpenAI Configuration",
+          "apiKey": "OpenAI API Key",
+          "apiKeyPlaceholder": "sk-...",
+          "apiKeyDesc": "Your OpenAI API key for generative AI features",
+          "apiKeyRequired": "Required when OpenAI provider is enabled",
+          "apiKeyMasked": "This is your current API key (masked for security)",
+          "update": "Update Key",
+          "cancel": "Cancel",
+          "model": "Model",
+          "modelDesc": "OpenAI model to use for generating insights",
+          "maxTokens": "Max Tokens",
+          "maxTokensDesc": "Maximum number of tokens in AI responses",
+          "temperature": "Temperature",
+          "temperatureDesc": "Controls randomness (0.0 = deterministic, 2.0 = very creative)"
+        },
+        "performance": {
+          "title": "Performance Settings",
+          "cacheEnabled": "Enable Cache",
+          "cacheEnabledDesc": "Cache AI responses to improve performance and reduce costs",
+          "cacheTtl": "Cache TTL",
+          "cacheTtlDesc": "Time in seconds before cached responses expire",
+          "rateLimit": "Rate Limit",
+          "rateLimitDesc": "Maximum number of AI requests per minute"
+        },
+        "advanced": {
+          "title": "Advanced Settings",
+          "modelVersion": "Prediction Model Version",
+          "modelVersionDesc": "Version of the prediction model to use"
+        }
       }
     },
     "insights": {

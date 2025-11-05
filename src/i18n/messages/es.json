@@ -70,6 +70,7 @@
       "analytics": "Analíticas",
       "themes": "Temas",
       "insights": "Insights",
+      "boltx": "BoltX",
       "plans": "Planes",
       "integrations": "Integraciones",
       "settings": "Configuración",
@@ -89,6 +90,11 @@
       "browsers": "Navegador y Plataforma",
       "themes": "Temas",
       "insights": "Insights",
+      "boltx": "BoltX",
+      "predictions": "Predicciones",
+      "interventions": "Intervenciones",
+      "personalization": "Personalización",
+      "optimization": "Optimización de Formularios",
       "plans": "Planes y Precios",
       "integrations": "Integraciones",
       "settings": "Configuración",
@@ -662,6 +668,72 @@
         "duplicateError": "Error al duplicar tema",
         "alreadyActive": "El tema \"{name}\" ya está activo",
         "createdAndActivated": "Tema \"{name}\" creado y activado exitosamente"
+      }
+    },
+    "boltx": {
+      "title": "BoltX - Optimizaciones con IA",
+      "description": "Predicciones y optimizaciones impulsadas por inteligencia artificial",
+      "enterpriseRequired": "BoltX está disponible solo en el plan Enterprise. Actualiza ahora para desbloquear optimizaciones con IA.",
+      "upgradeButton": "Actualizar a Enterprise",
+      "predictions": {
+        "title": "Predicciones de Abandono",
+        "description": "Predicciones de abandono en tiempo real usando IA y aprendizaje automático"
+      },
+      "interventions": {
+        "title": "Intervenciones",
+        "description": "Intervenciones automáticas para reducir el abandono en el checkout"
+      },
+      "personalization": {
+        "title": "Personalización",
+        "description": "Personalización dinámica del checkout basada en el comportamiento del usuario"
+      },
+      "optimization": {
+        "title": "Optimización de Formularios",
+        "description": "Optimización de campos de formulario con IA para mejor conversión"
+      },
+      "settings": {
+        "title": "Configuración de BoltX",
+        "description": "Configura optimizaciones y características con IA",
+        "saveChanges": "Guardar Cambios",
+        "saveSuccess": "Configuración guardada exitosamente",
+        "saveError": "Error al guardar la configuración",
+        "general": {
+          "title": "Configuración General",
+          "enabled": "Habilitar BoltX",
+          "enabledDesc": "Habilitar o deshabilitar optimizaciones con IA de BoltX",
+          "aiProvider": "Proveedor de IA",
+          "aiProviderDesc": "Elige entre OpenAI (IA generativa) o Local (modelos ML)"
+        },
+        "openai": {
+          "title": "Configuración de OpenAI",
+          "apiKey": "Clave de API de OpenAI",
+          "apiKeyPlaceholder": "sk-...",
+          "apiKeyDesc": "Tu clave de API de OpenAI para características de IA generativa",
+          "apiKeyRequired": "Requerida cuando el proveedor OpenAI está habilitado",
+          "apiKeyMasked": "Esta es tu clave de API actual (enmascarada por seguridad)",
+          "update": "Actualizar Clave",
+          "cancel": "Cancelar",
+          "model": "Modelo",
+          "modelDesc": "Modelo de OpenAI a usar para generar insights",
+          "maxTokens": "Tokens Máximos",
+          "maxTokensDesc": "Número máximo de tokens en las respuestas de IA",
+          "temperature": "Temperatura",
+          "temperatureDesc": "Controla la aleatoriedad (0.0 = determinístico, 2.0 = muy creativo)"
+        },
+        "performance": {
+          "title": "Configuración de Rendimiento",
+          "cacheEnabled": "Habilitar Caché",
+          "cacheEnabledDesc": "Almacenar respuestas de IA en caché para mejorar el rendimiento y reducir costos",
+          "cacheTtl": "TTL del Caché",
+          "cacheTtlDesc": "Tiempo en segundos antes de que las respuestas en caché expiren",
+          "rateLimit": "Límite de Tasa",
+          "rateLimitDesc": "Número máximo de solicitudes de IA por minuto"
+        },
+        "advanced": {
+          "title": "Configuración Avanzada",
+          "modelVersion": "Versión del Modelo de Predicción",
+          "modelVersionDesc": "Versión del modelo de predicción a usar"
+        }
       }
     },
     "insights": {

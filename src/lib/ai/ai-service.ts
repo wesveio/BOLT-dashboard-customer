@@ -226,7 +226,8 @@ export class AIService {
 }
 
 /**
- * Create AI service instance from environment variables
+ * Create AI service instance from environment variables (legacy)
+ * @deprecated Use createAIServiceWithConfig instead
  */
 export function createAIService(): AIService | null {
   const enabled = process.env.BOLTX_ENABLED === 'true';
@@ -259,6 +260,18 @@ export function createAIService(): AIService | null {
 
   if (provider === 'openai' && !openaiKey) {
     console.warn('⚠️ [DEBUG] OpenAI API key not found, AI features will be limited');
+  }
+
+  return new AIService(config);
+}
+
+/**
+ * Create AI service instance from configuration
+ * This is the preferred method as it supports database configuration
+ */
+export function createAIServiceWithConfig(config: AIServiceConfig): AIService | null {
+  if (!config) {
+    return null;
   }
 
   return new AIService(config);

@@ -5,6 +5,7 @@ import { apiSuccess, apiError } from '@/lib/api/responses';
 import { createAIService } from '@/lib/ai/ai-service';
 import { EnhancedAbandonmentPredictor } from '@/lib/ai/models/abandonment-predictor';
 import { PredictionFeatures } from '@/lib/ai/types';
+import { getUserPlan } from '@/lib/api/plan-check';
 
 /**
  * GET /api/boltx/realtime?sessionId=...
@@ -14,6 +15,15 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
+    // Check Enterprise plan access
+    const { hasEnterpriseAccess, error: planError } = await getUserPlan();
+    if (!hasEnterpriseAccess) {
+      return apiError(
+        planError || 'BoltX is only available on Enterprise plan. Please upgrade to access this feature.',
+        403
+      );
+    }
+
     const { user } = await getAuthenticatedUser();
 
     if (!user.account_id) {
