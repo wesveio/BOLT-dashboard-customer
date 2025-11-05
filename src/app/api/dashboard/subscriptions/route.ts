@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
 
     // Create subscription using the function
     const { data: subscriptionIdResult, error: createError } = await supabase
-      .rpc('dashboard.create_subscription', {
+      .rpc('create_subscription', {
         p_account_id: user.account_id,
         p_plan_id: plan_id,
         p_billing_cycle: billing_cycle,
