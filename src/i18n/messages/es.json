@@ -1010,13 +1010,178 @@
   },
   "public": {
     "header": {
-      "language": "Idioma"
+      "language": "Idioma",
+      "navigation": {
+        "home": "Inicio",
+        "pricing": "Precios",
+        "login": "Iniciar Sesión",
+        "dashboard": "Dashboard"
+      }
     },
     "footer": {
       "privacyPolicy": "Política de Privacidad",
-      "termsAndConditions": "Términos y Condiciones"
+      "termsAndConditions": "Términos y Condiciones",
+      "sections": {
+        "contactUs": "Contáctenos",
+        "legal": "Legal",
+        "secureCheckout": "Checkout Seguro"
+      },
+      "badges": {
+        "sslEncrypted": "SSL Cifrado",
+        "pciCompliant": "Cumple con PCI",
+        "safeCheckout": "Checkout Seguro"
+      },
+      "copyright": "Todos los derechos reservados. Desarrollado por",
+      "poweredBy": "BCKSTG"
     },
     "home": {
+      "hero": {
+        "badge": "desarrollado por BCKSTG",
+        "title": "BOLT",
+        "subtitle": "Un Checkout Moderno",
+        "gradientText": "Construido para el Éxito",
+        "description": "Experimenta un proceso de checkout sin fricción, seguro y ultrarrápido diseñado con las mejores prácticas modernas de comercio electrónico.",
+        "accessDashboard": "Acceder al Dashboard",
+        "signIn": "Iniciar Sesión"
+      },
+      "trustIndicators": {
+        "sslEncrypted": "SSL Cifrado",
+        "fastDelivery": "Entrega Rápida",
+        "support24_7": "Soporte 24/7"
+      },
+      "features": {
+        "title": "Características Principales",
+        "subtitle": "Construido con tecnología de vanguardia y mejores prácticas para garantizar una experiencia de checkout sin fricción.",
+        "customizableTheme": {
+          "title": "Sistema de Temas Personalizable",
+          "description": "Temas Default, Single Page y Liquid Glass. Transforma completamente la experiencia visual de tu checkout."
+        },
+        "enterpriseSecurity": {
+          "title": "Seguridad de Nivel Empresarial",
+          "description": "Cumple con PCI DSS con protección completa de datos sensibles. Tus clientes pueden comprar con total confianza."
+        },
+        "intelligentFlow": {
+          "title": "Flujo de Checkout Inteligente",
+          "description": "Flujo optimizado de 4 pasos que reduce la fricción y aumenta la conversión. Soporte completo para B2C y B2B."
+        },
+        "vtexIntegration": {
+          "title": "Integración Nativa VTEX",
+          "description": "Conectado directamente a la API de Checkout VTEX. Aprovecha todo el poder de la plataforma VTEX."
+        },
+        "responsiveAccessible": {
+          "title": "Totalmente Responsivo y Accesible",
+          "description": "Diseño mobile-first con accesibilidad WCAG 2.1 AA. Experiencia perfecta en cualquier dispositivo."
+        }
+      },
+      "featureDetails": {
+        "themeSystem": {
+          "badge": "Personalización",
+          "title": "Sistema de Temas Personalizable",
+          "description": "Transforma tu experiencia de checkout con tres temas bellamente diseñados. Cada tema ofrece estilos visuales y diseños únicos para coincidir con la identidad de tu marca.",
+          "defaultTheme": {
+            "title": "Tema Predeterminado",
+            "description": "Diseño paso a paso tradicional con navegación en la barra lateral, perfecto para usuarios que prefieren una experiencia de checkout familiar."
+          },
+          "singlePageTheme": {
+            "title": "Tema Single Page",
+            "description": "Todos los pasos visibles simultáneamente con desplazamiento suave, ideal para usuarios que desean ver todo el proceso de checkout a la vez."
+          },
+          "liquidGlassTheme": {
+            "title": "Tema Liquid Glass",
+            "description": "Diseño moderno de glassmorfismo con superposiciones transparentes y fondos animados, creando una sensación premium y contemporánea."
+          },
+          "accessDashboard": "Acceder al Dashboard"
+        },
+        "enterpriseSecurity": {
+          "badge": "Seguridad",
+          "title": "Seguridad de Nivel Empresarial",
+          "description": "Cumple con PCI DSS Nivel 1 con controles de seguridad integrales. Los datos sensibles de tus clientes están protegidos con cifrado de nivel bancario y prácticas de seguridad líderes en la industria.",
+          "pciCompliant": {
+            "title": "Cumple con PCI DSS",
+            "description": "Cumple con los más altos estándares de seguridad y cumplimiento de datos de tarjetas de pago."
+          },
+          "dataEncryption": {
+            "title": "Cifrado de Datos",
+            "description": "Todos los datos sensibles se cifran en tránsito y en reposo utilizando protocolos estándar de la industria."
+          },
+          "secureProxy": {
+            "title": "Patrón de Proxy Seguro",
+            "description": "El manejo de credenciales del lado del servidor garantiza que los datos sensibles nunca toquen el código del lado del cliente."
+          },
+          "rateLimiting": {
+            "title": "Limitación de Tasa y Monitoreo",
+            "description": "Monitoreo avanzado de seguridad y limitación de tasa protegen contra ataques maliciosos."
+          }
+        },
+        "intelligentFlow": {
+          "badge": "Experiencia de Usuario",
+          "title": "Flujo de Checkout Inteligente",
+          "description": "Un proceso simplificado de 4 pasos diseñado para minimizar la fricción y maximizar las tasas de conversión. Perfecto para transacciones B2C y B2B.",
+          "steps": {
+            "cartReview": {
+              "title": "Revisión del Carrito",
+              "description": "Revisa artículos, actualiza cantidades y aplica descuentos"
+            },
+            "profileData": {
+              "title": "Datos del Perfil",
+              "description": "Recopilación rápida de datos del cliente con validación inteligente"
+            },
+            "shippingAddress": {
+              "title": "Dirección de Envío",
+              "description": "Búsqueda automática de direcciones y cálculo de envío"
+            },
+            "payment": {
+              "title": "Pago",
+              "description": "Procesamiento seguro de pagos con múltiples opciones"
+            }
+          },
+          "supports": "Soporta",
+          "features": "Características",
+          "featuresText": "Perfiles Corporativos • Códigos de Cupón • Validación en Tiempo Real"
+        },
+        "vtexIntegration": {
+          "badge": "Integración",
+          "title": "Integración Nativa VTEX",
+          "description": "Construido desde cero para VTEX. La integración directa con la API de Checkout VTEX garantiza un flujo de datos perfecto y acceso a todas las capacidades de la plataforma.",
+          "directApi": {
+            "title": "Acceso Directo a la API",
+            "description": "Acceso completo a los endpoints de la API de Checkout VTEX con autenticación adecuada y manejo de errores."
+          },
+          "orderFormManagement": {
+            "title": "Gestión de OrderForm",
+            "description": "Gestión completa del ciclo de vida del OrderForm con actualizaciones y sincronización en tiempo real."
+          },
+          "paymentProcessing": {
+            "title": "Procesamiento de Pagos",
+            "description": "Integración perfecta con proveedores de pago VTEX y gestión de transacciones."
+          },
+          "shippingSimulation": {
+            "title": "Simulación de Envío",
+            "description": "Cálculo automático del costo de envío y opciones de entrega basadas en la logística VTEX."
+          }
+        },
+        "responsiveAccessible": {
+          "badge": "Accesibilidad",
+          "title": "Totalmente Responsivo y Accesible",
+          "description": "Construido con un enfoque mobile-first y cumplimiento WCAG 2.1 AA. Cada usuario, en cualquier dispositivo, obtiene una experiencia de checkout perfecta.",
+          "mobileFirst": {
+            "title": "Diseño Mobile-First",
+            "description": "Optimizado para interacciones táctiles y pantallas más pequeñas con puntos de quiebre responsivos."
+          },
+          "wcagCompliant": {
+            "title": "Cumple con WCAG 2.1 AA",
+            "description": "Navegación completa por teclado, soporte para lectores de pantalla y etiquetas ARIA adecuadas en toda la interfaz."
+          },
+          "crossDevice": {
+            "title": "Compatibilidad Multi-Dispositivo",
+            "description": "Probado y optimizado para escritorio, tablet y dispositivos móviles en todos los principales navegadores."
+          },
+          "performanceOptimized": {
+            "title": "Optimizado para Rendimiento",
+            "description": "Tiempos de carga rápidos y animaciones suaves garantizan una experiencia de usuario deliciosa en cualquier conexión."
+          }
+        }
+      },
       "dashboardFeatures": {
         "title": "Funcionalidades Potentes del Dashboard",
         "subtitle": "Análisis completos, insights y herramientas de personalización para optimizar el rendimiento de tu checkout",
@@ -1049,9 +1214,35 @@
           "description": "Gestiona claves API, integraciones y conecta tu checkout a servicios externos sin problemas"
         }
       },
-      "viewDashboard": "Ver Dashboard"
+      "cta": {
+        "title": "¿Listo para Comenzar?",
+        "description": "Únete a miles de clientes satisfechos experimentando nuestro proceso de checkout sin fricción.",
+        "accessDashboard": "Acceder al Dashboard"
+      },
+      "viewDashboard": "Ver Dashboard",
+      "seo": {
+        "title": "BOLT Dashboard",
+        "description": "Dashboard completo para gestión de checkout BOLT. Analytics, rendimiento, insights y editor WYSIWYG de temas. Desarrollado por BCKSTG."
+      }
     },
     "pricing": {
+      "hero": {
+        "title": "Precios Simples y Transparentes",
+        "subtitle": "Elige el plan perfecto para tu negocio. Todos los planes incluyen nuestro motor de checkout principal y pueden escalar contigo."
+      },
+      "comparePlans": {
+        "title": "Comparar Planes",
+        "subtitle": "Ve qué está incluido en cada plan y elige lo que funciona mejor para tus necesidades."
+      },
+      "cta": {
+        "title": "¿Listo para Comenzar?",
+        "description": "Comienza tu prueba gratuita hoy. No se requiere tarjeta de crédito.",
+        "startFreeTrial": "Iniciar Prueba Gratuita"
+      },
+      "loading": {
+        "loadingPlans": "Cargando planes de precios...",
+        "failedToLoad": "Error al cargar planes de precios. Por favor, inténtalo de nuevo."
+      },
       "dashboardFeatures": {
         "title": "Funcionalidades del Dashboard Incluidas",
         "subtitle": "Todos los planes incluyen acceso a nuestro dashboard completo con análisis potentes y herramientas de personalización",
@@ -1081,6 +1272,33 @@
           "description": "Insights accionables potenciados por IA para mejorar el rendimiento"
         }
       }
+    },
+    "login": {
+      "goBack": "Volver",
+      "title": "¿Estás listo para ser más rápido?",
+      "loginDescription": "Inicia sesión para acceder a tu dashboard y gestionar tus análisis de checkout.",
+      "signupDescription": "Crea tu cuenta y comienza a rastrear el rendimiento de tu checkout.",
+      "benefits": {
+        "secureAuth": {
+          "title": "Autenticación Segura",
+          "description": "Autenticación sin contraseña con códigos por correo electrónico"
+        },
+        "analyticsDashboard": {
+          "title": "Dashboard de Análisis",
+          "description": "Rastrea el rendimiento y métricas de tu checkout"
+        },
+        "easyToUse": {
+          "title": "Fácil de Usar",
+          "description": "Interfaz intuitiva para una experiencia fluida"
+        }
+      },
+      "trustBadges": {
+        "ssl256": "SSL 256-bit",
+        "secure": "Seguro",
+        "support24_7": "Soporte 24/7"
+      },
+      "poweredBy": "Desarrollado por",
+      "poweredByBrand": "BCKSTG"
     },
     "privacy": {
       "title": "Política de Privacidad",

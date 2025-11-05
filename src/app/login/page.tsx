@@ -24,6 +24,7 @@ interface VerifyCodeResponse {
 function LoginContent() {
   const t = useTranslations('auth.login');
   const tSignup = useTranslations('auth.signup');
+  const tPublic = useTranslations('public.login');
   const router = useRouter();
   const locale = useLocale();
   const [mode, setMode] = useState<'login' | 'signup'>('login');
@@ -133,7 +134,7 @@ function LoginContent() {
               d="M15 19l-7-7 7-7"
             />
           </svg>
-          <span className="text-sm font-semibold">Go back</span>
+          <span className="text-sm font-semibold">{tPublic('goBack')}</span>
         </button>
 
         {/* Decorative elements */}
@@ -157,12 +158,12 @@ function LoginContent() {
               priority
             />
             <h1 className="text-4xl lg:text-5xl font-bold mb-6">
-              Are you ready to be faster?
+              {tPublic('title')}
             </h1>
             <p className="text-xl text-blue-100 mb-12">
               {mode === 'login'
-                ? 'Sign in to access your dashboard and manage your checkout analytics.'
-                : 'Create your account and start tracking your checkout performance.'}
+                ? tPublic('loginDescription')
+                : tPublic('signupDescription')}
             </p>
           </m.div>
 
@@ -175,6 +176,7 @@ function LoginContent() {
           >
             {[
               {
+                key: 'secureAuth',
                 icon: (
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                     <path
@@ -184,10 +186,11 @@ function LoginContent() {
                     />
                   </svg>
                 ),
-                title: 'Secure Authentication',
-                description: 'Passwordless authentication with email codes',
+                title: tPublic('benefits.secureAuth.title'),
+                description: tPublic('benefits.secureAuth.description'),
               },
               {
+                key: 'analyticsDashboard',
                 icon: (
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                     <path
@@ -197,17 +200,18 @@ function LoginContent() {
                     />
                   </svg>
                 ),
-                title: 'Analytics Dashboard',
-                description: 'Track your checkout performance and metrics',
+                title: tPublic('benefits.analyticsDashboard.title'),
+                description: tPublic('benefits.analyticsDashboard.description'),
               },
               {
+                key: 'easyToUse',
                 icon: (
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
                   </svg>
                 ),
-                title: 'Easy to Use',
-                description: 'Intuitive interface for smooth experience',
+                title: tPublic('benefits.easyToUse.title'),
+                description: tPublic('benefits.easyToUse.description'),
               },
             ].map((benefit, index) => (
               <m.div
@@ -244,7 +248,7 @@ function LoginContent() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>256-bit SSL</span>
+                <span>{tPublic('trustBadges.ssl256')}</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -254,13 +258,13 @@ function LoginContent() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>Secure</span>
+                <span>{tPublic('trustBadges.secure')}</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                 </svg>
-                <span>24/7 Support</span>
+                <span>{tPublic('trustBadges.support24_7')}</span>
               </div>
             </div>
           </m.div>
@@ -469,7 +473,7 @@ function LoginContent() {
 
           {/* Footer */}
           <p className="text-center text-xs text-gray-500 mt-6">
-            Powered by <span className="font-bold text-blue-600">BCKSTG</span>
+            {tPublic('poweredBy')} <span className="font-bold text-blue-600">{tPublic('poweredByBrand')}</span>
           </p>
         </div>
       </m.div>

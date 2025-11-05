@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion as m, AnimatePresence } from 'framer-motion';
@@ -12,6 +13,7 @@ interface PublicHeaderProps {
 }
 
 export function PublicHeader({ showDashboard = false }: PublicHeaderProps) {
+  const t = useTranslations('public.header.navigation');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
@@ -26,10 +28,10 @@ export function PublicHeader({ showDashboard = false }: PublicHeaderProps) {
   }, []);
 
   const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/pricing', label: 'Pricing' },
-    { href: '/login', label: 'Login' },
-    ...(showDashboard ? [{ href: '/dashboard', label: 'Dashboard' }] : []),
+    { href: '/', label: t('home') },
+    { href: '/pricing', label: t('pricing') },
+    { href: '/login', label: t('login') },
+    ...(showDashboard ? [{ href: '/dashboard', label: t('dashboard') }] : []),
   ];
 
   const isActive = (href: string) => {

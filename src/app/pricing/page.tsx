@@ -18,7 +18,6 @@ import {
   BoltIcon,
   PaintBrushIcon,
   LightBulbIcon,
-  KeyIcon,
 } from '@heroicons/react/24/outline';
 
 const CACHE_KEY = 'pricing_plans';
@@ -63,7 +62,7 @@ export default function PricingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                Simple, Transparent Pricing
+                {t('hero.title')}
               </m.h1>
               <m.p
                 className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto"
@@ -71,7 +70,7 @@ export default function PricingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                Choose the perfect plan for your business. All plans include our core checkout engine and can scale with you.
+                {t('hero.subtitle')}
               </m.p>
             </m.div>
           </div>
@@ -81,10 +80,10 @@ export default function PricingPage() {
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {isLoading ? (
-              <LoadingState message="Loading pricing plans..." fullScreen={false} className="py-20" />
+              <LoadingState message={t('loading.loadingPlans')} fullScreen={false} className="py-20" />
             ) : error ? (
               <ErrorState
-                message="Failed to load pricing plans. Please try again."
+                message={t('loading.failedToLoad')}
                 onRetry={refetch}
                 className="my-20"
               />
@@ -193,10 +192,10 @@ export default function PricingPage() {
                   viewport={{ once: true }}
                 >
                   <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                    Compare Plans
+                    {t('comparePlans.title')}
                   </h2>
                   <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                    See what&apos;s included in each plan and choose what works best for your needs.
+                    {t('comparePlans.subtitle')}
                   </p>
                 </m.div>
                 <PlanComparison plans={plans} />
@@ -219,7 +218,7 @@ export default function PricingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              Ready to Get Started?
+              {t('cta.title')}
             </m.h2>
             <m.p
               className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto"
@@ -228,7 +227,7 @@ export default function PricingPage() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              Start your free trial today. No credit card required.
+              {t('cta.description')}
             </m.p>
             <m.div
               initial={{ opacity: 0, y: 20 }}
@@ -240,7 +239,7 @@ export default function PricingPage() {
                 href="/login"
                 className="inline-block bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
               >
-                Start Free Trial
+                {t('cta.startFreeTrial')}
               </a>
             </m.div>
           </div>

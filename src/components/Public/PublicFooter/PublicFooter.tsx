@@ -35,7 +35,7 @@ export function PublicFooter({
             className="space-y-4"
             variants={fadeIn}
           >
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Contact Us</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-4">{t('sections.contactUs')}</h3>
             <div className="space-y-3">
               {contactEmail && (
                 <a
@@ -91,7 +91,7 @@ export function PublicFooter({
             className="space-y-4"
             variants={fadeIn}
           >
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Legal</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-4">{t('sections.legal')}</h3>
             <nav className="flex flex-col space-y-2">
               <Link
                 href={privacyPolicyUrl}
@@ -113,7 +113,7 @@ export function PublicFooter({
             className="space-y-4"
             variants={fadeIn}
           >
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Secure Checkout</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-4">{t('sections.secureCheckout')}</h3>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2">
                 <svg
@@ -128,7 +128,7 @@ export function PublicFooter({
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="text-sm font-semibold text-gray-900">SSL Encrypted</span>
+                <span className="text-sm font-semibold text-gray-900">{t('badges.sslEncrypted')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <svg
@@ -143,7 +143,7 @@ export function PublicFooter({
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="text-sm font-semibold text-gray-900">PCI Compliant</span>
+                <span className="text-sm font-semibold text-gray-900">{t('badges.pciCompliant')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <svg
@@ -155,7 +155,7 @@ export function PublicFooter({
                   <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
                   <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z" />
                 </svg>
-                <span className="text-sm font-semibold text-gray-900">Safe Checkout</span>
+                <span className="text-sm font-semibold text-gray-900">{t('badges.safeCheckout')}</span>
               </div>
             </div>
           </m.div>
@@ -165,8 +165,8 @@ export function PublicFooter({
         <div className="mt-8 pt-8 border-t border-gray-200">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-center md:text-left text-sm text-gray-600">
-              © {new Date().getFullYear()} All rights reserved. Powered by{' '}
-              <span className="font-bold text-blue-600">BCKSTG</span>
+              © {new Date().getFullYear()} {t('copyright')}{' '}
+              <span className="font-bold text-blue-600">{t('poweredBy')}</span>
             </p>
             <div className="flex items-center gap-2">
               <LanguageSwitcher />

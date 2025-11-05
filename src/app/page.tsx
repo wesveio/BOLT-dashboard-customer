@@ -20,6 +20,7 @@ import {
 export default function Home() {
   const router = useRouter();
   const t = useTranslations('public.home');
+  const tSeo = useTranslations('public.home.seo');
 
   const features = [
     {
@@ -33,9 +34,8 @@ export default function Home() {
           />
         </svg>
       ),
-      title: 'Customizable Theme System',
-      description:
-        'Default, Single Page, and Liquid Glass themes. Completely transform your checkout visual experience.',
+      title: t('features.customizableTheme.title'),
+      description: t('features.customizableTheme.description'),
     },
     {
       icon: (
@@ -48,9 +48,8 @@ export default function Home() {
           />
         </svg>
       ),
-      title: 'Enterprise-Grade Security',
-      description:
-        'PCI DSS compliant with complete protection of sensitive data. Your customers can shop with total confidence.',
+      title: t('features.enterpriseSecurity.title'),
+      description: t('features.enterpriseSecurity.description'),
     },
     {
       icon: (
@@ -63,9 +62,8 @@ export default function Home() {
           />
         </svg>
       ),
-      title: 'Intelligent Checkout Flow',
-      description:
-        'Optimized 4-step flow that reduces friction and increases conversion. Full support for B2C and B2B.',
+      title: t('features.intelligentFlow.title'),
+      description: t('features.intelligentFlow.description'),
     },
     {
       icon: (
@@ -78,9 +76,8 @@ export default function Home() {
           />
         </svg>
       ),
-      title: 'Native VTEX Integration',
-      description:
-        'Directly connected to VTEX Checkout API. Leverage the full power of the VTEX platform.',
+      title: t('features.vtexIntegration.title'),
+      description: t('features.vtexIntegration.description'),
     },
     {
       icon: (
@@ -93,24 +90,22 @@ export default function Home() {
           />
         </svg>
       ),
-      title: 'Fully Responsive & Accessible',
-      description:
-        'Mobile-first design with WCAG 2.1 AA accessibility. Perfect experience on any device.',
+      title: t('features.responsiveAccessible.title'),
+      description: t('features.responsiveAccessible.description'),
     },
   ];
 
   return (
     <>
       <NextSeo
-        title="BOLT Dashboard"
-        description="Dashboard completo para gerenciamento de checkout BOLT. Analytics, performance, insights e editor WYSIWYG de temas. Powered by BCKSTG."
+        title={tSeo('title')}
+        description={tSeo('description')}
         canonical="https://bolt.bckstg.com.br/"
         openGraph={{
           url: 'https://bolt.bckstg.com.br/',
-          title: 'BOLT Dashboard',
-          description:
-            'Dashboard completo para gerenciamento de checkout BOLT. Analytics, performance, insights e editor WYSIWYG de temas. Powered by BCKSTG.',
-          siteName: 'BOLT Dashboard',
+          title: tSeo('title'),
+          description: tSeo('description'),
+          siteName: tSeo('title'),
         }}
         twitter={{
           cardType: 'summary_large_image',
@@ -152,7 +147,7 @@ export default function Home() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    powered by BCKSTG
+                    {t('hero.badge')}
                   </span>
                 </m.div>
 
@@ -162,10 +157,10 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
                 >
-                  BOLT
-                  <br />A Modern Checkout
+                  {t('hero.title')}
+                  <br />{t('hero.subtitle')}
                   <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-                    Built for Success
+                    {t('hero.gradientText')}
                   </span>
                 </m.h1>
 
@@ -175,8 +170,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
                 >
-                  Experience a frictionless, secure, and lightning-fast checkout process designed
-                  with modern e-commerce best practices.
+                  {t('hero.description')}
                 </m.p>
 
                 <m.div
@@ -189,7 +183,7 @@ export default function Home() {
                     onClick={() => router.push('/dashboard')}
                     className="btn-primary-enhanced w-full sm:w-auto group"
                   >
-                    Access Dashboard
+                    {t('hero.accessDashboard')}
                     <svg
                       className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
                       fill="none"
@@ -208,7 +202,7 @@ export default function Home() {
                     onClick={() => router.push('/login')}
                     className="btn-secondary-enhanced w-full sm:w-auto"
                   >
-                    Sign In
+                    {t('hero.signIn')}
                   </button>
                 </m.div>
 
@@ -227,14 +221,14 @@ export default function Home() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    SSL Encrypted
+                    {t('trustIndicators.sslEncrypted')}
                   </div>
                   <div className="flex items-center gap-2">
                     <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
                       <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z" />
                     </svg>
-                    Fast Delivery
+                    {t('trustIndicators.fastDelivery')}
                   </div>
                   <div className="flex items-center gap-2">
                     <svg
@@ -248,7 +242,7 @@ export default function Home() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    24/7 Support
+                    {t('trustIndicators.support24_7')}
                   </div>
                 </m.div>
               </m.div>
@@ -269,10 +263,9 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
               >
-                <h2 className="heading-section mb-4">Key Features</h2>
+                <h2 className="heading-section mb-4">{t('features.title')}</h2>
                 <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                  Built with cutting-edge technology and best practices to ensure a frictionless
-                  checkout experience.
+                  {t('features.subtitle')}
                 </p>
               </m.div>
 
@@ -321,14 +314,13 @@ export default function Home() {
                         d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
                       />
                     </svg>
-                    Customization
+                    {t('featureDetails.themeSystem.badge')}
                   </div>
                   <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                    Customizable Theme System
+                    {t('featureDetails.themeSystem.title')}
                   </h2>
                   <p className="text-xl text-gray-600 mb-6">
-                    Transform your checkout experience with three beautifully designed themes. Each
-                    theme offers unique visual styles and layouts to match your brand identity.
+                    {t('featureDetails.themeSystem.description')}
                   </p>
                   <ul className="space-y-4 mb-8">
                     <li className="flex items-start gap-3">
@@ -346,10 +338,9 @@ export default function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">Default Theme</h3>
+                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.themeSystem.defaultTheme.title')}</h3>
                         <p className="text-gray-600">
-                          Traditional step-by-step layout with sidebar navigation, perfect for users
-                          who prefer a familiar checkout experience.
+                          {t('featureDetails.themeSystem.defaultTheme.description')}
                         </p>
                       </div>
                     </li>
@@ -368,10 +359,9 @@ export default function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">Single Page Theme</h3>
+                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.themeSystem.singlePageTheme.title')}</h3>
                         <p className="text-gray-600">
-                          All steps visible simultaneously with smooth scrolling, ideal for users
-                          who want to see the full checkout process at once.
+                          {t('featureDetails.themeSystem.singlePageTheme.description')}
                         </p>
                       </div>
                     </li>
@@ -390,10 +380,9 @@ export default function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">Liquid Glass Theme</h3>
+                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.themeSystem.liquidGlassTheme.title')}</h3>
                         <p className="text-gray-600">
-                          Modern glassmorphism design with transparent overlays and animated
-                          backgrounds, creating a premium, contemporary feel.
+                          {t('featureDetails.themeSystem.liquidGlassTheme.description')}
                         </p>
                       </div>
                     </li>
@@ -402,7 +391,7 @@ export default function Home() {
                     onClick={() => router.push('/dashboard')}
                     className="btn-primary-enhanced group"
                   >
-                    Access Dashboard
+                    {t('featureDetails.themeSystem.accessDashboard')}
                     <svg
                       className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
                       fill="none"
@@ -469,15 +458,13 @@ export default function Home() {
                         d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                       />
                     </svg>
-                    Security
+                    {t('featureDetails.enterpriseSecurity.badge')}
                   </div>
                   <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                    Enterprise-Grade Security
+                    {t('featureDetails.enterpriseSecurity.title')}
                   </h2>
                   <p className="text-xl text-gray-600 mb-6">
-                    PCI DSS Level 1 compliant with comprehensive security controls. Your customers&apos;
-                    sensitive data is protected with bank-level encryption and industry-leading
-                    security practices.
+                    {t('featureDetails.enterpriseSecurity.description')}
                   </p>
                   <ul className="space-y-4 mb-8">
                     <li className="flex items-start gap-3">
@@ -495,9 +482,9 @@ export default function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">PCI DSS Compliant</h3>
+                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.enterpriseSecurity.pciCompliant.title')}</h3>
                         <p className="text-gray-600">
-                          Meet the highest standards for payment card data security and compliance.
+                          {t('featureDetails.enterpriseSecurity.pciCompliant.description')}
                         </p>
                       </div>
                     </li>
@@ -516,10 +503,9 @@ export default function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">Data Encryption</h3>
+                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.enterpriseSecurity.dataEncryption.title')}</h3>
                         <p className="text-gray-600">
-                          All sensitive data is encrypted in transit and at rest using
-                          industry-standard protocols.
+                          {t('featureDetails.enterpriseSecurity.dataEncryption.description')}
                         </p>
                       </div>
                     </li>
@@ -538,10 +524,9 @@ export default function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">Secure Proxy Pattern</h3>
+                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.enterpriseSecurity.secureProxy.title')}</h3>
                         <p className="text-gray-600">
-                          Server-side credential handling ensures sensitive data never touches the
-                          client-side code.
+                          {t('featureDetails.enterpriseSecurity.secureProxy.description')}
                         </p>
                       </div>
                     </li>
@@ -561,11 +546,10 @@ export default function Home() {
                       </svg>
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-1">
-                          Rate Limiting & Monitoring
+                          {t('featureDetails.enterpriseSecurity.rateLimiting.title')}
                         </h3>
                         <p className="text-gray-600">
-                          Advanced security monitoring and rate limiting protect against malicious
-                          attacks.
+                          {t('featureDetails.enterpriseSecurity.rateLimiting.description')}
                         </p>
                       </div>
                     </li>
@@ -598,7 +582,7 @@ export default function Home() {
                       d="M13 10V3L4 14h7v7l9-11h-7z"
                     />
                   </svg>
-                  User Experience
+                  {t('featureDetails.intelligentFlow.badge')}
                 </m.div>
                 <m.h2
                   className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
@@ -607,7 +591,7 @@ export default function Home() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.1 }}
                 >
-                  Intelligent Checkout Flow
+                  {t('featureDetails.intelligentFlow.title')}
                 </m.h2>
                 <m.p
                   className="text-xl text-gray-600 max-w-3xl mx-auto"
@@ -616,8 +600,7 @@ export default function Home() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.2 }}
                 >
-                  A streamlined 4-step process designed to minimize friction and maximize conversion
-                  rates. Perfect for both B2C and B2B transactions.
+                  {t('featureDetails.intelligentFlow.description')}
                 </m.p>
               </div>
 
@@ -625,23 +608,19 @@ export default function Home() {
                 {[
                   {
                     step: '1',
-                    title: 'Cart Review',
-                    description: 'Review items, update quantities, and apply discounts',
+                    key: 'cartReview',
                   },
                   {
                     step: '2',
-                    title: 'Profile Data',
-                    description: 'Fast customer data collection with smart validation',
+                    key: 'profileData',
                   },
                   {
                     step: '3',
-                    title: 'Shipping Address',
-                    description: 'Automatic address lookup and shipping calculation',
+                    key: 'shippingAddress',
                   },
                   {
                     step: '4',
-                    title: 'Payment',
-                    description: 'Secure payment processing with multiple options',
+                    key: 'payment',
                   },
                 ].map((item, index) => (
                   <m.div
@@ -655,8 +634,8 @@ export default function Home() {
                     <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                       {item.step}
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
-                    <p className="text-gray-600 text-sm">{item.description}</p>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{t(`featureDetails.intelligentFlow.steps.${item.key}.title`)}</h3>
+                    <p className="text-gray-600 text-sm">{t(`featureDetails.intelligentFlow.steps.${item.key}.description`)}</p>
                   </m.div>
                 ))}
               </div>
@@ -670,7 +649,7 @@ export default function Home() {
               >
                 <div className="inline-flex items-center gap-4 p-6 bg-white rounded-xl shadow-md">
                   <div className="text-left">
-                    <p className="text-sm text-gray-500 mb-1">Supports</p>
+                    <p className="text-sm text-gray-500 mb-1">{t('featureDetails.intelligentFlow.supports')}</p>
                     <div className="flex items-center gap-3">
                       <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
                         B2C
@@ -682,9 +661,9 @@ export default function Home() {
                   </div>
                   <div className="h-12 w-px bg-gray-200"></div>
                   <div className="text-left">
-                    <p className="text-sm text-gray-500 mb-1">Features</p>
+                    <p className="text-sm text-gray-500 mb-1">{t('featureDetails.intelligentFlow.features')}</p>
                     <p className="text-gray-900 font-semibold">
-                      Corporate Profiles • Coupon Codes • Real-time Validation
+                      {t('featureDetails.intelligentFlow.featuresText')}
                     </p>
                   </div>
                 </div>
@@ -716,14 +695,13 @@ export default function Home() {
                         d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"
                       />
                     </svg>
-                    Integration
+                    {t('featureDetails.vtexIntegration.badge')}
                   </div>
                   <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                    Native VTEX Integration
+                    {t('featureDetails.vtexIntegration.title')}
                   </h2>
                   <p className="text-xl text-gray-600 mb-6">
-                    Built from the ground up for VTEX. Direct integration with VTEX Checkout API
-                    ensures seamless data flow and access to all platform capabilities.
+                    {t('featureDetails.vtexIntegration.description')}
                   </p>
                   <ul className="space-y-4 mb-8">
                     <li className="flex items-start gap-3">
@@ -741,10 +719,9 @@ export default function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">Direct API Access</h3>
+                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.vtexIntegration.directApi.title')}</h3>
                         <p className="text-gray-600">
-                          Full access to VTEX Checkout API endpoints with proper authentication and
-                          error handling.
+                          {t('featureDetails.vtexIntegration.directApi.description')}
                         </p>
                       </div>
                     </li>
@@ -763,10 +740,9 @@ export default function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">OrderForm Management</h3>
+                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.vtexIntegration.orderFormManagement.title')}</h3>
                         <p className="text-gray-600">
-                          Complete OrderForm lifecycle management with real-time updates and
-                          synchronization.
+                          {t('featureDetails.vtexIntegration.orderFormManagement.description')}
                         </p>
                       </div>
                     </li>
@@ -785,10 +761,9 @@ export default function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">Payment Processing</h3>
+                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.vtexIntegration.paymentProcessing.title')}</h3>
                         <p className="text-gray-600">
-                          Seamless integration with VTEX payment providers and transaction
-                          management.
+                          {t('featureDetails.vtexIntegration.paymentProcessing.description')}
                         </p>
                       </div>
                     </li>
@@ -807,10 +782,9 @@ export default function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">Shipping Simulation</h3>
+                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.vtexIntegration.shippingSimulation.title')}</h3>
                         <p className="text-gray-600">
-                          Automatic shipping cost calculation and delivery options based on VTEX
-                          logistics.
+                          {t('featureDetails.vtexIntegration.shippingSimulation.description')}
                         </p>
                       </div>
                     </li>
@@ -869,14 +843,13 @@ export default function Home() {
                         d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
                       />
                     </svg>
-                    Accessibility
+                    {t('featureDetails.responsiveAccessible.badge')}
                   </div>
                   <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                    Fully Responsive & Accessible
+                    {t('featureDetails.responsiveAccessible.title')}
                   </h2>
                   <p className="text-xl text-gray-600 mb-6">
-                    Built with a mobile-first approach and WCAG 2.1 AA compliance. Every user, on
-                    any device, gets a perfect checkout experience.
+                    {t('featureDetails.responsiveAccessible.description')}
                   </p>
                   <ul className="space-y-4 mb-8">
                     <li className="flex items-start gap-3">
@@ -894,10 +867,9 @@ export default function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">Mobile-First Design</h3>
+                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.responsiveAccessible.mobileFirst.title')}</h3>
                         <p className="text-gray-600">
-                          Optimized for touch interactions and smaller screens with responsive
-                          breakpoints.
+                          {t('featureDetails.responsiveAccessible.mobileFirst.description')}
                         </p>
                       </div>
                     </li>
@@ -916,10 +888,9 @@ export default function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">WCAG 2.1 AA Compliant</h3>
+                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.responsiveAccessible.wcagCompliant.title')}</h3>
                         <p className="text-gray-600">
-                          Full keyboard navigation, screen reader support, and proper ARIA labels
-                          throughout.
+                          {t('featureDetails.responsiveAccessible.wcagCompliant.description')}
                         </p>
                       </div>
                     </li>
@@ -939,11 +910,10 @@ export default function Home() {
                       </svg>
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-1">
-                          Cross-Device Compatibility
+                          {t('featureDetails.responsiveAccessible.crossDevice.title')}
                         </h3>
                         <p className="text-gray-600">
-                          Tested and optimized for desktop, tablet, and mobile devices across all
-                          major browsers.
+                          {t('featureDetails.responsiveAccessible.crossDevice.description')}
                         </p>
                       </div>
                     </li>
@@ -962,10 +932,9 @@ export default function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">Performance Optimized</h3>
+                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.responsiveAccessible.performanceOptimized.title')}</h3>
                         <p className="text-gray-600">
-                          Fast load times and smooth animations ensure a delightful user experience
-                          on any connection.
+                          {t('featureDetails.responsiveAccessible.performanceOptimized.description')}
                         </p>
                       </div>
                     </li>
@@ -1094,7 +1063,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
               >
-                Ready to Get Started?
+                {t('cta.title')}
               </m.h2>
               <m.p
                 className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto"
@@ -1103,8 +1072,7 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
               >
-                Join thousands of satisfied customers experiencing our frictionless checkout
-                process.
+                {t('cta.description')}
               </m.p>
               <m.button
                 onClick={() => router.push('/dashboard')}
@@ -1114,7 +1082,7 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
               >
-                Access Dashboard
+                {t('cta.accessDashboard')}
               </m.button>
             </div>
           </m.section>
