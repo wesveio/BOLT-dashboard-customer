@@ -7,8 +7,8 @@ import { EnhancedAbandonmentPredictor } from '@/lib/ai/models/abandonment-predic
 import { PredictionFeatures } from '@/lib/ai/types';
 
 /**
- * GET /api/boltx/predictions?sessionId=...
- * Get real-time predictions for a checkout session
+ * GET /api/boltx/realtime?sessionId=...
+ * Get real-time prediction updates (for WebSocket or polling)
  */
 export const dynamic = 'force-dynamic';
 
@@ -34,11 +34,10 @@ export async function GET(request: NextRequest) {
       return apiError('BoltX AI service is not available', 503);
     }
 
-    // Use enhanced predictor if available
+    // Use enhanced predictor for better accuracy
     const predictor = new EnhancedAbandonmentPredictor();
 
-    // Get session events to build features
-    // Use RPC function if available, otherwise query directly
+    // Get latest events for the session
     const { data: events, error: eventsError } = await supabaseAdmin
       .rpc('get_analytics_events_by_types', {
         p_customer_id: user.account_id,
@@ -52,18 +51,8 @@ export async function GET(request: NextRequest) {
           'checkout_complete',
           'order_confirmed',
         ],
-        p_start_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // Last 7 days
+        p_start_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
         p_end_date: new Date().toISOString(),
-      })
-      .then((result) => {
-        // Filter by session_id in application code
-        if (result.data) {
-          return {
-            ...result,
-            data: result.data.filter((e: any) => e.session_id === sessionId),
-          };
-        }
-        return result;
       });
 
     if (eventsError) {
@@ -71,14 +60,17 @@ export async function GET(request: NextRequest) {
       return apiError('Failed to fetch session data', 500);
     }
 
-    if (!events || events.length === 0) {
+    // Filter by session ID
+    const sessionEvents = events?.filter((e: any) => e.session_id === sessionId) || [];
+
+    if (sessionEvents.length === 0) {
       return apiError('Session not found', 404);
     }
 
-    // Build prediction features from events
-    const features = buildPredictionFeatures(events, user.account_id);
+    // Build prediction features
+    const features = buildPredictionFeatures(sessionEvents, user.account_id);
 
-    // Get historical data if available
+    // Get historical data
     const historicalData = await getHistoricalData(supabaseAdmin, user.account_id, sessionId);
 
     // Merge features with historical data
@@ -92,24 +84,41 @@ export async function GET(request: NextRequest) {
     // Generate prediction using enhanced predictor with session context
     const prediction = predictor.predict(fullFeatures, sessionId);
 
-    // Store prediction in database
-    await supabaseAdmin.rpc('insert_ai_prediction', {
-      p_customer_id: user.account_id,
-      p_session_id: sessionId,
-      p_order_form_id: features.orderFormId,
-      p_prediction_type: 'abandonment',
-      p_risk_score: prediction.riskScore,
-      p_risk_level: prediction.riskLevel,
-      p_confidence: prediction.confidence,
-      p_factors: prediction.factors,
-      p_recommendations: prediction.recommendations,
-      p_intervention_suggested: prediction.interventionSuggested,
-      p_intervention_type: prediction.interventionType || null,
-    });
+    // Get latest stored prediction for comparison
+    const { data: latestPrediction } = await supabaseAdmin
+      .rpc('get_latest_prediction', {
+        p_session_id: sessionId,
+      });
 
-    return apiSuccess(prediction);
+    // Check if prediction has changed significantly
+    const hasSignificantChange = latestPrediction && latestPrediction.length > 0
+      ? Math.abs(prediction.riskScore - latestPrediction[0].risk_score) > 10
+      : true;
+
+    // Store prediction if significant change or first prediction
+    if (hasSignificantChange || !latestPrediction || latestPrediction.length === 0) {
+      await supabaseAdmin.rpc('insert_ai_prediction', {
+        p_customer_id: user.account_id,
+        p_session_id: sessionId,
+        p_order_form_id: features.orderFormId,
+        p_prediction_type: 'abandonment',
+        p_risk_score: prediction.riskScore,
+        p_risk_level: prediction.riskLevel,
+        p_confidence: prediction.confidence,
+        p_factors: prediction.factors,
+        p_recommendations: prediction.recommendations,
+        p_intervention_suggested: prediction.interventionSuggested,
+        p_intervention_type: prediction.interventionType || null,
+      });
+    }
+
+    return apiSuccess({
+      prediction,
+      timestamp: new Date().toISOString(),
+      hasUpdate: hasSignificantChange,
+    });
   } catch (error) {
-    console.error('❌ [DEBUG] Error in predictions API:', error);
+    console.error('❌ [DEBUG] Error in realtime API:', error);
     return apiError('Internal server error', 500);
   }
 }
@@ -159,16 +168,13 @@ function buildPredictionFeatures(events: any[], customerId: string): PredictionF
   const stepProgress = stepOrder.length > 0 ? (currentStepIndex + 1) / stepOrder.length : 0.5;
   const stepDuration = (now.getTime() - stepStartTime) / 1000;
 
-  // Calculate time exceeded (assuming typical checkout is 3 minutes)
-  const typicalCheckoutTime = 180; // 3 minutes
+  const typicalCheckoutTime = 180;
   const timeExceeded = typicalCheckoutTime > 0 ? totalDuration / typicalCheckoutTime : 0;
 
-  // Extract device type from metadata
   const deviceType = events[0]?.metadata?.deviceType || 
                      events[0]?.metadata?.device_type || 
                      undefined;
 
-  // Extract location from metadata
   const location = events[0]?.metadata?.location || undefined;
 
   return {
@@ -197,7 +203,6 @@ async function getHistoricalData(
   conversionRate: number;
 }> {
   try {
-    // Get previous sessions for this customer using RPC
     const { data: previousSessions } = await supabase
       .rpc('get_analytics_events_by_types', {
         p_customer_id: customerId,
@@ -208,19 +213,18 @@ async function getHistoricalData(
           'order_confirmed',
           'step_abandoned',
         ],
-        p_start_date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // Last 30 days
+        p_start_date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
         p_end_date: new Date().toISOString(),
       });
 
     if (!previousSessions || previousSessions.length === 0) {
       return {
         abandonments: 0,
-        avgCheckoutTime: 180, // Default 3 minutes
-        conversionRate: 0.5, // Default 50%
+        avgCheckoutTime: 180,
+        conversionRate: 0.5,
       };
     }
 
-    // Filter out current session
     const filteredSessions = previousSessions.filter((e: any) => e.session_id !== sessionId);
 
     if (filteredSessions.length === 0) {
