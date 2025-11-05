@@ -1,11 +1,7 @@
 import { getRequestConfig } from 'next-intl/server';
 import { cookies, headers } from 'next/headers';
 import { routing } from './routing';
-
-export const locales = ['en', 'pt-BR', 'es'] as const;
-export const defaultLocale = 'en' as const;
-
-export type Locale = (typeof locales)[number];
+import { defaultLocale } from './constants';
 
 export default getRequestConfig(async () => {
   // Locale is now managed via cookie/header, not route segment

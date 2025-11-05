@@ -2,8 +2,8 @@ import { NextRequest } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import { isAuthBypassEnabled, getMockUser } from '@/utils/auth/dev-bypass';
-import { getAuthenticatedUser } from '@/lib/api/auth';
-import { apiSuccess, apiInternalError } from '@/lib/api/responses';
+import { getAuthenticatedUserOrNull } from '@/lib/api/auth';
+import { apiSuccess, apiUnauthorized, apiInternalError } from '@/lib/api/responses';
 
 /**
  * GET /api/dashboard/auth/me
@@ -31,7 +31,13 @@ export async function GET(_: NextRequest) {
       return apiSuccess({ user: mockUser });
     }
 
-    const { user } = await getAuthenticatedUser();
+    const authResult = await getAuthenticatedUserOrNull();
+    
+    if (!authResult) {
+      return apiUnauthorized('Not authenticated');
+    }
+
+    const { user } = authResult;
     const supabaseAdmin = getSupabaseAdmin();
 
     // Get VTEX account name if user has an account

@@ -1007,6 +1007,209 @@
       "prioritySupport": "Soporte Prioritario",
       "prioritySupportDesc": "Dedicated support with faster response times"
     }
+  },
+  "public": {
+    "header": {
+      "language": "Idioma"
+    },
+    "footer": {
+      "privacyPolicy": "Política de Privacidad",
+      "termsAndConditions": "Términos y Condiciones"
+    },
+    "home": {
+      "dashboardFeatures": {
+        "title": "Funcionalidades Potentes del Dashboard",
+        "subtitle": "Análisis completos, insights y herramientas de personalización para optimizar el rendimiento de tu checkout",
+        "overview": {
+          "title": "Resumen y Métricas",
+          "description": "Dashboard en tiempo real con indicadores clave de rendimiento, tendencias de ingresos y métricas de conversión"
+        },
+        "performance": {
+          "title": "Análisis de Rendimiento",
+          "description": "Monitorea el rendimiento del embudo de checkout, tasas de conversión e identifica oportunidades de optimización"
+        },
+        "revenue": {
+          "title": "Seguimiento de Ingresos",
+          "description": "Rastrea ventas, tendencias de ingresos, valor promedio del pedido e ingresos por hora con análisis detallados"
+        },
+        "analytics": {
+          "title": "Análisis Avanzados",
+          "description": "Más de 17 análisis especializados incluyendo métodos de pago, envío, dispositivos, geografía, LTV, CAC, retención y más"
+        },
+        "themes": {
+          "title": "Personalización de Temas",
+          "description": "Editor de temas WYSIWYG con 3 temas predeterminados y personalizaciones ilimitadas para la apariencia de tu checkout"
+        },
+        "insights": {
+          "title": "Insights y Recomendaciones",
+          "description": "Insights y recomendaciones accionables potenciados por IA para mejorar el rendimiento de tu checkout"
+        },
+        "integrations": {
+          "title": "Integraciones y Claves API",
+          "description": "Gestiona claves API, integraciones y conecta tu checkout a servicios externos sin problemas"
+        }
+      },
+      "viewDashboard": "Ver Dashboard"
+    },
+    "pricing": {
+      "dashboardFeatures": {
+        "title": "Funcionalidades del Dashboard Incluidas",
+        "subtitle": "Todos los planes incluyen acceso a nuestro dashboard completo con análisis potentes y herramientas de personalización",
+        "included": "Todas las funcionalidades disponibles en todos los planes",
+        "overview": {
+          "title": "Resumen y Métricas",
+          "description": "Dashboard en tiempo real con KPIs y métricas de rendimiento"
+        },
+        "performance": {
+          "title": "Análisis de Rendimiento",
+          "description": "Monitorea el embudo de checkout y tasas de conversión"
+        },
+        "revenue": {
+          "title": "Seguimiento de Ingresos",
+          "description": "Rastrea ventas, tendencias de ingresos y análisis de AOV"
+        },
+        "analytics": {
+          "title": "Análisis Avanzados",
+          "description": "Más de 17 análisis especializados incluyendo pago, envío, dispositivos y más"
+        },
+        "themes": {
+          "title": "Personalización de Temas",
+          "description": "Editor WYSIWYG con 3 temas predeterminados y personalizaciones ilimitadas"
+        },
+        "insights": {
+          "title": "Insights y Recomendaciones",
+          "description": "Insights accionables potenciados por IA para mejorar el rendimiento"
+        }
+      }
+    },
+    "privacy": {
+      "title": "Política de Privacidad",
+      "lastUpdated": "Última Actualización",
+      "lastUpdatedDate": "Enero 2024",
+      "introduction": {
+        "title": "Introducción",
+        "content": "En BOLT, nos tomamos en serio su privacidad. Esta Política de Privacidad explica cómo recopilamos, usamos, divulgamos y protegemos su información cuando utiliza nuestra plataforma de checkout y servicios de dashboard."
+      },
+      "informationCollection": {
+        "title": "Información que Recopilamos",
+        "content": "Recopilamos información que usted nos proporciona directamente, así como información recopilada automáticamente cuando utiliza nuestros servicios:",
+        "items": {
+          "personal": "Información personal como nombre, dirección de correo electrónico y detalles de la empresa",
+          "usage": "Información sobre cómo utiliza nuestros servicios y dashboard",
+          "device": "Información del dispositivo que incluye dirección IP, tipo de navegador y sistema operativo",
+          "cookies": "Cookies y tecnologías de seguimiento similares"
+        }
+      },
+      "dataUsage": {
+        "title": "Cómo Usamos Su Información",
+        "content": "Usamos la información que recopilamos para:",
+        "items": {
+          "service": "Proporcionar, mantener y mejorar nuestros servicios",
+          "communication": "Comunicarnos con usted sobre su cuenta y nuestros servicios",
+          "improvement": "Analizar patrones de uso para mejorar la experiencia del usuario",
+          "security": "Detectar, prevenir y abordar problemas técnicos y amenazas de seguridad"
+        }
+      },
+      "dataProtection": {
+        "title": "Protección y Seguridad de Datos",
+        "content": "Implementamos medidas técnicas y organizativas apropiadas para proteger su información personal contra acceso no autorizado, alteración, divulgación o destrucción.",
+        "measures": "Nuestras medidas de seguridad incluyen cifrado, controles de acceso, evaluaciones de seguridad regulares y cumplimiento con estándares de la industria, incluido PCI DSS."
+      },
+      "cookies": {
+        "title": "Cookies y Tecnologías de Seguimiento",
+        "content": "Utilizamos cookies y tecnologías de seguimiento similares para rastrear la actividad en nuestros servicios y almacenar cierta información. Las cookies son archivos con una pequeña cantidad de datos que pueden incluir un identificador único anónimo.",
+        "types": "Puede instruir a su navegador para que rechace todas las cookies o indique cuándo se está enviando una cookie. Sin embargo, si no acepta cookies, es posible que no pueda usar algunas partes de nuestros servicios."
+      },
+      "userRights": {
+        "title": "Sus Derechos",
+        "content": "Usted tiene derecho a:",
+        "items": {
+          "access": "Acceder y recibir una copia de sus datos personales",
+          "correction": "Solicitar corrección de datos personales inexactos",
+          "deletion": "Solicitar eliminación de sus datos personales",
+          "objection": "Oponerse al procesamiento de sus datos personales",
+          "portability": "Solicitar transferencia de sus datos personales a otro servicio"
+        }
+      },
+      "thirdParty": {
+        "title": "Servicios de Terceros",
+        "content": "Nuestros servicios pueden contener enlaces a sitios web o servicios de terceros que no son de nuestra propiedad o control. No tenemos control sobre y no asumimos responsabilidad por las políticas o prácticas de privacidad de ningún servicio de terceros."
+      },
+      "changes": {
+        "title": "Cambios a esta Política de Privacidad",
+        "content": "Podemos actualizar nuestra Política de Privacidad de vez en cuando. Le notificaremos sobre cualquier cambio publicando la nueva Política de Privacidad en esta página y actualizando la fecha de \"Última Actualización\"."
+      },
+      "contact": {
+        "title": "Contáctenos",
+        "content": "Si tiene alguna pregunta sobre esta Política de Privacidad, contáctenos:",
+        "email": "Email"
+      }
+    },
+    "terms": {
+      "title": "Términos y Condiciones",
+      "lastUpdated": "Última Actualización",
+      "lastUpdatedDate": "Enero 2024",
+      "introduction": {
+        "title": "Introducción",
+        "content": "Estos Términos y Condiciones rigen su uso de la plataforma de checkout BOLT y servicios de dashboard. Al acceder o usar nuestros servicios, usted acepta estar vinculado a estos Términos."
+      },
+      "acceptance": {
+        "title": "Aceptación de los Términos",
+        "content": "Al acceder y usar este servicio, usted acepta y acuerda estar vinculado por los términos y disposiciones de este acuerdo. Si no está de acuerdo con estos Términos, no puede usar nuestros servicios."
+      },
+      "serviceDescription": {
+        "title": "Descripción del Servicio",
+        "content": "BOLT proporciona una plataforma de checkout headless con dashboard de análisis, personalización de temas y capacidades de integración. Nos reservamos el derecho de modificar, suspender o discontinuar cualquier aspecto del servicio en cualquier momento."
+      },
+      "userAccounts": {
+        "title": "Cuentas de Usuario",
+        "content": "Usted es responsable de mantener la confidencialidad de las credenciales de su cuenta y de todas las actividades que ocurren bajo su cuenta. Usted acepta:",
+        "items": {
+          "accountability": "Asumir plena responsabilidad por todas las actividades bajo su cuenta",
+          "security": "Mantener la seguridad de las credenciales de su cuenta",
+          "notification": "Notificarnos inmediatamente sobre cualquier uso no autorizado de su cuenta"
+        }
+      },
+      "userObligations": {
+        "title": "Obligaciones del Usuario",
+        "content": "Usted acepta usar nuestros servicios solo para fines legales y de acuerdo con estos Términos. Usted acepta no:",
+        "items": {
+          "lawful": "Usar el servicio de cualquier manera que viole leyes o regulaciones aplicables",
+          "prohibited": "Intentar obtener acceso no autorizado a cualquier parte del servicio",
+          "accuracy": "Proporcionar información precisa, actual y completa al crear una cuenta"
+        }
+      },
+      "intellectualProperty": {
+        "title": "Propiedad Intelectual",
+        "content": "Todo el contenido, características y funcionalidad del servicio, incluyendo pero no limitado a texto, gráficos, logotipos y software, son propiedad de BOLT y están protegidos por leyes de derechos de autor, marcas registradas y otras leyes de propiedad intelectual."
+      },
+      "paymentTerms": {
+        "title": "Términos de Pago",
+        "content": "Las tarifas de suscripción se facturan por adelantado en base mensual o anual. Usted acepta pagar todas las tarifas asociadas con su plan de suscripción. Las tarifas no son reembolsables excepto según lo requiera la ley o según se establezca explícitamente en su plan.",
+        "refunds": "Las solicitudes de reembolso deben enviarse dentro de 30 días de la compra inicial. Nos reservamos el derecho de aprobar o denegar solicitudes de reembolso a nuestra discreción."
+      },
+      "limitationLiability": {
+        "title": "Limitación de Responsabilidad",
+        "content": "En la máxima extensión permitida por ley, BOLT no será responsable de ningún daño indirecto, incidental, especial, consecuencial o punitivo, o cualquier pérdida de ganancias o ingresos, ya sean incurridos directa o indirectamente."
+      },
+      "termination": {
+        "title": "Terminación",
+        "content": "Podemos terminar o suspender su cuenta y acceso al servicio inmediatamente, sin previo aviso, por cualquier incumplimiento de estos Términos. Al terminar, su derecho a usar el servicio cesará inmediatamente."
+      },
+      "disputeResolution": {
+        "title": "Resolución de Disputas",
+        "content": "Cualquier disputa que surja o se relacione con estos Términos se resolverá mediante arbitraje vinculante de acuerdo con las reglas de la asociación de arbitraje aplicable."
+      },
+      "changes": {
+        "title": "Cambios a los Términos",
+        "content": "Nos reservamos el derecho de modificar estos Términos en cualquier momento. Notificaremos a los usuarios sobre cualquier cambio material publicando los Términos actualizados en esta página y actualizando la fecha de \"Última Actualización\"."
+      },
+      "contact": {
+        "title": "Contáctenos",
+        "content": "Si tiene alguna pregunta sobre estos Términos y Condiciones, contáctenos:",
+        "email": "Email"
+      }
+    }
   }
 }
 

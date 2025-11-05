@@ -996,6 +996,209 @@
         "network": "Network error. Please try again."
       }
     }
+  },
+  "public": {
+    "header": {
+      "language": "Language"
+    },
+    "footer": {
+      "privacyPolicy": "Privacy Policy",
+      "termsAndConditions": "Terms & Conditions"
+    },
+    "home": {
+      "dashboardFeatures": {
+        "title": "Powerful Dashboard Features",
+        "subtitle": "Comprehensive analytics, insights, and customization tools to optimize your checkout performance",
+        "overview": {
+          "title": "Overview & Metrics",
+          "description": "Real-time dashboard with key performance indicators, revenue trends, and conversion metrics"
+        },
+        "performance": {
+          "title": "Performance Analytics",
+          "description": "Monitor checkout funnel performance, conversion rates, and identify optimization opportunities"
+        },
+        "revenue": {
+          "title": "Revenue Tracking",
+          "description": "Track sales, revenue trends, average order value, and revenue per hour with detailed analytics"
+        },
+        "analytics": {
+          "title": "Advanced Analytics",
+          "description": "17+ specialized analytics including payment methods, shipping, devices, geography, LTV, CAC, retention, and more"
+        },
+        "themes": {
+          "title": "Theme Customization",
+          "description": "WYSIWYG theme editor with 3 default themes and unlimited customizations for your checkout appearance"
+        },
+        "insights": {
+          "title": "Insights & Recommendations",
+          "description": "AI-powered actionable insights and recommendations to improve your checkout performance"
+        },
+        "integrations": {
+          "title": "Integrations & API Keys",
+          "description": "Manage API keys, integrations, and connect your checkout to external services seamlessly"
+        }
+      },
+      "viewDashboard": "View Dashboard"
+    },
+    "pricing": {
+      "dashboardFeatures": {
+        "title": "Dashboard Features Included",
+        "subtitle": "All plans include access to our comprehensive dashboard with powerful analytics and customization tools",
+        "included": "All features available in all plans",
+        "overview": {
+          "title": "Overview & Metrics",
+          "description": "Real-time dashboard with KPIs and performance metrics"
+        },
+        "performance": {
+          "title": "Performance Analytics",
+          "description": "Monitor checkout funnel and conversion rates"
+        },
+        "revenue": {
+          "title": "Revenue Tracking",
+          "description": "Track sales, revenue trends, and AOV analytics"
+        },
+        "analytics": {
+          "title": "Advanced Analytics",
+          "description": "17+ specialized analytics including payment, shipping, devices, and more"
+        },
+        "themes": {
+          "title": "Theme Customization",
+          "description": "WYSIWYG editor with 3 default themes and unlimited customizations"
+        },
+        "insights": {
+          "title": "Insights & Recommendations",
+          "description": "AI-powered actionable insights to improve performance"
+        }
+      }
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "lastUpdated": "Last Updated",
+      "lastUpdatedDate": "January 2024",
+      "introduction": {
+        "title": "Introduction",
+        "content": "At BOLT, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our checkout platform and dashboard services."
+      },
+      "informationCollection": {
+        "title": "Information We Collect",
+        "content": "We collect information that you provide directly to us, as well as information automatically collected when you use our services:",
+        "items": {
+          "personal": "Personal information such as name, email address, and company details",
+          "usage": "Information about how you use our services and dashboard",
+          "device": "Device information including IP address, browser type, and operating system",
+          "cookies": "Cookies and similar tracking technologies"
+        }
+      },
+      "dataUsage": {
+        "title": "How We Use Your Information",
+        "content": "We use the information we collect to:",
+        "items": {
+          "service": "Provide, maintain, and improve our services",
+          "communication": "Communicate with you about your account and our services",
+          "improvement": "Analyze usage patterns to improve user experience",
+          "security": "Detect, prevent, and address technical issues and security threats"
+        }
+      },
+      "dataProtection": {
+        "title": "Data Protection & Security",
+        "content": "We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.",
+        "measures": "Our security measures include encryption, access controls, regular security assessments, and compliance with industry standards including PCI DSS."
+      },
+      "cookies": {
+        "title": "Cookies and Tracking Technologies",
+        "content": "We use cookies and similar tracking technologies to track activity on our services and hold certain information. Cookies are files with a small amount of data which may include an anonymous unique identifier.",
+        "types": "You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our services."
+      },
+      "userRights": {
+        "title": "Your Rights",
+        "content": "You have the right to:",
+        "items": {
+          "access": "Access and receive a copy of your personal data",
+          "correction": "Request correction of inaccurate personal data",
+          "deletion": "Request deletion of your personal data",
+          "objection": "Object to processing of your personal data",
+          "portability": "Request transfer of your personal data to another service"
+        }
+      },
+      "thirdParty": {
+        "title": "Third-Party Services",
+        "content": "Our services may contain links to third-party websites or services that are not owned or controlled by us. We have no control over, and assume no responsibility for, the privacy policies or practices of any third-party services."
+      },
+      "changes": {
+        "title": "Changes to This Privacy Policy",
+        "content": "We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date."
+      },
+      "contact": {
+        "title": "Contact Us",
+        "content": "If you have any questions about this Privacy Policy, please contact us:",
+        "email": "Email"
+      }
+    },
+    "terms": {
+      "title": "Terms & Conditions",
+      "lastUpdated": "Last Updated",
+      "lastUpdatedDate": "January 2024",
+      "introduction": {
+        "title": "Introduction",
+        "content": "These Terms and Conditions govern your use of the BOLT checkout platform and dashboard services. By accessing or using our services, you agree to be bound by these Terms."
+      },
+      "acceptance": {
+        "title": "Acceptance of Terms",
+        "content": "By accessing and using this service, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to these Terms, you may not use our services."
+      },
+      "serviceDescription": {
+        "title": "Service Description",
+        "content": "BOLT provides a headless checkout platform with analytics dashboard, theme customization, and integration capabilities. We reserve the right to modify, suspend, or discontinue any aspect of the service at any time."
+      },
+      "userAccounts": {
+        "title": "User Accounts",
+        "content": "You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to:",
+        "items": {
+          "accountability": "Take full responsibility for all activities under your account",
+          "security": "Maintain the security of your account credentials",
+          "notification": "Immediately notify us of any unauthorized use of your account"
+        }
+      },
+      "userObligations": {
+        "title": "User Obligations",
+        "content": "You agree to use our services only for lawful purposes and in accordance with these Terms. You agree not to:",
+        "items": {
+          "lawful": "Use the service in any way that violates applicable laws or regulations",
+          "prohibited": "Attempt to gain unauthorized access to any portion of the service",
+          "accuracy": "Provide accurate, current, and complete information when creating an account"
+        }
+      },
+      "intellectualProperty": {
+        "title": "Intellectual Property",
+        "content": "All content, features, and functionality of the service, including but not limited to text, graphics, logos, and software, are the property of BOLT and are protected by copyright, trademark, and other intellectual property laws."
+      },
+      "paymentTerms": {
+        "title": "Payment Terms",
+        "content": "Subscription fees are billed in advance on a monthly or annual basis. You agree to pay all fees associated with your subscription plan. Fees are non-refundable except as required by law or as explicitly stated in your plan.",
+        "refunds": "Refund requests must be submitted within 30 days of the initial purchase. We reserve the right to approve or deny refund requests at our discretion."
+      },
+      "limitationLiability": {
+        "title": "Limitation of Liability",
+        "content": "To the maximum extent permitted by law, BOLT shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly."
+      },
+      "termination": {
+        "title": "Termination",
+        "content": "We may terminate or suspend your account and access to the service immediately, without prior notice, for any breach of these Terms. Upon termination, your right to use the service will cease immediately."
+      },
+      "disputeResolution": {
+        "title": "Dispute Resolution",
+        "content": "Any disputes arising out of or relating to these Terms shall be resolved through binding arbitration in accordance with the rules of the applicable arbitration association."
+      },
+      "changes": {
+        "title": "Changes to Terms",
+        "content": "We reserve the right to modify these Terms at any time. We will notify users of any material changes by posting the updated Terms on this page and updating the \"Last Updated\" date."
+      },
+      "contact": {
+        "title": "Contact Us",
+        "content": "If you have any questions about these Terms & Conditions, please contact us:",
+        "email": "Email"
+      }
+    }
   }
 }
 

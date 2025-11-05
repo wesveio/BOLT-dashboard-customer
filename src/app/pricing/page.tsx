@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { motion as m } from 'framer-motion';
 import { fadeIn, staggerContainer } from '@/utils/animations';
 import { AnimatedWrapper } from '@/components/Dashboard/AnimatedWrapper/AnimatedWrapper';
@@ -11,6 +12,14 @@ import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
 import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
 import { PublicHeader } from '@/components/Public/PublicHeader/PublicHeader';
 import { PublicFooter } from '@/components/Public/PublicFooter/PublicFooter';
+import {
+  ChartBarIcon,
+  CurrencyDollarIcon,
+  BoltIcon,
+  PaintBrushIcon,
+  LightBulbIcon,
+  KeyIcon,
+} from '@heroicons/react/24/outline';
 
 const CACHE_KEY = 'pricing_plans';
 const CACHE_TTL_MINUTES = 60 * 6; // Cache for 6 hours
@@ -20,6 +29,7 @@ interface PricingResponse {
 }
 
 export default function PricingPage() {
+  const t = useTranslations('public.pricing');
   const { data, isLoading, error, refetch } = useApi<PricingResponse>('/api/public/pricing', {
     cacheKey: CACHE_KEY,
     cacheTTL: CACHE_TTL_MINUTES,
@@ -89,6 +99,85 @@ export default function PricingPage() {
                 ))}
               </div>
             )}
+          </div>
+        </section>
+
+        {/* Dashboard Features Showcase */}
+        <section className="py-20 bg-gray-50">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <m.div
+              className="text-center mb-12"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                {t('dashboardFeatures.title')}
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                {t('dashboardFeatures.subtitle')}
+              </p>
+            </m.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+              {[
+                {
+                  icon: <ChartBarIcon className="w-6 h-6" />,
+                  title: t('dashboardFeatures.overview.title'),
+                  description: t('dashboardFeatures.overview.description'),
+                },
+                {
+                  icon: <BoltIcon className="w-6 h-6" />,
+                  title: t('dashboardFeatures.performance.title'),
+                  description: t('dashboardFeatures.performance.description'),
+                },
+                {
+                  icon: <CurrencyDollarIcon className="w-6 h-6" />,
+                  title: t('dashboardFeatures.revenue.title'),
+                  description: t('dashboardFeatures.revenue.description'),
+                },
+                {
+                  icon: <ChartBarIcon className="w-6 h-6" />,
+                  title: t('dashboardFeatures.analytics.title'),
+                  description: t('dashboardFeatures.analytics.description'),
+                },
+                {
+                  icon: <PaintBrushIcon className="w-6 h-6" />,
+                  title: t('dashboardFeatures.themes.title'),
+                  description: t('dashboardFeatures.themes.description'),
+                },
+                {
+                  icon: <LightBulbIcon className="w-6 h-6" />,
+                  title: t('dashboardFeatures.insights.title'),
+                  description: t('dashboardFeatures.insights.description'),
+                },
+              ].map((feature, index) => (
+                <m.div
+                  key={feature.title}
+                  className="bg-white rounded-xl p-6 border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white mb-4">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{feature.title}</h3>
+                  <p className="text-sm text-gray-600">{feature.description}</p>
+                </m.div>
+              ))}
+            </div>
+
+            <m.div
+              className="mt-8 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.6 }}
+            >
+              <p className="text-sm text-gray-500">{t('dashboardFeatures.included')}</p>
+            </m.div>
           </div>
         </section>
 

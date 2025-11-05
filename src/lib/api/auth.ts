@@ -67,7 +67,7 @@ export async function getAuthenticatedUser(): Promise<AuthResult> {
   if (isAuthBypassEnabled()) {
     console.warn('‼️ [DEBUG] Auth bypass enabled - returning mock user');
     const mockUser = getMockUser();
-    
+
     // Create a mock session object
     const mockSession: Session = {
       id: 'dev-bypass-session',
@@ -137,6 +137,26 @@ export async function getAuthenticatedUser(): Promise<AuthResult> {
 }
 
 /**
+ * Get authenticated user and session from cookie (nullable version)
+ * Returns user and session or null if not authenticated
+ * Use this when you want to handle unauthenticated state gracefully
+ * 
+ * @returns {Promise<AuthResult | null>} User and session data, or null if not authenticated
+ */
+export async function getAuthenticatedUserOrNull(): Promise<AuthResult | null> {
+  try {
+    return await getAuthenticatedUser();
+  } catch (error) {
+    // Return null instead of throwing for graceful error handling
+    if (error instanceof AuthError) {
+      return null;
+    }
+    // Re-throw unexpected errors
+    throw error;
+  }
+}
+
+/**
  * Require authentication - returns NextResponse error if auth fails
  * Otherwise returns the auth result
  * 
@@ -153,7 +173,7 @@ export async function requireAuth(): Promise<NextResponse | AuthResult> {
         { status: error.status }
       );
     }
-    
+
     console.error('Unexpected auth error:', error);
     return NextResponse.json(
       { error: 'Authentication failed' },

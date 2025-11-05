@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { motion as m } from 'framer-motion';
 import { fadeIn, staggerContainer } from '@/utils/animations';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 interface PublicFooterProps {
   contactEmail?: string;
@@ -12,11 +14,12 @@ interface PublicFooterProps {
 }
 
 export function PublicFooter({
-  contactEmail = 'support@bolt.com',
+  contactEmail = 'hello@bckstg.com',
   contactPhone,
-  privacyPolicyUrl = '#',
-  termsUrl = '#',
+  privacyPolicyUrl = '/privacy',
+  termsUrl = '/terms',
 }: PublicFooterProps) {
+  const t = useTranslations('public.footer');
   return (
     <m.footer
       className="w-full bg-gray-50 border-t border-gray-200"
@@ -90,22 +93,18 @@ export function PublicFooter({
           >
             <h3 className="text-lg font-bold text-gray-900 mb-4">Legal</h3>
             <nav className="flex flex-col space-y-2">
-              {privacyPolicyUrl !== '#' && (
-                <Link
-                  href={privacyPolicyUrl}
-                  className="text-sm md:text-base text-gray-700 hover:text-blue-600 transition-colors duration-200"
-                >
-                  Privacy Policy
-                </Link>
-              )}
-              {termsUrl !== '#' && (
-                <Link
-                  href={termsUrl}
-                  className="text-sm md:text-base text-gray-700 hover:text-blue-600 transition-colors duration-200"
-                >
-                  Terms of Service
-                </Link>
-              )}
+              <Link
+                href={privacyPolicyUrl}
+                className="text-sm md:text-base text-gray-700 hover:text-blue-600 transition-colors duration-200"
+              >
+                {t('privacyPolicy')}
+              </Link>
+              <Link
+                href={termsUrl}
+                className="text-sm md:text-base text-gray-700 hover:text-blue-600 transition-colors duration-200"
+              >
+                {t('termsAndConditions')}
+              </Link>
             </nav>
           </m.div>
 
@@ -164,10 +163,15 @@ export function PublicFooter({
 
         {/* Bottom divider */}
         <div className="mt-8 pt-8 border-t border-gray-200">
-          <p className="text-center text-sm text-gray-600">
-            © {new Date().getFullYear()} All rights reserved. Powered by{' '}
-            <span className="font-bold text-blue-600">BCKSTG</span>
-          </p>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-center md:text-left text-sm text-gray-600">
+              © {new Date().getFullYear()} All rights reserved. Powered by{' '}
+              <span className="font-bold text-blue-600">BCKSTG</span>
+            </p>
+            <div className="flex items-center gap-2">
+              <LanguageSwitcher />
+            </div>
+          </div>
         </div>
       </div>
     </m.footer>

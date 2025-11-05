@@ -1,15 +1,25 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { AnimatedWrapper } from '@/components/Dashboard/AnimatedWrapper/AnimatedWrapper';
 import { motion as m } from 'framer-motion';
 import { fadeIn, staggerContainer } from '@/utils/animations';
 import { NextSeo } from 'next-seo';
 import { PublicHeader } from '@/components/Public/PublicHeader/PublicHeader';
 import { PublicFooter } from '@/components/Public/PublicFooter/PublicFooter';
+import {
+  ChartBarIcon,
+  CurrencyDollarIcon,
+  BoltIcon,
+  PaintBrushIcon,
+  LightBulbIcon,
+  KeyIcon,
+} from '@heroicons/react/24/outline';
 
 export default function Home() {
   const router = useRouter();
+  const t = useTranslations('public.home');
 
   const features = [
     {
@@ -92,9 +102,20 @@ export default function Home() {
   return (
     <>
       <NextSeo
-        title="BOLT Checkout"
-        description="Experience a modern, customizable checkout flow powered by BCKSTG."
-        canonical="https://pivotree.myvtex.com/"
+        title="BOLT Dashboard"
+        description="Dashboard completo para gerenciamento de checkout BOLT. Analytics, performance, insights e editor WYSIWYG de temas. Powered by BCKSTG."
+        canonical="https://bolt.bckstg.com.br/"
+        openGraph={{
+          url: 'https://bolt.bckstg.com.br/',
+          title: 'BOLT Dashboard',
+          description:
+            'Dashboard completo para gerenciamento de checkout BOLT. Analytics, performance, insights e editor WYSIWYG de temas. Powered by BCKSTG.',
+          siteName: 'BOLT Dashboard',
+        }}
+        twitter={{
+          cardType: 'summary_large_image',
+          site: '@bckstg',
+        }}
       />
       <AnimatedWrapper>
         <div className="min-h-screen flex flex-col">
@@ -951,6 +972,111 @@ export default function Home() {
                   </ul>
                 </m.div>
               </div>
+            </div>
+          </m.section>
+
+          {/* Dashboard Features Section */}
+          <m.section
+            className="py-20 bg-white"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            <div className="container-custom">
+              <m.div
+                className="text-center mb-16"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="heading-section mb-4">{t('dashboardFeatures.title')}</h2>
+                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                  {t('dashboardFeatures.subtitle')}
+                </p>
+              </m.div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[
+                  {
+                    icon: <ChartBarIcon className="w-8 h-8" />,
+                    title: t('dashboardFeatures.overview.title'),
+                    description: t('dashboardFeatures.overview.description'),
+                  },
+                  {
+                    icon: <BoltIcon className="w-8 h-8" />,
+                    title: t('dashboardFeatures.performance.title'),
+                    description: t('dashboardFeatures.performance.description'),
+                  },
+                  {
+                    icon: <CurrencyDollarIcon className="w-8 h-8" />,
+                    title: t('dashboardFeatures.revenue.title'),
+                    description: t('dashboardFeatures.revenue.description'),
+                  },
+                  {
+                    icon: <ChartBarIcon className="w-8 h-8" />,
+                    title: t('dashboardFeatures.analytics.title'),
+                    description: t('dashboardFeatures.analytics.description'),
+                  },
+                  {
+                    icon: <PaintBrushIcon className="w-8 h-8" />,
+                    title: t('dashboardFeatures.themes.title'),
+                    description: t('dashboardFeatures.themes.description'),
+                  },
+                  {
+                    icon: <LightBulbIcon className="w-8 h-8" />,
+                    title: t('dashboardFeatures.insights.title'),
+                    description: t('dashboardFeatures.insights.description'),
+                  },
+                  {
+                    icon: <KeyIcon className="w-8 h-8" />,
+                    title: t('dashboardFeatures.integrations.title'),
+                    description: t('dashboardFeatures.integrations.description'),
+                  },
+                ].map((feature, index) => (
+                  <m.div
+                    key={feature.title}
+                    className="card-elevated-md p-8 text-center group hover:scale-105 transition-transform duration-200"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-200">
+                      {feature.icon}
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3">{feature.title}</h3>
+                    <p className="text-gray-600">{feature.description}</p>
+                  </m.div>
+                ))}
+              </div>
+
+              <m.div
+                className="mt-12 text-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.7 }}
+              >
+                <button
+                  onClick={() => router.push('/dashboard')}
+                  className="btn-primary-enhanced group"
+                >
+                  {t('viewDashboard')}
+                  <svg
+                    className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
+                  </svg>
+                </button>
+              </m.div>
             </div>
           </m.section>
 

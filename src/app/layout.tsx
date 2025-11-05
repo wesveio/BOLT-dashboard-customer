@@ -3,7 +3,10 @@ import { getMessages } from 'next-intl/server';
 import { cookies } from 'next/headers';
 import { routing } from '@/i18n/routing';
 import { GoogleTagManager } from '@/components/GoogleTagManager';
+import { metadata } from './metadata';
 import './globals.css';
+
+export { metadata };
 
 export default async function RootLayout({
   children,
