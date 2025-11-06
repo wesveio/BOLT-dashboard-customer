@@ -34,6 +34,7 @@ export async function GET(_request: NextRequest) {
         p_customer_id: user.account_id,
         p_event_types: [
           'checkout_start',
+          'checkout_started',
           'cart_view',
           'profile_step',
           'shipping_step',
@@ -57,6 +58,9 @@ export async function GET(_request: NextRequest) {
       payment: 0,
       confirmed: 0,
     };
+
+    // Track sessions that started checkout (consistent with other APIs)
+    const sessionsWithCheckoutStart = new Set<string>();
 
     const stepTimes: Record<string, number[]> = {
       cart: [],
@@ -87,9 +91,22 @@ export async function GET(_request: NextRequest) {
       const sessionStart = session.start.getTime();
 
       switch (event.event_type) {
+        case 'checkout_start':
+        case 'checkout_started':
+          // Track sessions that started checkout (consistent with metrics and insights APIs)
+          sessionsWithCheckoutStart.add(sessionId);
+          // Count as cart view in funnel if not already counted for this session
+          if (!session.steps.includes('cart')) {
+            funnelSteps.cart++;
+            session.steps.push('cart');
+          }
+          break;
         case 'cart_view':
-          funnelSteps.cart++;
-          session.steps.push('cart');
+          // Count as cart view in funnel if not already counted for this session
+          if (!session.steps.includes('cart')) {
+            funnelSteps.cart++;
+            session.steps.push('cart');
+          }
           break;
         case 'profile_step':
           funnelSteps.profile++;
@@ -155,8 +172,14 @@ export async function GET(_request: NextRequest) {
     };
 
     // Calculate conversion rate and abandonment
-    const totalSessions = funnelSteps.cart || 1;
-    const conversionRate = clampPercentage((funnelSteps.confirmed / totalSessions) * 100);
+    // Use checkout_start count for total sessions (consistent with metrics and insights APIs)
+    // Count unique sessions that had checkout_start events
+    const totalSessionsCount = sessionsWithCheckoutStart.size;
+    // Fallback to cart views if no checkout_start events found (for backward compatibility)
+    const totalSessions = totalSessionsCount > 0 ? totalSessionsCount : (funnelSteps.cart || 0);
+    const conversionRate = totalSessions > 0 
+      ? clampPercentage((funnelSteps.confirmed / totalSessions) * 100)
+      : 0;
     const abandonmentRate = clampPercentage(100 - conversionRate);
     // Ensure average checkout time is never negative
     const avgCheckoutTime = Math.max(0, Object.values(avgTimes).reduce((a, b) => a + b, 0));
