@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { isAuthBypassEnabled, getMockUser } from '@/utils/auth/dev-bypass';
+import { getSessionDurationMs } from '@/utils/auth/session-config';
 
 /**
  * Session data returned from RPC function
@@ -73,7 +74,7 @@ export async function getAuthenticatedUser(): Promise<AuthResult> {
       id: 'dev-bypass-session',
       user_id: mockUser.id,
       token: 'dev-bypass-token',
-      expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      expires_at: new Date(Date.now() + getSessionDurationMs()).toISOString(),
       created_at: new Date().toISOString(),
     };
 
@@ -115,9 +116,18 @@ export async function getAuthenticatedUser(): Promise<AuthResult> {
   }
 
   // Validate session expiration (RPC already filters expired, but double-check)
-  if (new Date(session.expires_at) < new Date()) {
+  const now = new Date();
+  const expiresAt = new Date(session.expires_at);
+  const timeUntilExpiry = expiresAt.getTime() - now.getTime();
+  const hoursUntilExpiry = Math.floor(timeUntilExpiry / (1000 * 60 * 60));
+  const minutesUntilExpiry = Math.floor((timeUntilExpiry % (1000 * 60 * 60)) / (1000 * 60));
+
+  if (expiresAt < now) {
+    console.warn(`⚠️ [DEBUG] Session expired. Expires at: ${expiresAt.toISOString()}, Now: ${now.toISOString()}`);
     throw new AuthError('Session expired', 401);
   }
+
+  console.info(`✅ [DEBUG] Session valid. Expires at: ${expiresAt.toISOString()}, Time until expiry: ${hoursUntilExpiry}h ${minutesUntilExpiry}m`);
 
   // Get user details using RPC function (required for custom schema)
   const { data: users, error: userError } = await supabaseAdmin

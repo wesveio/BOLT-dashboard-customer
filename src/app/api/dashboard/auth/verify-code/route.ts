@@ -5,6 +5,14 @@ import { verifyCode } from '@/utils/auth/code-generator';
 import { generateSessionToken } from '@/utils/auth/code-generator';
 import { cookies } from 'next/headers';
 import { isAuthBypassEnabled, getMockUser } from '@/utils/auth/dev-bypass';
+import {
+  getSessionDurationHours,
+  getRefreshTokenDurationDays,
+  getSessionDurationSeconds,
+  getRefreshTokenDurationSeconds,
+  calculateSessionExpiration,
+  calculateRefreshTokenExpiration,
+} from '@/utils/auth/session-config';
 
 const verifyCodeSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -30,30 +38,23 @@ export async function POST(request: NextRequest) {
       const sessionToken = generateSessionToken();
       const refreshToken = generateSessionToken();
 
-      const sessionDurationHours = parseInt(
-        process.env.AUTH_SESSION_DURATION_HOURS || '24',
-        10
-      );
-      const refreshDurationDays = parseInt(
-        process.env.AUTH_REFRESH_TOKEN_DURATION_DAYS || '30',
-        10
-      );
-
       // Set HTTP-only cookies
       const cookieStore = await cookies();
+      const cookieMaxAge = getSessionDurationSeconds();
       cookieStore.set('dashboard_session', sessionToken, {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
-        maxAge: sessionDurationHours * 60 * 60,
+        maxAge: cookieMaxAge,
         path: '/',
       });
 
+      const refreshCookieMaxAge = getRefreshTokenDurationSeconds();
       cookieStore.set('dashboard_refresh', refreshToken, {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
-        maxAge: refreshDurationDays * 24 * 60 * 60,
+        maxAge: refreshCookieMaxAge,
         path: '/',
       });
 
@@ -124,17 +125,16 @@ export async function POST(request: NextRequest) {
     const sessionToken = generateSessionToken();
     const refreshToken = generateSessionToken();
 
-    const sessionDurationHours = parseInt(
-      process.env.AUTH_SESSION_DURATION_HOURS || '24',
-      10
-    );
-    const refreshDurationDays = parseInt(
-      process.env.AUTH_REFRESH_TOKEN_DURATION_DAYS || '30',
-      10
-    );
+    const sessionDurationHours = getSessionDurationHours();
+    const refreshDurationDays = getRefreshTokenDurationDays();
 
-    const expiresAt = new Date(Date.now() + sessionDurationHours * 60 * 60 * 1000);
-    const refreshExpiresAt = new Date(Date.now() + refreshDurationDays * 24 * 60 * 60 * 1000);
+    const expiresAt = calculateSessionExpiration();
+    const refreshExpiresAt = calculateRefreshTokenExpiration();
+
+    console.info(`✅ [DEBUG] Creating session for user ${user.email}`);
+    console.info(`✅ [DEBUG] Session duration: ${sessionDurationHours} hours`);
+    console.info(`✅ [DEBUG] Session expires at: ${expiresAt.toISOString()}`);
+    console.info(`✅ [DEBUG] Refresh token expires at: ${refreshExpiresAt.toISOString()}`);
 
     // Store session
     const { error: sessionError } = await supabaseAdmin
@@ -149,12 +149,14 @@ export async function POST(request: NextRequest) {
       });
 
     if (sessionError) {
-      console.error('Session creation error:', sessionError);
+      console.error('❌ [DEBUG] Session creation error:', sessionError);
       return NextResponse.json(
         { error: 'Failed to create session' },
         { status: 500 }
       );
     }
+
+    console.info(`✅ [DEBUG] Session created successfully`);
 
     // Update user last login
     await supabaseAdmin
@@ -162,21 +164,26 @@ export async function POST(request: NextRequest) {
 
     // Set HTTP-only cookies
     const cookieStore = await cookies();
+    const cookieMaxAge = getSessionDurationSeconds();
     cookieStore.set('dashboard_session', sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: sessionDurationHours * 60 * 60,
+      maxAge: cookieMaxAge,
       path: '/',
     });
 
+    const refreshCookieMaxAge = getRefreshTokenDurationSeconds();
     cookieStore.set('dashboard_refresh', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: refreshDurationDays * 24 * 60 * 60,
+      maxAge: refreshCookieMaxAge,
       path: '/',
     });
+
+    console.info(`✅ [DEBUG] Session cookie set with maxAge: ${cookieMaxAge} seconds (${sessionDurationHours} hours)`);
+    console.info(`✅ [DEBUG] Refresh cookie set with maxAge: ${refreshCookieMaxAge} seconds (${refreshDurationDays} days)`);
 
     return NextResponse.json({
       success: true,

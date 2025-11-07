@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import { isAuthBypassEnabled, getMockUser } from '@/utils/auth/dev-bypass';
 import { getAuthenticatedUserOrNull } from '@/lib/api/auth';
 import { apiSuccess, apiUnauthorized, apiInternalError } from '@/lib/api/responses';
+import { getSessionDurationHours, getSessionDurationSeconds } from '@/utils/auth/session-config';
 
 /**
  * GET /api/dashboard/auth/me
@@ -18,15 +19,21 @@ export async function GET(_: NextRequest) {
       console.warn('‼️ [DEBUG] Auth bypass enabled - returning mock user');
       const mockUser = getMockUser();
 
+      // Get session duration from environment variable
+      const sessionDurationHours = getSessionDurationHours();
+      const cookieMaxAge = getSessionDurationSeconds();
+
       // Set a mock session cookie to maintain consistency
       const cookieStore = cookies();
       cookieStore.set('dashboard_session', 'dev-bypass-token', {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
-        maxAge: 24 * 60 * 60, // 24 hours
+        maxAge: cookieMaxAge,
         path: '/',
       });
+
+      console.info(`✅ [DEBUG] Session cookie set with duration: ${sessionDurationHours} hours (${cookieMaxAge} seconds)`);
 
       return apiSuccess({ user: mockUser });
     }
