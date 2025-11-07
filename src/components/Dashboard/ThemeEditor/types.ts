@@ -237,6 +237,7 @@ export interface FeaturesConfig {
     newsletterSignup: boolean;
     orderNotes: boolean;
     saveAddress: boolean;
+    loginStep: boolean;
   };
   cart: {
     quantityControl: boolean;
@@ -297,12 +298,14 @@ export interface TextsConfig {
   interface: {
     stepTitles: {
       cart: string;
+      login: string;
       profile: string;
       shipping: string;
       payment: string;
     };
     stepDescriptions: {
       cart: string;
+      login: string;
       profile: string;
       shipping: string;
       payment: string;

@@ -206,6 +206,7 @@ export function getDefaultThemeConfig(baseTheme?: 'default' | 'single-page' | 'l
         newsletterSignup: false,
         orderNotes: false,
         saveAddress: true,
+        loginStep: true,
       },
       cart: {
         quantityControl: true,

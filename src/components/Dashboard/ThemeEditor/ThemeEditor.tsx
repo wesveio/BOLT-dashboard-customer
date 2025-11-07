@@ -24,6 +24,65 @@ import { FeaturesTab } from './tabs/FeaturesTab';
 import { TextsTab } from './tabs/TextsTab';
 import { ComponentsTab } from './tabs/ComponentsTab';
 
+/**
+ * Deep merge function to merge theme config with defaults
+ * Ensures all fields from defaults are present in the loaded theme
+ */
+function deepMergeDefaults(loadedConfig: any, defaults: ExpandedThemeConfig): ExpandedThemeConfig {
+  const merged = { ...defaults };
+  
+  // Merge features deeply to ensure all feature toggles are present
+  if (loadedConfig.features) {
+    merged.features = {
+      ...defaults.features,
+      ...loadedConfig.features,
+      checkout: {
+        ...defaults.features.checkout,
+        ...loadedConfig.features.checkout,
+      },
+      cart: {
+        ...defaults.features.cart,
+        ...loadedConfig.features.cart,
+      },
+      profile: {
+        ...defaults.features.profile,
+        ...loadedConfig.features.profile,
+      },
+      shipping: {
+        ...defaults.features.shipping,
+        ...loadedConfig.features.shipping,
+      },
+      payment: {
+        ...defaults.features.payment,
+        ...loadedConfig.features.payment,
+      },
+      ux: {
+        ...defaults.features.ux,
+        ...loadedConfig.features.ux,
+      },
+      analytics: {
+        ...defaults.features.analytics,
+        ...loadedConfig.features.analytics,
+      },
+      security: {
+        ...defaults.features.security,
+        ...loadedConfig.features.security,
+      },
+    };
+  }
+  
+  // Merge other top-level configs
+  if (loadedConfig.name) merged.name = loadedConfig.name;
+  if (loadedConfig.baseTheme) merged.baseTheme = loadedConfig.baseTheme;
+  if (loadedConfig.visual) merged.visual = { ...defaults.visual, ...loadedConfig.visual };
+  if (loadedConfig.layout) merged.layout = { ...defaults.layout, ...loadedConfig.layout };
+  if (loadedConfig.branding) merged.branding = { ...defaults.branding, ...loadedConfig.branding };
+  if (loadedConfig.texts) merged.texts = { ...defaults.texts, ...loadedConfig.texts };
+  if (loadedConfig.components) merged.components = { ...defaults.components, ...loadedConfig.components };
+  
+  return merged;
+}
+
 // Keep old interface for backwards compatibility
 export interface ThemeConfig {
   name: string;
@@ -75,8 +134,11 @@ export function ThemeEditor({ themeId, onBack, onSave }: ThemeEditorProps) {
         if (themeConfig) {
           // Check if it's expanded config or old format
           if (themeConfig.visual && themeConfig.layout && themeConfig.features) {
-            // Expanded format
-            setConfig(themeConfig as ExpandedThemeConfig);
+            // Expanded format - merge with defaults to ensure all fields are present
+            const baseTheme = themeConfig.baseTheme || data.theme?.baseTheme || 'default';
+            const defaults = getDefaultThemeConfig(baseTheme);
+            const mergedConfig = deepMergeDefaults(themeConfig, defaults);
+            setConfig(mergedConfig);
           } else {
             // Old format - migrate to expanded
             const baseTheme = themeConfig.layout === 'single-page' ? 'single-page' : 
