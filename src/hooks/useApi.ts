@@ -135,14 +135,14 @@ export function useApi<T>(
     }
   }, [cacheKey]);
 
-  // Initial fetch on mount
+  // Initial fetch on mount and when endpoint changes
   useEffect(() => {
     if (enabled && refetchOnMount) {
       fetchData();
     } else {
       setIsLoading(false);
     }
-  }, [enabled, refetchOnMount]); // Intentionally excluding fetchData to avoid infinite loops
+  }, [endpoint, enabled, refetchOnMount, fetchData]); // Include endpoint and fetchData to react to period changes
 
   // Cleanup on unmount
   useEffect(() => {
