@@ -263,9 +263,18 @@ export async function GET(_request: NextRequest) {
       previousRevenue += revenue;
     });
 
-    const revenueGrowth = previousRevenue > 0
-      ? ((totalRevenue - previousRevenue) / previousRevenue) * 100
-      : 0;
+    // Calculate revenue growth with proper handling of edge cases
+    let revenueGrowth = 0;
+    if (previousRevenue > 0) {
+      // Normal case: calculate percentage change
+      revenueGrowth = ((totalRevenue - previousRevenue) / previousRevenue) * 100;
+    } else if (previousRevenue === 0 && totalRevenue > 0) {
+      // Growth from zero: indicate positive growth (100% represents doubling, so we use 100% for "new revenue")
+      revenueGrowth = 100;
+    } else {
+      // Both are zero: no change
+      revenueGrowth = 0;
+    }
 
     return apiSuccess({
       metrics: {

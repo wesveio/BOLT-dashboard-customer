@@ -69,6 +69,9 @@ export async function GET(_request: NextRequest) {
       payment: [],
     };
 
+    // Track checkout start times by session for calculating total checkout duration
+    const checkoutStartTimes: Record<string, Date> = {};
+
     // Group events by session
     const checkoutSessions: Record<string, {
       start: Date;
@@ -95,6 +98,8 @@ export async function GET(_request: NextRequest) {
         case 'checkout_started':
           // Track sessions that started checkout (consistent with metrics and insights APIs)
           sessionsWithCheckoutStart.add(sessionId);
+          // Store checkout start time for calculating total checkout duration
+          checkoutStartTimes[sessionId] = new Date(event.timestamp);
           // Count as cart view in funnel if not already counted for this session
           if (!session.steps.includes('cart')) {
             funnelSteps.cart++;
@@ -162,6 +167,24 @@ export async function GET(_request: NextRequest) {
       payment: calculateAvgTime(stepTimes.payment),
     };
 
+    // Calculate total checkout time (from checkout_start to checkout_complete)
+    // This is the correct way to calculate avgCheckoutTime
+    const checkoutTimes: number[] = [];
+    events?.forEach((event: AnalyticsEvent) => {
+      if (event.event_type === 'checkout_start' || event.event_type === 'checkout_started') {
+        checkoutStartTimes[event.session_id] = new Date(event.timestamp);
+      }
+      if (event.event_type === 'checkout_complete' && checkoutStartTimes[event.session_id]) {
+        const startTime = checkoutStartTimes[event.session_id];
+        const endTime = new Date(event.timestamp);
+        const duration = (endTime.getTime() - startTime.getTime()) / 1000; // in seconds
+        // Only add positive durations to avoid negative values
+        if (duration >= 0) {
+          checkoutTimes.push(duration);
+        }
+      }
+    });
+
     // Helper functions for percentage calculations
     const clampPercentage = (value: number): number => {
       return Math.max(0, Math.min(100, value));
@@ -181,8 +204,11 @@ export async function GET(_request: NextRequest) {
       ? clampPercentage((funnelSteps.confirmed / totalSessions) * 100)
       : 0;
     const abandonmentRate = clampPercentage(100 - conversionRate);
+    // Calculate average checkout time from total checkout durations (checkout_start to checkout_complete)
     // Ensure average checkout time is never negative
-    const avgCheckoutTime = Math.max(0, Object.values(avgTimes).reduce((a, b) => a + b, 0));
+    const avgCheckoutTime = checkoutTimes.length > 0
+      ? Math.max(0, checkoutTimes.reduce((a, b) => a + b, 0) / checkoutTimes.length)
+      : 0;
 
     // Calculate abandonment by step (clamped to 0-100% and rounded)
     const stepAbandonment = {
