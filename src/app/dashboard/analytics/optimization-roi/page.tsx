@@ -121,7 +121,11 @@ export default function OptimizationROIPage() {
         <MetricCard
           title={t('revenueChange')}
           value={formatCurrency(summary.changes.revenueChange)}
-          subtitle={`${formatPercentage(Math.abs(summary.changes.revenueChangePercent))} ${isPositive ? t('increase') : t('decrease')}`}
+          subtitle={
+            summary.changes.revenueChangePercent !== null
+              ? `${formatPercentage(Math.abs(summary.changes.revenueChangePercent))} ${isPositive ? t('increase') : t('decrease')}`
+              : t('noBaseline')
+          }
           icon={
             isPositive ? (
               <ArrowTrendingUpIcon className="w-6 h-6 text-white" />
@@ -133,7 +137,11 @@ export default function OptimizationROIPage() {
         <MetricCard
           title={t('conversionRateChange')}
           value={formatPercentage(Math.abs(summary.changes.conversionRateChange))}
-          subtitle={`${summary.changes.conversionRateChangePercent >= 0 ? '+' : ''}${formatPercentage(summary.changes.conversionRateChangePercent)}`}
+          subtitle={
+            summary.changes.conversionRateChangePercent !== null
+              ? `${summary.changes.conversionRateChangePercent >= 0 ? '+' : ''}${formatPercentage(summary.changes.conversionRateChangePercent)}`
+              : t('noBaseline')
+          }
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
@@ -145,7 +153,11 @@ export default function OptimizationROIPage() {
         <MetricCard
           title={t('aovChange')}
           value={formatCurrency(summary.changes.aovChange)}
-          subtitle={`${formatPercentage(Math.abs(summary.changes.aovChangePercent))} ${t('change')}`}
+          subtitle={
+            summary.changes.aovChangePercent !== null
+              ? `${formatPercentage(Math.abs(summary.changes.aovChangePercent))} ${t('change')}`
+              : t('noBaseline')
+          }
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />
       </div>
@@ -253,7 +265,9 @@ export default function OptimizationROIPage() {
               {isPositive ? '+' : ''}{formatCurrency(summary.changes.revenueChange)}
             </p>
             <p className="text-xs text-gray-500 mt-1">
-              {formatPercentage(Math.abs(summary.changes.revenueChangePercent))} {t('change')}
+              {summary.changes.revenueChangePercent !== null
+                ? `${formatPercentage(Math.abs(summary.changes.revenueChangePercent))} ${t('change')}`
+                : t('noBaseline')}
             </p>
           </div>
           <div className="text-center">
@@ -265,7 +279,9 @@ export default function OptimizationROIPage() {
               {formatPercentage(summary.changes.conversionRateChange)} {t('pp')}
             </p>
             <p className="text-xs text-gray-500 mt-1">
-              {formatPercentage(Math.abs(summary.changes.conversionRateChangePercent))} {t('change')}
+              {summary.changes.conversionRateChangePercent !== null
+                ? `${formatPercentage(Math.abs(summary.changes.conversionRateChangePercent))} ${t('change')}`
+                : t('noBaseline')}
             </p>
           </div>
           <div className="text-center">

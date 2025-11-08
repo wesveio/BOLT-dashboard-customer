@@ -496,7 +496,8 @@
         "conversionImpact": "Impacto na Conversão",
         "additionalOrdersMetric": "Additional Pedidos",
         "additionalRevenueLabel": "receita adicional",
-        "pp": "pp"
+        "pp": "pp",
+        "noBaseline": "Sem dados de referência"
       },
       "frictionScore": {
         "title": "Índice de Fricção",

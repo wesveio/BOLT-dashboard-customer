@@ -502,7 +502,8 @@
         "conversionImpact": "Conversion Impact",
         "additionalOrdersMetric": "Additional Orders",
         "additionalRevenueLabel": "additional revenue",
-        "pp": "pp"
+        "pp": "pp",
+        "noBaseline": "No baseline data"
       },
       "frictionScore": {
         "title": "Friction Score",

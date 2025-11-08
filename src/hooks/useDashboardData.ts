@@ -1100,11 +1100,11 @@ interface OptimizationROIResponse {
     };
     changes: {
       revenueChange: number;
-      revenueChangePercent: number;
+      revenueChangePercent: number | null;
       conversionRateChange: number;
-      conversionRateChangePercent: number;
+      conversionRateChangePercent: number | null;
       aovChange: number;
-      aovChangePercent: number;
+      aovChangePercent: number | null;
       additionalOrders: number;
       additionalRevenue: number;
     };
@@ -1174,11 +1174,11 @@ export function useOptimizationROIData(options: UseOptimizationROIDataOptions = 
       },
       changes: {
         revenueChange: 0,
-        revenueChangePercent: 0,
+        revenueChangePercent: null,
         conversionRateChange: 0,
-        conversionRateChangePercent: 0,
+        conversionRateChangePercent: null,
         aovChange: 0,
-        aovChangePercent: 0,
+        aovChangePercent: null,
         additionalOrders: 0,
         additionalRevenue: 0,
       },
