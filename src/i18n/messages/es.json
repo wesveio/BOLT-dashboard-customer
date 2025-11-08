@@ -678,7 +678,33 @@
       "upgradeButton": "Actualizar a Enterprise",
       "predictions": {
         "title": "Predicciones de Abandono",
-        "description": "Predicciones de abandono en tiempo real usando IA y aprendizaje automático"
+        "description": "Predicciones de abandono en tiempo real usando IA y aprendizaje automático",
+        "loading": "Cargando predicciones...",
+        "errors": {
+          "loadFailed": "Error al cargar predicciones"
+        },
+        "metrics": {
+          "totalSessions": "Total de Sesiones",
+          "highRiskSessions": "Sesiones de Alto Riesgo",
+          "avgRiskScore": "Puntuación Promedio de Riesgo",
+          "modelAccuracy": "Precisión del Modelo",
+          "subtitles": {
+            "totalSessions": "Todas las sesiones en el período",
+            "highRiskSessions": "Sesiones con riesgo alto o crítico",
+            "avgRiskScore": "Riesgo promedio en todas las sesiones",
+            "modelAccuracy": "Precisión del modelo de predicción"
+          }
+        },
+        "charts": {
+          "distributionTitle": "Distribución de Riesgo",
+          "distributionSubtitle": "Sesiones por nivel de riesgo",
+          "trendTitle": "Tendencia de Riesgo",
+          "trendSubtitle": "Puntuación promedio de riesgo a lo largo del tiempo"
+        },
+        "table": {
+          "title": "Sesiones de Alto Riesgo",
+          "subtitle": "Sesiones con riesgo alto o crítico de abandono"
+        }
       },
       "interventions": {
         "title": "Intervenciones",

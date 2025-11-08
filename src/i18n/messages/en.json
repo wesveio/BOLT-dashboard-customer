@@ -684,7 +684,33 @@
       "upgradeButton": "Upgrade to Enterprise",
       "predictions": {
         "title": "Abandonment Predictions",
-        "description": "Real-time abandonment predictions using AI and machine learning"
+        "description": "Real-time abandonment predictions using AI and machine learning",
+        "loading": "Loading predictions...",
+        "errors": {
+          "loadFailed": "Failed to load predictions"
+        },
+        "metrics": {
+          "totalSessions": "Total Sessions",
+          "highRiskSessions": "High Risk Sessions",
+          "avgRiskScore": "Avg Risk Score",
+          "modelAccuracy": "Model Accuracy",
+          "subtitles": {
+            "totalSessions": "All sessions in period",
+            "highRiskSessions": "Sessions at high or critical risk",
+            "avgRiskScore": "Average risk across all sessions",
+            "modelAccuracy": "Prediction model accuracy"
+          }
+        },
+        "charts": {
+          "distributionTitle": "Risk Distribution",
+          "distributionSubtitle": "Sessions by risk level",
+          "trendTitle": "Risk Trend",
+          "trendSubtitle": "Average risk score over time"
+        },
+        "table": {
+          "title": "High Risk Sessions",
+          "subtitle": "Sessions with high or critical abandonment risk"
+        }
       },
       "interventions": {
         "title": "Interventions",

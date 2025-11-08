@@ -853,7 +853,7 @@ export function useRetentionData(options: UseRetentionDataOptions = {}) {
 }
 
 // Abandonment Prediction API Response Types
-interface AbandonmentPredictionResponse {
+export interface AbandonmentPredictionResponse {
   summary: {
     totalSessions: number;
     highRiskSessions: number;
