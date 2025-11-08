@@ -48,11 +48,17 @@ export async function POST(request: NextRequest) {
     // Generate insights
     const insights = await aiService.generateInsights(analyticsData, category);
 
-    // Store insights in database
+    // Store insights in database using RPC function
     if (insights.length > 0) {
+      // Helper function to ensure valid category
+      const ensureValidCategory = (cat: InsightCategory): InsightCategory => {
+        const validCategories: InsightCategory[] = ['revenue', 'conversion', 'ux', 'security'];
+        return validCategories.includes(cat) ? cat : 'ux';
+      };
+
       const insightsToInsert = insights.map((insight) => ({
         customer_id: user.account_id,
-        category: insight.category,
+        category: ensureValidCategory(insight.category),
         title: insight.title,
         description: insight.description,
         impact: insight.impact,
@@ -61,9 +67,14 @@ export async function POST(request: NextRequest) {
         generated_at: insight.generatedAt.toISOString(),
       }));
 
-      await supabaseAdmin
-        .from('analytics.ai_insights')
-        .insert(insightsToInsert);
+      const { error: insertError } = await supabaseAdmin.rpc('insert_ai_insights', {
+        p_insights: insightsToInsert as any, // Supabase will convert array to JSONB
+      });
+
+      if (insertError) {
+        console.error('❌ [DEBUG] Error inserting insights:', insertError);
+        // Continue execution even if insert fails - insights are still returned
+      }
     }
 
     return apiSuccess({ insights });
@@ -100,18 +111,12 @@ export async function GET(request: NextRequest) {
 
     const supabaseAdmin = getSupabaseAdmin();
 
-    let query = supabaseAdmin
-      .from('analytics.ai_insights')
-      .select('*')
-      .eq('customer_id', user.account_id)
-      .order('generated_at', { ascending: false })
-      .limit(limit);
-
-    if (category) {
-      query = query.eq('category', category);
-    }
-
-    const { data: insights, error } = await query;
+    // Use RPC function to get insights from analytics schema
+    const { data: insights, error } = await supabaseAdmin.rpc('get_ai_insights', {
+      p_customer_id: user.account_id,
+      p_category: category || null,
+      p_limit: limit,
+    });
 
     if (error) {
       console.error('❌ [DEBUG] Error fetching insights:', error);

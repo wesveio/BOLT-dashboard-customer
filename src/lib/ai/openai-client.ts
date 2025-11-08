@@ -191,9 +191,20 @@ Return only valid JSON array, no additional text.`;
 
       const insights = JSON.parse(jsonContent) as any[];
 
+      // Helper function to normalize category
+      const normalizeCategory = (cat: string): InsightCategory => {
+        const normalized = cat?.toLowerCase().trim();
+        // Map invalid categories to valid ones
+        if (normalized === 'abandonment') return 'conversion';
+        if (['revenue', 'conversion', 'ux', 'security'].includes(normalized)) {
+          return normalized as InsightCategory;
+        }
+        return 'ux'; // Default fallback
+      };
+
       return insights.map((insight, index) => ({
         id: `insight-${Date.now()}-${index}`,
-        category: (category || insight.category || 'ux') as InsightCategory,
+        category: normalizeCategory(category || insight.category || 'ux'),
         title: insight.title || 'Insight',
         description: insight.description || '',
         impact: (insight.impact || 'medium') as InsightImpact,
