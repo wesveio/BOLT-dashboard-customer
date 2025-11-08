@@ -207,6 +207,10 @@ export function getDefaultThemeConfig(baseTheme?: 'default' | 'single-page' | 'l
         orderNotes: false,
         saveAddress: true,
         loginStep: true,
+        customData: false,
+        giftRegistry: false,
+        openTextField: true,
+        clientPreferences: true,
       },
       cart: {
         quantityControl: true,
@@ -215,6 +219,7 @@ export function getDefaultThemeConfig(baseTheme?: 'default' | 'single-page' | 'l
         imageDisplay: true,
         discountDisplay: true,
         undeliverableWarnings: true,
+        itemAttachments: false,
       },
       profile: {
         autofillFromVTEX: true,
@@ -238,6 +243,7 @@ export function getDefaultThemeConfig(baseTheme?: 'default' | 'single-page' | 'l
         boleto: false,
         pix: false,
         walletOptions: false,
+        cancelTransaction: true,
       },
       ux: {
         smoothScroll: baseTheme === 'single-page',
