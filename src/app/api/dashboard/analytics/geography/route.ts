@@ -63,10 +63,11 @@ export async function GET(request: NextRequest) {
     });
 
     // Query geographic-related events using RPC function
+    // Also include checkout_start to track all sessions
     const { data: geoEvents, error: geoError } = await supabaseAdmin
       .rpc('get_analytics_events_by_types', {
         p_customer_id: user.account_id,
-        p_event_types: ['address_validated', 'shipping_option_selected'],
+        p_event_types: ['address_validated', 'shipping_option_selected', 'checkout_start', 'checkout_started'],
         p_start_date: range.start.toISOString(),
         p_end_date: range.end.toISOString(),
       });
@@ -114,7 +115,7 @@ export async function GET(request: NextRequest) {
       convertingSessions: Set<string>; // Unique sessions that converted
     }> = {};
 
-    // Track sessions by country/state
+    // Track sessions by country/state from geo events
     geoEvents?.forEach((event: AnalyticsEvent) => {
       const metadata = event.metadata || {};
       const country = (metadata.country as string) || 'Unknown';
@@ -133,8 +134,8 @@ export async function GET(request: NextRequest) {
       }
       countries[country].sessions.add(sessionId);
 
-      // State aggregation (only if state is available)
-      if (state && state !== 'Unknown') {
+      // State aggregation (only if state is available and not 'Unknown')
+      if (state && state !== 'Unknown' && state.trim() !== '') {
         const stateKey = `${country}:${state}`;
         if (!states[stateKey]) {
           states[stateKey] = {
@@ -150,6 +151,16 @@ export async function GET(request: NextRequest) {
       }
     });
 
+    console.info('✅ [DEBUG] Geography - Initial geo events processing:', {
+      geoEventsProcessed: geoEvents?.length || 0,
+      countriesFound: Object.keys(countries).length,
+      statesFound: Object.keys(states).length,
+      statesList: Object.keys(states).map(key => {
+        const state = states[key];
+        return `${state.country}:${state.state} (${state.sessions.size} sessions)`;
+      }),
+    });
+
     // Match checkout events with geographic data
     let ordersWithGeo = 0;
     let ordersWithoutGeo = 0;
@@ -160,10 +171,30 @@ export async function GET(request: NextRequest) {
 
       if (revenue <= 0) return;
 
-      // Try to find geographic data from geo events first
-      let sessionGeoEvent = geoEvents?.find(
+      // Try to find geographic data from geo events
+      // Priority: address_validated > shipping_option_selected > checkout_start
+      const sessionGeoEvents = geoEvents?.filter(
         (e: AnalyticsEvent) => e.session_id === sessionId
+      ) || [];
+
+      // Find the best geo event (prefer events with state data)
+      let sessionGeoEvent = sessionGeoEvents.find(
+        (e: AnalyticsEvent) => {
+          const meta = e.metadata || {};
+          return (e.event_type === 'address_validated' || e.event_type === 'shipping_option_selected') &&
+            (meta.country || meta.state);
+        }
       );
+
+      // Fallback to any geo event with country/state
+      if (!sessionGeoEvent) {
+        sessionGeoEvent = sessionGeoEvents.find(
+          (e: AnalyticsEvent) => {
+            const meta = e.metadata || {};
+            return meta.country || meta.state;
+          }
+        );
+      }
 
       // If no geo event found, try to extract from checkout event metadata
       if (!sessionGeoEvent) {
@@ -177,11 +208,61 @@ export async function GET(request: NextRequest) {
         }
       }
 
+      // Debug: log if we can't find geo data
+      if (!sessionGeoEvent) {
+        console.warn('‼️ [DEBUG] Geography - No geo data found for checkout session:', {
+          sessionId: sessionId.substring(0, 12) + '...',
+          sessionGeoEventsCount: sessionGeoEvents.length,
+          sessionGeoEventTypes: sessionGeoEvents.map((e: AnalyticsEvent) => e.event_type),
+          checkoutMetadata: Object.keys(event.metadata || {}),
+        });
+      }
+
       if (sessionGeoEvent) {
         ordersWithGeo++;
-        const metadata = sessionGeoEvent.metadata || {};
-        const country = (metadata.country as string) || 'Unknown';
-        const state = (metadata.state as string) || 'Unknown';
+        let metadata = sessionGeoEvent.metadata || {};
+        let country = (metadata.country as string) || 'Unknown';
+        let state = (metadata.state as string) || 'Unknown';
+
+        // If state is missing, try to find it from other events in the same session
+        if ((!state || state === 'Unknown' || state.trim() === '') && sessionGeoEvents.length > 0) {
+          const eventWithState = sessionGeoEvents.find((e: AnalyticsEvent) => {
+            const meta = e.metadata || {};
+            const stateValue = meta.state;
+            return stateValue &&
+              typeof stateValue === 'string' &&
+              stateValue !== 'Unknown' &&
+              stateValue.trim() !== '';
+          });
+
+          if (eventWithState) {
+            const stateMeta = eventWithState.metadata || {};
+            state = (stateMeta.state as string) || state;
+            // Also update country if it's more reliable
+            if (stateMeta.country && stateMeta.country !== 'Unknown') {
+              country = (stateMeta.country as string) || country;
+              metadata = stateMeta; // Use the metadata with state
+            }
+          }
+        }
+
+        // If state is still missing, check if we already have a state for this session
+        // (created during initial geo events processing)
+        if ((!state || state === 'Unknown' || state.trim() === '') && country !== 'Unknown') {
+          // Find existing state entry that contains this session
+          const existingStateEntry = Object.values(states).find(
+            (s) => s.sessions.has(sessionId) && s.country === country
+          );
+
+          if (existingStateEntry) {
+            state = existingStateEntry.state;
+            console.info('✅ [DEBUG] Geography - Using existing state for session:', {
+              sessionId: sessionId.substring(0, 12) + '...',
+              country,
+              state,
+            });
+          }
+        }
 
         // Ensure country entry exists (might not have geo event but has checkout with location)
         if (!countries[country]) {
@@ -202,8 +283,8 @@ export async function GET(request: NextRequest) {
         countries[country].revenue += revenue;
         countries[country].convertingSessions.add(sessionId); // Track unique converting sessions
 
-        // Update state stats
-        if (state && state !== 'Unknown') {
+        // Update state stats (only if state is valid)
+        if (state && state !== 'Unknown' && state.trim() !== '') {
           const stateKey = `${country}:${state}`;
 
           // Ensure state entry exists
@@ -218,10 +299,28 @@ export async function GET(request: NextRequest) {
             };
           }
 
+          // Add session to state if not already tracked
           states[stateKey].sessions.add(sessionId);
+
+          // Update state stats
           states[stateKey].orders++;
           states[stateKey].revenue += revenue;
           states[stateKey].convertingSessions.add(sessionId); // Track unique converting sessions
+        } else {
+          // Debug: log when state is missing or invalid
+          console.warn('‼️ [DEBUG] Geography - State missing or invalid for checkout:', {
+            sessionId: sessionId.substring(0, 12) + '...',
+            country,
+            state,
+            stateValue: metadata.state,
+            hasState: !!metadata.state,
+            eventType: sessionGeoEvent.event_type,
+            allSessionEvents: sessionGeoEvents.map((e: AnalyticsEvent) => ({
+              type: e.event_type,
+              hasState: !!(e.metadata || {}).state,
+              state: (e.metadata || {}).state,
+            })),
+          });
         }
       } else {
         ordersWithoutGeo++;
@@ -232,6 +331,11 @@ export async function GET(request: NextRequest) {
       ordersWithGeo,
       ordersWithoutGeo,
       totalOrders: ordersWithGeo + ordersWithoutGeo,
+      statesAfterMatching: Object.keys(states).length,
+      statesWithOrders: Object.keys(states).filter(key => states[key].orders > 0).map(key => {
+        const state = states[key];
+        return `${state.country}:${state.state} (${state.orders} orders, ${state.revenue.toFixed(2)} revenue)`;
+      }),
     });
 
     // Convert to arrays and calculate metrics
@@ -313,6 +417,14 @@ export async function GET(request: NextRequest) {
         orders: c.orders,
         conversions: c.conversions,
         conversionRate: c.conversionRate.toFixed(2),
+      })),
+      stateBreakdown: stateData.map(s => ({
+        state: `${s.state}, ${s.country}`,
+        sessions: s.sessions,
+        orders: s.orders,
+        revenue: s.revenue.toFixed(2),
+        conversions: s.conversions,
+        conversionRate: s.conversionRate.toFixed(2),
       })),
     });
 
