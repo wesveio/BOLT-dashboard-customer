@@ -36,9 +36,9 @@ export default function PaymentAnalyticsPage() {
     );
   }
 
-  const paymentMethodsData = data?.paymentMethods || [];
-  const totalPayments = data?.totalPayments || 0;
-  const avgSuccessRate = data?.avgSuccessRate || '0.0';
+  const paymentMethodsData = (Array.isArray(data?.paymentMethods) ? data.paymentMethods : []) as Array<{ name: string; value: number; revenue: number; successRate: number }>;
+  const totalPayments = typeof data?.totalPayments === 'number' ? data.totalPayments : 0;
+  const avgSuccessRate = typeof data?.avgSuccessRate === 'string' ? data.avgSuccessRate : '0.0';
 
   return (
     <PageWrapper>
@@ -65,73 +65,85 @@ export default function PaymentAnalyticsPage() {
       </div>
 
       {/* Payment Distribution Chart */}
-      <div className="mb-8">
-        <ChartCard
-          title="Payment Method Distribution"
-          subtitle="Percentage of transactions by payment method"
-        >
-          <ResponsiveContainer width="100%" height={400}>
-            <PieChart>
-              <Pie
-                data={paymentMethodsData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={120}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {paymentMethodsData.map((_entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </ChartCard>
-      </div>
+      {paymentMethodsData.length > 0 ? (
+        <>
+          <div className="mb-8">
+            <ChartCard
+              title="Payment Method Distribution"
+              subtitle="Percentage of transactions by payment method"
+            >
+              <ResponsiveContainer width="100%" height={400}>
+                <PieChart>
+                  <Pie
+                    data={paymentMethodsData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={120}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {paymentMethodsData.map((_entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </div>
 
-      {/* Payment Methods Details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {paymentMethodsData.map((method, index) => (
-          <ChartCard key={method.name} title={method.name}>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Transactions</span>
-                <span className="text-lg font-bold text-gray-900">
-                  {formatNumber(method.value)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Revenue</span>
-                <span className="text-lg font-bold text-gray-900">
-                  {formatCurrency(method.revenue)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Success Rate</span>
-                <span
-                  className={`text-lg font-bold ${
-                    method.successRate >= 98 ? 'text-green-600' : 'text-orange-600'
-                  }`}
-                >
-                  {formatPercentage(method.successRate || 0)}
-                </span>
-              </div>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{
-                    width: `${method.successRate || 0}%`,
-                    background: `linear-gradient(to right, ${COLORS[index % COLORS.length]}, ${COLORS[(index + 1) % COLORS.length]})`,
-                  }}
-                />
-              </div>
-            </div>
-          </ChartCard>
-        ))}
-      </div>
+          {/* Payment Methods Details */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {paymentMethodsData.map((method, index) => (
+              <ChartCard key={method.name} title={method.name}>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Transactions</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      {formatNumber(method.value)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Revenue</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      {formatCurrency(method.revenue || 0)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Success Rate</span>
+                    <span
+                      className={`text-lg font-bold ${
+                        (method.successRate || 0) >= 98 ? 'text-green-600' : 'text-orange-600'
+                      }`}
+                    >
+                      {formatPercentage(method.successRate || 0)}
+                    </span>
+                  </div>
+                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${method.successRate || 0}%`,
+                        background: `linear-gradient(to right, ${COLORS[index % COLORS.length]}, ${COLORS[(index + 1) % COLORS.length]})`,
+                      }}
+                    />
+                  </div>
+                </div>
+              </ChartCard>
+            ))}
+          </div>
+        </>
+      ) : (
+        <ChartCard title="No Payment Data" subtitle="No payment data available for the selected period">
+          <div className="text-center py-12 text-gray-500">
+            <CreditCardIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+            <p className="text-lg font-semibold mb-2">No payment methods found</p>
+            <p className="text-sm">Try selecting a different time period.</p>
+          </div>
+        </ChartCard>
+      )}
     </PageWrapper>
   );
 }

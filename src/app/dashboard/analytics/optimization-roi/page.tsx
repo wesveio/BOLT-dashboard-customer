@@ -61,7 +61,7 @@ export default function OptimizationROIPage() {
             <Input
               type="date"
               label={t('optimizationDate')}
-              value={optimizationDate || apiOptimizationDate.split('T')[0]}
+              value={optimizationDate || (apiOptimizationDate ? apiOptimizationDate.split('T')[0] : '')}
               onValueChange={(value) => setOptimizationDate(value)}
               className="w-48"
               size="sm"
@@ -93,7 +93,7 @@ export default function OptimizationROIPage() {
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('roiSummary')}</h3>
                 <p className="text-sm text-gray-600">
-                  {t('optimizationDate')}: {new Date(apiOptimizationDate).toLocaleDateString()}
+                  {t('optimizationDate')}: {apiOptimizationDate ? new Date(apiOptimizationDate).toLocaleDateString() : 'N/A'}
                 </p>
               </div>
               <div className="text-right">

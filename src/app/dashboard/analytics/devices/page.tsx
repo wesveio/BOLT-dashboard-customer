@@ -67,71 +67,83 @@ export default function DeviceAnalyticsPage() {
       </div>
 
       {/* Device Distribution Chart */}
-      <div className="mb-8">
-        <ChartCard
-          title="Device Distribution"
-          subtitle="Sessions by device type"
-        >
-          <ResponsiveContainer width="100%" height={400}>
-            <PieChart>
-              <Pie
-                data={deviceData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ device, percent }: { device: string; percent: number }) => `${device} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={120}
-                fill="#8884d8"
-                dataKey="sessions"
-                nameKey="device"
-              >
-                {deviceData.map((_entry: unknown, index: number) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend formatter={(value: string) => value} />
-            </PieChart>
-          </ResponsiveContainer>
-        </ChartCard>
-      </div>
+      {deviceData.length > 0 ? (
+        <>
+          <div className="mb-8">
+            <ChartCard
+              title="Device Distribution"
+              subtitle="Sessions by device type"
+            >
+              <ResponsiveContainer width="100%" height={400}>
+                <PieChart>
+                  <Pie
+                    data={deviceData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ device, percent }: { device: string; percent: number }) => `${device} ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={120}
+                    fill="#8884d8"
+                    dataKey="sessions"
+                    nameKey="device"
+                  >
+                    {deviceData.map((_entry: unknown, index: number) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend formatter={(value: string) => value} />
+                </PieChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </div>
 
-      {/* Device Details */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {deviceData.map((device: { device: string; sessions: number; conversion: number; revenue: number }, index: number) => (
-          <ChartCard key={device.device} title={device.device}>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Sessions</span>
-                <span className="text-lg font-bold text-gray-900">
-                  {formatNumber(device.sessions)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Conversion Rate</span>
-                <span className="text-lg font-bold text-green-600">
-                  {formatPercentage(device.conversion)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Revenue</span>
-                <span className="text-lg font-bold text-gray-900">
-                  {formatCurrency(device.revenue)}
-                </span>
-              </div>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{
-                    width: `${device.conversion}%`,
-                    background: `linear-gradient(to right, ${COLORS[index % COLORS.length]}, ${COLORS[(index + 1) % COLORS.length]})`,
-                  }}
-                />
-              </div>
-            </div>
-          </ChartCard>
-        ))}
-      </div>
+          {/* Device Details */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {deviceData.map((device: { device: string; sessions: number; conversion: number; revenue: number }, index: number) => (
+              <ChartCard key={device.device} title={device.device}>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Sessions</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      {formatNumber(device.sessions)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Conversion Rate</span>
+                    <span className="text-lg font-bold text-green-600">
+                      {formatPercentage(device.conversion || 0)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Revenue</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      {formatCurrency(device.revenue || 0)}
+                    </span>
+                  </div>
+                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${device.conversion || 0}%`,
+                        background: `linear-gradient(to right, ${COLORS[index % COLORS.length]}, ${COLORS[(index + 1) % COLORS.length]})`,
+                      }}
+                    />
+                  </div>
+                </div>
+              </ChartCard>
+            ))}
+          </div>
+        </>
+      ) : (
+        <ChartCard title="No Device Data" subtitle="No device data available for the selected period">
+          <div className="text-center py-12 text-gray-500">
+            <DevicePhoneMobileIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+            <p className="text-lg font-semibold mb-2">No device data found</p>
+            <p className="text-sm">Try selecting a different time period.</p>
+          </div>
+        </ChartCard>
+      )}
     </PageWrapper>
   );
 }
