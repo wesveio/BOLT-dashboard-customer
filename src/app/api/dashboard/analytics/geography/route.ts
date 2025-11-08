@@ -56,6 +56,12 @@ export async function GET(request: NextRequest) {
     // Calculate date range
     const range = getDateRange(period);
 
+    console.info('✅ [DEBUG] Geography - Date range:', {
+      period,
+      start: range.start.toISOString(),
+      end: range.end.toISOString(),
+    });
+
     // Query geographic-related events using RPC function
     const { data: geoEvents, error: geoError } = await supabaseAdmin
       .rpc('get_analytics_events_by_types', {
@@ -66,7 +72,7 @@ export async function GET(request: NextRequest) {
       });
 
     if (geoError) {
-      console.error('Get geographic events error:', geoError);
+      console.error('❌ [DEBUG] Get geographic events error:', geoError);
       return apiError('Failed to fetch geographic events', 500);
     }
 
@@ -80,9 +86,14 @@ export async function GET(request: NextRequest) {
       });
 
     if (checkoutError) {
-      console.error('Get checkout events error:', checkoutError);
+      console.error('❌ [DEBUG] Get checkout events error:', checkoutError);
       return apiError('Failed to fetch checkout events', 500);
     }
+
+    console.info('✅ [DEBUG] Geography - Events found:', {
+      geoEvents: geoEvents?.length || 0,
+      checkoutEvents: checkoutEvents?.length || 0,
+    });
 
     // Aggregate by country
     const countries: Record<string, {
@@ -90,7 +101,7 @@ export async function GET(request: NextRequest) {
       sessions: Set<string>;
       orders: number;
       revenue: number;
-      conversions: number;
+      convertingSessions: Set<string>; // Unique sessions that converted
     }> = {};
 
     // Aggregate by state/region
@@ -100,7 +111,7 @@ export async function GET(request: NextRequest) {
       sessions: Set<string>;
       orders: number;
       revenue: number;
-      conversions: number;
+      convertingSessions: Set<string>; // Unique sessions that converted
     }> = {};
 
     // Track sessions by country/state
@@ -117,7 +128,7 @@ export async function GET(request: NextRequest) {
           sessions: new Set(),
           orders: 0,
           revenue: 0,
-          conversions: 0,
+          convertingSessions: new Set(),
         };
       }
       countries[country].sessions.add(sessionId);
@@ -132,7 +143,7 @@ export async function GET(request: NextRequest) {
             sessions: new Set(),
             orders: 0,
             revenue: 0,
-            conversions: 0,
+            convertingSessions: new Set(),
           };
         }
         states[stateKey].sessions.add(sessionId);
@@ -140,45 +151,97 @@ export async function GET(request: NextRequest) {
     });
 
     // Match checkout events with geographic data
+    let ordersWithGeo = 0;
+    let ordersWithoutGeo = 0;
+
     checkoutEvents?.forEach((event: AnalyticsEvent) => {
       const sessionId = event.session_id;
       const revenue = extractRevenue(event);
 
-      // Find geographic data for this session
-      const sessionGeoEvent = geoEvents?.find(
+      if (revenue <= 0) return;
+
+      // Try to find geographic data from geo events first
+      let sessionGeoEvent = geoEvents?.find(
         (e: AnalyticsEvent) => e.session_id === sessionId
       );
 
-      if (sessionGeoEvent && revenue > 0) {
+      // If no geo event found, try to extract from checkout event metadata
+      if (!sessionGeoEvent) {
+        const checkoutMetadata = event.metadata || {};
+        if (checkoutMetadata.country || checkoutMetadata.state) {
+          // Create a virtual geo event from checkout metadata
+          sessionGeoEvent = {
+            ...event,
+            metadata: checkoutMetadata,
+          } as AnalyticsEvent;
+        }
+      }
+
+      if (sessionGeoEvent) {
+        ordersWithGeo++;
         const metadata = sessionGeoEvent.metadata || {};
         const country = (metadata.country as string) || 'Unknown';
         const state = (metadata.state as string) || 'Unknown';
 
-        // Update country stats
-        if (countries[country]) {
-          countries[country].orders++;
-          countries[country].revenue += revenue;
-          countries[country].conversions++;
+        // Ensure country entry exists (might not have geo event but has checkout with location)
+        if (!countries[country]) {
+          countries[country] = {
+            country,
+            sessions: new Set(),
+            orders: 0,
+            revenue: 0,
+            convertingSessions: new Set(),
+          };
         }
+
+        // Add session if not already tracked
+        countries[country].sessions.add(sessionId);
+
+        // Update country stats
+        countries[country].orders++;
+        countries[country].revenue += revenue;
+        countries[country].convertingSessions.add(sessionId); // Track unique converting sessions
 
         // Update state stats
         if (state && state !== 'Unknown') {
           const stateKey = `${country}:${state}`;
-          if (states[stateKey]) {
-            states[stateKey].orders++;
-            states[stateKey].revenue += revenue;
-            states[stateKey].conversions++;
+
+          // Ensure state entry exists
+          if (!states[stateKey]) {
+            states[stateKey] = {
+              country,
+              state,
+              sessions: new Set(),
+              orders: 0,
+              revenue: 0,
+              convertingSessions: new Set(),
+            };
           }
+
+          states[stateKey].sessions.add(sessionId);
+          states[stateKey].orders++;
+          states[stateKey].revenue += revenue;
+          states[stateKey].convertingSessions.add(sessionId); // Track unique converting sessions
         }
+      } else {
+        ordersWithoutGeo++;
       }
+    });
+
+    console.info('✅ [DEBUG] Geography - Checkout matching:', {
+      ordersWithGeo,
+      ordersWithoutGeo,
+      totalOrders: ordersWithGeo + ordersWithoutGeo,
     });
 
     // Convert to arrays and calculate metrics
     const countryData = Object.values(countries)
       .map((country) => {
         const sessionCount = country.sessions.size;
+        const convertingSessionsCount = country.convertingSessions.size;
+        // Conversion rate = (unique converting sessions / total sessions) * 100
         const conversionRate = sessionCount > 0
-          ? (country.conversions / sessionCount) * 100
+          ? (convertingSessionsCount / sessionCount) * 100
           : 0;
         const avgOrderValue = country.orders > 0
           ? country.revenue / country.orders
@@ -189,8 +252,8 @@ export async function GET(request: NextRequest) {
           sessions: sessionCount,
           orders: country.orders,
           revenue: country.revenue,
-          conversions: country.conversions,
-          conversionRate,
+          conversions: convertingSessionsCount, // Number of unique converting sessions
+          conversionRate: Math.min(100, conversionRate), // Cap at 100%
           avgOrderValue,
         };
       })
@@ -199,8 +262,10 @@ export async function GET(request: NextRequest) {
     const stateData = Object.values(states)
       .map((state) => {
         const sessionCount = state.sessions.size;
+        const convertingSessionsCount = state.convertingSessions.size;
+        // Conversion rate = (unique converting sessions / total sessions) * 100
         const conversionRate = sessionCount > 0
-          ? (state.conversions / sessionCount) * 100
+          ? (convertingSessionsCount / sessionCount) * 100
           : 0;
         const avgOrderValue = state.orders > 0
           ? state.revenue / state.orders
@@ -212,8 +277,8 @@ export async function GET(request: NextRequest) {
           sessions: sessionCount,
           orders: state.orders,
           revenue: state.revenue,
-          conversions: state.conversions,
-          conversionRate,
+          conversions: convertingSessionsCount, // Number of unique converting sessions
+          conversionRate: Math.min(100, conversionRate), // Cap at 100%
           avgOrderValue,
         };
       })
@@ -226,9 +291,30 @@ export async function GET(request: NextRequest) {
     );
     const totalOrders = countryData.reduce((sum, country) => sum + country.orders, 0);
     const totalRevenue = countryData.reduce((sum, country) => sum + country.revenue, 0);
+    const totalConvertingSessions = Object.values(countries).reduce(
+      (sum, country) => sum + country.convertingSessions.size,
+      0
+    );
     const overallConversionRate = totalSessions > 0
-      ? (countryData.reduce((sum, country) => sum + country.conversions, 0) / totalSessions) * 100
+      ? Math.min(100, (totalConvertingSessions / totalSessions) * 100)
       : 0;
+
+    console.info('✅ [DEBUG] Geography - Final summary:', {
+      totalSessions,
+      totalOrders,
+      totalRevenue: totalRevenue.toFixed(2),
+      totalConvertingSessions,
+      overallConversionRate: overallConversionRate.toFixed(2),
+      countriesCount: countryData.length,
+      statesCount: stateData.length,
+      countryBreakdown: countryData.map(c => ({
+        country: c.country,
+        sessions: c.sessions,
+        orders: c.orders,
+        conversions: c.conversions,
+        conversionRate: c.conversionRate.toFixed(2),
+      })),
+    });
 
     return apiSuccess({
       countries: countryData,
@@ -244,6 +330,7 @@ export async function GET(request: NextRequest) {
       period,
     });
   } catch (error) {
+    console.error('❌ [DEBUG] Geography error:', error);
     return apiInternalError(error);
   }
 }
