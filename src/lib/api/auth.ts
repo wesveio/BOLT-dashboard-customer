@@ -99,35 +99,48 @@ export async function getAuthenticatedUser(): Promise<AuthResult> {
   const sessionToken = cookieStore.get('dashboard_session')?.value;
 
   if (!sessionToken) {
+    console.warn('⚠️ [DEBUG] No session token found in cookies');
     throw new AuthError('Not authenticated', 401);
   }
+
+  console.info(`✅ [DEBUG] Session token found, validating with database...`);
 
   const supabaseAdmin = getSupabaseAdmin();
 
   // Find session using RPC function (required for custom schema)
+  // RPC function already filters expired sessions (expires_at > NOW())
   const { data: sessions, error: sessionError } = await supabaseAdmin
     .rpc('get_session_by_token', { p_token: sessionToken });
 
   const session = sessions && sessions.length > 0 ? sessions[0] : null;
 
-  if (sessionError || !session) {
-    console.error('🚨 [DEBUG] Session error:', sessionError);
+  if (sessionError) {
+    console.error('🚨 [DEBUG] Session query error:', sessionError);
     throw new AuthError('Invalid or expired session', 401);
   }
 
-  // Validate session expiration (RPC already filters expired, but double-check)
+  if (!session) {
+    console.warn('⚠️ [DEBUG] Session not found or expired in database');
+    throw new AuthError('Invalid or expired session', 401);
+  }
+
+  // Validate session expiration with timezone-safe comparison
+  // Add a 5-second buffer to account for clock skew and timezone differences
   const now = new Date();
   const expiresAt = new Date(session.expires_at);
+  const bufferMs = 5000; // 5 seconds buffer
   const timeUntilExpiry = expiresAt.getTime() - now.getTime();
   const hoursUntilExpiry = Math.floor(timeUntilExpiry / (1000 * 60 * 60));
   const minutesUntilExpiry = Math.floor((timeUntilExpiry % (1000 * 60 * 60)) / (1000 * 60));
 
-  if (expiresAt < now) {
-    console.warn(`⚠️ [DEBUG] Session expired. Expires at: ${expiresAt.toISOString()}, Now: ${now.toISOString()}`);
+  // Since RPC already filters expired sessions, this check is mainly for logging
+  // We use a buffer to avoid false positives due to timezone differences
+  if (timeUntilExpiry < -bufferMs) {
+    console.warn(`⚠️ [DEBUG] Session expired (with buffer). Expires at: ${expiresAt.toISOString()}, Now: ${now.toISOString()}, Diff: ${timeUntilExpiry}ms`);
     throw new AuthError('Session expired', 401);
   }
 
-  console.info(`✅ [DEBUG] Session valid. Expires at: ${expiresAt.toISOString()}, Time until expiry: ${hoursUntilExpiry}h ${minutesUntilExpiry}m`);
+  console.info(`✅ [DEBUG] Session valid. Expires at: ${expiresAt.toISOString()}, Now: ${now.toISOString()}, Time until expiry: ${hoursUntilExpiry}h ${minutesUntilExpiry}m`);
 
   // Get user details using RPC function (required for custom schema)
   const { data: users, error: userError } = await supabaseAdmin
@@ -164,6 +177,24 @@ export async function getAuthenticatedUserOrNull(): Promise<AuthResult | null> {
     // Re-throw unexpected errors
     throw error;
   }
+}
+
+/**
+ * Validate session expiration with timezone-safe comparison
+ * Adds a buffer to account for clock skew and timezone differences
+ * 
+ * @param expiresAt - Session expiration date as ISO string
+ * @param bufferMs - Buffer in milliseconds (default: 5000ms / 5 seconds)
+ * @returns true if session is valid, false if expired
+ */
+export function isSessionValid(expiresAt: string, bufferMs: number = 5000): boolean {
+  const now = new Date();
+  const expires = new Date(expiresAt);
+  const timeUntilExpiry = expires.getTime() - now.getTime();
+  
+  // Session is valid if time until expiry is greater than negative buffer
+  // This accounts for small clock differences and timezone issues
+  return timeUntilExpiry >= -bufferMs;
 }
 
 /**

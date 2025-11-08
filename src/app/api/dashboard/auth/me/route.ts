@@ -38,11 +38,15 @@ export async function GET(_: NextRequest) {
       return apiSuccess({ user: mockUser });
     }
 
+    console.info('✅ [DEBUG] /api/dashboard/auth/me - Checking authentication...');
     const authResult = await getAuthenticatedUserOrNull();
     
     if (!authResult) {
+      console.warn('⚠️ [DEBUG] /api/dashboard/auth/me - Authentication failed: No auth result');
       return apiUnauthorized('Not authenticated');
     }
+
+    console.info('✅ [DEBUG] /api/dashboard/auth/me - Authentication successful');
 
     const { user } = authResult;
     const supabaseAdmin = getSupabaseAdmin();

@@ -7,6 +7,7 @@
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import { Plan, Subscription, hasFeature } from '@/utils/plans';
+import { isSessionValid } from '@/lib/api/auth';
 
 /**
  * Get user's active subscription and plan
@@ -49,8 +50,8 @@ export async function getUserPlan(): Promise<{
       };
     }
 
-    // Validate session expiration
-    if (new Date(session.expires_at) < new Date()) {
+    // Validate session expiration (with timezone-safe buffer)
+    if (!isSessionValid(session.expires_at)) {
       return {
         subscription: null,
         plan: null,

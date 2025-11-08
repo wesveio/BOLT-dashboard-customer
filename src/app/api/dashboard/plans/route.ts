@@ -3,6 +3,7 @@ import { getSupabaseAdmin, validateSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import { withAuth } from '@/lib/api/route-handler';
 import { apiError, apiInternalError } from '@/lib/api/responses';
+import { isSessionValid } from '@/lib/api/auth';
 
 /**
  * GET /api/dashboard/plans
@@ -36,8 +37,8 @@ export async function GET(_request: NextRequest) {
       return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
     }
 
-    // Validate session expiration (RPC already filters expired, but double-check)
-    if (new Date(session.expires_at) < new Date()) {
+    // Validate session expiration (RPC already filters expired, but double-check with timezone-safe buffer)
+    if (!isSessionValid(session.expires_at)) {
       return NextResponse.json({ error: 'Session expired' }, { status: 401 });
     }
 

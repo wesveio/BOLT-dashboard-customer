@@ -11,15 +11,15 @@ export type LocaleCode = 'en' | 'pt-BR' | 'es';
  */
 function getLocale(): LocaleCode {
   if (typeof window === 'undefined') return 'pt-BR';
-  
+
   const browserLocale = navigator.language.split('-')[0];
-  
+
   // Check if browser locale matches supported locale
   if (browserLocale === 'en' || browserLocale === 'pt' || browserLocale === 'es') {
     if (browserLocale === 'pt') return 'pt-BR';
     return browserLocale as LocaleCode;
   }
-  
+
   return 'pt-BR';
 }
 
@@ -92,6 +92,9 @@ export function formatRelativeTime(dateString: string | null | undefined): strin
 /**
  * Format currency with locale handling
  * Ensures negative values are clamped to 0
+ * Automatically detects if value is in cents (integer) or dollars (with decimals)
+ * - If value has decimals (e.g., 88.49), treats as dollars
+ * - If value is integer (e.g., 8849), treats as cents and divides by 100
  * Preserves exact values - formatting is only for display purposes
  */
 export function formatCurrency(
@@ -104,28 +107,34 @@ export function formatCurrency(
   }
 ): string {
   const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-  
+
   if (isNaN(numAmount)) return '$0.00';
 
   // Clamp negative values to 0
   const clampedAmount = Math.max(0, numAmount);
 
+  // Detect if value is in cents (integer) or dollars (has decimals)
+  // If the value has a decimal part, assume it's already in dollars
+  // Otherwise, assume it's in cents and divide by 100
+  const hasDecimals = clampedAmount % 1 !== 0;
+  const currencyAmount = hasDecimals ? clampedAmount : clampedAmount / 100;
+
   const selectedLocale = locale || getLocale();
-  
+
   // Use provided options or default to 2 decimal places for currency
   const minFractionDigits = options?.minimumFractionDigits ?? 2;
   const maxFractionDigits = options?.maximumFractionDigits ?? 2;
-  
+
   try {
     return new Intl.NumberFormat(selectedLocale, {
       style: 'currency',
       currency,
       minimumFractionDigits: minFractionDigits,
       maximumFractionDigits: maxFractionDigits,
-    }).format(clampedAmount);
+    }).format(currencyAmount);
   } catch {
     // Fallback formatting - preserve exact value
-    return `${currency === 'USD' ? '$' : currency} ${clampedAmount.toFixed(maxFractionDigits)}`;
+    return `${currency === 'USD' ? '$' : currency} ${currencyAmount.toFixed(maxFractionDigits)}`;
   }
 }
 
@@ -143,7 +152,7 @@ export function formatNumber(
   }
 ): string {
   const numValue = typeof value === 'string' ? parseFloat(value) : value;
-  
+
   if (isNaN(numValue)) return '0';
 
   // Clamp negative values to 0 unless explicitly allowed
@@ -173,7 +182,7 @@ export function formatPercentage(
   decimals: number = 1
 ): string {
   const numValue = typeof value === 'string' ? parseFloat(value) : value;
-  
+
   if (isNaN(numValue)) return '0%';
 
   return `${numValue.toFixed(decimals)}%`;
@@ -199,7 +208,7 @@ export function formatFileSize(bytes: number): string {
 export function formatDuration(seconds: number): string {
   // Clamp negative values to 0
   const clampedSeconds = Math.max(0, seconds);
-  
+
   if (clampedSeconds < 60) {
     return `${Math.round(clampedSeconds)}s`;
   } else if (clampedSeconds < 3600) {

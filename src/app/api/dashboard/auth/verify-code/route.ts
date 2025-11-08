@@ -165,10 +165,12 @@ export async function POST(request: NextRequest) {
     // Set HTTP-only cookies
     const cookieStore = await cookies();
     const cookieMaxAge = getSessionDurationSeconds();
+    const isProduction = process.env.NODE_ENV === 'production';
+    
     cookieStore.set('dashboard_session', sessionToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: isProduction,
+      sameSite: 'lax', // 'lax' allows cookies to be sent on top-level navigations (like page reload)
       maxAge: cookieMaxAge,
       path: '/',
     });
@@ -176,7 +178,7 @@ export async function POST(request: NextRequest) {
     const refreshCookieMaxAge = getRefreshTokenDurationSeconds();
     cookieStore.set('dashboard_refresh', refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: isProduction,
       sameSite: 'lax',
       maxAge: refreshCookieMaxAge,
       path: '/',
@@ -184,6 +186,7 @@ export async function POST(request: NextRequest) {
 
     console.info(`✅ [DEBUG] Session cookie set with maxAge: ${cookieMaxAge} seconds (${sessionDurationHours} hours)`);
     console.info(`✅ [DEBUG] Refresh cookie set with maxAge: ${refreshCookieMaxAge} seconds (${refreshDurationDays} days)`);
+    console.info(`✅ [DEBUG] Cookie settings: httpOnly=true, secure=${isProduction}, sameSite=lax, path=/`);
 
     return NextResponse.json({
       success: true,
