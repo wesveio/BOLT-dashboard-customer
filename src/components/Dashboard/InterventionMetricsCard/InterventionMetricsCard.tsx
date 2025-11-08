@@ -1,0 +1,54 @@
+'use client';
+
+import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
+import { formatNumber, formatPercentage } from '@/utils/formatters';
+import {
+  BoltIcon,
+  CheckCircleIcon,
+  ChartBarIcon,
+  CurrencyDollarIcon,
+} from '@heroicons/react/24/outline';
+import type { InterventionMetricsResponse } from '@/hooks/useInterventionMetrics';
+
+interface InterventionMetricsCardProps {
+  metrics: InterventionMetricsResponse;
+  isLoading?: boolean;
+}
+
+export function InterventionMetricsCard({ metrics, isLoading }: InterventionMetricsCardProps) {
+  const activeConfigs = Object.values(metrics.byType).filter((m) => m.total > 0).length;
+
+  return (
+    <>
+      <MetricCard
+        title="Total Interventions"
+        value={formatNumber(metrics.totalInterventions)}
+        subtitle="All interventions in period"
+        icon={<BoltIcon className="w-6 h-6 text-white" />}
+        isLoading={isLoading}
+      />
+      <MetricCard
+        title="Conversion Rate"
+        value={formatPercentage(metrics.overallConversionRate, 1)}
+        subtitle="Overall conversion with interventions"
+        icon={<CheckCircleIcon className="w-6 h-6 text-white" />}
+        isLoading={isLoading}
+      />
+      <MetricCard
+        title="Active Configs"
+        value={formatNumber(activeConfigs)}
+        subtitle="Intervention types configured"
+        icon={<ChartBarIcon className="w-6 h-6 text-white" />}
+        isLoading={isLoading}
+      />
+      <MetricCard
+        title="Estimated ROI"
+        value={metrics.estimatedROI > 0 ? `${formatNumber(metrics.estimatedROI)}%` : 'N/A'}
+        subtitle="Return on investment"
+        icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
+        isLoading={isLoading}
+      />
+    </>
+  );
+}
+

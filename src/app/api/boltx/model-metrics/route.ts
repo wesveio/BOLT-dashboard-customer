@@ -31,9 +31,9 @@ export async function GET(request: NextRequest) {
     const supabaseAdmin = getSupabaseAdmin();
 
     // Get all abandonment predictions for this customer
-    // Query directly from analytics schema using raw SQL or schema-qualified table
+    // Query directly from analytics schema using schema-qualified table
     const { data: predictions, error: predictionsError } = await supabaseAdmin
-      .from('ai_predictions')
+      .from('analytics.ai_predictions')
       .select('id, session_id, risk_score, risk_level, created_at')
       .eq('customer_id', user.account_id)
       .eq('prediction_type', 'abandonment')

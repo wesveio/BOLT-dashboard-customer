@@ -708,7 +708,23 @@
       },
       "interventions": {
         "title": "Intervenções",
-        "description": "Intervenções automáticas para reduzir o abandono no checkout"
+        "description": "Intervenções automáticas para reduzir o abandono no checkout",
+        "loading": "Carregando intervenções...",
+        "errors": {
+          "loadFailed": "Falha ao carregar intervenções"
+        },
+        "metrics": {
+          "title": "Métricas Detalhadas",
+          "subtitle": "Detalhamento por tipo de intervenção"
+        },
+        "charts": {
+          "effectivenessTitle": "Efetividade das Intervenções",
+          "effectivenessSubtitle": "Taxa de conversão por tipo de intervenção"
+        },
+        "table": {
+          "title": "Intervenções Recentes",
+          "subtitle": "Lista de intervenções aplicadas no período selecionado"
+        }
       },
       "personalization": {
         "title": "Personalização",

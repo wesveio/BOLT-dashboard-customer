@@ -182,7 +182,7 @@ export default function PredictionsPage() {
                   maxRows={100}
                 />
               </ChartCard>
-            </div>
+        </div>
           </>
         )}
       </PageWrapper>

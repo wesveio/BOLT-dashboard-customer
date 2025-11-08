@@ -714,7 +714,23 @@
       },
       "interventions": {
         "title": "Interventions",
-        "description": "Automatic interventions to reduce checkout abandonment"
+        "description": "Automatic interventions to reduce checkout abandonment",
+        "loading": "Loading interventions...",
+        "errors": {
+          "loadFailed": "Failed to load interventions"
+        },
+        "metrics": {
+          "title": "Detailed Metrics",
+          "subtitle": "Breakdown by intervention type"
+        },
+        "charts": {
+          "effectivenessTitle": "Intervention Effectiveness",
+          "effectivenessSubtitle": "Conversion rate by intervention type"
+        },
+        "table": {
+          "title": "Recent Interventions",
+          "subtitle": "List of interventions applied in the selected period"
+        }
       },
       "personalization": {
         "title": "Personalization",
