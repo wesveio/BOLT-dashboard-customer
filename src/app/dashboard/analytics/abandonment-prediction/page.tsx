@@ -106,7 +106,9 @@ export default function AbandonmentPredictionPage() {
           startContent={<ExclamationTriangleIcon className="w-5 h-5" />}
         >
           <p className="text-sm font-semibold">
-            {highRiskSessions.length} {t('highRiskSessionsDetected').replace('{plural}', highRiskSessions.length !== 1 ? 's' : '')}
+            {highRiskSessions.length} {t('highRiskSessionsDetected', { 
+              plural: highRiskSessions.length !== 1 ? 's' : '' 
+            })}
           </p>
           <p className="text-xs mt-1">
             {t('implementInterventions')}
