@@ -58,6 +58,15 @@ export async function GET(request: NextRequest) {
     const extendedStart = new Date(range.start);
     extendedStart.setMonth(extendedStart.getMonth() - 6); // Look back 6 months
 
+    console.info('✅ [DEBUG] Retention - Date range:', {
+      period,
+      range: {
+        start: range.start.toISOString(),
+        end: range.end.toISOString(),
+      },
+      extendedStart: extendedStart.toISOString(),
+    });
+
     // Query all completed checkout events
     const { data: checkoutEvents, error: checkoutError } = await supabaseAdmin
       .rpc('get_analytics_events_by_types', {
@@ -68,9 +77,11 @@ export async function GET(request: NextRequest) {
       });
 
     if (checkoutError) {
-      console.error('Get retention checkout events error:', checkoutError);
+      console.error('❌ [DEBUG] Get retention checkout events error:', checkoutError);
       return apiError('Failed to fetch retention data', 500);
     }
+
+    console.info('✅ [DEBUG] Retention - Events found:', checkoutEvents?.length || 0);
 
     // Group orders by customer (using customer_id or order_form_id as fallback)
     const customerOrders: Record<string, {
@@ -84,15 +95,34 @@ export async function GET(request: NextRequest) {
       lastOrderDate: Date;
     }> = {};
 
+    let eventsWithRevenue = 0;
+    let eventsWithoutRevenue = 0;
+
     checkoutEvents?.forEach((event: AnalyticsEvent) => {
       const revenue = extractRevenue(event);
-      if (revenue <= 0) return;
+      if (revenue <= 0) {
+        eventsWithoutRevenue++;
+        return;
+      }
+
+      eventsWithRevenue++;
 
       // Extract customer_id from metadata if available, otherwise use fallback
       const metadata = event.metadata || {};
       const customerId = (metadata.customer_id as string) || null;
-      const customerKey = customerId || event.order_form_id || event.session_id;
+      const customerKey = customerId || event.order_form_id || event.session_id || 'unknown';
       const orderDate = new Date(event.timestamp);
+
+      // Validate date is not in the future
+      const now = new Date();
+      if (orderDate > now) {
+        console.warn('‼️ [DEBUG] Retention - Future date detected:', {
+          orderDate: orderDate.toISOString(),
+          customerKey,
+        });
+        // Use current date instead of future date
+        orderDate.setTime(now.getTime());
+      }
 
       if (!customerOrders[customerKey]) {
         customerOrders[customerKey] = {
@@ -116,6 +146,13 @@ export async function GET(request: NextRequest) {
       if (orderDate > customer.lastOrderDate) {
         customer.lastOrderDate = orderDate;
       }
+    });
+
+    console.info('✅ [DEBUG] Retention - Event processing:', {
+      totalEvents: checkoutEvents?.length || 0,
+      eventsWithRevenue,
+      eventsWithoutRevenue,
+      uniqueCustomers: Object.keys(customerOrders).length,
     });
 
     // Calculate retention metrics
@@ -149,18 +186,35 @@ export async function GET(request: NextRequest) {
       : 0;
 
     // Calculate average days between purchases for returning customers
-    const avgDaysBetweenPurchases = returningCustomers.length > 0
-      ? returningCustomers.reduce((sum, customer) => {
-          if (customer.orders.length < 2) return sum;
-          
-          const sortedOrders = customer.orders.sort((a, b) => a.date.getTime() - b.date.getTime());
-          let totalDays = 0;
-          for (let i = 1; i < sortedOrders.length; i++) {
-            totalDays += (sortedOrders[i].date.getTime() - sortedOrders[i - 1].date.getTime()) / (1000 * 60 * 60 * 24);
-          }
-          return sum + (totalDays / (sortedOrders.length - 1));
-        }, 0) / returningCustomers.length
+    // Collect all intervals from all returning customers, then calculate overall average
+    let totalDaysAllIntervals = 0;
+    let totalValidIntervals = 0;
+
+    returningCustomers.forEach((customer) => {
+      if (customer.orders.length < 2) return;
+
+      const sortedOrders = customer.orders.sort((a, b) => a.date.getTime() - b.date.getTime());
+
+      for (let i = 1; i < sortedOrders.length; i++) {
+        const daysDiff = (sortedOrders[i].date.getTime() - sortedOrders[i - 1].date.getTime()) / (1000 * 60 * 60 * 24);
+        // Only count positive intervals (ignore same-day orders)
+        if (daysDiff > 0) {
+          totalDaysAllIntervals += daysDiff;
+          totalValidIntervals++;
+        }
+      }
+    });
+
+    const avgDaysBetweenPurchases = totalValidIntervals > 0
+      ? totalDaysAllIntervals / totalValidIntervals
       : 0;
+
+    console.info('✅ [DEBUG] Retention - Days between orders calculation:', {
+      returningCustomers: returningCustomers.length,
+      totalValidIntervals,
+      totalDaysAllIntervals: totalDaysAllIntervals.toFixed(2),
+      avgDaysBetweenPurchases: avgDaysBetweenPurchases.toFixed(2),
+    });
 
     // Calculate churn rate
     const totalCustomers = customers.length;
@@ -186,12 +240,27 @@ export async function GET(request: NextRequest) {
     }> = {};
 
     customers.forEach((customer) => {
-      const cohortKey = `${customer.firstOrderDate.getFullYear()}-${String(customer.firstOrderDate.getMonth() + 1).padStart(2, '0')}`;
-      
+      // Ensure date is valid and not in the future
+      const firstOrderDate = new Date(customer.firstOrderDate);
+      const now = new Date();
+
+      if (firstOrderDate > now) {
+        console.warn('‼️ [DEBUG] Retention - Future first order date detected:', {
+          firstOrderDate: firstOrderDate.toISOString(),
+          customerKey: customer.customerId || 'unknown',
+        });
+        // Use current date instead
+        firstOrderDate.setTime(now.getTime());
+      }
+
+      const year = firstOrderDate.getFullYear();
+      const month = firstOrderDate.getMonth() + 1; // getMonth() returns 0-11
+      const cohortKey = `${year}-${String(month).padStart(2, '0')}`;
+
       if (!cohorts[cohortKey]) {
         cohorts[cohortKey] = {
           cohort: cohortKey,
-          firstPurchaseDate: customer.firstOrderDate,
+          firstPurchaseDate: new Date(firstOrderDate),
           customers: [],
           retentionByPeriod: {
             d30: 0,
@@ -200,8 +269,14 @@ export async function GET(request: NextRequest) {
           },
         };
       }
-      
+
       cohorts[cohortKey].customers.push(customer);
+    });
+
+    console.info('✅ [DEBUG] Retention - Cohort grouping:', {
+      totalCohorts: Object.keys(cohorts).length,
+      cohortMonths: Object.keys(cohorts).sort(),
+      totalCustomers: customers.length,
     });
 
     // Calculate retention for each cohort
@@ -209,30 +284,70 @@ export async function GET(request: NextRequest) {
       const cohortSize = cohort.customers.length;
       if (cohortSize === 0) return;
 
-      const d30Date = new Date(cohort.firstPurchaseDate);
+      const firstPurchaseDate = new Date(cohort.firstPurchaseDate);
+
+      // Calculate period end dates
+      const d30Date = new Date(firstPurchaseDate);
       d30Date.setDate(d30Date.getDate() + 30);
-      const d60Date = new Date(cohort.firstPurchaseDate);
+      const d60Date = new Date(firstPurchaseDate);
       d60Date.setDate(d60Date.getDate() + 60);
-      const d90Date = new Date(cohort.firstPurchaseDate);
+      const d90Date = new Date(firstPurchaseDate);
       d90Date.setDate(d90Date.getDate() + 90);
 
-      cohort.retentionByPeriod.d30 = cohort.customers.filter(c => 
-        c.lastOrderDate >= d30Date || c.orders.some(o => o.date >= d30Date)
-      ).length / cohortSize * 100;
+      // For D30 retention: customers who made a purchase between first purchase and 30 days later
+      // Only calculate if 30 days have passed since cohort start
+      if (now >= d30Date) {
+        const retainedD30 = cohort.customers.filter(c => {
+          // Check if customer made a repeat purchase within 30 days
+          return c.orders.some(o => {
+            const daysSinceFirst = (o.date.getTime() - firstPurchaseDate.getTime()) / (1000 * 60 * 60 * 24);
+            return daysSinceFirst > 0 && daysSinceFirst <= 30;
+          });
+        });
+        cohort.retentionByPeriod.d30 = (retainedD30.length / cohortSize) * 100;
+      }
 
-      cohort.retentionByPeriod.d60 = cohort.customers.filter(c => 
-        c.lastOrderDate >= d60Date || c.orders.some(o => o.date >= d60Date)
-      ).length / cohortSize * 100;
+      // For D60 retention: customers who made a purchase between first purchase and 60 days later
+      if (now >= d60Date) {
+        const retainedD60 = cohort.customers.filter(c => {
+          return c.orders.some(o => {
+            const daysSinceFirst = (o.date.getTime() - firstPurchaseDate.getTime()) / (1000 * 60 * 60 * 24);
+            return daysSinceFirst > 0 && daysSinceFirst <= 60;
+          });
+        });
+        cohort.retentionByPeriod.d60 = (retainedD60.length / cohortSize) * 100;
+      }
 
-      cohort.retentionByPeriod.d90 = cohort.customers.filter(c => 
-        c.lastOrderDate >= d90Date || c.orders.some(o => o.date >= d90Date)
-      ).length / cohortSize * 100;
+      // For D90 retention: customers who made a purchase between first purchase and 90 days later
+      if (now >= d90Date) {
+        const retainedD90 = cohort.customers.filter(c => {
+          return c.orders.some(o => {
+            const daysSinceFirst = (o.date.getTime() - firstPurchaseDate.getTime()) / (1000 * 60 * 60 * 24);
+            return daysSinceFirst > 0 && daysSinceFirst <= 90;
+          });
+        });
+        cohort.retentionByPeriod.d90 = (retainedD90.length / cohortSize) * 100;
+      }
     });
 
-    // Sort cohorts by date
+    // Sort cohorts by date and filter out future dates
     const cohortData = Object.values(cohorts)
+      .filter(cohort => cohort.firstPurchaseDate <= now) // Filter out future cohorts
       .sort((a, b) => a.firstPurchaseDate.getTime() - b.firstPurchaseDate.getTime())
       .slice(-12); // Last 12 cohorts
+
+    console.info('✅ [DEBUG] Retention - Final summary:', {
+      totalCustomers,
+      newCustomers: newCustomers.length,
+      returningCustomers: returningCustomers.length,
+      churnedCustomers: churnedCustomers.length,
+      retentionRate: retentionRate.toFixed(2),
+      churnRate: churnRate.toFixed(2),
+      avgPurchaseFrequency: avgPurchaseFrequency.toFixed(2),
+      avgDaysBetweenPurchases: Math.round(avgDaysBetweenPurchases),
+      cohortsReturned: cohortData.length,
+      retentionRates,
+    });
 
     return apiSuccess({
       summary: {
@@ -254,6 +369,7 @@ export async function GET(request: NextRequest) {
       period,
     });
   } catch (error) {
+    console.error('❌ [DEBUG] Retention error:', error);
     return apiInternalError(error);
   }
 }

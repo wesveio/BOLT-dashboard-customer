@@ -16,7 +16,7 @@ import {
   ChartBarIcon,
   ClockIcon,
 } from '@heroicons/react/24/outline';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
 import { useRetentionData } from '@/hooks/useDashboardData';
 import { formatNumber, formatPercentage } from '@/utils/formatters';
 import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
@@ -54,12 +54,14 @@ export default function RetentionAnalyticsPage() {
   ];
 
   // Prepare cohort retention data
-  const cohortChartData = cohorts.map(cohort => ({
-    cohort: cohort.cohort,
-    d30: cohort.retentionByPeriod.d30,
-    d60: cohort.retentionByPeriod.d60,
-    d90: cohort.retentionByPeriod.d90,
-  }));
+  const cohortChartData = cohorts
+    .filter(cohort => cohort.customers > 0) // Only include cohorts with customers
+    .map(cohort => ({
+      cohort: cohort.cohort,
+      d30: cohort.retentionByPeriod.d30,
+      d60: cohort.retentionByPeriod.d60,
+      d90: cohort.retentionByPeriod.d90,
+    }));
 
   return (
     <PageWrapper>
@@ -177,7 +179,7 @@ export default function RetentionAnalyticsPage() {
       </div>
 
       {/* Cohort Analysis */}
-      {cohorts.length > 0 && (
+      {cohortChartData.length > 0 && (
         <div className="mb-8">
           <ChartCard
             title={t('cohortRetentionAnalysisTitle')}
@@ -208,6 +210,7 @@ export default function RetentionAnalyticsPage() {
                   }}
                   formatter={(value: number) => [`${value.toFixed(1)}%`, t('retention')]}
                 />
+                <Legend />
                 <Bar dataKey="d30" fill="#2563eb" radius={[8, 8, 0, 0]} name="D30" />
                 <Bar dataKey="d60" fill="#9333ea" radius={[8, 8, 0, 0]} name="D60" />
                 <Bar dataKey="d90" fill="#10b981" radius={[8, 8, 0, 0]} name="D90" />
