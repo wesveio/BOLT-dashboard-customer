@@ -752,7 +752,27 @@
       },
       "optimization": {
         "title": "Otimização de Formulários",
-        "description": "Otimização de campos de formulário com IA para melhor conversão"
+        "description": "Otimização de campos de formulário com IA para melhor conversão",
+        "loading": "Carregando dados de otimização de formulários...",
+        "errors": {
+          "loadFailed": "Falha ao carregar dados de otimização de formulários"
+        },
+        "metrics": {
+          "title": "Métricas por Etapa",
+          "subtitle": "Performance por etapa do checkout"
+        },
+        "charts": {
+          "effectivenessTitle": "Efetividade da Otimização",
+          "effectivenessSubtitle": "Taxa de conversão com vs sem otimização",
+          "fieldPerformanceTitle": "Performance dos Campos",
+          "fieldPerformanceSubtitle": "Métricas de performance por campo",
+          "trendTitle": "Tendência de Performance",
+          "trendSubtitle": "Performance dos campos ao longo do tempo"
+        },
+        "table": {
+          "title": "Detalhes de Performance dos Campos",
+          "subtitle": "Métricas detalhadas de performance para todos os campos"
+        }
       },
       "settings": {
         "title": "Configurações do BoltX",

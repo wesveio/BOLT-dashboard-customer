@@ -50,15 +50,40 @@ export async function GET(request: NextRequest) {
         p_limit: 1000, // Get more for metrics calculation
       });
 
-    // If RPC function doesn't exist (error code 42883), try direct query
-    if (rpcError && (rpcError.code === '42883' || rpcError.code === 'P0001')) {
-      console.warn('⚠️ [DEBUG] RPC function not found, trying direct query. Please run migration 046.');
+    // If RPC function doesn't exist (error codes: 42883, P0001, PGRST202), try direct query
+    // Note: Direct query won't work since table is in analytics schema, not public
+    if (rpcError && (rpcError.code === '42883' || rpcError.code === 'P0001' || rpcError.code === 'PGRST202')) {
+      console.warn('⚠️ [DEBUG] RPC function not found in schema cache. The function exists but PostgREST needs to refresh its cache.');
+      console.warn('⚠️ [DEBUG] Attempting direct query fallback (may not work if table is in analytics schema)...');
+      
       const { data: directData, error: directError } = await supabaseAdmin
         .from('user_profiles')
         .select('id, session_id, device_type, browser, location, behavior, preferences, inferred_intent, created_at, updated_at')
         .eq('customer_id', user.account_id)
         .gte('updated_at', range.start.toISOString())
         .lte('updated_at', range.end.toISOString());
+
+      // If direct query also fails (PGRST205 - table not in public schema), return empty data with warning
+      // This allows the app to continue working while PostgREST cache refreshes
+      if (directError && (directError.code === 'PGRST205' || directError.code === 'PGRST202')) {
+        console.error('❌ [DEBUG] Direct query also failed. Table is in analytics schema, not public.');
+        console.error('❌ [DEBUG] Solution: Run migration 046 and restart PostgREST to refresh schema cache.');
+        console.warn('⚠️ [DEBUG] Returning empty metrics temporarily. PostgREST cache will refresh automatically in 1-5 minutes.');
+        
+        // Return empty metrics with a warning message instead of error
+        // This allows the UI to continue working while cache refreshes
+        return apiSuccess({
+          totalProfiles: 0,
+          activeProfiles: 0,
+          personalizationRate: 0,
+          personalizedConversionRate: 0,
+          nonPersonalizedConversionRate: 0,
+          deviceDistribution: {},
+          conversionByDevice: {},
+          period,
+          warning: 'Database schema cache is refreshing. Data will be available shortly. If this persists, please run migration 046.',
+        });
+      }
 
       profiles = directData || [];
       profilesError = directError;

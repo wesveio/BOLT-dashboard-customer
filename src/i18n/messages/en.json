@@ -758,7 +758,27 @@
       },
       "optimization": {
         "title": "Form Optimization",
-        "description": "AI-powered form field optimization for better conversion"
+        "description": "AI-powered form field optimization for better conversion",
+        "loading": "Loading form optimization data...",
+        "errors": {
+          "loadFailed": "Failed to load form optimization data"
+        },
+        "metrics": {
+          "title": "Step Metrics",
+          "subtitle": "Performance by checkout step"
+        },
+        "charts": {
+          "effectivenessTitle": "Optimization Effectiveness",
+          "effectivenessSubtitle": "Conversion rate with vs without optimization",
+          "fieldPerformanceTitle": "Field Performance",
+          "fieldPerformanceSubtitle": "Performance metrics by field",
+          "trendTitle": "Performance Trend",
+          "trendSubtitle": "Field performance over time"
+        },
+        "table": {
+          "title": "Field Performance Details",
+          "subtitle": "Detailed performance metrics for all fields"
+        }
       },
       "settings": {
         "title": "BoltX Settings",

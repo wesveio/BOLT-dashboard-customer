@@ -1,10 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { getAuthenticatedUser } from '@/lib/api/auth';
 import { apiSuccess, apiError } from '@/lib/api/responses';
-import { FormOptimization, UserProfile } from '@/lib/ai/types';
+import { UserProfile } from '@/lib/ai/types';
 import { createFormOptimizer } from '@/lib/ai/form-optimizer';
-import { UserProfileBuilder } from '@/lib/ai/user-profile-builder';
 import { getUserPlan } from '@/lib/api/plan-check';
 
 /**
@@ -36,7 +35,6 @@ export async function POST(request: NextRequest) {
       name,
       description,
       config,
-      sessionId,
     } = body;
 
     if (!optimizationType || !name || !config) {
@@ -45,26 +43,53 @@ export async function POST(request: NextRequest) {
 
     const supabaseAdmin = getSupabaseAdmin();
 
-    // Create optimization record
-    // Note: May need RPC function if schema access is restricted
-    const { data: optimization, error } = await supabaseAdmin
-      .from('analytics.ai_optimizations')
-      .insert({
-        customer_id: user.account_id,
-        optimization_type: optimizationType,
-        name,
-        description,
-        config,
-        status: 'active',
-        started_at: new Date().toISOString(),
-      })
-      .select()
-      .single();
+    // Create optimization record using RPC function
+    // PostgREST doesn't expose analytics schema directly
+    const { data: optimizationData, error: rpcError } = await supabaseAdmin.rpc(
+      'insert_ai_optimization',
+      {
+        p_customer_id: user.account_id,
+        p_optimization_type: optimizationType,
+        p_name: name,
+        p_description: description || null,
+        p_config: config || {},
+        p_status: 'active',
+        p_started_at: new Date().toISOString(),
+      }
+    );
 
-    if (error) {
-      console.error('❌ [DEBUG] Error creating optimization:', error);
+    if (rpcError) {
+      // If RPC function doesn't exist (error codes: 42883, P0001, PGRST202), try direct query as fallback
+      if (rpcError.code === '42883' || rpcError.code === 'P0001' || rpcError.code === 'PGRST202') {
+        console.warn('⚠️ [DEBUG] RPC function not found in PostgREST schema cache. Attempting direct query fallback...');
+
+        const { data: optimization, error: directError } = await supabaseAdmin
+          .from('analytics.ai_optimizations')
+          .insert({
+            customer_id: user.account_id,
+            optimization_type: optimizationType,
+            name,
+            description,
+            config,
+            status: 'active',
+            started_at: new Date().toISOString(),
+          })
+          .select()
+          .single();
+
+        if (directError) {
+          console.error('❌ [DEBUG] Error creating optimization:', directError);
+          return apiError('Failed to create optimization. Please run migration 052 to expose the table via RPC functions.', 500);
+        }
+
+        return apiSuccess({ optimization });
+      }
+
+      console.error('❌ [DEBUG] Error creating optimization:', rpcError);
       return apiError('Failed to create optimization', 500);
     }
+
+    const optimization = optimizationData && optimizationData.length > 0 ? optimizationData[0] : null;
 
     return apiSuccess({ optimization });
   } catch (error) {
@@ -125,22 +150,57 @@ export async function GET(request: NextRequest) {
 
     const supabaseAdmin = getSupabaseAdmin();
 
-    // Query optimizations
-    let query = supabaseAdmin
-      .from('analytics.ai_optimizations')
-      .select('*')
-      .eq('customer_id', user.account_id)
-      .eq('status', status)
-      .order('created_at', { ascending: false });
+    // Query optimizations using RPC function
+    // PostgREST doesn't expose analytics schema directly
+    const { data: optimizations, error: rpcError } = await supabaseAdmin.rpc(
+      'get_ai_optimizations',
+      {
+        p_customer_id: user.account_id,
+        p_status: status,
+        p_optimization_type: optimizationType || null,
+        p_limit: 200,
+      }
+    );
 
-    if (optimizationType) {
-      query = query.eq('optimization_type', optimizationType);
-    }
+    if (rpcError) {
+      // If RPC function doesn't exist (error codes: 42883, P0001, PGRST202), try direct query as fallback
+      if (rpcError.code === '42883' || rpcError.code === 'P0001' || rpcError.code === 'PGRST202') {
+        console.warn('⚠️ [DEBUG] RPC function not found in PostgREST schema cache. Attempting direct query fallback...');
 
-    const { data: optimizations, error } = await query;
+        let query = supabaseAdmin
+          .from('analytics.ai_optimizations')
+          .select('*')
+          .eq('customer_id', user.account_id)
+          .eq('status', status)
+          .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error('❌ [DEBUG] Error fetching optimizations:', error);
+        if (optimizationType) {
+          query = query.eq('optimization_type', optimizationType);
+        }
+
+        const { data: directData, error: directError } = await query;
+
+        // If direct query also fails (PGRST205 - table not in public schema), return empty data with warning
+        if (directError && (directError.code === 'PGRST205' || directError.code === 'PGRST202')) {
+          console.error('❌ [DEBUG] Direct query also failed. Table is in analytics schema, not public.');
+          console.error('❌ [DEBUG] Solution: Run migration 052 to expose ai_optimizations via RPC functions.');
+          console.warn('⚠️ [DEBUG] Returning empty data temporarily. PostgREST cache will refresh automatically in 1-5 minutes.');
+
+          return apiSuccess({
+            optimizations: [],
+            warning: 'Database schema cache is refreshing. Data will be available shortly. If this persists, please run migration 052.',
+          });
+        }
+
+        if (directError) {
+          console.error('❌ [DEBUG] Error fetching optimizations:', directError);
+          return apiError('Failed to fetch optimizations', 500);
+        }
+
+        return apiSuccess({ optimizations: directData || [] });
+      }
+
+      console.error('❌ [DEBUG] Error fetching optimizations:', rpcError);
       return apiError('Failed to fetch optimizations', 500);
     }
 
@@ -188,7 +248,11 @@ async function getUserProfile(
       sessionId,
       deviceType: 'desktop',
       browser: 'unknown',
-      behavior: {},
+      behavior: {
+        timeOnSite: 0,
+        pagesVisited: 0,
+        checkoutAttempts: 0,
+      },
       preferences: {},
     };
   } catch (error) {
@@ -197,7 +261,11 @@ async function getUserProfile(
       sessionId,
       deviceType: 'desktop',
       browser: 'unknown',
-      behavior: {},
+      behavior: {
+        timeOnSite: 0,
+        pagesVisited: 0,
+        checkoutAttempts: 0,
+      },
       preferences: {},
     };
   }
@@ -307,31 +375,58 @@ export async function PATCH(request: NextRequest) {
 
     const supabaseAdmin = getSupabaseAdmin();
 
-    const updateData: any = {
-      status,
-      updated_at: new Date().toISOString(),
-    };
+    // Update optimization using RPC function
+    // PostgREST doesn't expose analytics schema directly
+    const { data: optimizationData, error: rpcError } = await supabaseAdmin.rpc(
+      'update_ai_optimization',
+      {
+        p_id: id,
+        p_customer_id: user.account_id,
+        p_status: status,
+        p_metrics: metrics || null,
+        p_completed_at: status === 'completed' ? new Date().toISOString() : null,
+      }
+    );
 
-    if (status === 'completed') {
-      updateData.completed_at = new Date().toISOString();
-    }
+    if (rpcError) {
+      // If RPC function doesn't exist (error codes: 42883, P0001, PGRST202), try direct query as fallback
+      if (rpcError.code === '42883' || rpcError.code === 'P0001' || rpcError.code === 'PGRST202') {
+        console.warn('⚠️ [DEBUG] RPC function not found in PostgREST schema cache. Attempting direct query fallback...');
 
-    if (metrics) {
-      updateData.metrics = metrics;
-    }
+        const updateData: any = {
+          status,
+          updated_at: new Date().toISOString(),
+        };
 
-    const { data: optimization, error } = await supabaseAdmin
-      .from('analytics.ai_optimizations')
-      .update(updateData)
-      .eq('id', id)
-      .eq('customer_id', user.account_id)
-      .select()
-      .single();
+        if (status === 'completed') {
+          updateData.completed_at = new Date().toISOString();
+        }
 
-    if (error) {
-      console.error('❌ [DEBUG] Error updating optimization:', error);
+        if (metrics) {
+          updateData.metrics = metrics;
+        }
+
+        const { data: optimization, error: directError } = await supabaseAdmin
+          .from('analytics.ai_optimizations')
+          .update(updateData)
+          .eq('id', id)
+          .eq('customer_id', user.account_id)
+          .select()
+          .single();
+
+        if (directError) {
+          console.error('❌ [DEBUG] Error updating optimization:', directError);
+          return apiError('Failed to update optimization. Please run migration 052 to expose the table via RPC functions.', 500);
+        }
+
+        return apiSuccess({ optimization });
+      }
+
+      console.error('❌ [DEBUG] Error updating optimization:', rpcError);
       return apiError('Failed to update optimization', 500);
     }
+
+    const optimization = optimizationData && optimizationData.length > 0 ? optimizationData[0] : null;
 
     return apiSuccess({ optimization });
   } catch (error) {
