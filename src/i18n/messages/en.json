@@ -1323,6 +1323,37 @@
           "description": "Add this key to your checkout application's environment variables:"
         }
       },
+      "vtex": {
+        "title": "VTEX Credentials",
+        "description": "Configure your VTEX App Key and Token to connect with VTEX and enable checkout functionality",
+        "appKeyLabel": "App Key",
+        "appKeyPlaceholder": "Enter your VTEX App Key",
+        "appKeyDescription": "Your VTEX App Key (generated in VTEX Admin)",
+        "appTokenLabel": "App Token",
+        "appTokenPlaceholder": "Enter your VTEX App Token",
+        "appTokenDescription": "Your VTEX App Token (generated in VTEX Admin)",
+        "save": "Save Credentials",
+        "delete": "Delete Credentials",
+        "saveSuccess": "VTEX credentials saved successfully",
+        "saveError": "Failed to save VTEX credentials",
+        "deleteSuccess": "VTEX credentials deleted successfully",
+        "deleteError": "Failed to delete VTEX credentials",
+        "deleteConfirm": "Are you sure you want to delete VTEX credentials? This will disconnect your checkout from VTEX.",
+        "unauthorized": "Only administrators can manage VTEX credentials",
+        "fieldsRequired": "Both App Key and App Token are required",
+        "configured": {
+          "title": "VTEX Credentials Configured",
+          "description": "Your VTEX credentials are configured and the checkout is connected to VTEX.",
+          "lastUpdated": "Last updated"
+        },
+        "instructions": {
+          "title": "How to Get Your VTEX Credentials",
+          "description": "To connect your checkout with VTEX, you need to generate App Key and Token in your VTEX Admin:",
+          "step1": "Go to VTEX Admin → Settings → API Keys",
+          "step2": "Create a new API Key and Token",
+          "step3": "Copy the App Key and Token and paste them in the fields above"
+        }
+      },
       "customKeys": {
         "title": "Custom API Keys",
         "subtitle": "Manage your custom API keys for integrations",

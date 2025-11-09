@@ -1289,6 +1289,37 @@
           "description": "Agregue esta clave a las variables de entorno de su aplicación de checkout:"
         }
       },
+      "vtex": {
+        "title": "Credenciales VTEX",
+        "description": "Configura tu App Key y Token de VTEX para conectar con VTEX y habilitar la funcionalidad de checkout",
+        "appKeyLabel": "App Key",
+        "appKeyPlaceholder": "Ingresa tu App Key de VTEX",
+        "appKeyDescription": "Tu App Key de VTEX (generada en VTEX Admin)",
+        "appTokenLabel": "App Token",
+        "appTokenPlaceholder": "Ingresa tu App Token de VTEX",
+        "appTokenDescription": "Tu App Token de VTEX (generada en VTEX Admin)",
+        "save": "Guardar Credenciales",
+        "delete": "Eliminar Credenciales",
+        "saveSuccess": "Credenciales VTEX guardadas exitosamente",
+        "saveError": "Error al guardar credenciales VTEX",
+        "deleteSuccess": "Credenciales VTEX eliminadas exitosamente",
+        "deleteError": "Error al eliminar credenciales VTEX",
+        "deleteConfirm": "¿Está seguro de que desea eliminar las credenciales VTEX? Esto desconectará su checkout de VTEX.",
+        "unauthorized": "Solo los administradores pueden gestionar credenciales VTEX",
+        "fieldsRequired": "App Key y App Token son obligatorios",
+        "configured": {
+          "title": "Credenciales VTEX Configuradas",
+          "description": "Tus credenciales VTEX están configuradas y el checkout está conectado a VTEX.",
+          "lastUpdated": "Última actualización"
+        },
+        "instructions": {
+          "title": "Cómo Obtener Tus Credenciales VTEX",
+          "description": "Para conectar tu checkout con VTEX, necesitas generar App Key y Token en tu VTEX Admin:",
+          "step1": "Ve a VTEX Admin → Configuración → Claves de API",
+          "step2": "Crea una nueva App Key y Token",
+          "step3": "Copia la App Key y Token y pégalas en los campos de arriba"
+        }
+      },
       "customKeys": {
         "title": "Claves de API Personalizadas",
         "subtitle": "Gestiona tus claves de API personalizadas para integraciones",

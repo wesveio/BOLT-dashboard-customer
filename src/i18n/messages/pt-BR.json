@@ -1317,6 +1317,37 @@
           "description": "Adicione esta chave às variáveis de ambiente do seu aplicativo de checkout:"
         }
       },
+      "vtex": {
+        "title": "Credenciais VTEX",
+        "description": "Configure sua App Key e Token da VTEX para conectar com a VTEX e habilitar a funcionalidade de checkout",
+        "appKeyLabel": "App Key",
+        "appKeyPlaceholder": "Digite sua App Key da VTEX",
+        "appKeyDescription": "Sua App Key da VTEX (gerada no VTEX Admin)",
+        "appTokenLabel": "App Token",
+        "appTokenPlaceholder": "Digite sua App Token da VTEX",
+        "appTokenDescription": "Sua App Token da VTEX (gerada no VTEX Admin)",
+        "save": "Salvar Credenciais",
+        "delete": "Excluir Credenciais",
+        "saveSuccess": "Credenciais VTEX salvas com sucesso",
+        "saveError": "Falha ao salvar credenciais VTEX",
+        "deleteSuccess": "Credenciais VTEX excluídas com sucesso",
+        "deleteError": "Falha ao excluir credenciais VTEX",
+        "deleteConfirm": "Tem certeza de que deseja excluir as credenciais VTEX? Isso desconectará seu checkout da VTEX.",
+        "unauthorized": "Apenas administradores podem gerenciar credenciais VTEX",
+        "fieldsRequired": "App Key e App Token são obrigatórios",
+        "configured": {
+          "title": "Credenciais VTEX Configuradas",
+          "description": "Suas credenciais VTEX estão configuradas e o checkout está conectado à VTEX.",
+          "lastUpdated": "Última atualização"
+        },
+        "instructions": {
+          "title": "Como Obter Suas Credenciais VTEX",
+          "description": "Para conectar seu checkout com a VTEX, você precisa gerar App Key e Token no seu VTEX Admin:",
+          "step1": "Acesse VTEX Admin → Configurações → Chaves de API",
+          "step2": "Crie uma nova App Key e Token",
+          "step3": "Copie a App Key e Token e cole nos campos acima"
+        }
+      },
       "customKeys": {
         "title": "Chaves de API Personalizadas",
         "subtitle": "Gerencie suas chaves de API personalizadas para integrações",
