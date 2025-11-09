@@ -52,8 +52,27 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const period = parsePeriod(searchParams.get('period'));
 
+    // Parse custom date range if period is custom
+    let customStartDate: Date | null = null;
+    let customEndDate: Date | null = null;
+
+    if (period === 'custom') {
+      const startDateParam = searchParams.get('startDate');
+      const endDateParam = searchParams.get('endDate');
+      
+      if (startDateParam && endDateParam) {
+        customStartDate = new Date(startDateParam);
+        customEndDate = new Date(endDateParam);
+        
+        // Validate dates
+        if (isNaN(customStartDate.getTime()) || isNaN(customEndDate.getTime())) {
+          return apiError('Invalid date format. Use ISO 8601 format.', 400);
+        }
+      }
+    }
+
     // Calculate date range - extend back to capture first purchases
-    const range = getDateRange(period);
+    const range = getDateRange(period, customStartDate, customEndDate);
     // Look back further to identify first purchases
     const extendedStart = new Date(range.start);
     extendedStart.setMonth(extendedStart.getMonth() - 6); // Look back 6 months

@@ -54,8 +54,27 @@ export async function GET(request: NextRequest) {
     const period = parsePeriod(searchParams.get('period'));
     const forecastDays = parseInt(searchParams.get('days') || '30');
 
+    // Parse custom date range if period is custom
+    let customStartDate: Date | null = null;
+    let customEndDate: Date | null = null;
+
+    if (period === 'custom') {
+      const startDateParam = searchParams.get('startDate');
+      const endDateParam = searchParams.get('endDate');
+      
+      if (startDateParam && endDateParam) {
+        customStartDate = new Date(startDateParam);
+        customEndDate = new Date(endDateParam);
+        
+        // Validate dates
+        if (isNaN(customStartDate.getTime()) || isNaN(customEndDate.getTime())) {
+          return apiError('Invalid date format. Use ISO 8601 format.', 400);
+        }
+      }
+    }
+
     // Calculate date range - extend back to get historical data
-    const range = getDateRange(period);
+    const range = getDateRange(period, customStartDate, customEndDate);
     const historicalStart = new Date(range.start);
     historicalStart.setDate(historicalStart.getDate() - 90); // Look back 90 days
 

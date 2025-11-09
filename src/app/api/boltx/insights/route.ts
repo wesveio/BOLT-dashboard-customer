@@ -32,7 +32,28 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json().catch(() => ({}));
     const category = body.category as InsightCategory | undefined;
-    const period = parsePeriod(body.period || 'last_30_days');
+    // Map 'last_30_days' to 'month' for backward compatibility
+    const periodParam = body.period === 'last_30_days' ? 'month' : body.period;
+    const period = parsePeriod(periodParam || 'month');
+
+    // Parse custom date range if period is custom
+    let customStartDate: Date | null = null;
+    let customEndDate: Date | null = null;
+
+    if (period === 'custom') {
+      const startDateParam = body.startDate;
+      const endDateParam = body.endDate;
+      
+      if (startDateParam && endDateParam) {
+        customStartDate = new Date(startDateParam);
+        customEndDate = new Date(endDateParam);
+        
+        // Validate dates
+        if (isNaN(customStartDate.getTime()) || isNaN(customEndDate.getTime())) {
+          return apiError('Invalid date format. Use ISO 8601 format.', 400);
+        }
+      }
+    }
 
     const supabaseAdmin = getSupabaseAdmin();
     const aiService = createAIService();
@@ -42,7 +63,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get analytics data
-    const range = getDateRange(period);
+    const range = getDateRange(period, customStartDate, customEndDate);
     const analyticsData = await getAnalyticsData(supabaseAdmin, user.account_id, range);
 
     // Generate insights
