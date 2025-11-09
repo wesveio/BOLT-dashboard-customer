@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { Card, CardBody } from '@heroui/react';
 import { motion } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
@@ -18,7 +19,7 @@ interface MetricCardProps {
   className?: string;
 }
 
-export function MetricCard({
+export const MetricCard = memo(function MetricCard({
   title,
   value,
   subtitle,
@@ -70,5 +71,5 @@ export function MetricCard({
       </Card>
     </motion.div>
   );
-}
+});
 

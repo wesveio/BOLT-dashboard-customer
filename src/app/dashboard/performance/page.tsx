@@ -7,8 +7,7 @@ import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { RealtimeIndicator } from '@/components/Dashboard/RealtimeIndicator/RealtimeIndicator';
 import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
 import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
-import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
-import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
+import { PageStateHandler } from '@/components/Dashboard/PageStateHandler/PageStateHandler';
 import {
   ChartBarIcon,
   ClockIcon,
@@ -16,54 +15,36 @@ import {
   CheckCircleIcon,
 } from '@heroicons/react/24/outline';
 import { usePerformanceData } from '@/hooks/useDashboardData';
+import { useSafePerformanceMetrics, useSafeStepMetrics } from '@/hooks/useSafeMetrics';
 import { usePeriod } from '@/contexts/PeriodContext';
 import { formatDuration, formatPercentage } from '@/utils/formatters';
+import { clampValue } from '@/utils/data-validation';
 
 export default function PerformancePage() {
   const t = useTranslations('dashboard.performance');
   const { period, startDate, endDate } = usePeriod();
   const { metrics, funnelData, stepMetrics, isLoading, error, refetch } = usePerformanceData({ period, startDate, endDate });
 
-  // Ensure all metrics are non-negative before displaying
-  const safeMetrics = {
-    conversionRate: Math.max(0, parseFloat(metrics.conversionRate) || 0),
-    avgCheckoutTime: Math.max(0, metrics.avgCheckoutTime || 0),
-    abandonmentRate: Math.max(0, parseFloat(metrics.abandonmentRate) || 0),
-    totalSessions: Math.max(0, metrics.totalSessions || 0),
-  };
-
-  // Ensure step metrics have non-negative times
-  const safeStepMetrics = stepMetrics.map(step => ({
-    ...step,
-    avgTime: Math.max(0, step.avgTime || 0),
-    abandonment: Math.max(0, Math.min(100, step.abandonment || 0)),
-  }));
-
-  if (isLoading) {
-    return (
-      <PageWrapper>
-        <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <LoadingState message={t('messages.loading')} fullScreen />
-      </PageWrapper>
-    );
-  }
-
-  if (error) {
-    return (
-      <PageWrapper>
-        <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <ErrorState message={t('messages.failedToLoad')} onRetry={refetch} />
-      </PageWrapper>
-    );
-  }
+  // Normalize metrics using hooks
+  const safeMetrics = useSafePerformanceMetrics(metrics);
+  const safeStepMetrics = useSafeStepMetrics(stepMetrics);
 
   return (
-    <PageWrapper>
-      <PageHeader
-        title={t('title')}
-        subtitle={t('subtitle')}
-        action={<RealtimeIndicator isActive={true} />}
-      />
+    <PageStateHandler
+      isLoading={isLoading}
+      error={error}
+      onRetry={refetch}
+      title={t('title')}
+      subtitle={t('subtitle')}
+      loadingMessage={t('messages.loading')}
+      errorMessage={t('messages.failedToLoad')}
+    >
+      <PageWrapper>
+        <PageHeader
+          title={t('title')}
+          subtitle={t('subtitle')}
+          action={<RealtimeIndicator isActive={true} />}
+        />
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -103,10 +84,10 @@ export default function PerformancePage() {
       {/* Step Performance */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {safeStepMetrics.map((step) => {
-          const clampedAbandonment = Math.max(0, Math.min(100, step.abandonment));
-          const progressWidth = Math.max(0, Math.min(100, 100 - clampedAbandonment));
+          const clampedAbandonment = clampValue(step.abandonment, 0, 100);
+          const progressWidth = clampValue(100 - clampedAbandonment, 0, 100);
           const formattedAbandonment = formatPercentage(clampedAbandonment);
-          const safeAvgTime = Math.max(0, step.avgTime);
+          const safeAvgTime = step.avgTime;
 
           return (
             <ChartCard
@@ -138,7 +119,8 @@ export default function PerformancePage() {
           );
         })}
       </div>
-    </PageWrapper>
+      </PageWrapper>
+    </PageStateHandler>
   );
 }
 

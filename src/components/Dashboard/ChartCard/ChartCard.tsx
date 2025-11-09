@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { Card, CardBody } from '@heroui/react';
 import { motion } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
@@ -12,7 +13,7 @@ interface ChartCardProps {
   className?: string;
 }
 
-export function ChartCard({
+export const ChartCard = memo(function ChartCard({
   title,
   subtitle,
   children,
@@ -42,5 +43,5 @@ export function ChartCard({
       </Card>
     </motion.div>
   );
-}
+});
 

@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { useApi } from './useApi';
+import { ensureNonNegative, clampValue } from '@/utils/data-validation';
 import {
   defaultRevenueMetrics,
   defaultRevenueChartData,
@@ -417,10 +418,10 @@ export function useMetricsData(options: UseMetricsDataOptions = {}) {
     if (!data?.metrics) return defaultOverviewMetrics;
 
     return {
-      totalRevenue: Math.max(0, data.metrics.totalRevenue || 0),
-      totalOrders: Math.max(0, data.metrics.totalOrders || 0),
-      conversionRate: Math.max(0, Math.min(100, data.metrics.conversionRate || 0)),
-      totalSessions: Math.max(0, data.metrics.totalSessions || 0),
+      totalRevenue: ensureNonNegative(data.metrics.totalRevenue),
+      totalOrders: ensureNonNegative(data.metrics.totalOrders),
+      conversionRate: clampValue(data.metrics.conversionRate, 0, 100),
+      totalSessions: ensureNonNegative(data.metrics.totalSessions),
     };
   }, [data]);
 
