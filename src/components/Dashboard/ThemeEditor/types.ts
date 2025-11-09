@@ -237,6 +237,11 @@ export interface FeaturesConfig {
     newsletterSignup: boolean;
     orderNotes: boolean;
     saveAddress: boolean;
+    loginStep: boolean;
+    customData: boolean;
+    giftRegistry: boolean;
+    openTextField: boolean;
+    clientPreferences: boolean;
   };
   cart: {
     quantityControl: boolean;
@@ -245,6 +250,7 @@ export interface FeaturesConfig {
     imageDisplay: boolean;
     discountDisplay: boolean;
     undeliverableWarnings: boolean;
+    itemAttachments: boolean;
   };
   profile: {
     autofillFromVTEX: boolean;
@@ -268,6 +274,7 @@ export interface FeaturesConfig {
     boleto: boolean;
     pix: boolean;
     walletOptions: boolean;
+    cancelTransaction: boolean;
   };
   ux: {
     smoothScroll: boolean;
@@ -297,12 +304,14 @@ export interface TextsConfig {
   interface: {
     stepTitles: {
       cart: string;
+      login: string;
       profile: string;
       shipping: string;
       payment: string;
     };
     stepDescriptions: {
       cart: string;
+      login: string;
       profile: string;
       shipping: string;
       payment: string;

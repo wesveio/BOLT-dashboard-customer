@@ -63,64 +63,76 @@ export default function ShippingAnalyticsPage() {
       </div>
 
       {/* Shipping Methods Chart */}
-      <div className="mb-8">
-        <ChartCard
-          title="Shipping Method Usage"
-          subtitle="Distribution of shipping method selections"
-        >
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={shippingMethodsData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis
-                dataKey="method"
-                stroke="#6b7280"
-                style={{ fontSize: '12px' }}
-              />
-              <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#fff',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '8px',
-                }}
-              />
-              <Bar
-                dataKey="count"
-                fill="#2563eb"
-                radius={[8, 8, 0, 0]}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartCard>
-      </div>
+      {shippingMethodsData.length > 0 ? (
+        <>
+          <div className="mb-8">
+            <ChartCard
+              title="Shipping Method Usage"
+              subtitle="Distribution of shipping method selections"
+            >
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={shippingMethodsData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis
+                    dataKey="method"
+                    stroke="#6b7280"
+                    style={{ fontSize: '12px' }}
+                  />
+                  <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#fff',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                    }}
+                  />
+                  <Bar
+                    dataKey="count"
+                    fill="#2563eb"
+                    radius={[8, 8, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </div>
 
-      {/* Shipping Methods Details */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {shippingMethodsData.map((method: { method: string; count: number; avgDays?: number; avgCost?: number }) => (
-          <ChartCard key={method.method} title={method.method}>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Selections</span>
-                <span className="text-lg font-bold text-gray-900">
-                  {formatNumber(method.count)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Avg Delivery</span>
-                <span className="text-lg font-bold text-gray-900">
-                  {method.avgDays?.toFixed(1) || '0'} days
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Avg Cost</span>
-                <span className="text-lg font-bold text-gray-900">
-                  {formatCurrency(method.avgCost || 0)}
-                </span>
-              </div>
-            </div>
-          </ChartCard>
-        ))}
-      </div>
+          {/* Shipping Methods Details */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {shippingMethodsData.map((method: { method: string; count: number; avgDays?: number; avgCost?: number }) => (
+              <ChartCard key={method.method} title={method.method}>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Selections</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      {formatNumber(method.count)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Avg Delivery</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      {method.avgDays?.toFixed(1) || '0'} days
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Avg Cost</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      {formatCurrency(method.avgCost || 0)}
+                    </span>
+                  </div>
+                </div>
+              </ChartCard>
+            ))}
+          </div>
+        </>
+      ) : (
+        <ChartCard title="No Shipping Data" subtitle="No shipping data available for the selected period">
+          <div className="text-center py-12 text-gray-500">
+            <TruckIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+            <p className="text-lg font-semibold mb-2">No shipping methods found</p>
+            <p className="text-sm">Try selecting a different time period.</p>
+          </div>
+        </ChartCard>
+      )}
     </PageWrapper>
   );
 }

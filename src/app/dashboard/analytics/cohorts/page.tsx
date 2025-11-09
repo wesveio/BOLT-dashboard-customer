@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
@@ -18,13 +18,14 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { useCohortsData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
-import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
 
 export default function CohortsAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.cohorts');
   const tPeriods = useTranslations('dashboard.common.periods');
-  const [period, setPeriod] = useState<Period>('year');
-  const { summary, cohorts, isLoading, error, refetch } = useCohortsData({ period });
+  const { period, setPeriod, startDate, endDate } = usePeriod();
+  const { summary, cohorts, isLoading, error, refetch } = useCohortsData({ period, startDate, endDate });
 
   // Prepare average retention trend
   const avgRetentionTrend = useMemo(() => {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
+import { isSessionValid } from '@/lib/api/auth';
 
 // Support both old and expanded format
 const themeConfigSchema = z.any(); // Use z.any() to accept both old and expanded formats
@@ -39,8 +40,8 @@ export async function GET(_request: NextRequest) {
       );
     }
 
-    // Validate session expiration (RPC already filters expired, but double-check)
-    if (new Date(session.expires_at) < new Date()) {
+    // Validate session expiration (RPC already filters expired, but double-check with timezone-safe buffer)
+    if (!isSessionValid(session.expires_at)) {
       return NextResponse.json(
         { error: 'Session expired' },
         { status: 401 }
@@ -111,8 +112,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate session expiration (RPC already filters expired, but double-check)
-    if (new Date(session.expires_at) < new Date()) {
+    // Validate session expiration (RPC already filters expired, but double-check with timezone-safe buffer)
+    if (!isSessionValid(session.expires_at)) {
       return NextResponse.json(
         { error: 'Session expired' },
         { status: 401 }

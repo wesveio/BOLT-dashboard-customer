@@ -1,8 +1,10 @@
 'use client';
 
+import { memo } from 'react';
 import { Card, CardBody } from '@heroui/react';
 import { motion } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
+import { formatPercentage } from '@/utils/formatters';
 
 interface MetricCardProps {
   title: string;
@@ -17,7 +19,7 @@ interface MetricCardProps {
   className?: string;
 }
 
-export function MetricCard({
+export const MetricCard = memo(function MetricCard({
   title,
   value,
   subtitle,
@@ -53,7 +55,7 @@ export function MetricCard({
                       trend.isPositive ? 'text-green-600' : 'text-red-600'
                     }`}
                   >
-                    {trend.isPositive ? '↑' : '↓'} {Math.abs(trend.value)}%
+                    {trend.isPositive ? '↑' : '↓'} {formatPercentage(Math.abs(trend.value))}
                   </span>
                   <span className="text-xs text-gray-500">vs previous period</span>
                 </div>
@@ -69,5 +71,5 @@ export function MetricCard({
       </Card>
     </motion.div>
   );
-}
+});
 

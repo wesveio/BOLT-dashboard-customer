@@ -1,5 +1,7 @@
 'use client';
 
+import { formatPercentage } from '@/utils/formatters';
+
 interface FunnelStep {
   step: string;
   label: string;
@@ -49,7 +51,7 @@ export function FunnelChart({ data, isLoading = false }: FunnelChartProps) {
               </div>
               <div className="text-right">
                 <p className="text-sm font-bold text-gray-900">{step.count.toLocaleString()}</p>
-                <p className="text-xs text-gray-500">{step.percentage.toFixed(1)}%</p>
+                <p className="text-xs text-gray-500">{formatPercentage(step.percentage)}</p>
               </div>
             </div>
             <div className="relative h-10 bg-gray-100 rounded-lg overflow-hidden">
@@ -59,7 +61,7 @@ export function FunnelChart({ data, isLoading = false }: FunnelChartProps) {
               >
                 {widthPercentage > 15 && (
                   <span className="text-white text-xs font-semibold">
-                    {step.percentage.toFixed(1)}%
+                    {formatPercentage(step.percentage)}
                   </span>
                 )}
               </div>

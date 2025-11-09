@@ -25,8 +25,27 @@ export async function GET(_request: NextRequest) {
     const { searchParams } = new URL(_request.url);
     const period = parsePeriod(searchParams.get('period'));
 
+    // Parse custom date range if period is custom
+    let customStartDate: Date | null = null;
+    let customEndDate: Date | null = null;
+
+    if (period === 'custom') {
+      const startDateParam = searchParams.get('startDate');
+      const endDateParam = searchParams.get('endDate');
+      
+      if (startDateParam && endDateParam) {
+        customStartDate = new Date(startDateParam);
+        customEndDate = new Date(endDateParam);
+        
+        // Validate dates
+        if (isNaN(customStartDate.getTime()) || isNaN(customEndDate.getTime())) {
+          return apiError('Invalid date format. Use ISO 8601 format.', 400);
+        }
+      }
+    }
+
     // Calculate date range
-    const range = getDateRange(period);
+    const range = getDateRange(period, customStartDate, customEndDate);
 
     // Query all checkout events using RPC function (required for custom schema)
     const { data: events, error: eventsError } = await supabaseAdmin
@@ -34,6 +53,7 @@ export async function GET(_request: NextRequest) {
         p_customer_id: user.account_id,
         p_event_types: [
           'checkout_start',
+          'checkout_started',
           'cart_view',
           'profile_step',
           'shipping_step',
@@ -58,12 +78,18 @@ export async function GET(_request: NextRequest) {
       confirmed: 0,
     };
 
+    // Track sessions that started checkout (consistent with other APIs)
+    const sessionsWithCheckoutStart = new Set<string>();
+
     const stepTimes: Record<string, number[]> = {
       cart: [],
       profile: [],
       shipping: [],
       payment: [],
     };
+
+    // Track checkout start times by session for calculating total checkout duration
+    const checkoutStartTimes: Record<string, Date> = {};
 
     // Group events by session
     const checkoutSessions: Record<string, {
@@ -87,9 +113,24 @@ export async function GET(_request: NextRequest) {
       const sessionStart = session.start.getTime();
 
       switch (event.event_type) {
+        case 'checkout_start':
+        case 'checkout_started':
+          // Track sessions that started checkout (consistent with metrics and insights APIs)
+          sessionsWithCheckoutStart.add(sessionId);
+          // Store checkout start time for calculating total checkout duration
+          checkoutStartTimes[sessionId] = new Date(event.timestamp);
+          // Count as cart view in funnel if not already counted for this session
+          if (!session.steps.includes('cart')) {
+            funnelSteps.cart++;
+            session.steps.push('cart');
+          }
+          break;
         case 'cart_view':
-          funnelSteps.cart++;
-          session.steps.push('cart');
+          // Count as cart view in funnel if not already counted for this session
+          if (!session.steps.includes('cart')) {
+            funnelSteps.cart++;
+            session.steps.push('cart');
+          }
           break;
         case 'profile_step':
           funnelSteps.profile++;
@@ -145,6 +186,24 @@ export async function GET(_request: NextRequest) {
       payment: calculateAvgTime(stepTimes.payment),
     };
 
+    // Calculate total checkout time (from checkout_start to checkout_complete)
+    // This is the correct way to calculate avgCheckoutTime
+    const checkoutTimes: number[] = [];
+    events?.forEach((event: AnalyticsEvent) => {
+      if (event.event_type === 'checkout_start' || event.event_type === 'checkout_started') {
+        checkoutStartTimes[event.session_id] = new Date(event.timestamp);
+      }
+      if (event.event_type === 'checkout_complete' && checkoutStartTimes[event.session_id]) {
+        const startTime = checkoutStartTimes[event.session_id];
+        const endTime = new Date(event.timestamp);
+        const duration = (endTime.getTime() - startTime.getTime()) / 1000; // in seconds
+        // Only add positive durations to avoid negative values
+        if (duration >= 0) {
+          checkoutTimes.push(duration);
+        }
+      }
+    });
+
     // Helper functions for percentage calculations
     const clampPercentage = (value: number): number => {
       return Math.max(0, Math.min(100, value));
@@ -155,11 +214,20 @@ export async function GET(_request: NextRequest) {
     };
 
     // Calculate conversion rate and abandonment
-    const totalSessions = funnelSteps.cart || 1;
-    const conversionRate = clampPercentage((funnelSteps.confirmed / totalSessions) * 100);
+    // Use checkout_start count for total sessions (consistent with metrics and insights APIs)
+    // Count unique sessions that had checkout_start events
+    const totalSessionsCount = sessionsWithCheckoutStart.size;
+    // Fallback to cart views if no checkout_start events found (for backward compatibility)
+    const totalSessions = totalSessionsCount > 0 ? totalSessionsCount : (funnelSteps.cart || 0);
+    const conversionRate = totalSessions > 0 
+      ? clampPercentage((funnelSteps.confirmed / totalSessions) * 100)
+      : 0;
     const abandonmentRate = clampPercentage(100 - conversionRate);
+    // Calculate average checkout time from total checkout durations (checkout_start to checkout_complete)
     // Ensure average checkout time is never negative
-    const avgCheckoutTime = Math.max(0, Object.values(avgTimes).reduce((a, b) => a + b, 0));
+    const avgCheckoutTime = checkoutTimes.length > 0
+      ? Math.max(0, checkoutTimes.reduce((a, b) => a + b, 0) / checkoutTimes.length)
+      : 0;
 
     // Calculate abandonment by step (clamped to 0-100% and rounded)
     const stepAbandonment = {

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import { motion as m } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
 import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
@@ -16,6 +17,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Input,
   useDisclosure,
 } from '@heroui/react';
 import {
@@ -24,6 +26,8 @@ import {
   PlusIcon,
   TrashIcon,
   ArrowPathIcon,
+  EyeIcon,
+  EyeSlashIcon,
 } from '@heroicons/react/24/outline';
 import { toast } from 'sonner';
 import { useRolePermissions } from '@/hooks/useRolePermissions';
@@ -45,16 +49,31 @@ interface ApiKey {
   created_by?: string;
 }
 
+interface VtexCredentials {
+  id: string;
+  account_id: string;
+  app_key: string;
+  app_token: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export default function IntegrationsPage() {
   const t = useTranslations('dashboard.integrations');
-  const { isAdmin } = useRolePermissions();
+  const { isAdmin, isOwner } = useRolePermissions();
+  const canManageVtex = isAdmin || isOwner;
   
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [metricsKey, setMetricsKey] = useState<ApiKey | null>(null);
+  const [vtexCredentials, setVtexCredentials] = useState<VtexCredentials | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isSavingVtex, setIsSavingVtex] = useState(false);
+  const [isDeletingVtex, setIsDeletingVtex] = useState(false);
+  const [vtexFormData, setVtexFormData] = useState({ app_key: '', app_token: '' });
+  const [showToken, setShowToken] = useState(false);
   
   const {
     isOpen: isCreateModalOpen,
@@ -70,9 +89,10 @@ export default function IntegrationsPage() {
   
   const [newApiKey, setNewApiKey] = useState<{ key: string; name?: string } | null>(null);
 
-  // Load API keys on mount
+  // Load API keys and VTEX credentials on mount
   useEffect(() => {
     loadApiKeys();
+    loadVtexCredentials();
   }, []);
 
   const loadApiKeys = async () => {
@@ -235,6 +255,106 @@ export default function IntegrationsPage() {
     onDisplayModalClose();
   };
 
+  const loadVtexCredentials = async () => {
+    try {
+      const response = await fetch('/api/dashboard/integrations/vtex');
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.credentials) {
+          setVtexCredentials(data.credentials);
+          setVtexFormData({
+            app_key: data.credentials.app_key,
+            app_token: data.credentials.app_token,
+          });
+        } else {
+          setVtexCredentials(null);
+          setVtexFormData({ app_key: '', app_token: '' });
+        }
+      }
+    } catch (error) {
+      console.error('Load VTEX credentials error:', error);
+    }
+  };
+
+  const handleSaveVtexCredentials = async () => {
+    if (!canManageVtex) {
+      toast.error(t('vtex.unauthorized'));
+      return;
+    }
+
+    if (!vtexFormData.app_key.trim() || !vtexFormData.app_token.trim()) {
+      toast.error(t('vtex.fieldsRequired'));
+      return;
+    }
+
+    try {
+      setIsSavingVtex(true);
+      const response = await fetch('/api/dashboard/integrations/vtex', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          app_key: vtexFormData.app_key.trim(),
+          app_token: vtexFormData.app_token.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to save VTEX credentials');
+      }
+
+      const data = await response.json();
+      if (data.credentials) {
+        setVtexCredentials(data.credentials);
+        setVtexFormData({
+          app_key: data.credentials.app_key,
+          app_token: data.credentials.app_token,
+        });
+      }
+
+      toast.success(t('vtex.saveSuccess'));
+    } catch (error) {
+      console.error('Save VTEX credentials error:', error);
+      toast.error(t('vtex.saveError'));
+    } finally {
+      setIsSavingVtex(false);
+    }
+  };
+
+  const handleDeleteVtexCredentials = async () => {
+    if (!canManageVtex) {
+      toast.error(t('vtex.unauthorized'));
+      return;
+    }
+
+    if (!confirm(t('vtex.deleteConfirm'))) {
+      return;
+    }
+
+    try {
+      setIsDeletingVtex(true);
+      const response = await fetch('/api/dashboard/integrations/vtex', {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to delete VTEX credentials');
+      }
+
+      setVtexCredentials(null);
+      setVtexFormData({ app_key: '', app_token: '' });
+      
+      toast.success(t('vtex.deleteSuccess'));
+    } catch (error) {
+      console.error('Delete VTEX credentials error:', error);
+      toast.error(t('vtex.deleteError'));
+    } finally {
+      setIsDeletingVtex(false);
+    }
+  };
+
   return (
     <PageWrapper>
       <PageHeader
@@ -329,6 +449,141 @@ export default function IntegrationsPage() {
                   >
                     {t('metricsApiKey.generate')}
                   </Button>
+                )}
+              </div>
+            )}
+          </CardBody>
+        </Card>
+      </m.div>
+
+      {/* VTEX Credentials Section */}
+      <m.div variants={fadeIn} initial="hidden" animate="visible">
+        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mb-8">
+          <CardBody className="p-6">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+                  <Image
+                    src="/logos/VTEX-logo.svg"
+                    alt="VTEX"
+                    width={24}
+                    height={24}
+                    className="object-contain"
+                  />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">{t('vtex.title')}</h2>
+                  <p className="text-sm text-gray-600">{t('vtex.description')}</p>
+                </div>
+              </div>
+              {canManageVtex && vtexCredentials && (
+                <Button
+                  color="danger"
+                  variant="flat"
+                  startContent={<TrashIcon className="w-5 h-5" />}
+                  onPress={handleDeleteVtexCredentials}
+                  isLoading={isDeletingVtex}
+                  className="flex-shrink-0"
+                >
+                  {t('vtex.delete')}
+                </Button>
+              )}
+            </div>
+
+            {isLoading ? (
+              <div className="p-4 text-center text-gray-500">Loading...</div>
+            ) : (
+              <div className="space-y-4">
+                <div className="space-y-4">
+                  <Input
+                    type="text"
+                    label={t('vtex.appKeyLabel')}
+                    placeholder={t('vtex.appKeyPlaceholder')}
+                    value={vtexFormData.app_key}
+                    onChange={(e) => setVtexFormData({ ...vtexFormData, app_key: e.target.value })}
+                    variant="bordered"
+                    size="lg"
+                    isRequired
+                    isDisabled={!canManageVtex}
+                    description={t('vtex.appKeyDescription')}
+                    classNames={{
+                      input: 'text-base font-mono',
+                      label: 'text-sm font-semibold',
+                    }}
+                  />
+                  <Input
+                    type={showToken ? 'text' : 'password'}
+                    label={t('vtex.appTokenLabel')}
+                    placeholder={t('vtex.appTokenPlaceholder')}
+                    value={vtexFormData.app_token}
+                    onChange={(e) => setVtexFormData({ ...vtexFormData, app_token: e.target.value })}
+                    variant="bordered"
+                    size="lg"
+                    isRequired
+                    isDisabled={!canManageVtex}
+                    description={t('vtex.appTokenDescription')}
+                    endContent={
+                      <button
+                        type="button"
+                        onClick={() => setShowToken(!showToken)}
+                        className="focus:outline-none"
+                        aria-label={showToken ? 'Hide token' : 'Show token'}
+                      >
+                        {showToken ? (
+                          <EyeSlashIcon className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+                        ) : (
+                          <EyeIcon className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+                        )}
+                      </button>
+                    }
+                    classNames={{
+                      input: 'text-base font-mono',
+                      label: 'text-sm font-semibold',
+                    }}
+                  />
+                </div>
+
+                {canManageVtex && (
+                  <div className="flex items-center gap-3">
+                    <Button
+                      color="primary"
+                      onPress={handleSaveVtexCredentials}
+                      isLoading={isSavingVtex}
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                    >
+                      {t('vtex.save')}
+                    </Button>
+                  </div>
+                )}
+
+                {vtexCredentials && (
+                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <h3 className="font-semibold text-green-900 mb-2">
+                      {t('vtex.configured.title')}
+                    </h3>
+                    <p className="text-sm text-green-800">
+                      {t('vtex.configured.description')}
+                    </p>
+                    <p className="text-xs text-green-700 mt-2">
+                      {t('vtex.configured.lastUpdated')}: {formatDate(vtexCredentials.updated_at)}
+                    </p>
+                  </div>
+                )}
+
+                {!vtexCredentials && (
+                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h3 className="font-semibold text-blue-900 mb-2">
+                      {t('vtex.instructions.title')}
+                    </h3>
+                    <p className="text-sm text-blue-800 mb-2">
+                      {t('vtex.instructions.description')}
+                    </p>
+                    <ol className="text-sm text-blue-800 list-decimal list-inside space-y-1">
+                      <li>{t('vtex.instructions.step1')}</li>
+                      <li>{t('vtex.instructions.step2')}</li>
+                      <li>{t('vtex.instructions.step3')}</li>
+                    </ol>
+                  </div>
                 )}
               </div>
             )}

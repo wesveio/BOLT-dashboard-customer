@@ -18,15 +18,16 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useGeographyData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
-import { periodOptions, Period } from '@/utils/default-data';
+import { periodOptions, type Period } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
 
 const COLORS = ['#2563eb', '#9333ea', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
 
 export default function GeographyAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.geography');
-  const [period, setPeriod] = useState<Period>('week');
+  const { period, setPeriod, startDate, endDate } = usePeriod();
   const [selectedTab, setSelectedTab] = useState('countries');
-  const { countries, states, summary, isLoading, error, refetch } = useGeographyData({ period });
+  const { countries, states, summary, isLoading, error, refetch } = useGeographyData({ period, startDate, endDate });
 
   if (isLoading) {
     return (

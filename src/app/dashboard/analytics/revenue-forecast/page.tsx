@@ -18,16 +18,19 @@ import {
 } from '@heroicons/react/24/outline';
 import { Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart, CartesianGrid } from 'recharts';
 import { useRevenueForecastData } from '@/hooks/useDashboardData';
-import { formatCurrency, formatNumber } from '@/utils/formatters';
-import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
+import { formatCurrency, formatPercentage } from '@/utils/formatters';
+import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
 
 export default function RevenueForecastPage() {
   const t = useTranslations('dashboard.analytics.revenueForecast');
   const tPeriods = useTranslations('dashboard.common.periods');
-  const [period, setPeriod] = useState<Period>('month');
+  const { period, setPeriod, startDate, endDate } = usePeriod();
   const [forecastDays, setForecastDays] = useState<number>(30);
   const { summary, historical, forecast, accuracy, isLoading, error, refetch } = useRevenueForecastData({
     period,
+    startDate,
+    endDate,
     forecastDays,
   });
 
@@ -337,7 +340,7 @@ export default function RevenueForecastPage() {
             </div>
             <div className="text-center">
               <p className="text-sm text-gray-600 mb-2">{t('meanAbsolutePercentError')}</p>
-              <p className="text-2xl font-bold text-gray-900">{formatNumber(accuracy.mape, { maximumFractionDigits: 2 })}%</p>
+              <p className="text-2xl font-bold text-gray-900">{formatPercentage(accuracy.mape)}</p>
             </div>
             <div className="text-center">
               <p className="text-sm text-gray-600 mb-2">{t('rootMeanSquaredError')}</p>

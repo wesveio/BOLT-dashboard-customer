@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin, validateSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
+import { isSessionValid } from '@/lib/api/auth';
 
 /**
  * GET /api/dashboard/subscriptions
@@ -34,8 +35,8 @@ export async function GET(_request: NextRequest) {
       return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
     }
 
-    // Validate session expiration (RPC already filters expired, but double-check)
-    if (new Date(session.expires_at) < new Date()) {
+    // Validate session expiration (RPC already filters expired, but double-check with timezone-safe buffer)
+    if (!isSessionValid(session.expires_at)) {
       return NextResponse.json({ error: 'Session expired' }, { status: 401 });
     }
 
@@ -97,8 +98,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
     }
 
-    // Validate session expiration (RPC already filters expired, but double-check)
-    if (new Date(session.expires_at) < new Date()) {
+    // Validate session expiration (RPC already filters expired, but double-check with timezone-safe buffer)
+    if (!isSessionValid(session.expires_at)) {
       return NextResponse.json({ error: 'Session expired' }, { status: 401 });
     }
 
@@ -131,7 +132,7 @@ export async function POST(request: NextRequest) {
 
     // Create subscription using the function
     const { data: subscriptionIdResult, error: createError } = await supabase
-      .rpc('dashboard.create_subscription', {
+      .rpc('create_subscription', {
         p_account_id: user.account_id,
         p_plan_id: plan_id,
         p_billing_cycle: billing_cycle,

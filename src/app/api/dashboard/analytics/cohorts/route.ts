@@ -52,10 +52,38 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const period = parsePeriod(searchParams.get('period'));
 
+    // Parse custom date range if period is custom
+    let customStartDate: Date | null = null;
+    let customEndDate: Date | null = null;
+
+    if (period === 'custom') {
+      const startDateParam = searchParams.get('startDate');
+      const endDateParam = searchParams.get('endDate');
+      
+      if (startDateParam && endDateParam) {
+        customStartDate = new Date(startDateParam);
+        customEndDate = new Date(endDateParam);
+        
+        // Validate dates
+        if (isNaN(customStartDate.getTime()) || isNaN(customEndDate.getTime())) {
+          return apiError('Invalid date format. Use ISO 8601 format.', 400);
+        }
+      }
+    }
+
     // Calculate date range - extend back to capture cohorts
-    const range = getDateRange(period);
+    const range = getDateRange(period, customStartDate, customEndDate);
     const extendedStart = new Date(range.start);
     extendedStart.setMonth(extendedStart.getMonth() - 12); // Look back 12 months for cohorts
+
+    console.info('✅ [DEBUG] Cohorts - Date range:', {
+      period,
+      range: {
+        start: range.start.toISOString(),
+        end: range.end.toISOString(),
+      },
+      extendedStart: extendedStart.toISOString(),
+    });
 
     // Query all completed checkout events
     const { data: checkoutEvents, error: checkoutError } = await supabaseAdmin
@@ -67,9 +95,11 @@ export async function GET(request: NextRequest) {
       });
 
     if (checkoutError) {
-      console.error('Get cohorts checkout events error:', checkoutError);
+      console.error('❌ [DEBUG] Get cohorts checkout events error:', checkoutError);
       return apiError('Failed to fetch cohorts data', 500);
     }
+
+    console.info('✅ [DEBUG] Cohorts - Events found:', checkoutEvents?.length || 0);
 
     // Group orders by customer and determine cohort
     const customerCohorts: Record<string, {
@@ -86,14 +116,29 @@ export async function GET(request: NextRequest) {
       totalOrders: number;
     }> = {};
 
+    let eventsWithRevenue = 0;
+    let eventsWithoutRevenue = 0;
+    const customerKeyStats: Record<string, number> = {};
+
     checkoutEvents?.forEach((event: AnalyticsEvent) => {
       const revenue = extractRevenue(event);
-      if (revenue <= 0) return;
+      if (revenue <= 0) {
+        eventsWithoutRevenue++;
+        return;
+      }
+
+      eventsWithRevenue++;
 
       // Extract customer_id from metadata if available, otherwise use fallback
+      // For cohorts, we need a consistent customer identifier
+      // Priority: customer_id from metadata > order_form_id > session_id
       const metadata = event.metadata || {};
       const customerId = (metadata.customer_id as string) || null;
-      const customerKey = customerId || event.order_form_id || event.session_id;
+      const customerKey = customerId || event.order_form_id || event.session_id || 'unknown';
+
+      // Track customer key usage
+      customerKeyStats[customerKey] = (customerKeyStats[customerKey] || 0) + 1;
+
       const orderDate = new Date(event.timestamp);
       const cohortMonth = `${orderDate.getFullYear()}-${String(orderDate.getMonth() + 1).padStart(2, '0')}`;
 
@@ -129,6 +174,23 @@ export async function GET(request: NextRequest) {
 
       customer.totalRevenue += revenue;
       customer.totalOrders++;
+    });
+
+    console.info('✅ [DEBUG] Cohorts - Event processing:', {
+      totalEvents: checkoutEvents?.length || 0,
+      eventsWithRevenue,
+      eventsWithoutRevenue,
+      uniqueCustomers: Object.keys(customerCohorts).length,
+      customerKeyBreakdown: {
+        withCustomerId: Object.values(customerCohorts).filter(c => c.customerId !== null).length,
+        withOrderFormId: Object.values(customerCohorts).filter(c => {
+          // Check if customerKey looks like an order_form_id (UUID or similar)
+          return c.customerId === null && c.customerKey && c.customerKey.length > 20;
+        }).length,
+        withSessionId: Object.values(customerCohorts).filter(c => {
+          return c.customerId === null && c.customerKey && c.customerKey.length <= 20;
+        }).length,
+      },
     });
 
     // Group by cohort month
@@ -192,6 +254,12 @@ export async function GET(request: NextRequest) {
         periodData.customers = customersInPeriod.size;
         periodData.retentionRate = cohortSize > 0 ? (customersInPeriod.size / cohortSize) * 100 : 0;
       });
+    });
+
+    console.info('✅ [DEBUG] Cohorts - Cohort grouping:', {
+      totalCohorts: Object.keys(cohorts).length,
+      cohortMonths: Object.keys(cohorts).sort(),
+      totalCustomers: Object.keys(customerCohorts).length,
     });
 
     // Format cohort data for response
@@ -258,6 +326,18 @@ export async function GET(request: NextRequest) {
         : 0;
     });
 
+    console.info('✅ [DEBUG] Cohorts - Final summary:', {
+      totalCohorts,
+      totalCustomers,
+      avgCohortSize,
+      avgLTV,
+      cohortsReturned: cohortData.length,
+      avgRetentionByPeriod: Object.keys(avgRetentionByPeriod).map(p => ({
+        period: p,
+        retention: avgRetentionByPeriod[parseInt(p)],
+      })),
+    });
+
     return apiSuccess({
       summary: {
         totalCohorts,
@@ -270,6 +350,7 @@ export async function GET(request: NextRequest) {
       period,
     });
   } catch (error) {
+    console.error('❌ [DEBUG] Cohorts error:', error);
     return apiInternalError(error);
   }
 }

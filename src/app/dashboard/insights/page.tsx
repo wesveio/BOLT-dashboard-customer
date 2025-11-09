@@ -3,16 +3,15 @@
 import { useTranslations } from 'next-intl';
 import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
 import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
-import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
-import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
+import { PageStateHandler } from '@/components/Dashboard/PageStateHandler/PageStateHandler';
 import { useApi } from '@/hooks/useApi';
 import { Card, CardBody, Chip } from '@heroui/react';
 import {
   LightBulbIcon,
   ExclamationTriangleIcon,
-  CheckCircleIcon,
   InformationCircleIcon,
 } from '@heroicons/react/24/outline';
+import { getImpactColor, getInsightStyles } from '@/utils/insights';
 
 export interface Insight {
   id: string;
@@ -79,45 +78,6 @@ const defaultInsights: Insight[] = [
     },
   ];
 
-const insightIcons = {
-  success: CheckCircleIcon,
-  warning: ExclamationTriangleIcon,
-  info: InformationCircleIcon,
-  recommendation: LightBulbIcon,
-};
-
-const insightColors = {
-  success: {
-    bg: 'bg-green-50',
-    border: 'border-green-300',
-    text: 'text-green-700',
-    icon: 'text-green-600',
-  },
-  warning: {
-    bg: 'bg-orange-50',
-    border: 'border-orange-300',
-    text: 'text-orange-700',
-    icon: 'text-orange-600',
-  },
-  info: {
-    bg: 'bg-blue-50',
-    border: 'border-blue-300',
-    text: 'text-blue-700',
-    icon: 'text-blue-600',
-  },
-  recommendation: {
-    bg: 'bg-purple-50',
-    border: 'border-purple-300',
-    text: 'text-purple-700',
-    icon: 'text-purple-600',
-  },
-};
-
-const impactColors = {
-  low: 'default',
-  medium: 'primary',
-  high: 'danger',
-};
 
 export default function InsightsPage() {
   const t = useTranslations('dashboard.insights');
@@ -133,27 +93,18 @@ export default function InsightsPage() {
     low: insights.filter((i) => i.impact === 'low'),
   };
 
-  if (isLoading) {
-    return (
-      <PageWrapper>
-        <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <LoadingState message={t('messages.generating')} fullScreen />
-      </PageWrapper>
-    );
-  }
-
-  if (error) {
-    return (
-      <PageWrapper>
-        <PageHeader title={t('title')} subtitle={t('subtitle')} />
-        <ErrorState message={t('messages.failedToLoad')} onRetry={refetch} />
-      </PageWrapper>
-    );
-  }
-
   return (
-    <PageWrapper>
-      <PageHeader title={t('title')} subtitle={t('subtitle')} />
+    <PageStateHandler
+      isLoading={isLoading}
+      error={error ? new Error(error.message) : null}
+      onRetry={refetch}
+      title={t('title')}
+      subtitle={t('subtitle')}
+      loadingMessage={t('messages.generating')}
+      errorMessage={t('messages.failedToLoad')}
+    >
+      <PageWrapper>
+        <PageHeader title={t('title')} subtitle={t('subtitle')} />
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -206,48 +157,44 @@ export default function InsightsPage() {
       {/* Insights List */}
       <div className="space-y-4">
         {insights.map((insight) => {
-          const Icon = insightIcons[insight.type];
-          const colors = insightColors[insight.type];
-
+          const styles = getInsightStyles(insight.type);
           return (
-            <div key={insight.id}>
-              <Card
-                className={`border-2 ${colors.border} ${colors.bg} hover:shadow-lg transition-all duration-200`}
-              >
-                <CardBody className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className={`w-12 h-12 rounded-lg ${colors.bg} flex items-center justify-center flex-shrink-0`}>
-                      <Icon className={`w-6 h-6 ${colors.icon}`} />
+            <Card
+              key={insight.id}
+              className={`border-2 ${styles.bg} ${styles.border} hover:shadow-lg transition-all duration-200`}
+            >
+              <CardBody className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className={`text-lg font-bold ${styles.text}`}>{insight.title}</h3>
+                      <Chip
+                        color={getImpactColor(insight.impact)}
+                        variant="flat"
+                        size="sm"
+                        className="ml-2"
+                      >
+                        {insight.impact.toUpperCase()}
+                      </Chip>
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between mb-2">
-                        <h3 className={`text-lg font-bold ${colors.text}`}>{insight.title}</h3>
-                        <Chip
-                          color={impactColors[insight.impact] as any}
-                          variant="flat"
-                          size="sm"
-                          className="ml-2"
-                        >
-                          {insight.impact.toUpperCase()}
-                        </Chip>
-                      </div>
-                      <p className={`text-sm ${colors.text} mb-4`}>{insight.description}</p>
-                      <div className="flex items-center justify-between">
+                    <p className={`text-sm ${styles.text} mb-4`}>{insight.description}</p>
+                    <div className="flex items-center justify-between">
+                      {insight.timestamp && (
                         <span className="text-xs text-gray-500">{insight.timestamp}</span>
-                        {insight.action && (
-                          <a
-                            href={insight.action.href}
-                            className={`text-sm font-semibold ${colors.text} hover:underline`}
-                          >
-                            {insight.action.label} →
-                          </a>
-                        )}
-                      </div>
+                      )}
+                      {insight.action && (
+                        <a
+                          href={insight.action.href}
+                          className={`text-sm font-semibold ${styles.text} hover:underline`}
+                        >
+                          {insight.action.label} →
+                        </a>
+                      )}
                     </div>
                   </div>
-                </CardBody>
-              </Card>
-            </div>
+                </div>
+              </CardBody>
+            </Card>
           );
         })}
       </div>
@@ -264,7 +211,8 @@ export default function InsightsPage() {
           </CardBody>
         </Card>
       )}
-    </PageWrapper>
+      </PageWrapper>
+    </PageStateHandler>
   );
 }
 

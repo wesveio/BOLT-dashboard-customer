@@ -58,8 +58,27 @@ export async function GET(_request: NextRequest) {
     const { searchParams } = new URL(_request.url);
     const period = parsePeriod(searchParams.get('period'));
 
+    // Parse custom date range if period is custom
+    let customStartDate: Date | null = null;
+    let customEndDate: Date | null = null;
+
+    if (period === 'custom') {
+      const startDateParam = searchParams.get('startDate');
+      const endDateParam = searchParams.get('endDate');
+      
+      if (startDateParam && endDateParam) {
+        customStartDate = new Date(startDateParam);
+        customEndDate = new Date(endDateParam);
+        
+        // Validate dates
+        if (isNaN(customStartDate.getTime()) || isNaN(customEndDate.getTime())) {
+          return apiError('Invalid date format. Use ISO 8601 format.', 400);
+        }
+      }
+    }
+
     // Calculate date range
-    const range = getDateRange(period);
+    const range = getDateRange(period, customStartDate, customEndDate);
 
     // Query completed checkout events using RPC function (required for custom schema)
     const { data: events, error: eventsError } = await supabaseAdmin
@@ -263,9 +282,18 @@ export async function GET(_request: NextRequest) {
       previousRevenue += revenue;
     });
 
-    const revenueGrowth = previousRevenue > 0
-      ? ((totalRevenue - previousRevenue) / previousRevenue) * 100
-      : 0;
+    // Calculate revenue growth with proper handling of edge cases
+    let revenueGrowth = 0;
+    if (previousRevenue > 0) {
+      // Normal case: calculate percentage change
+      revenueGrowth = ((totalRevenue - previousRevenue) / previousRevenue) * 100;
+    } else if (previousRevenue === 0 && totalRevenue > 0) {
+      // Growth from zero: indicate positive growth (100% represents doubling, so we use 100% for "new revenue")
+      revenueGrowth = 100;
+    } else {
+      // Both are zero: no change
+      revenueGrowth = 0;
+    }
 
     return apiSuccess({
       metrics: {

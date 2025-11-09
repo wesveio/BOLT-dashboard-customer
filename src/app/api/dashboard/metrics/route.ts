@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import type { AnalyticsEvent } from '@/hooks/useDashboardData';
+import { isSessionValid } from '@/lib/api/auth';
+import { getDateRange, parsePeriod } from '@/utils/date-ranges';
 
 /**
  * GET /api/dashboard/metrics
@@ -34,8 +36,8 @@ export async function GET(_request: NextRequest) {
       );
     }
 
-    // Validate session expiration (RPC already filters expired, but double-check)
-    if (new Date(session.expires_at) < new Date()) {
+    // Validate session expiration (RPC already filters expired, but double-check with timezone-safe buffer)
+    if (!isSessionValid(session.expires_at)) {
       return NextResponse.json(
         { error: 'Session expired' },
         { status: 401 }
@@ -54,30 +56,32 @@ export async function GET(_request: NextRequest) {
     }
 
     const { searchParams } = new URL(_request.url);
-    const period = searchParams.get('period') || 'week';
+    const period = parsePeriod(searchParams.get('period'));
 
-    // Calculate date range based on period
-    const now = new Date();
-    const dateRanges: Record<string, { start: Date; end: Date }> = {
-      today: {
-        start: new Date(now.setHours(0, 0, 0, 0)),
-        end: new Date(),
-      },
-      week: {
-        start: new Date(now.setDate(now.getDate() - 7)),
-        end: new Date(),
-      },
-      month: {
-        start: new Date(now.setMonth(now.getMonth() - 1)),
-        end: new Date(),
-      },
-      year: {
-        start: new Date(now.setFullYear(now.getFullYear() - 1)),
-        end: new Date(),
-      },
-    };
+    // Parse custom date range if period is custom
+    let customStartDate: Date | null = null;
+    let customEndDate: Date | null = null;
 
-    const range = dateRanges[period] || dateRanges.week;
+    if (period === 'custom') {
+      const startDateParam = searchParams.get('startDate');
+      const endDateParam = searchParams.get('endDate');
+      
+      if (startDateParam && endDateParam) {
+        customStartDate = new Date(startDateParam);
+        customEndDate = new Date(endDateParam);
+        
+        // Validate dates
+        if (isNaN(customStartDate.getTime()) || isNaN(customEndDate.getTime())) {
+          return NextResponse.json(
+            { error: 'Invalid date format. Use ISO 8601 format.' },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
+    // Calculate date range
+    const range = getDateRange(period, customStartDate, customEndDate);
 
     // Get metrics from analytics.events table using RPC function (required for custom schema)
     const { data: metrics, error: metricsError } = await supabaseAdmin

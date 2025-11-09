@@ -73,10 +73,14 @@ export function DashboardAuthProvider({ children }: DashboardAuthProviderProps) 
     
     const fetchPromise = (async () => {
       try {
-        const response = await fetch('/api/dashboard/auth/me');
+        console.info('✅ [DEBUG] Checking authentication status...');
+        const response = await fetch('/api/dashboard/auth/me', {
+          credentials: 'include', // Ensure cookies are sent with the request
+        });
         
         if (response.ok) {
           const data = await response.json();
+          console.info('✅ [DEBUG] Authentication check successful');
           setAuthState({
             user: data.user,
             isLoading: false,
@@ -85,6 +89,9 @@ export function DashboardAuthProvider({ children }: DashboardAuthProviderProps) 
         } else {
           // Check if it's a 401 (session invalid/expired)
           const isUnauthorized = response.status === 401;
+          const errorData = await response.json().catch(() => ({}));
+          
+          console.warn(`⚠️ [DEBUG] Authentication check failed: ${response.status}`, errorData);
           
           setAuthState({
             user: null,
@@ -94,12 +101,12 @@ export function DashboardAuthProvider({ children }: DashboardAuthProviderProps) 
 
           // Redirect to login if session is invalid and not already on login page
           if (isUnauthorized && pathname !== '/login' && typeof window !== 'undefined') {
-            console.warn('⚠️ [DEBUG] Session expired, redirecting to login');
+            console.warn('⚠️ [DEBUG] Session expired or invalid, redirecting to login');
             router.push('/login');
           }
         }
       } catch (error) {
-        console.error('Auth check error:', error);
+        console.error('❌ [DEBUG] Auth check error:', error);
         setAuthState({
           user: null,
           isLoading: false,

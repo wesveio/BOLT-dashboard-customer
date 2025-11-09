@@ -243,7 +243,7 @@ export default function SettingsPage() {
         className="mb-6"
         classNames={{
           tabList: 'bg-white border border-gray-200 rounded-lg p-1',
-          tab: 'data-[selected=true]:bg-gradient-to-r data-[selected=true]:from-blue-500 data-[selected=true]:to-purple-500 data-[selected=true]:text-white',
+          tab: 'data-[selected=true]:bg-gradient-to-r data-[selected=true]:from-blue-500 data-[selected=true]:to-purple-500 data-[selected=true]:text-white data-[selected=true]:[&_*]:text-white data-[selected=true]:[&_svg]:text-white',
         }}
       >
         <Tab

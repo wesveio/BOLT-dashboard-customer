@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
@@ -19,7 +18,8 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useAbandonmentPredictionData } from '@/hooks/useDashboardData';
 import { formatNumber, formatPercentage, formatDuration } from '@/utils/formatters';
-import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
 
 const COLORS = {
   low: '#10b981',
@@ -31,8 +31,8 @@ const COLORS = {
 export default function AbandonmentPredictionPage() {
   const t = useTranslations('dashboard.analytics.abandonmentPrediction');
   const tPeriods = useTranslations('dashboard.common.periods');
-  const [period, setPeriod] = useState<Period>('week');
-  const { summary, predictions, isLoading, error, refetch } = useAbandonmentPredictionData({ period });
+  const { period, setPeriod, startDate, endDate } = usePeriod();
+  const { summary, predictions, isLoading, error, refetch } = useAbandonmentPredictionData({ period, startDate, endDate });
 
   if (isLoading) {
     return (
@@ -106,7 +106,9 @@ export default function AbandonmentPredictionPage() {
           startContent={<ExclamationTriangleIcon className="w-5 h-5" />}
         >
           <p className="text-sm font-semibold">
-            {highRiskSessions.length} {t('highRiskSessionsDetected').replace('{plural}', highRiskSessions.length !== 1 ? 's' : '')}
+            {highRiskSessions.length} {t('highRiskSessionsDetected', { 
+              plural: highRiskSessions.length !== 1 ? 's' : '' 
+            })}
           </p>
           <p className="text-xs mt-1">
             {t('implementInterventions')}
@@ -200,7 +202,7 @@ export default function AbandonmentPredictionPage() {
                     borderRadius: '8px',
                   }}
                   formatter={(value: number, name: string) => [
-                    name === 'abandonmentRate' ? `${value.toFixed(1)}%` : formatNumber(value),
+                    name === 'abandonmentRate' ? formatPercentage(value) : formatNumber(value),
                     name === 'abandonmentRate' ? t('abandonmentRate') : name === 'total' ? t('total') : t('abandoned'),
                   ]}
                 />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
@@ -18,7 +18,9 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { useFrictionScoreData } from '@/hooks/useDashboardData';
 import { formatNumber, formatPercentage } from '@/utils/formatters';
-import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
+import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
 
 const COLORS = {
   low: '#10b981',
@@ -30,8 +32,8 @@ const COLORS = {
 export default function FrictionScorePage() {
   const t = useTranslations('dashboard.analytics.frictionScore');
   const tCommon = useTranslations('dashboard.common.periods');
-  const [period, setPeriod] = useState<Period>('week');
-  const { summary, frictionScores, frictionTrend, isLoading, error, refetch } = useFrictionScoreData({ period });
+  const { period, setPeriod, startDate, endDate } = usePeriod();
+  const { summary, frictionScores, frictionTrend, isLoading, error, refetch } = useFrictionScoreData({ period, startDate, endDate });
 
   // Prepare chart data - ALL hooks must be called before any conditional returns
   const frictionDistributionData = useMemo(() => {
@@ -100,6 +102,13 @@ export default function FrictionScorePage() {
           </Select>
         }
       />
+
+      {/* Custom Period Selector */}
+      {period === 'custom' && (
+        <div className="mb-6">
+          <CustomPeriodSelector />
+        </div>
+      )}
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

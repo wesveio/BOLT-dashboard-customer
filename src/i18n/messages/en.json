@@ -52,7 +52,8 @@
         "today": "Today",
         "week": "Last 7 days",
         "month": "Last 30 days",
-        "year": "Last 12 months"
+        "year": "Last 12 months",
+        "custom": "Custom Period"
       },
       "filterBar": {
         "timePeriod": "Time Period",
@@ -70,6 +71,7 @@
       "analytics": "Analytics",
       "themes": "Themes",
       "insights": "Insights",
+      "boltx": "BoltX",
       "plans": "Plans",
       "integrations": "Integrations",
       "settings": "Settings",
@@ -89,6 +91,11 @@
       "browsers": "Browser & Platform",
       "themes": "Themes",
       "insights": "Insights",
+      "boltx": "BoltX",
+      "predictions": "Predictions",
+      "interventions": "Interventions",
+      "personalization": "Personalization",
+      "optimization": "Form Optimization",
       "plans": "Plans & Pricing",
       "integrations": "Integrations",
       "settings": "Settings",
@@ -496,7 +503,8 @@
         "conversionImpact": "Conversion Impact",
         "additionalOrdersMetric": "Additional Orders",
         "additionalRevenueLabel": "additional revenue",
-        "pp": "pp"
+        "pp": "pp",
+        "noBaseline": "No baseline data"
       },
       "frictionScore": {
         "title": "Friction Score",
@@ -668,6 +676,453 @@
         "duplicateError": "Failed to duplicate theme",
         "alreadyActive": "Theme \"{name}\" is already active",
         "createdAndActivated": "Theme \"{name}\" created and activated successfully"
+      }
+    },
+    "boltx": {
+      "title": "BoltX - AI Optimizations",
+      "description": "AI-powered predictions and optimizations",
+      "enterpriseRequired": "BoltX is available on Enterprise plan. Upgrade now to unlock AI-powered optimizations.",
+      "upgradeButton": "Upgrade to Enterprise",
+      "predictions": {
+        "title": "Abandonment Predictions",
+        "description": "Real-time abandonment predictions using AI and machine learning",
+        "loading": "Loading predictions...",
+        "errors": {
+          "loadFailed": "Failed to load predictions"
+        },
+        "metrics": {
+          "totalSessions": "Total Sessions",
+          "highRiskSessions": "High Risk Sessions",
+          "avgRiskScore": "Avg Risk Score",
+          "modelAccuracy": "Model Accuracy",
+          "subtitles": {
+            "totalSessions": "All sessions in period",
+            "highRiskSessions": "Sessions at high or critical risk",
+            "avgRiskScore": "Average risk across all sessions",
+            "modelAccuracy": "Prediction model accuracy"
+          }
+        },
+        "charts": {
+          "distributionTitle": "Risk Distribution",
+          "distributionSubtitle": "Sessions by risk level",
+          "trendTitle": "Risk Trend",
+          "trendSubtitle": "Average risk score over time"
+        },
+        "table": {
+          "title": "High Risk Sessions",
+          "subtitle": "Sessions with high or critical abandonment risk"
+        },
+        "help": {
+          "title": "How Predictions Work",
+          "subtitle": "Learn about risk scores, model accuracy, and how to interpret prediction data",
+          "riskScores": {
+            "title": "Risk Scores & Levels",
+            "riskScore": {
+              "title": "Risk Score",
+              "description": "A numerical value (0-100) that indicates the likelihood of checkout abandonment. Higher scores mean higher risk. The score is calculated using machine learning models that analyze user behavior patterns."
+            },
+            "riskLevels": {
+              "title": "Risk Levels",
+              "description": "Sessions are categorized into four risk levels: Low (0-30%), Medium (31-50%), High (51-70%), and Critical (71-100%). Each level represents a different probability of abandonment and may trigger different interventions."
+            },
+            "prediction": {
+              "title": "How Predictions Work",
+              "description": "Predictions are made in real-time using AI models that analyze user behavior, checkout progress, time spent, errors encountered, and historical patterns. The model continuously learns and improves accuracy."
+            }
+          },
+          "metrics": {
+            "title": "Key Metrics",
+            "totalSessions": {
+              "title": "Total Sessions",
+              "description": "The total number of checkout sessions in the selected time period. This includes all sessions regardless of their risk level or outcome."
+            },
+            "highRisk": {
+              "title": "High Risk Sessions",
+              "description": "The number of sessions classified as High or Critical risk. These sessions have a 51%+ probability of abandonment and may benefit from interventions."
+            },
+            "avgRisk": {
+              "title": "Average Risk Score",
+              "description": "The average risk score across all sessions in the period. A higher average indicates more at-risk sessions overall. Compare this metric over time to track trends."
+            },
+            "modelAccuracy": {
+              "title": "Model Accuracy",
+              "description": "The prediction model's accuracy rate, measured by comparing predictions to actual outcomes. Higher accuracy means more reliable predictions. Models are continuously trained and improved."
+            }
+          },
+          "model": {
+            "title": "Prediction Model",
+            "howItWorks": {
+              "title": "How the Model Works",
+              "description": "The AI model analyzes multiple factors including checkout step progress, time spent on each step, error frequency, form completion rates, and historical conversion patterns to predict abandonment risk."
+            },
+            "features": {
+              "title": "Features Analyzed",
+              "description": "The model considers: step duration, error count, field completion rates, session duration, device type, browser behavior, and historical user patterns to make accurate predictions."
+            },
+            "accuracy": {
+              "title": "Model Accuracy",
+              "description": "Accuracy is measured by comparing predicted risk levels to actual outcomes. The model is continuously retrained with new data to improve accuracy over time. Typical accuracy ranges from 85-95%."
+            }
+          },
+          "charts": {
+            "title": "Charts & Tables",
+            "distribution": {
+              "title": "Risk Distribution Chart",
+              "description": "Shows the distribution of sessions across different risk levels (Low, Medium, High, Critical). Helps identify the proportion of at-risk sessions in your checkout funnel."
+            },
+            "trend": {
+              "title": "Risk Trend Chart",
+              "description": "Displays the average risk score over time, allowing you to track trends and identify periods with higher or lower abandonment risk. Useful for measuring the impact of optimizations."
+            },
+            "table": {
+              "title": "Predictions Table",
+              "description": "Lists individual high-risk sessions with session ID, risk score, risk level, prediction timestamp, and current status. Use this to identify specific sessions that may need attention."
+            }
+          }
+        }
+      },
+      "interventions": {
+        "title": "Interventions",
+        "description": "Automatic interventions to reduce checkout abandonment",
+        "loading": "Loading interventions...",
+        "errors": {
+          "loadFailed": "Failed to load interventions"
+        },
+        "metrics": {
+          "title": "Detailed Metrics",
+          "subtitle": "Breakdown by intervention type"
+        },
+        "charts": {
+          "effectivenessTitle": "Intervention Effectiveness",
+          "effectivenessSubtitle": "Conversion rate by intervention type"
+        },
+        "table": {
+          "title": "Recent Interventions",
+          "subtitle": "List of interventions applied in the selected period"
+        },
+        "help": {
+          "title": "How Interventions Work",
+          "subtitle": "Learn about intervention types, metrics, and how to interpret the data",
+          "types": {
+            "title": "Intervention Types",
+            "discount": {
+              "title": "Discount Intervention",
+              "description": "Automatically triggered when a session reaches high or critical risk levels. Offers a discount (percentage or fixed amount) to incentivize completion. Typically used for sessions with 70%+ abandonment risk.",
+              "example": "Special offer: Get 10% off your order!"
+            },
+            "security": {
+              "title": "Security Intervention",
+              "description": "Shows security and trust messages during the payment step. Helps reduce user concerns about payment safety. Triggered at medium-high risk levels (50%+ risk) when user is on payment step.",
+              "example": "Your payment is secure and encrypted"
+            },
+            "simplify": {
+              "title": "Simplify Intervention",
+              "description": "Provides help and support messages when users encounter errors or spend too long on a step. Simplifies the process by offering assistance. Triggered at medium risk (40%+) with errors or long step duration.",
+              "example": "Need help? Contact our support team"
+            },
+            "progress": {
+              "title": "Progress Intervention",
+              "description": "Motivational messages that encourage users to complete their purchase. Shows progress indicators and completion benefits. Triggered at lower risk levels (30%+) to maintain momentum.",
+              "example": "You're almost done! Complete your purchase"
+            }
+          },
+          "metrics": {
+            "title": "Key Metrics",
+            "total": {
+              "title": "Total Interventions",
+              "description": "The total number of interventions triggered in the selected time period. This includes all intervention types regardless of whether they were applied or not."
+            },
+            "conversion": {
+              "title": "Conversion Rate",
+              "description": "The overall conversion rate for sessions where interventions were applied. This metric shows how effective interventions are at converting at-risk sessions into completed purchases."
+            },
+            "active": {
+              "title": "Active Configs",
+              "description": "The number of intervention types that are currently enabled and have been configured. Each type (Discount, Security, Simplify, Progress) counts as one active config."
+            },
+            "roi": {
+              "title": "Estimated ROI",
+              "description": "Return on Investment estimate based on additional revenue generated from interventions. Calculated by comparing conversion rates with and without interventions, accounting for discount costs."
+            }
+          },
+          "concepts": {
+            "title": "Key Concepts",
+            "threshold": {
+              "title": "Risk Threshold",
+              "description": "The minimum risk score (0-100) required to trigger an intervention. Each intervention type has its own threshold. Higher thresholds mean interventions only trigger for higher-risk sessions."
+            },
+            "riskLevels": {
+              "title": "Risk Levels",
+              "description": "Sessions are categorized by abandonment risk: Low (0-30%), Medium (31-50%), High (51-70%), and Critical (71-100%). Different intervention types are recommended for different risk levels."
+            },
+            "status": {
+              "title": "Status: Applied vs Not Applied",
+              "description": "Applied means the intervention was successfully shown to the user. Not Applied means the intervention was triggered but couldn't be displayed (e.g., user left before it appeared, technical issue, or intervention was disabled)."
+            },
+            "result": {
+              "title": "Result: Converted, Abandoned, Pending",
+              "description": "Converted: Session completed with a purchase. Abandoned: User left without completing. Pending: Session is still active or outcome hasn't been determined yet."
+            }
+          },
+          "charts": {
+            "title": "Charts & Tables",
+            "effectiveness": {
+              "title": "Effectiveness Chart",
+              "description": "Shows conversion rates by intervention type, comparing sessions with interventions against those without. Helps identify which intervention types are most effective for your store."
+            },
+            "detailed": {
+              "title": "Detailed Metrics",
+              "description": "Breakdown showing applied, converted, and abandoned counts for each intervention type. Displays conversion rate percentage for each type to help you understand performance."
+            },
+            "table": {
+              "title": "Interventions Table",
+              "description": "List of individual interventions with session ID, type, risk score, status, result, and timestamp. Use filters to view specific types, statuses, or results. Sortable by date (most recent first)."
+            }
+          }
+        }
+      },
+      "personalization": {
+        "title": "Personalization",
+        "description": "Dynamic checkout personalization based on user behavior",
+        "loading": "Loading personalization data...",
+        "errors": {
+          "loadFailed": "Failed to load personalization data"
+        },
+        "metrics": {
+          "title": "Personalization Metrics",
+          "subtitle": "Key metrics for personalization performance"
+        },
+        "charts": {
+          "deviceDistributionTitle": "Device Distribution",
+          "deviceDistributionSubtitle": "Profiles by device type",
+          "conversionTitle": "Conversion by Device",
+          "conversionSubtitle": "Personalized vs non-personalized",
+          "trendTitle": "Profiles Trend",
+          "trendSubtitle": "Creation and updates over time"
+        },
+        "table": {
+          "title": "User Profiles",
+          "subtitle": "List of user profiles in the selected period"
+        },
+        "help": {
+          "title": "How Personalization Works",
+          "subtitle": "Learn about user profiles, device detection, and personalization features",
+          "profiles": {
+            "title": "User Profiles",
+            "whatAre": {
+              "title": "What are User Profiles?",
+              "description": "User profiles are automatically created based on user behavior and device characteristics. Each profile contains information about device type, preferences, and behavior patterns to enable personalized checkout experiences."
+            },
+            "howCreated": {
+              "title": "How Profiles are Created",
+              "description": "Profiles are created automatically when users interact with your checkout. The system analyzes device type, browser, screen size, interaction patterns, and previous behavior to build comprehensive user profiles."
+            },
+            "benefits": {
+              "title": "Benefits of Personalization",
+              "description": "Personalized checkouts adapt to user preferences, showing optimized layouts, field orders, and messaging based on device type and behavior patterns. This can significantly improve conversion rates."
+            }
+          },
+          "deviceTypes": {
+            "title": "Device Types",
+            "detection": {
+              "title": "Device Detection",
+              "description": "The system automatically detects device type (Desktop, Mobile, Tablet) using browser and screen size information. This enables device-specific optimizations and layouts."
+            },
+            "types": {
+              "title": "Supported Device Types",
+              "description": "Three main device types are detected: Desktop (large screens, mouse/keyboard), Mobile (small screens, touch), and Tablet (medium screens, touch). Each type receives optimized experiences."
+            },
+            "personalization": {
+              "title": "Device-Based Personalization",
+              "description": "Different personalization rules apply based on device type. Mobile users may see simplified forms, while desktop users get more detailed options. This improves usability and conversion."
+            }
+          },
+          "metrics": {
+            "title": "Key Metrics",
+            "conversion": {
+              "title": "Conversion Rate",
+              "description": "The conversion rate for personalized sessions compared to non-personalized sessions. Higher rates indicate effective personalization strategies."
+            },
+            "profiles": {
+              "title": "Total Profiles",
+              "description": "The number of unique user profiles created in the selected period. More profiles mean better personalization coverage across your user base."
+            },
+            "improvement": {
+              "title": "Conversion Improvement",
+              "description": "The percentage improvement in conversion rate when personalization is applied. This metric shows the direct impact of personalization on your checkout performance."
+            }
+          },
+          "configuration": {
+            "title": "Configuration",
+            "rules": {
+              "title": "Personalization Rules",
+              "description": "Rules define how the checkout adapts to different user profiles and device types. You can configure field ordering, layout preferences, and messaging based on device and behavior patterns."
+            },
+            "settings": {
+              "title": "Personalization Settings",
+              "description": "Configure personalization features including device detection, profile creation, rule application, and A/B testing options. Settings can be adjusted to optimize for your specific use case."
+            }
+          },
+          "charts": {
+            "title": "Charts & Tables",
+            "deviceDistribution": {
+              "title": "Device Distribution Chart",
+              "description": "Shows the distribution of user profiles across different device types (Desktop, Mobile, Tablet). Helps understand your user base composition."
+            },
+            "conversion": {
+              "title": "Conversion by Device Chart",
+              "description": "Compares conversion rates between personalized and non-personalized sessions, broken down by device type. Shows the effectiveness of personalization for each device category."
+            },
+            "trend": {
+              "title": "Profiles Trend Chart",
+              "description": "Displays the creation and update frequency of user profiles over time. Helps track profile growth and identify trends in user behavior patterns."
+            },
+            "table": {
+              "title": "Profiles Table",
+              "description": "Lists individual user profiles with device type, creation date, last update, and associated metrics. Use this to analyze specific profile characteristics and behaviors."
+            }
+          }
+        }
+      },
+      "optimization": {
+        "title": "Form Optimization",
+        "description": "AI-powered form field optimization for better conversion",
+        "loading": "Loading form optimization data...",
+        "errors": {
+          "loadFailed": "Failed to load form optimization data"
+        },
+        "metrics": {
+          "title": "Step Metrics",
+          "subtitle": "Performance by checkout step"
+        },
+        "charts": {
+          "effectivenessTitle": "Optimization Effectiveness",
+          "effectivenessSubtitle": "Conversion rate with vs without optimization",
+          "fieldPerformanceTitle": "Field Performance",
+          "fieldPerformanceSubtitle": "Performance metrics by field",
+          "trendTitle": "Performance Trend",
+          "trendSubtitle": "Field performance over time"
+        },
+        "table": {
+          "title": "Field Performance Details",
+          "subtitle": "Detailed performance metrics for all fields"
+        },
+        "help": {
+          "title": "How Form Optimization Works",
+          "subtitle": "Learn about field optimization, step metrics, and performance improvements",
+          "fieldOptimization": {
+            "title": "Field Optimization",
+            "whatIs": {
+              "title": "What is Field Optimization?",
+              "description": "Field optimization uses AI to analyze form field performance and automatically optimize field order, labels, placeholders, and validation to improve conversion rates and reduce errors."
+            },
+            "howWorks": {
+              "title": "How Optimization Works",
+              "description": "The system analyzes completion rates, error frequencies, time spent, and user behavior for each field. Based on this data, it reorders fields, adjusts labels, and optimizes validation rules to improve the checkout experience."
+            },
+            "benefits": {
+              "title": "Benefits of Optimization",
+              "description": "Optimized forms reduce completion time, decrease error rates, and improve conversion. Fields are ordered by importance and completion likelihood, making the checkout process smoother and faster."
+            }
+          },
+          "stepMetrics": {
+            "title": "Step Metrics",
+            "steps": {
+              "title": "Checkout Steps",
+              "description": "The checkout is divided into steps (Cart, Profile, Shipping, Payment). Each step has its own metrics including completion rate, error rate, and average time to complete."
+            },
+            "completion": {
+              "title": "Completion Rate",
+              "description": "The percentage of users who successfully complete a step. Higher completion rates indicate better step design and optimization. Low rates may indicate friction points."
+            },
+            "errorRate": {
+              "title": "Error Rate",
+              "description": "The percentage of users who encounter errors while completing a step. Lower error rates mean better form design and validation. High error rates may indicate confusing fields or validation issues."
+            },
+            "timeToComplete": {
+              "title": "Time to Complete",
+              "description": "The average time users spend completing a step. Shorter times generally indicate better UX, but context matters - some steps naturally take longer (e.g., payment verification)."
+            }
+          },
+          "effectiveness": {
+            "title": "Optimization Effectiveness",
+            "conversion": {
+              "title": "Conversion Rate Improvement",
+              "description": "The improvement in conversion rate when optimization is applied. This metric compares optimized vs non-optimized sessions to measure the direct impact of field optimization."
+            },
+            "comparison": {
+              "title": "Optimized vs Non-Optimized",
+              "description": "Side-by-side comparison of conversion rates, completion times, and error rates between optimized and non-optimized checkouts. Shows the tangible benefits of optimization."
+            },
+            "improvement": {
+              "title": "Performance Improvement",
+              "description": "Overall improvement metrics including conversion rate increase, error reduction, and time savings. These metrics demonstrate the ROI of form optimization efforts."
+            }
+          },
+          "charts": {
+            "title": "Charts & Tables",
+            "effectiveness": {
+              "title": "Effectiveness Chart",
+              "description": "Shows conversion rates for optimized vs non-optimized checkouts, broken down by step. Helps identify which steps benefit most from optimization."
+            },
+            "fieldPerformance": {
+              "title": "Field Performance Chart",
+              "description": "Displays performance metrics for each field including completion rate, error rate, and average time. Helps identify fields that need optimization or are performing well."
+            },
+            "trend": {
+              "title": "Performance Trend Chart",
+              "description": "Shows field performance metrics over time, allowing you to track improvements and identify trends. Useful for measuring the impact of optimization changes."
+            },
+            "table": {
+              "title": "Fields Performance Table",
+              "description": "Detailed table listing all fields with their performance metrics, optimization status, and recommendations. Use this to identify specific fields that need attention."
+            }
+          }
+        }
+      },
+      "settings": {
+        "title": "BoltX Settings",
+        "description": "Configure AI-powered optimizations and features",
+        "saveChanges": "Save Changes",
+        "saveSuccess": "Configuration saved successfully",
+        "saveError": "Failed to save configuration",
+        "general": {
+          "title": "General Settings",
+          "enabled": "Enable BoltX",
+          "enabledDesc": "Enable or disable BoltX AI-powered optimizations",
+          "aiProvider": "AI Provider",
+          "aiProviderDesc": "Choose between OpenAI (generative AI) or Local (ML models)"
+        },
+        "openai": {
+          "title": "OpenAI Configuration",
+          "apiKey": "OpenAI API Key",
+          "apiKeyPlaceholder": "sk-...",
+          "apiKeyDesc": "Your OpenAI API key for generative AI features",
+          "apiKeyRequired": "Required when OpenAI provider is enabled",
+          "apiKeyMasked": "This is your current API key (masked for security)",
+          "update": "Update Key",
+          "cancel": "Cancel",
+          "model": "Model",
+          "modelDesc": "OpenAI model to use for generating insights",
+          "maxTokens": "Max Tokens",
+          "maxTokensDesc": "Maximum number of tokens in AI responses",
+          "temperature": "Temperature",
+          "temperatureDesc": "Controls randomness (0.0 = deterministic, 2.0 = very creative)"
+        },
+        "performance": {
+          "title": "Performance Settings",
+          "cacheEnabled": "Enable Cache",
+          "cacheEnabledDesc": "Cache AI responses to improve performance and reduce costs",
+          "cacheTtl": "Cache TTL",
+          "cacheTtlDesc": "Time in seconds before cached responses expire",
+          "rateLimit": "Rate Limit",
+          "rateLimitDesc": "Maximum number of AI requests per minute"
+        },
+        "advanced": {
+          "title": "Advanced Settings",
+          "modelVersion": "Prediction Model Version",
+          "modelVersionDesc": "Version of the prediction model to use"
+        }
       }
     },
     "insights": {
@@ -866,6 +1321,37 @@
         "instructions": {
           "title": "Integration Instructions",
           "description": "Add this key to your checkout application's environment variables:"
+        }
+      },
+      "vtex": {
+        "title": "VTEX Credentials",
+        "description": "Configure your VTEX App Key and Token to connect with VTEX and enable checkout functionality",
+        "appKeyLabel": "App Key",
+        "appKeyPlaceholder": "Enter your VTEX App Key",
+        "appKeyDescription": "Your VTEX App Key (generated in VTEX Admin)",
+        "appTokenLabel": "App Token",
+        "appTokenPlaceholder": "Enter your VTEX App Token",
+        "appTokenDescription": "Your VTEX App Token (generated in VTEX Admin)",
+        "save": "Save Credentials",
+        "delete": "Delete Credentials",
+        "saveSuccess": "VTEX credentials saved successfully",
+        "saveError": "Failed to save VTEX credentials",
+        "deleteSuccess": "VTEX credentials deleted successfully",
+        "deleteError": "Failed to delete VTEX credentials",
+        "deleteConfirm": "Are you sure you want to delete VTEX credentials? This will disconnect your checkout from VTEX.",
+        "unauthorized": "Only administrators can manage VTEX credentials",
+        "fieldsRequired": "Both App Key and App Token are required",
+        "configured": {
+          "title": "VTEX Credentials Configured",
+          "description": "Your VTEX credentials are configured and the checkout is connected to VTEX.",
+          "lastUpdated": "Last updated"
+        },
+        "instructions": {
+          "title": "How to Get Your VTEX Credentials",
+          "description": "To connect your checkout with VTEX, you need to generate App Key and Token in your VTEX Admin:",
+          "step1": "Go to VTEX Admin → Settings → API Keys",
+          "step2": "Create a new API Key and Token",
+          "step3": "Copy the App Key and Token and paste them in the fields above"
         }
       },
       "customKeys": {
