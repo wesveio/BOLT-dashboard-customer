@@ -17,6 +17,7 @@ import { OptimizationEffectivenessChart } from '@/components/Dashboard/Optimizat
 import { FieldPerformanceTrendChart } from '@/components/Dashboard/FieldPerformanceTrendChart/FieldPerformanceTrendChart';
 import { FormOptimizationConfig } from '@/components/Dashboard/FormOptimizationConfig/FormOptimizationConfig';
 import { FieldsPerformanceTable } from '@/components/Dashboard/FieldsPerformanceTable/FieldsPerformanceTable';
+import { OptimizationHelpSection } from '@/components/Dashboard/OptimizationHelpSection/OptimizationHelpSection';
 import { useFormOptimizationMetrics } from '@/hooks/useFormOptimizationMetrics';
 import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
 
@@ -89,6 +90,9 @@ export default function OptimizationPage() {
             </div>
           }
         />
+
+        {/* Help Section */}
+        <OptimizationHelpSection />
 
         {isLoading && !metrics ? (
           <LoadingState message={t('optimization.loading') || 'Loading form optimization data...'} />

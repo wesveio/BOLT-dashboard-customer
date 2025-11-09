@@ -18,6 +18,7 @@ import { PersonalizationConversionChart } from '@/components/Dashboard/Personali
 import { ProfilesTable } from '@/components/Dashboard/ProfilesTable/ProfilesTable';
 import { PersonalizationConfig } from '@/components/Dashboard/PersonalizationConfig/PersonalizationConfig';
 import { PersonalizationRules } from '@/components/Dashboard/PersonalizationRules/PersonalizationRules';
+import { PersonalizationHelpSection } from '@/components/Dashboard/PersonalizationHelpSection/PersonalizationHelpSection';
 import { usePersonalizationProfiles } from '@/hooks/usePersonalizationProfiles';
 import { usePersonalizationMetrics } from '@/hooks/usePersonalizationMetrics';
 import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
@@ -109,6 +110,9 @@ export default function PersonalizationPage() {
             </div>
           }
         />
+
+        {/* Help Section */}
+        <PersonalizationHelpSection />
 
         {isLoading && !metrics ? (
           <LoadingState message={t('personalization.loading') || 'Loading personalization data...'} />

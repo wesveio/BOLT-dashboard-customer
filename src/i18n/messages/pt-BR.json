@@ -704,6 +704,74 @@
         "table": {
           "title": "Sessões de Alto Risco",
           "subtitle": "Sessões com risco alto ou crítico de abandono"
+        },
+        "help": {
+          "title": "Como Funcionam as Predições",
+          "subtitle": "Aprenda sobre pontuações de risco, precisão do modelo e como interpretar os dados de predição",
+          "riskScores": {
+            "title": "Pontuações e Níveis de Risco",
+            "riskScore": {
+              "title": "Pontuação de Risco",
+              "description": "Um valor numérico (0-100) que indica a probabilidade de abandono no checkout. Pontuações mais altas significam maior risco. A pontuação é calculada usando modelos de aprendizado de máquina que analisam padrões de comportamento do usuário."
+            },
+            "riskLevels": {
+              "title": "Níveis de Risco",
+              "description": "As sessões são categorizadas em quatro níveis de risco: Baixo (0-30%), Médio (31-50%), Alto (51-70%) e Crítico (71-100%). Cada nível representa uma probabilidade diferente de abandono e pode acionar diferentes intervenções."
+            },
+            "prediction": {
+              "title": "Como Funcionam as Predições",
+              "description": "As predições são feitas em tempo real usando modelos de IA que analisam comportamento do usuário, progresso do checkout, tempo gasto, erros encontrados e padrões históricos. O modelo aprende continuamente e melhora a precisão."
+            }
+          },
+          "metrics": {
+            "title": "Métricas Principais",
+            "totalSessions": {
+              "title": "Total de Sessões",
+              "description": "O número total de sessões de checkout no período de tempo selecionado. Isso inclui todas as sessões, independentemente do nível de risco ou resultado."
+            },
+            "highRisk": {
+              "title": "Sessões de Alto Risco",
+              "description": "O número de sessões classificadas como risco Alto ou Crítico. Essas sessões têm 51%+ de probabilidade de abandono e podem se beneficiar de intervenções."
+            },
+            "avgRisk": {
+              "title": "Pontuação Média de Risco",
+              "description": "A pontuação média de risco em todas as sessões do período. Uma média mais alta indica mais sessões em risco no geral. Compare esta métrica ao longo do tempo para rastrear tendências."
+            },
+            "modelAccuracy": {
+              "title": "Precisão do Modelo",
+              "description": "A taxa de precisão do modelo de predição, medida comparando predições com resultados reais. Maior precisão significa predições mais confiáveis. Os modelos são continuamente treinados e melhorados."
+            }
+          },
+          "model": {
+            "title": "Modelo de Predição",
+            "howItWorks": {
+              "title": "Como o Modelo Funciona",
+              "description": "O modelo de IA analisa múltiplos fatores incluindo progresso da etapa de checkout, tempo gasto em cada etapa, frequência de erros, taxas de conclusão de formulário e padrões históricos de conversão para prever o risco de abandono."
+            },
+            "features": {
+              "title": "Características Analisadas",
+              "description": "O modelo considera: duração da etapa, contagem de erros, taxas de conclusão de campos, duração da sessão, tipo de dispositivo, comportamento do navegador e padrões históricos do usuário para fazer predições precisas."
+            },
+            "accuracy": {
+              "title": "Precisão do Modelo",
+              "description": "A precisão é medida comparando níveis de risco previstos com resultados reais. O modelo é continuamente retreinado com novos dados para melhorar a precisão ao longo do tempo. A precisão típica varia de 85-95%."
+            }
+          },
+          "charts": {
+            "title": "Gráficos e Tabelas",
+            "distribution": {
+              "title": "Gráfico de Distribuição de Risco",
+              "description": "Mostra a distribuição de sessões em diferentes níveis de risco (Baixo, Médio, Alto, Crítico). Ajuda a identificar a proporção de sessões em risco no seu funil de checkout."
+            },
+            "trend": {
+              "title": "Gráfico de Tendência de Risco",
+              "description": "Exibe a pontuação média de risco ao longo do tempo, permitindo rastrear tendências e identificar períodos com maior ou menor risco de abandono. Útil para medir o impacto de otimizações."
+            },
+            "table": {
+              "title": "Tabela de Predições",
+              "description": "Lista sessões individuais de alto risco com ID da sessão, pontuação de risco, nível de risco, timestamp da predição e status atual. Use isso para identificar sessões específicas que podem precisar de atenção."
+            }
+          }
         }
       },
       "interventions": {
@@ -828,6 +896,85 @@
         "table": {
           "title": "Perfis de Usuários",
           "subtitle": "Lista de perfis de usuários no período selecionado"
+        },
+        "help": {
+          "title": "Como Funciona a Personalização",
+          "subtitle": "Aprenda sobre perfis de usuários, detecção de dispositivos e recursos de personalização",
+          "profiles": {
+            "title": "Perfis de Usuários",
+            "whatAre": {
+              "title": "O que são Perfis de Usuários?",
+              "description": "Perfis de usuários são criados automaticamente com base no comportamento do usuário e características do dispositivo. Cada perfil contém informações sobre tipo de dispositivo, preferências e padrões de comportamento para permitir experiências de checkout personalizadas."
+            },
+            "howCreated": {
+              "title": "Como os Perfis são Criados",
+              "description": "Os perfis são criados automaticamente quando os usuários interagem com seu checkout. O sistema analisa tipo de dispositivo, navegador, tamanho da tela, padrões de interação e comportamento anterior para construir perfis de usuário abrangentes."
+            },
+            "benefits": {
+              "title": "Benefícios da Personalização",
+              "description": "Checkouts personalizados se adaptam às preferências do usuário, mostrando layouts otimizados, ordens de campos e mensagens com base no tipo de dispositivo e padrões de comportamento. Isso pode melhorar significativamente as taxas de conversão."
+            }
+          },
+          "deviceTypes": {
+            "title": "Tipos de Dispositivos",
+            "detection": {
+              "title": "Detecção de Dispositivo",
+              "description": "O sistema detecta automaticamente o tipo de dispositivo (Desktop, Mobile, Tablet) usando informações do navegador e tamanho da tela. Isso permite otimizações e layouts específicos por dispositivo."
+            },
+            "types": {
+              "title": "Tipos de Dispositivos Suportados",
+              "description": "Três tipos principais de dispositivos são detectados: Desktop (telas grandes, mouse/teclado), Mobile (telas pequenas, toque) e Tablet (telas médias, toque). Cada tipo recebe experiências otimizadas."
+            },
+            "personalization": {
+              "title": "Personalização Baseada em Dispositivo",
+              "description": "Diferentes regras de personalização se aplicam com base no tipo de dispositivo. Usuários mobile podem ver formulários simplificados, enquanto usuários desktop obtêm opções mais detalhadas. Isso melhora a usabilidade e conversão."
+            }
+          },
+          "metrics": {
+            "title": "Métricas Principais",
+            "conversion": {
+              "title": "Taxa de Conversão",
+              "description": "A taxa de conversão para sessões personalizadas comparada a sessões não personalizadas. Taxas mais altas indicam estratégias de personalização eficazes."
+            },
+            "profiles": {
+              "title": "Total de Perfis",
+              "description": "O número de perfis de usuários únicos criados no período selecionado. Mais perfis significam melhor cobertura de personalização em sua base de usuários."
+            },
+            "improvement": {
+              "title": "Melhoria de Conversão",
+              "description": "A melhoria percentual na taxa de conversão quando a personalização é aplicada. Esta métrica mostra o impacto direto da personalização no desempenho do seu checkout."
+            }
+          },
+          "configuration": {
+            "title": "Configuração",
+            "rules": {
+              "title": "Regras de Personalização",
+              "description": "As regras definem como o checkout se adapta a diferentes perfis de usuários e tipos de dispositivos. Você pode configurar ordenação de campos, preferências de layout e mensagens com base em dispositivo e padrões de comportamento."
+            },
+            "settings": {
+              "title": "Configurações de Personalização",
+              "description": "Configure recursos de personalização incluindo detecção de dispositivo, criação de perfil, aplicação de regras e opções de teste A/B. As configurações podem ser ajustadas para otimizar para seu caso de uso específico."
+            }
+          },
+          "charts": {
+            "title": "Gráficos e Tabelas",
+            "deviceDistribution": {
+              "title": "Gráfico de Distribuição por Dispositivo",
+              "description": "Mostra a distribuição de perfis de usuários em diferentes tipos de dispositivos (Desktop, Mobile, Tablet). Ajuda a entender a composição da sua base de usuários."
+            },
+            "conversion": {
+              "title": "Gráfico de Conversão por Dispositivo",
+              "description": "Compara taxas de conversão entre sessões personalizadas e não personalizadas, divididas por tipo de dispositivo. Mostra a eficácia da personalização para cada categoria de dispositivo."
+            },
+            "trend": {
+              "title": "Gráfico de Tendência de Perfis",
+              "description": "Exibe a frequência de criação e atualização de perfis de usuários ao longo do tempo. Ajuda a rastrear o crescimento de perfis e identificar tendências em padrões de comportamento do usuário."
+            },
+            "table": {
+              "title": "Tabela de Perfis",
+              "description": "Lista perfis de usuários individuais com tipo de dispositivo, data de criação, última atualização e métricas associadas. Use isso para analisar características e comportamentos específicos de perfis."
+            }
+          }
         }
       },
       "optimization": {
@@ -852,6 +999,78 @@
         "table": {
           "title": "Detalhes de Performance dos Campos",
           "subtitle": "Métricas detalhadas de performance para todos os campos"
+        },
+        "help": {
+          "title": "Como Funciona a Otimização de Formulários",
+          "subtitle": "Aprenda sobre otimização de campos, métricas por etapa e melhorias de performance",
+          "fieldOptimization": {
+            "title": "Otimização de Campos",
+            "whatIs": {
+              "title": "O que é Otimização de Campos?",
+              "description": "A otimização de campos usa IA para analisar o desempenho dos campos do formulário e otimizar automaticamente a ordem dos campos, rótulos, placeholders e validação para melhorar as taxas de conversão e reduzir erros."
+            },
+            "howWorks": {
+              "title": "Como a Otimização Funciona",
+              "description": "O sistema analisa taxas de conclusão, frequências de erros, tempo gasto e comportamento do usuário para cada campo. Com base nesses dados, reordena campos, ajusta rótulos e otimiza regras de validação para melhorar a experiência de checkout."
+            },
+            "benefits": {
+              "title": "Benefícios da Otimização",
+              "description": "Formulários otimizados reduzem o tempo de conclusão, diminuem taxas de erro e melhoram a conversão. Os campos são ordenados por importância e probabilidade de conclusão, tornando o processo de checkout mais suave e rápido."
+            }
+          },
+          "stepMetrics": {
+            "title": "Métricas por Etapa",
+            "steps": {
+              "title": "Etapas do Checkout",
+              "description": "O checkout é dividido em etapas (Carrinho, Perfil, Entrega, Pagamento). Cada etapa tem suas próprias métricas incluindo taxa de conclusão, taxa de erro e tempo médio para concluir."
+            },
+            "completion": {
+              "title": "Taxa de Conclusão",
+              "description": "A porcentagem de usuários que concluem com sucesso uma etapa. Taxas de conclusão mais altas indicam melhor design e otimização da etapa. Taxas baixas podem indicar pontos de atrito."
+            },
+            "errorRate": {
+              "title": "Taxa de Erro",
+              "description": "A porcentagem de usuários que encontram erros ao concluir uma etapa. Taxas de erro mais baixas significam melhor design de formulário e validação. Taxas altas podem indicar campos confusos ou problemas de validação."
+            },
+            "timeToComplete": {
+              "title": "Tempo para Concluir",
+              "description": "O tempo médio que os usuários gastam concluindo uma etapa. Tempos mais curtos geralmente indicam melhor UX, mas o contexto importa - algumas etapas naturalmente levam mais tempo (ex: verificação de pagamento)."
+            }
+          },
+          "effectiveness": {
+            "title": "Efetividade da Otimização",
+            "conversion": {
+              "title": "Melhoria da Taxa de Conversão",
+              "description": "A melhoria na taxa de conversão quando a otimização é aplicada. Esta métrica compara sessões otimizadas vs não otimizadas para medir o impacto direto da otimização de campos."
+            },
+            "comparison": {
+              "title": "Otimizado vs Não Otimizado",
+              "description": "Comparação lado a lado de taxas de conversão, tempos de conclusão e taxas de erro entre checkouts otimizados e não otimizados. Mostra os benefícios tangíveis da otimização."
+            },
+            "improvement": {
+              "title": "Melhoria de Performance",
+              "description": "Métricas gerais de melhoria incluindo aumento da taxa de conversão, redução de erros e economia de tempo. Essas métricas demonstram o ROI dos esforços de otimização de formulários."
+            }
+          },
+          "charts": {
+            "title": "Gráficos e Tabelas",
+            "effectiveness": {
+              "title": "Gráfico de Efetividade",
+              "description": "Mostra taxas de conversão para checkouts otimizados vs não otimizados, divididos por etapa. Ajuda a identificar quais etapas se beneficiam mais da otimização."
+            },
+            "fieldPerformance": {
+              "title": "Gráfico de Performance dos Campos",
+              "description": "Exibe métricas de performance para cada campo incluindo taxa de conclusão, taxa de erro e tempo médio. Ajuda a identificar campos que precisam de otimização ou estão com bom desempenho."
+            },
+            "trend": {
+              "title": "Gráfico de Tendência de Performance",
+              "description": "Mostra métricas de performance dos campos ao longo do tempo, permitindo rastrear melhorias e identificar tendências. Útil para medir o impacto de mudanças de otimização."
+            },
+            "table": {
+              "title": "Tabela de Performance dos Campos",
+              "description": "Tabela detalhada listando todos os campos com suas métricas de performance, status de otimização e recomendações. Use isso para identificar campos específicos que precisam de atenção."
+            }
+          }
         }
       },
       "settings": {

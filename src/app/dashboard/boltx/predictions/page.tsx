@@ -16,6 +16,7 @@ import { RiskDistributionChart } from '@/components/Dashboard/RiskDistributionCh
 import { RiskTrendChart } from '@/components/Dashboard/RiskTrendChart/RiskTrendChart';
 import { PredictionsTable } from '@/components/Dashboard/PredictionsTable/PredictionsTable';
 import { ModelMetricsCard } from '@/components/Dashboard/ModelMetricsCard/ModelMetricsCard';
+import { PredictionsHelpSection } from '@/components/Dashboard/PredictionsHelpSection/PredictionsHelpSection';
 import { useAbandonmentPredictionsRealtime } from '@/hooks/useAbandonmentPredictionsRealtime';
 import { useApi } from '@/hooks/useApi';
 import { formatNumber, formatPercentage } from '@/utils/formatters';
@@ -112,6 +113,9 @@ export default function PredictionsPage() {
             </div>
           }
         />
+
+        {/* Help Section */}
+        <PredictionsHelpSection />
 
         {isLoading && !summary ? (
           <LoadingState message={t('predictions.loading') || 'Loading predictions...'} />
