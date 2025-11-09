@@ -730,6 +730,86 @@
         "table": {
           "title": "Recent Interventions",
           "subtitle": "List of interventions applied in the selected period"
+        },
+        "help": {
+          "title": "How Interventions Work",
+          "subtitle": "Learn about intervention types, metrics, and how to interpret the data",
+          "types": {
+            "title": "Intervention Types",
+            "discount": {
+              "title": "Discount Intervention",
+              "description": "Automatically triggered when a session reaches high or critical risk levels. Offers a discount (percentage or fixed amount) to incentivize completion. Typically used for sessions with 70%+ abandonment risk.",
+              "example": "Special offer: Get 10% off your order!"
+            },
+            "security": {
+              "title": "Security Intervention",
+              "description": "Shows security and trust messages during the payment step. Helps reduce user concerns about payment safety. Triggered at medium-high risk levels (50%+ risk) when user is on payment step.",
+              "example": "Your payment is secure and encrypted"
+            },
+            "simplify": {
+              "title": "Simplify Intervention",
+              "description": "Provides help and support messages when users encounter errors or spend too long on a step. Simplifies the process by offering assistance. Triggered at medium risk (40%+) with errors or long step duration.",
+              "example": "Need help? Contact our support team"
+            },
+            "progress": {
+              "title": "Progress Intervention",
+              "description": "Motivational messages that encourage users to complete their purchase. Shows progress indicators and completion benefits. Triggered at lower risk levels (30%+) to maintain momentum.",
+              "example": "You're almost done! Complete your purchase"
+            }
+          },
+          "metrics": {
+            "title": "Key Metrics",
+            "total": {
+              "title": "Total Interventions",
+              "description": "The total number of interventions triggered in the selected time period. This includes all intervention types regardless of whether they were applied or not."
+            },
+            "conversion": {
+              "title": "Conversion Rate",
+              "description": "The overall conversion rate for sessions where interventions were applied. This metric shows how effective interventions are at converting at-risk sessions into completed purchases."
+            },
+            "active": {
+              "title": "Active Configs",
+              "description": "The number of intervention types that are currently enabled and have been configured. Each type (Discount, Security, Simplify, Progress) counts as one active config."
+            },
+            "roi": {
+              "title": "Estimated ROI",
+              "description": "Return on Investment estimate based on additional revenue generated from interventions. Calculated by comparing conversion rates with and without interventions, accounting for discount costs."
+            }
+          },
+          "concepts": {
+            "title": "Key Concepts",
+            "threshold": {
+              "title": "Risk Threshold",
+              "description": "The minimum risk score (0-100) required to trigger an intervention. Each intervention type has its own threshold. Higher thresholds mean interventions only trigger for higher-risk sessions."
+            },
+            "riskLevels": {
+              "title": "Risk Levels",
+              "description": "Sessions are categorized by abandonment risk: Low (0-30%), Medium (31-50%), High (51-70%), and Critical (71-100%). Different intervention types are recommended for different risk levels."
+            },
+            "status": {
+              "title": "Status: Applied vs Not Applied",
+              "description": "Applied means the intervention was successfully shown to the user. Not Applied means the intervention was triggered but couldn't be displayed (e.g., user left before it appeared, technical issue, or intervention was disabled)."
+            },
+            "result": {
+              "title": "Result: Converted, Abandoned, Pending",
+              "description": "Converted: Session completed with a purchase. Abandoned: User left without completing. Pending: Session is still active or outcome hasn't been determined yet."
+            }
+          },
+          "charts": {
+            "title": "Charts & Tables",
+            "effectiveness": {
+              "title": "Effectiveness Chart",
+              "description": "Shows conversion rates by intervention type, comparing sessions with interventions against those without. Helps identify which intervention types are most effective for your store."
+            },
+            "detailed": {
+              "title": "Detailed Metrics",
+              "description": "Breakdown showing applied, converted, and abandoned counts for each intervention type. Displays conversion rate percentage for each type to help you understand performance."
+            },
+            "table": {
+              "title": "Interventions Table",
+              "description": "List of individual interventions with session ID, type, risk score, status, result, and timestamp. Use filters to view specific types, statuses, or results. Sortable by date (most recent first)."
+            }
+          }
         }
       },
       "personalization": {

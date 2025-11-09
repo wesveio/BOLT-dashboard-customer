@@ -15,6 +15,7 @@ import { InterventionMetricsCard } from '@/components/Dashboard/InterventionMetr
 import { InterventionEffectivenessChart } from '@/components/Dashboard/InterventionEffectivenessChart/InterventionEffectivenessChart';
 import { InterventionConfig } from '@/components/Dashboard/InterventionConfig/InterventionConfig';
 import { InterventionsTable } from '@/components/Dashboard/InterventionsTable/InterventionsTable';
+import { InterventionsHelpSection } from '@/components/Dashboard/InterventionsHelpSection/InterventionsHelpSection';
 import { useInterventionsData } from '@/hooks/useInterventionsData';
 import { useInterventionMetrics } from '@/hooks/useInterventionMetrics';
 import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
@@ -114,6 +115,9 @@ export default function InterventionsPage() {
             </div>
           }
         />
+
+        {/* Help Section */}
+        <InterventionsHelpSection />
 
         {isLoading && !metrics ? (
           <LoadingState message={t('interventions.loading') || 'Loading interventions...'} />

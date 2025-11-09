@@ -724,6 +724,86 @@
         "table": {
           "title": "Intervenções Recentes",
           "subtitle": "Lista de intervenções aplicadas no período selecionado"
+        },
+        "help": {
+          "title": "Como Funcionam as Intervenções",
+          "subtitle": "Aprenda sobre tipos de intervenções, métricas e como interpretar os dados",
+          "types": {
+            "title": "Tipos de Intervenções",
+            "discount": {
+              "title": "Intervenção de Desconto",
+              "description": "Acionada automaticamente quando uma sessão atinge níveis de risco altos ou críticos. Oferece um desconto (percentual ou valor fixo) para incentivar a conclusão. Normalmente usada para sessões com 70%+ de risco de abandono.",
+              "example": "Oferta especial: Ganhe 10% de desconto no seu pedido!"
+            },
+            "security": {
+              "title": "Intervenção de Segurança",
+              "description": "Exibe mensagens de segurança e confiança durante a etapa de pagamento. Ajuda a reduzir preocupações do usuário sobre segurança do pagamento. Acionada em níveis de risco médio-alto (50%+ risco) quando o usuário está na etapa de pagamento.",
+              "example": "Seu pagamento é seguro e criptografado"
+            },
+            "simplify": {
+              "title": "Intervenção de Simplificação",
+              "description": "Fornece mensagens de ajuda e suporte quando usuários encontram erros ou passam muito tempo em uma etapa. Simplifica o processo oferecendo assistência. Acionada em risco médio (40%+) com erros ou duração longa da etapa.",
+              "example": "Precisa de ajuda? Entre em contato com nossa equipe de suporte"
+            },
+            "progress": {
+              "title": "Intervenção de Progresso",
+              "description": "Mensagens motivacionais que encorajam usuários a completar sua compra. Mostra indicadores de progresso e benefícios de conclusão. Acionada em níveis de risco mais baixos (30%+) para manter o momentum.",
+              "example": "Você está quase terminando! Complete sua compra"
+            }
+          },
+          "metrics": {
+            "title": "Métricas Principais",
+            "total": {
+              "title": "Total de Intervenções",
+              "description": "O número total de intervenções acionadas no período de tempo selecionado. Isso inclui todos os tipos de intervenção, independentemente de terem sido aplicadas ou não."
+            },
+            "conversion": {
+              "title": "Taxa de Conversão",
+              "description": "A taxa de conversão geral para sessões onde intervenções foram aplicadas. Esta métrica mostra quão eficazes as intervenções são em converter sessões de risco em compras concluídas."
+            },
+            "active": {
+              "title": "Configurações Ativas",
+              "description": "O número de tipos de intervenção que estão atualmente habilitados e foram configurados. Cada tipo (Desconto, Segurança, Simplificação, Progresso) conta como uma configuração ativa."
+            },
+            "roi": {
+              "title": "ROI Estimado",
+              "description": "Estimativa de Retorno sobre Investimento baseada na receita adicional gerada pelas intervenções. Calculado comparando taxas de conversão com e sem intervenções, considerando os custos de desconto."
+            }
+          },
+          "concepts": {
+            "title": "Conceitos Principais",
+            "threshold": {
+              "title": "Limiar de Risco",
+              "description": "A pontuação de risco mínima (0-100) necessária para acionar uma intervenção. Cada tipo de intervenção tem seu próprio limiar. Limiares mais altos significam que as intervenções só são acionadas para sessões de maior risco."
+            },
+            "riskLevels": {
+              "title": "Níveis de Risco",
+              "description": "As sessões são categorizadas por risco de abandono: Baixo (0-30%), Médio (31-50%), Alto (51-70%) e Crítico (71-100%). Diferentes tipos de intervenção são recomendados para diferentes níveis de risco."
+            },
+            "status": {
+              "title": "Status: Aplicada vs Não Aplicada",
+              "description": "Aplicada significa que a intervenção foi exibida com sucesso ao usuário. Não Aplicada significa que a intervenção foi acionada mas não pôde ser exibida (ex: usuário saiu antes de aparecer, problema técnico, ou intervenção foi desabilitada)."
+            },
+            "result": {
+              "title": "Resultado: Convertida, Abandonada, Pendente",
+              "description": "Convertida: Sessão concluída com uma compra. Abandonada: Usuário saiu sem completar. Pendente: Sessão ainda está ativa ou o resultado ainda não foi determinado."
+            }
+          },
+          "charts": {
+            "title": "Gráficos e Tabelas",
+            "effectiveness": {
+              "title": "Gráfico de Efetividade",
+              "description": "Mostra taxas de conversão por tipo de intervenção, comparando sessões com intervenções contra aquelas sem. Ajuda a identificar quais tipos de intervenção são mais eficazes para sua loja."
+            },
+            "detailed": {
+              "title": "Métricas Detalhadas",
+              "description": "Detalhamento mostrando contagens de aplicadas, convertidas e abandonadas para cada tipo de intervenção. Exibe a porcentagem de taxa de conversão para cada tipo para ajudar você a entender o desempenho."
+            },
+            "table": {
+              "title": "Tabela de Intervenções",
+              "description": "Lista de intervenções individuais com ID da sessão, tipo, pontuação de risco, status, resultado e timestamp. Use filtros para visualizar tipos, status ou resultados específicos. Ordenável por data (mais recente primeiro)."
+            }
+          }
         }
       },
       "personalization": {
