@@ -21,6 +21,7 @@ import { useApi } from '@/hooks/useApi';
 import { getTranslatedPeriodOptions } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
+import { formatPercentage } from '@/utils/formatters';
 
 interface InterventionsConfigResponse {
   interventions: Array<{
@@ -195,7 +196,7 @@ export default function InterventionsPage() {
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-semibold text-gray-900 capitalize">{type}</h4>
                         <span className="text-sm text-gray-600">
-                          {data.conversionRate.toFixed(1)}% conversion
+                          {formatPercentage(data.conversionRate)} conversion
                         </span>
                       </div>
                       <div className="grid grid-cols-3 gap-4 text-sm">

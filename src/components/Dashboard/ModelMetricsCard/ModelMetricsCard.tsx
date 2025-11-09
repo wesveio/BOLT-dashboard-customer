@@ -88,25 +88,25 @@ export function ModelMetricsCard({ metrics, isLoading = false }: ModelMetricsCar
             <div>
               <p className="text-sm text-gray-600 mb-1">Accuracy</p>
               <p className="text-2xl font-bold text-gray-900">
-                {formatPercentage(metrics.accuracy * 100, 1)}
+                {formatPercentage(metrics.accuracy * 100)}
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-600 mb-1">Precision</p>
               <p className="text-2xl font-bold text-gray-900">
-                {formatPercentage(metrics.precision * 100, 1)}
+                {formatPercentage(metrics.precision * 100)}
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-600 mb-1">Recall</p>
               <p className="text-2xl font-bold text-gray-900">
-                {formatPercentage(metrics.recall * 100, 1)}
+                {formatPercentage(metrics.recall * 100)}
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-600 mb-1">F1 Score</p>
               <p className="text-2xl font-bold text-gray-900">
-                {formatPercentage(metrics.f1Score * 100, 1)}
+                {formatPercentage(metrics.f1Score * 100)}
               </p>
             </div>
           </div>

@@ -190,7 +190,7 @@ export default function DashboardPage() {
             />
             <MetricCard
               title={tOverview('revenueGrowth')}
-              value={formatPercentage(revenueGrowth, 1)}
+              value={formatPercentage(revenueGrowth)}
               subtitle={tOverview('subtitles.revenueGrowth')}
               trend={{
                 value: revenueGrowth,

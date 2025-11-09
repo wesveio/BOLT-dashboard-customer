@@ -297,12 +297,12 @@ export function FieldsPerformanceTable({ fields, isLoading = false, maxRows = 10
                 </TableCell>
                 <TableCell>
                   <span className="text-sm text-gray-900 font-medium">
-                    {formatPercentage(field.completionRate * 100, 1)}
+                    {formatPercentage(field.completionRate * 100)}
                   </span>
                 </TableCell>
                 <TableCell>
                   <span className="text-sm text-gray-900 font-medium">
-                    {formatPercentage(field.errorRate * 100, 1)}
+                    {formatPercentage(field.errorRate * 100)}
                   </span>
                 </TableCell>
                 <TableCell>

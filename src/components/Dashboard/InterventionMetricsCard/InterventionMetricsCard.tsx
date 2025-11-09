@@ -33,7 +33,7 @@ export function InterventionMetricsCard({ metrics, activeConfigs: activeConfigsP
       />
       <MetricCard
         title="Conversion Rate"
-        value={formatPercentage(metrics.overallConversionRate, 1)}
+        value={formatPercentage(metrics.overallConversionRate)}
         subtitle="Overall conversion with interventions"
         icon={<CheckCircleIcon className="w-6 h-6 text-white" />}
         isLoading={isLoading}
@@ -47,7 +47,7 @@ export function InterventionMetricsCard({ metrics, activeConfigs: activeConfigsP
       />
       <MetricCard
         title="Estimated ROI"
-        value={metrics.estimatedROI > 0 ? `${formatNumber(metrics.estimatedROI)}%` : 'N/A'}
+        value={metrics.estimatedROI > 0 ? formatPercentage(metrics.estimatedROI) : 'N/A'}
         subtitle="Return on investment"
         icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         isLoading={isLoading}

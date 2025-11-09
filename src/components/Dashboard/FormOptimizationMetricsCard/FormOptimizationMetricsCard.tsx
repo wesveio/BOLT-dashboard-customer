@@ -27,14 +27,14 @@ export function FormOptimizationMetricsCard({ metrics, isLoading }: FormOptimiza
       />
       <MetricCard
         title="Optimized Conversion"
-        value={formatPercentage(metrics.optimizedConversionRate, 1)}
-        subtitle={`vs ${formatPercentage(metrics.nonOptimizedConversionRate, 1)} without optimization`}
+        value={formatPercentage(metrics.optimizedConversionRate)}
+        subtitle={`vs ${formatPercentage(metrics.nonOptimizedConversionRate)} without optimization`}
         icon={<ArrowTrendingUpIcon className="w-6 h-6 text-white" />}
         isLoading={isLoading}
       />
       <MetricCard
         title="Improvement Rate"
-        value={formatPercentage(metrics.improvementRate, 1)}
+        value={formatPercentage(metrics.improvementRate)}
         subtitle="Conversion improvement vs baseline"
         icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         isLoading={isLoading}

@@ -176,16 +176,22 @@ export function formatNumber(
 
 /**
  * Format percentage
+ * Removes trailing zeros when decimal part is zero (e.g., 100.00% -> 100%)
  */
 export function formatPercentage(
   value: number | string,
-  decimals: number = 1
+  decimals: number = 2
 ): string {
   const numValue = typeof value === 'string' ? parseFloat(value) : value;
 
   if (isNaN(numValue)) return '0%';
 
-  return `${numValue.toFixed(decimals)}%`;
+  // Format with specified decimals, then remove trailing zeros
+  const formatted = numValue.toFixed(decimals);
+  // Remove trailing zeros and decimal point if not needed
+  const cleaned = parseFloat(formatted).toString();
+  
+  return `${cleaned}%`;
 }
 
 /**

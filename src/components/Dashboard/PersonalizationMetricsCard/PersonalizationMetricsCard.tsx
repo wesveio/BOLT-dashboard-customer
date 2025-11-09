@@ -34,15 +34,15 @@ export function PersonalizationMetricsCard({ metrics, isLoading }: Personalizati
       />
       <MetricCard
         title="Personalization Rate"
-        value={formatPercentage(metrics.personalizationRate, 1)}
+        value={formatPercentage(metrics.personalizationRate)}
         subtitle="% of sessions personalized"
         icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         isLoading={isLoading}
       />
       <MetricCard
         title="Personalized Conversion"
-        value={formatPercentage(metrics.personalizedConversionRate, 1)}
-        subtitle={`vs ${formatPercentage(metrics.nonPersonalizedConversionRate, 1)} without`}
+        value={formatPercentage(metrics.personalizedConversionRate)}
+        subtitle={`vs ${formatPercentage(metrics.nonPersonalizedConversionRate)} without`}
         icon={<ArrowTrendingUpIcon className="w-6 h-6 text-white" />}
         isLoading={isLoading}
       />

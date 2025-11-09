@@ -18,7 +18,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart, CartesianGrid } from 'recharts';
 import { useRevenueForecastData } from '@/hooks/useDashboardData';
-import { formatCurrency, formatNumber } from '@/utils/formatters';
+import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
 import { getTranslatedPeriodOptions } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 
@@ -340,7 +340,7 @@ export default function RevenueForecastPage() {
             </div>
             <div className="text-center">
               <p className="text-sm text-gray-600 mb-2">{t('meanAbsolutePercentError')}</p>
-              <p className="text-2xl font-bold text-gray-900">{formatNumber(accuracy.mape, { maximumFractionDigits: 2 })}%</p>
+              <p className="text-2xl font-bold text-gray-900">{formatPercentage(accuracy.mape)}</p>
             </div>
             <div className="text-center">
               <p className="text-sm text-gray-600 mb-2">{t('rootMeanSquaredError')}</p>

@@ -21,6 +21,7 @@ import { useFormOptimizationMetrics } from '@/hooks/useFormOptimizationMetrics';
 import { getTranslatedPeriodOptions } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
+import { formatPercentage } from '@/utils/formatters';
 
 export default function OptimizationPage() {
   const t = useTranslations('dashboard.boltx');
@@ -156,7 +157,7 @@ export default function OptimizationPage() {
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-semibold text-gray-900 capitalize">{step}</h4>
                         <span className="text-sm text-gray-600">
-                          {stepData.optimizedConversionRate.toFixed(1)}% optimized
+                          {formatPercentage(stepData.optimizedConversionRate)} optimized
                         </span>
                       </div>
                       <div className="grid grid-cols-2 gap-4 text-sm">
@@ -167,13 +168,13 @@ export default function OptimizationPage() {
                         <div>
                           <span className="text-gray-600">Completion Rate:</span>
                           <span className="ml-2 font-semibold text-gray-900">
-                            {(stepData.avgCompletionRate * 100).toFixed(1)}%
+                            {formatPercentage(stepData.avgCompletionRate * 100)}
                           </span>
                         </div>
                         <div>
                           <span className="text-gray-600">Error Rate:</span>
                           <span className="ml-2 font-semibold text-red-600">
-                            {(stepData.avgErrorRate * 100).toFixed(1)}%
+                            {formatPercentage(stepData.avgErrorRate * 100)}
                           </span>
                         </div>
                         <div>

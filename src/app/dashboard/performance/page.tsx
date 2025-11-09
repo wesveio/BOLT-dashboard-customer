@@ -105,7 +105,7 @@ export default function PerformancePage() {
         {safeStepMetrics.map((step) => {
           const clampedAbandonment = Math.max(0, Math.min(100, step.abandonment));
           const progressWidth = Math.max(0, Math.min(100, 100 - clampedAbandonment));
-          const formattedAbandonment = formatPercentage(clampedAbandonment, 1);
+          const formattedAbandonment = formatPercentage(clampedAbandonment);
           const safeAvgTime = Math.max(0, step.avgTime);
 
           return (

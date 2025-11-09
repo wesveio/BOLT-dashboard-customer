@@ -114,12 +114,16 @@ export function formatCurrency(amount: number, currency: string = 'USD'): string
 }
 
 /**
- * Format percentage (e.g., 1.00 -> "1%", 0.50 -> "0.5%")
+ * Format percentage
+ * Removes trailing zeros when decimal part is zero (e.g., 100.00% -> 100%)
  */
 export function formatPercentage(value: number): string {
-  // Remove trailing zeros and format
-  const formatted = value % 1 === 0 ? value.toString() : value.toFixed(2);
-  return `${formatted}%`;
+  // Format with 2 decimals, then remove trailing zeros
+  const formatted = value.toFixed(2);
+  // Remove trailing zeros and decimal point if not needed
+  const cleaned = parseFloat(formatted).toString();
+  
+  return `${cleaned}%`;
 }
 
 /**

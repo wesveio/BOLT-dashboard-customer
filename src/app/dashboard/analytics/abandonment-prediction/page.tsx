@@ -202,7 +202,7 @@ export default function AbandonmentPredictionPage() {
                     borderRadius: '8px',
                   }}
                   formatter={(value: number, name: string) => [
-                    name === 'abandonmentRate' ? `${value.toFixed(1)}%` : formatNumber(value),
+                    name === 'abandonmentRate' ? formatPercentage(value) : formatNumber(value),
                     name === 'abandonmentRate' ? t('abandonmentRate') : name === 'total' ? t('total') : t('abandoned'),
                   ]}
                 />

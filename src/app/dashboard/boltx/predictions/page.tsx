@@ -157,7 +157,7 @@ export default function PredictionsPage() {
               />
               <MetricCard
                 title={t('predictions.metrics.modelAccuracy') || 'Model Accuracy'}
-                value={modelMetrics ? formatPercentage(modelMetrics.accuracy * 100, 1) : 'N/A'}
+                value={modelMetrics ? formatPercentage(modelMetrics.accuracy * 100) : 'N/A'}
                 subtitle={t('predictions.metrics.subtitles.modelAccuracy') || 'Prediction model accuracy'}
                 icon={<ClockIcon className="w-6 h-6 text-white" />}
                 isLoading={isLoadingMetrics}
