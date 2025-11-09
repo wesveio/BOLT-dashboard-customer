@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import { motion as m } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
 import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
@@ -25,7 +26,8 @@ import {
   PlusIcon,
   TrashIcon,
   ArrowPathIcon,
-  CloudIcon,
+  EyeIcon,
+  EyeSlashIcon,
 } from '@heroicons/react/24/outline';
 import { toast } from 'sonner';
 import { useRolePermissions } from '@/hooks/useRolePermissions';
@@ -71,6 +73,7 @@ export default function IntegrationsPage() {
   const [isSavingVtex, setIsSavingVtex] = useState(false);
   const [isDeletingVtex, setIsDeletingVtex] = useState(false);
   const [vtexFormData, setVtexFormData] = useState({ app_key: '', app_token: '' });
+  const [showToken, setShowToken] = useState(false);
   
   const {
     isOpen: isCreateModalOpen,
@@ -460,7 +463,13 @@ export default function IntegrationsPage() {
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
-                  <CloudIcon className="w-6 h-6 text-white" />
+                  <Image
+                    src="/logos/VTEX-logo.svg"
+                    alt="VTEX"
+                    width={24}
+                    height={24}
+                    className="object-contain"
+                  />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-gray-900">{t('vtex.title')}</h2>
@@ -503,7 +512,7 @@ export default function IntegrationsPage() {
                     }}
                   />
                   <Input
-                    type="text"
+                    type={showToken ? 'text' : 'password'}
                     label={t('vtex.appTokenLabel')}
                     placeholder={t('vtex.appTokenPlaceholder')}
                     value={vtexFormData.app_token}
@@ -513,6 +522,20 @@ export default function IntegrationsPage() {
                     isRequired
                     isDisabled={!canManageVtex}
                     description={t('vtex.appTokenDescription')}
+                    endContent={
+                      <button
+                        type="button"
+                        onClick={() => setShowToken(!showToken)}
+                        className="focus:outline-none"
+                        aria-label={showToken ? 'Hide token' : 'Show token'}
+                      >
+                        {showToken ? (
+                          <EyeSlashIcon className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+                        ) : (
+                          <EyeIcon className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+                        )}
+                      </button>
+                    }
                     classNames={{
                       input: 'text-base font-mono',
                       label: 'text-sm font-semibold',
