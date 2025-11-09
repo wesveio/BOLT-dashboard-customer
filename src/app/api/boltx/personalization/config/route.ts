@@ -178,33 +178,52 @@ export async function PATCH(request: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    // Update or insert configuration
-    if (existingConfig) {
-      const { error: updateError } = await supabaseAdmin
-        .from('boltx_configurations')
-        .update({
-          metadata: updatedMetadata,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('customer_id', user.account_id);
-
-      if (updateError) {
-        console.error('❌ [DEBUG] Error updating BoltX config:', updateError);
-        return apiError('Failed to update configuration', 500);
+    // Update or insert configuration using RPC function
+    // PostgREST doesn't expose analytics schema directly
+    const { data: configId, error: upsertError } = await supabaseAdmin.rpc(
+      'upsert_boltx_configuration',
+      {
+        p_customer_id: user.account_id,
+        p_enabled: existingConfig?.enabled ?? true,
+        p_metadata: updatedMetadata,
       }
-    } else {
-      // Create new configuration
-      const { error: insertError } = await supabaseAdmin
-        .from('boltx_configurations')
-        .insert({
-          customer_id: user.account_id,
-          enabled: true,
-          metadata: updatedMetadata,
-        });
+    );
 
-      if (insertError) {
-        console.error('❌ [DEBUG] Error creating BoltX config:', insertError);
-        return apiError('Failed to create configuration', 500);
+    if (upsertError) {
+      // If RPC function doesn't exist (error codes: 42883, P0001, PGRST202), try direct query as fallback
+      if (upsertError.code === '42883' || upsertError.code === 'P0001' || upsertError.code === 'PGRST202') {
+        console.warn('⚠️ [DEBUG] RPC function not found in PostgREST schema cache. Attempting direct query fallback...');
+        
+        if (existingConfig) {
+          const { error: updateError } = await supabaseAdmin
+            .from('analytics.boltx_configurations')
+            .update({
+              metadata: updatedMetadata,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('customer_id', user.account_id);
+
+          if (updateError) {
+            console.error('❌ [DEBUG] Error updating BoltX config:', updateError);
+            return apiError('Failed to update configuration. Please run migration 042 to expose the table via RPC functions.', 500);
+          }
+        } else {
+          const { error: insertError } = await supabaseAdmin
+            .from('analytics.boltx_configurations')
+            .insert({
+              customer_id: user.account_id,
+              enabled: true,
+              metadata: updatedMetadata,
+            });
+
+          if (insertError) {
+            console.error('❌ [DEBUG] Error creating BoltX config:', insertError);
+            return apiError('Failed to create configuration. Please run migration 042 to expose the table via RPC functions.', 500);
+          }
+        }
+      } else {
+        console.error('❌ [DEBUG] Error upserting BoltX config:', upsertError);
+        return apiError('Failed to update configuration', 500);
       }
     }
 
