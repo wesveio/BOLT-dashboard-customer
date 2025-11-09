@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Select, SelectItem } from '@heroui/react';
 import { BoltIcon } from '@heroicons/react/24/outline';
@@ -19,7 +18,9 @@ import { InterventionsHelpSection } from '@/components/Dashboard/InterventionsHe
 import { useInterventionsData } from '@/hooks/useInterventionsData';
 import { useInterventionMetrics } from '@/hooks/useInterventionMetrics';
 import { useApi } from '@/hooks/useApi';
-import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
+import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
 
 interface InterventionsConfigResponse {
   interventions: Array<{
@@ -38,7 +39,7 @@ interface InterventionsConfigResponse {
 export default function InterventionsPage() {
   const t = useTranslations('dashboard.boltx');
   const tPeriods = useTranslations('dashboard.common.periods');
-  const [period, setPeriod] = useState<Period>('week');
+  const { period, setPeriod, startDate, endDate } = usePeriod();
 
   // Fetch interventions data
   const {
@@ -48,6 +49,8 @@ export default function InterventionsPage() {
     refetch: refetchInterventions,
   } = useInterventionsData({
     period,
+    startDate,
+    endDate,
     enabled: true,
   });
 
@@ -59,6 +62,8 @@ export default function InterventionsPage() {
     refetch: refetchMetrics,
   } = useInterventionMetrics({
     period,
+    startDate,
+    endDate,
     enabled: true,
   });
 
@@ -143,6 +148,13 @@ export default function InterventionsPage() {
             </div>
           }
         />
+
+        {/* Custom Period Selector */}
+        {period === 'custom' && (
+          <div className="mb-6">
+            <CustomPeriodSelector />
+          </div>
+        )}
 
         {/* Help Section */}
         <InterventionsHelpSection />

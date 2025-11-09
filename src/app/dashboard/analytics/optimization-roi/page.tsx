@@ -18,15 +18,18 @@ import {
 } from '@heroicons/react/24/outline';
 import { useOptimizationROIData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
-import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
 
 export default function OptimizationROIPage() {
   const t = useTranslations('dashboard.analytics.optimizationROI');
   const tPeriods = useTranslations('dashboard.common.periods');
-  const [period, setPeriod] = useState<Period>('month');
+  const { period, setPeriod, startDate, endDate } = usePeriod();
   const [optimizationDate, setOptimizationDate] = useState<string>('');
   const { summary, isLoading, error, refetch, optimizationDate: apiOptimizationDate } = useOptimizationROIData({
     period,
+    startDate,
+    endDate,
     optimizationDate: optimizationDate || undefined,
   });
 

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Select, SelectItem } from '@heroui/react';
 import { PaintBrushIcon } from '@heroicons/react/24/outline';
@@ -19,12 +18,14 @@ import { FormOptimizationConfig } from '@/components/Dashboard/FormOptimizationC
 import { FieldsPerformanceTable } from '@/components/Dashboard/FieldsPerformanceTable/FieldsPerformanceTable';
 import { OptimizationHelpSection } from '@/components/Dashboard/OptimizationHelpSection/OptimizationHelpSection';
 import { useFormOptimizationMetrics } from '@/hooks/useFormOptimizationMetrics';
-import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
+import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
 
 export default function OptimizationPage() {
   const t = useTranslations('dashboard.boltx');
   const tPeriods = useTranslations('dashboard.common.periods');
-  const [period, setPeriod] = useState<Period>('week');
+  const { period, setPeriod, startDate, endDate } = usePeriod();
 
   // Fetch metrics
   const {
@@ -34,6 +35,8 @@ export default function OptimizationPage() {
     refetch: refetchMetrics,
   } = useFormOptimizationMetrics({
     period,
+    startDate,
+    endDate,
     enabled: true,
   });
 
@@ -90,6 +93,13 @@ export default function OptimizationPage() {
             </div>
           }
         />
+
+        {/* Custom Period Selector */}
+        {period === 'custom' && (
+          <div className="mb-6">
+            <CustomPeriodSelector />
+          </div>
+        )}
 
         {/* Help Section */}
         <OptimizationHelpSection />

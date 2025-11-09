@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
@@ -18,13 +17,15 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useCACData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
-import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
+import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
 
 export default function CACAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.cac');
   const tPeriods = useTranslations('dashboard.common.periods');
-  const [period, setPeriod] = useState<Period>('month');
-  const { summary, channels, note, isLoading, error, refetch } = useCACData({ period });
+  const { period, setPeriod, startDate, endDate } = usePeriod();
+  const { summary, channels, note, isLoading, error, refetch } = useCACData({ period, startDate, endDate });
 
   if (isLoading) {
     return (
@@ -87,6 +88,13 @@ export default function CACAnalyticsPage() {
           </Select>
         }
       />
+
+      {/* Custom Period Selector */}
+      {period === 'custom' && (
+        <div className="mb-6">
+          <CustomPeriodSelector />
+        </div>
+      )}
 
       {/* Note about estimated CAC */}
       {note && (

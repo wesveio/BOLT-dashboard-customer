@@ -19,15 +19,18 @@ import {
 import { Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart, CartesianGrid } from 'recharts';
 import { useRevenueForecastData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber } from '@/utils/formatters';
-import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
 
 export default function RevenueForecastPage() {
   const t = useTranslations('dashboard.analytics.revenueForecast');
   const tPeriods = useTranslations('dashboard.common.periods');
-  const [period, setPeriod] = useState<Period>('month');
+  const { period, setPeriod, startDate, endDate } = usePeriod();
   const [forecastDays, setForecastDays] = useState<number>(30);
   const { summary, historical, forecast, accuracy, isLoading, error, refetch } = useRevenueForecastData({
     period,
+    startDate,
+    endDate,
     forecastDays,
   });
 

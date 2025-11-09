@@ -19,13 +19,14 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
 import { useRetentionData } from '@/hooks/useDashboardData';
 import { formatNumber, formatPercentage } from '@/utils/formatters';
-import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
 
 export default function RetentionAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.retention');
   const tPeriods = useTranslations('dashboard.common.periods');
-  const [period, setPeriod] = useState<Period>('month');
-  const { summary, cohorts, isLoading, error, refetch } = useRetentionData({ period });
+  const { period, setPeriod, startDate, endDate } = usePeriod();
+  const { summary, cohorts, isLoading, error, refetch } = useRetentionData({ period, startDate, endDate });
 
   if (isLoading) {
     return (

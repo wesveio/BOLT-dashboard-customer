@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
@@ -19,7 +18,8 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useAbandonmentPredictionData } from '@/hooks/useDashboardData';
 import { formatNumber, formatPercentage, formatDuration } from '@/utils/formatters';
-import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
 
 const COLORS = {
   low: '#10b981',
@@ -31,8 +31,8 @@ const COLORS = {
 export default function AbandonmentPredictionPage() {
   const t = useTranslations('dashboard.analytics.abandonmentPrediction');
   const tPeriods = useTranslations('dashboard.common.periods');
-  const [period, setPeriod] = useState<Period>('week');
-  const { summary, predictions, isLoading, error, refetch } = useAbandonmentPredictionData({ period });
+  const { period, setPeriod, startDate, endDate } = usePeriod();
+  const { summary, predictions, isLoading, error, refetch } = useAbandonmentPredictionData({ period, startDate, endDate });
 
   if (isLoading) {
     return (

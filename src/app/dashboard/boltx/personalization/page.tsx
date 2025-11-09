@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Select, SelectItem } from '@heroui/react';
 import { LightBulbIcon } from '@heroicons/react/24/outline';
@@ -21,12 +20,14 @@ import { PersonalizationRules } from '@/components/Dashboard/PersonalizationRule
 import { PersonalizationHelpSection } from '@/components/Dashboard/PersonalizationHelpSection/PersonalizationHelpSection';
 import { usePersonalizationProfiles } from '@/hooks/usePersonalizationProfiles';
 import { usePersonalizationMetrics } from '@/hooks/usePersonalizationMetrics';
-import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
+import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
 
 export default function PersonalizationPage() {
   const t = useTranslations('dashboard.boltx');
   const tPeriods = useTranslations('dashboard.common.periods');
-  const [period, setPeriod] = useState<Period>('week');
+  const { period, setPeriod, startDate, endDate } = usePeriod();
 
   // Fetch profiles data
   const {
@@ -38,6 +39,8 @@ export default function PersonalizationPage() {
     lastUpdated,
   } = usePersonalizationProfiles({
     period,
+    startDate,
+    endDate,
     enabled: true,
   });
 
@@ -49,6 +52,8 @@ export default function PersonalizationPage() {
     refetch: refetchMetrics,
   } = usePersonalizationMetrics({
     period,
+    startDate,
+    endDate,
     enabled: true,
   });
 
@@ -110,6 +115,13 @@ export default function PersonalizationPage() {
             </div>
           }
         />
+
+        {/* Custom Period Selector */}
+        {period === 'custom' && (
+          <div className="mb-6">
+            <CustomPeriodSelector />
+          </div>
+        )}
 
         {/* Help Section */}
         <PersonalizationHelpSection />

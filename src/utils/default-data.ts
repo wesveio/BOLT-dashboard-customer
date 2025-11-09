@@ -85,6 +85,7 @@ export const periodOptions = [
   { value: 'week', label: 'Last 7 days' },
   { value: 'month', label: 'Last 30 days' },
   { value: 'year', label: 'Last 12 months' },
+  { value: 'custom', label: 'Custom Period' },
 ] as const;
 
 export type Period = typeof periodOptions[number]['value'];

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { Card, CardBody, Select, SelectItem, Button } from '@heroui/react';
 import Link from 'next/link';
@@ -28,19 +28,21 @@ import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { useMetricsData, useRevenueData, usePerformanceData } from '@/hooks/useDashboardData';
 import { useApi } from '@/hooks/useApi';
 import { formatCurrency, formatNumber, formatPercentage, formatDuration } from '@/utils/formatters';
-import { periodOptions, Period } from '@/utils/default-data';
+import { periodOptions } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
+import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import type { Insight } from '@/app/dashboard/insights/page';
 
 export default function DashboardPage() {
   const tOverview = useTranslations('dashboard.overview');
   const { isLoading: isLoadingAuth } = useDashboardAuth();
-  const [period, setPeriod] = useState<Period>('week');
+  const { period, setPeriod, startDate, endDate } = usePeriod();
   
   // Fetch all data in parallel
-  const { metrics, isLoading: isLoadingMetrics, error: metricsError, refetch: refetchMetrics } = useMetricsData({ period });
-  const { metrics: revenueMetrics, chartData, isLoading: isLoadingRevenue } = useRevenueData({ period });
-  const { metrics: performanceMetrics, isLoading: isLoadingPerformance } = usePerformanceData({ period });
+  const { metrics, isLoading: isLoadingMetrics, error: metricsError, refetch: refetchMetrics } = useMetricsData({ period, startDate, endDate });
+  const { metrics: revenueMetrics, chartData, isLoading: isLoadingRevenue } = useRevenueData({ period, startDate, endDate });
+  const { metrics: performanceMetrics, isLoading: isLoadingPerformance } = usePerformanceData({ period, startDate, endDate });
   const { data: insightsData } = useApi<{ insights: Insight[] }>('/api/dashboard/insights', {
     cacheKey: 'insights',
     cacheTTL: 5,
@@ -97,6 +99,13 @@ export default function DashboardPage() {
           </Select>
         }
       />
+
+      {/* Custom Period Selector */}
+      {period === 'custom' && (
+        <div className="mb-6">
+          <CustomPeriodSelector />
+        </div>
+      )}
 
       {/* User Info Card */}
       {isLoadingAuth && (

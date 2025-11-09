@@ -27,6 +27,8 @@ export interface InterventionMetricsResponse {
 
 interface UseInterventionMetricsOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   enabled?: boolean;
 }
 
@@ -34,12 +36,16 @@ interface UseInterventionMetricsOptions {
  * Hook for fetching intervention effectiveness metrics
  */
 export function useInterventionMetrics(options: UseInterventionMetricsOptions = {}) {
-  const { period = 'week', enabled = true } = options;
+  const { period = 'week', startDate, endDate, enabled = true } = options;
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     return `/api/boltx/interventions/metrics?${params.toString()}`;
-  }, [period]);
+  }, [period, startDate, endDate]);
 
   const { data, isLoading, error, refetch } = useApi<InterventionMetricsResponse>(
     endpoint,

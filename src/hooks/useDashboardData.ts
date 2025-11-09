@@ -141,6 +141,8 @@ interface MetricsResponse {
 
 interface UseRevenueDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   enabled?: boolean;
 }
 
@@ -149,13 +151,17 @@ interface UseRevenueDataOptions {
  * Pre-configured endpoint with period parameter handling
  */
 export function useRevenueData(options: UseRevenueDataOptions = {}) {
-  const { period = 'week', enabled = true } = options;
+  const { period = 'week', startDate, endDate, enabled = true } = options;
 
   // Build URL with period param
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     return `/api/dashboard/revenue?${params.toString()}`;
-  }, [period]);
+  }, [period, startDate, endDate]);
 
   const { data, isLoading, error, refetch } = useApi<RevenueResponse>(
     endpoint,
@@ -200,6 +206,8 @@ export function useRevenueData(options: UseRevenueDataOptions = {}) {
 
 interface UsePerformanceDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   enabled?: boolean;
 }
 
@@ -208,12 +216,16 @@ interface UsePerformanceDataOptions {
  * Pre-configured endpoint with data transformations
  */
 export function usePerformanceData(options: UsePerformanceDataOptions = {}) {
-  const { period = 'week', enabled = true } = options;
+  const { period = 'week', startDate, endDate, enabled = true } = options;
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     return `/api/dashboard/performance?${params.toString()}`;
-  }, [period]);
+  }, [period, startDate, endDate]);
 
   const { data, isLoading, error, refetch } = useApi<PerformanceResponse>(
     endpoint,
@@ -304,6 +316,8 @@ export function useAnalyticsData(options: UseAnalyticsDataOptions) {
 
 interface UseAnalyticsEventsDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   page?: number;
   limit?: number;
   eventType?: string | null;
@@ -319,6 +333,8 @@ interface UseAnalyticsEventsDataOptions {
 export function useAnalyticsEventsData(options: UseAnalyticsEventsDataOptions = {}) {
   const {
     period = 'week',
+    startDate,
+    endDate,
     page = 1,
     limit = 50,
     eventType = null,
@@ -329,11 +345,15 @@ export function useAnalyticsEventsData(options: UseAnalyticsEventsDataOptions = 
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period, page: page.toString(), limit: limit.toString() });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     if (eventType) params.set('event_type', eventType);
     if (category) params.set('category', category);
     if (step) params.set('step', step);
     return `/api/dashboard/analytics/events?${params.toString()}`;
-  }, [period, page, limit, eventType, category, step]);
+  }, [period, startDate, endDate, page, limit, eventType, category, step]);
 
   const { data, isLoading, error, refetch } = useApi<AnalyticsEventsResponse>(
     endpoint,
@@ -359,6 +379,8 @@ export function useAnalyticsEventsData(options: UseAnalyticsEventsDataOptions = 
 
 interface UseMetricsDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   enabled?: boolean;
 }
 
@@ -367,13 +389,17 @@ interface UseMetricsDataOptions {
  * Pre-configured endpoint with period parameter handling
  */
 export function useMetricsData(options: UseMetricsDataOptions = {}) {
-  const { period = 'week', enabled = true } = options;
+  const { period = 'week', startDate, endDate, enabled = true } = options;
 
   // Build URL with period param
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     return `/api/dashboard/metrics?${params.toString()}`;
-  }, [period]);
+  }, [period, startDate, endDate]);
 
   const { data, isLoading, error, refetch } = useApi<MetricsResponse>(
     endpoint,
@@ -434,6 +460,8 @@ interface CouponsResponse {
 
 interface UseCouponsDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   enabled?: boolean;
 }
 
@@ -441,12 +469,16 @@ interface UseCouponsDataOptions {
  * Hook for fetching coupons/discounts analytics data
  */
 export function useCouponsData(options: UseCouponsDataOptions = {}) {
-  const { period = 'week', enabled = true } = options;
+  const { period = 'week', startDate, endDate, enabled = true } = options;
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     return `/api/dashboard/analytics/coupons?${params.toString()}`;
-  }, [period]);
+  }, [period, startDate, endDate]);
 
   const { data, isLoading, error, refetch } = useApi<CouponsResponse>(
     endpoint,
@@ -502,6 +534,8 @@ interface MicroConversionsResponse {
 
 interface UseMicroConversionsDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   enabled?: boolean;
 }
 
@@ -509,12 +543,16 @@ interface UseMicroConversionsDataOptions {
  * Hook for fetching micro-conversions analytics data
  */
 export function useMicroConversionsData(options: UseMicroConversionsDataOptions = {}) {
-  const { period = 'week', enabled = true } = options;
+  const { period = 'week', startDate, endDate, enabled = true } = options;
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     return `/api/dashboard/analytics/micro-conversions?${params.toString()}`;
-  }, [period]);
+  }, [period, startDate, endDate]);
 
   const { data, isLoading, error, refetch } = useApi<MicroConversionsResponse>(
     endpoint,
@@ -575,6 +613,8 @@ interface GeographyResponse {
 
 interface UseGeographyDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   enabled?: boolean;
 }
 
@@ -582,12 +622,16 @@ interface UseGeographyDataOptions {
  * Hook for fetching geography analytics data
  */
 export function useGeographyData(options: UseGeographyDataOptions = {}) {
-  const { period = 'week', enabled = true } = options;
+  const { period = 'week', startDate, endDate, enabled = true } = options;
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     return `/api/dashboard/analytics/geography?${params.toString()}`;
-  }, [period]);
+  }, [period, startDate, endDate]);
 
   const { data, isLoading, error, refetch } = useApi<GeographyResponse>(
     endpoint,
@@ -653,6 +697,8 @@ interface LTVResponse {
 
 interface UseLTVDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   enabled?: boolean;
 }
 
@@ -660,12 +706,16 @@ interface UseLTVDataOptions {
  * Hook for fetching LTV (Customer Lifetime Value) analytics data
  */
 export function useLTVData(options: UseLTVDataOptions = {}) {
-  const { period = 'week', enabled = true } = options;
+  const { period = 'week', startDate, endDate, enabled = true } = options;
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     return `/api/dashboard/analytics/ltv?${params.toString()}`;
-  }, [period]);
+  }, [period, startDate, endDate]);
 
   const { data, isLoading, error, refetch } = useApi<LTVResponse>(
     endpoint,
@@ -727,6 +777,8 @@ interface CACResponse {
 
 interface UseCACDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   enabled?: boolean;
 }
 
@@ -734,12 +786,16 @@ interface UseCACDataOptions {
  * Hook for fetching CAC (Customer Acquisition Cost) analytics data
  */
 export function useCACData(options: UseCACDataOptions = {}) {
-  const { period = 'week', enabled = true } = options;
+  const { period = 'week', startDate, endDate, enabled = true } = options;
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     return `/api/dashboard/analytics/cac?${params.toString()}`;
-  }, [period]);
+  }, [period, startDate, endDate]);
 
   const { data, isLoading, error, refetch } = useApi<CACResponse>(
     endpoint,
@@ -807,6 +863,8 @@ interface RetentionResponse {
 
 interface UseRetentionDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   enabled?: boolean;
 }
 
@@ -814,12 +872,16 @@ interface UseRetentionDataOptions {
  * Hook for fetching retention analytics data
  */
 export function useRetentionData(options: UseRetentionDataOptions = {}) {
-  const { period = 'month', enabled = true } = options;
+  const { period = 'month', startDate, endDate, enabled = true } = options;
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     return `/api/dashboard/analytics/retention?${params.toString()}`;
-  }, [period]);
+  }, [period, startDate, endDate]);
 
   const { data, isLoading, error, refetch } = useApi<RetentionResponse>(
     endpoint,
@@ -897,6 +959,8 @@ export interface AbandonmentPredictionResponse {
 
 interface UseAbandonmentPredictionDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   enabled?: boolean;
 }
 
@@ -904,12 +968,16 @@ interface UseAbandonmentPredictionDataOptions {
  * Hook for fetching abandonment prediction analytics data
  */
 export function useAbandonmentPredictionData(options: UseAbandonmentPredictionDataOptions = {}) {
-  const { period = 'week', enabled = true } = options;
+  const { period = 'week', startDate, endDate, enabled = true } = options;
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     return `/api/dashboard/analytics/abandonment-prediction?${params.toString()}`;
-  }, [period]);
+  }, [period, startDate, endDate]);
 
   const { data, isLoading, error, refetch } = useApi<AbandonmentPredictionResponse>(
     endpoint,
@@ -967,6 +1035,8 @@ interface CohortsResponse {
 
 interface UseCohortsDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   enabled?: boolean;
 }
 
@@ -974,12 +1044,16 @@ interface UseCohortsDataOptions {
  * Hook for fetching cohorts analytics data
  */
 export function useCohortsData(options: UseCohortsDataOptions = {}) {
-  const { period = 'month', enabled = true } = options;
+  const { period = 'month', startDate, endDate, enabled = true } = options;
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     return `/api/dashboard/analytics/cohorts?${params.toString()}`;
-  }, [period]);
+  }, [period, startDate, endDate]);
 
   const { data, isLoading, error, refetch } = useApi<CohortsResponse>(
     endpoint,
@@ -1034,6 +1108,8 @@ interface SegmentsResponse {
 
 interface UseSegmentsDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   enabled?: boolean;
 }
 
@@ -1041,12 +1117,16 @@ interface UseSegmentsDataOptions {
  * Hook for fetching behavioral segments analytics data
  */
 export function useSegmentsData(options: UseSegmentsDataOptions = {}) {
-  const { period = 'month', enabled = true } = options;
+  const { period = 'month', startDate, endDate, enabled = true } = options;
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     return `/api/dashboard/analytics/segments?${params.toString()}`;
-  }, [period]);
+  }, [period, startDate, endDate]);
 
   const { data, isLoading, error, refetch } = useApi<SegmentsResponse>(
     endpoint,
@@ -1121,6 +1201,8 @@ interface OptimizationROIResponse {
 
 interface UseOptimizationROIDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   optimizationDate?: string;
   enabled?: boolean;
 }
@@ -1129,15 +1211,19 @@ interface UseOptimizationROIDataOptions {
  * Hook for fetching optimization ROI analytics data
  */
 export function useOptimizationROIData(options: UseOptimizationROIDataOptions = {}) {
-  const { period = 'month', optimizationDate, enabled = true } = options;
+  const { period = 'month', startDate, endDate, optimizationDate, enabled = true } = options;
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     if (optimizationDate) {
       params.append('optimizationDate', optimizationDate);
     }
     return `/api/dashboard/analytics/optimization-roi?${params.toString()}`;
-  }, [period, optimizationDate]);
+  }, [period, startDate, endDate, optimizationDate]);
 
   const { data, isLoading, error, refetch } = useApi<OptimizationROIResponse>(
     endpoint,
@@ -1252,6 +1338,8 @@ interface FrictionScoreResponse {
 
 interface UseFrictionScoreDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   enabled?: boolean;
 }
 
@@ -1259,12 +1347,16 @@ interface UseFrictionScoreDataOptions {
  * Hook for fetching friction score analytics data
  */
 export function useFrictionScoreData(options: UseFrictionScoreDataOptions = {}) {
-  const { period = 'week', enabled = true } = options;
+  const { period = 'week', startDate, endDate, enabled = true } = options;
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     return `/api/dashboard/analytics/friction-score?${params.toString()}`;
-  }, [period]);
+  }, [period, startDate, endDate]);
 
   const { data, isLoading, error, refetch } = useApi<FrictionScoreResponse>(
     endpoint,
@@ -1336,6 +1428,8 @@ interface RevenueForecastResponse {
 
 interface UseRevenueForecastDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   forecastDays?: number;
   enabled?: boolean;
 }
@@ -1344,12 +1438,16 @@ interface UseRevenueForecastDataOptions {
  * Hook for fetching revenue forecast analytics data
  */
 export function useRevenueForecastData(options: UseRevenueForecastDataOptions = {}) {
-  const { period = 'month', forecastDays = 30, enabled = true } = options;
+  const { period = 'month', startDate, endDate, forecastDays = 30, enabled = true } = options;
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period, days: forecastDays.toString() });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     return `/api/dashboard/analytics/revenue-forecast?${params.toString()}`;
-  }, [period, forecastDays]);
+  }, [period, startDate, endDate, forecastDays]);
 
   const { data, isLoading, error, refetch } = useApi<RevenueForecastResponse>(
     endpoint,

@@ -52,7 +52,8 @@
         "today": "Today",
         "week": "Last 7 days",
         "month": "Last 30 days",
-        "year": "Last 12 months"
+        "year": "Last 12 months",
+        "custom": "Custom Period"
       },
       "filterBar": {
         "timePeriod": "Time Period",

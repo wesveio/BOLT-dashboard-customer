@@ -65,6 +65,8 @@ function transformIntervention(intervention: Intervention): InterventionTransfor
 
 interface UseInterventionsDataOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   type?: 'discount' | 'security' | 'simplify' | 'progress';
   status?: 'applied' | 'not-applied';
   result?: 'converted' | 'abandoned' | 'pending';
@@ -77,6 +79,8 @@ interface UseInterventionsDataOptions {
 export function useInterventionsData(options: UseInterventionsDataOptions = {}) {
   const {
     period = 'week',
+    startDate,
+    endDate,
     type,
     status,
     result,
@@ -85,11 +89,15 @@ export function useInterventionsData(options: UseInterventionsDataOptions = {}) 
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     if (type) params.append('type', type);
     if (status) params.append('status', status);
     if (result) params.append('result', result);
     return `/api/boltx/interventions?${params.toString()}`;
-  }, [period, type, status, result]);
+  }, [period, startDate, endDate, type, status, result]);
 
   const { data, isLoading, error, refetch } = useApi<InterventionsResponse>(
     endpoint,

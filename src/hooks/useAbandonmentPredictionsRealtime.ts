@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useAbandonmentPredictionData, type AbandonmentPredictionResponse } from './useDashboardData';
 import { usePageVisibility } from './usePageVisibility';
+import type { Period } from '@/utils/default-data';
 
 interface RealtimePredictionsData {
   activeSessions: AbandonmentPredictionResponse['predictions'];
@@ -14,7 +15,9 @@ interface RealtimePredictionsData {
 }
 
 interface UseAbandonmentPredictionsRealtimeOptions {
-  period?: 'today' | 'week' | 'month' | 'year';
+  period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   pollingInterval?: number; // milliseconds
   enabled?: boolean;
 }
@@ -48,6 +51,8 @@ export function useAbandonmentPredictionsRealtime(
 ): RealtimePredictionsData {
   const {
     period = 'week',
+    startDate,
+    endDate,
     pollingInterval = 10000, // 10 seconds default
     enabled = true,
   } = options;
@@ -60,6 +65,8 @@ export function useAbandonmentPredictionsRealtime(
     refetch,
   } = useAbandonmentPredictionData({
     period,
+    startDate,
+    endDate,
     enabled,
   });
 

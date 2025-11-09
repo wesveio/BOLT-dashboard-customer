@@ -31,14 +31,14 @@ export async function GET(request: NextRequest) {
     const supabaseAdmin = getSupabaseAdmin();
 
     // Get all abandonment predictions for this customer
-    // Query directly from analytics schema using schema-qualified table
+    // Use RPC function to access analytics schema table
     const { data: predictions, error: predictionsError } = await supabaseAdmin
-      .from('analytics.ai_predictions')
-      .select('id, session_id, risk_score, risk_level, created_at')
-      .eq('customer_id', user.account_id)
-      .eq('prediction_type', 'abandonment')
-      .order('created_at', { ascending: false })
-      .limit(1000);
+      .rpc('get_ai_predictions', {
+        p_customer_id: user.account_id,
+        p_prediction_type: 'abandonment',
+        p_limit: 1000,
+        p_offset: 0,
+      });
 
     if (predictionsError) {
       console.error('❌ [DEBUG] Error fetching predictions:', predictionsError);

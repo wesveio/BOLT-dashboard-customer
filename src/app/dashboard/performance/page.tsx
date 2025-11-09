@@ -16,11 +16,13 @@ import {
   CheckCircleIcon,
 } from '@heroicons/react/24/outline';
 import { usePerformanceData } from '@/hooks/useDashboardData';
+import { usePeriod } from '@/contexts/PeriodContext';
 import { formatDuration, formatPercentage } from '@/utils/formatters';
 
 export default function PerformancePage() {
   const t = useTranslations('dashboard.performance');
-  const { metrics, funnelData, stepMetrics, isLoading, error, refetch } = usePerformanceData();
+  const { period, startDate, endDate } = usePeriod();
+  const { metrics, funnelData, stepMetrics, isLoading, error, refetch } = usePerformanceData({ period, startDate, endDate });
 
   // Ensure all metrics are non-negative before displaying
   const safeMetrics = {

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
@@ -18,7 +17,8 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { useMicroConversionsData } from '@/hooks/useDashboardData';
 import { formatNumber, formatPercentage } from '@/utils/formatters';
-import { periodOptions, Period } from '@/utils/default-data';
+import { periodOptions } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
 
 const COLORS = {
   high: '#10b981', // green
@@ -28,8 +28,8 @@ const COLORS = {
 
 export default function MicroConversionsPage() {
   const t = useTranslations('dashboard.analytics.microConversions');
-  const [period, setPeriod] = useState<Period>('week');
-  const { microConversions, dropOffs, summary, isLoading, error, refetch } = useMicroConversionsData({ period });
+  const { period, setPeriod, startDate, endDate } = usePeriod();
+  const { microConversions, dropOffs, summary, isLoading, error, refetch } = useMicroConversionsData({ period, startDate, endDate });
 
   if (isLoading) {
     return (

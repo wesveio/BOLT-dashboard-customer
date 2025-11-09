@@ -103,6 +103,8 @@ function transformProfile(profile: UserProfile): UserProfileTransformed {
 
 interface UsePersonalizationProfilesOptions {
   period?: Period;
+  startDate?: Date | null;
+  endDate?: Date | null;
   deviceType?: 'mobile' | 'desktop' | 'tablet' | 'all';
   status?: 'active' | 'inactive' | 'all';
   pollingInterval?: number; // milliseconds
@@ -138,6 +140,8 @@ interface UsePersonalizationProfilesOptions {
 export function usePersonalizationProfiles(options: UsePersonalizationProfilesOptions = {}) {
   const {
     period = 'week',
+    startDate,
+    endDate,
     deviceType,
     status,
     pollingInterval = 10000, // 10 seconds default
@@ -146,10 +150,14 @@ export function usePersonalizationProfiles(options: UsePersonalizationProfilesOp
 
   const endpoint = useMemo(() => {
     const params = new URLSearchParams({ period });
+    if (period === 'custom' && startDate && endDate) {
+      params.set('startDate', startDate.toISOString());
+      params.set('endDate', endDate.toISOString());
+    }
     if (deviceType && deviceType !== 'all') params.append('deviceType', deviceType);
     if (status && status !== 'all') params.append('status', status);
     return `/api/boltx/personalization/profiles?${params.toString()}`;
-  }, [period, deviceType, status]);
+  }, [period, startDate, endDate, deviceType, status]);
 
   const { data, isLoading, error, refetch } = useApi<ProfilesResponse>(
     endpoint,

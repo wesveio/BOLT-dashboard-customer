@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
 import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
@@ -17,14 +17,15 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { Select, SelectItem } from '@heroui/react';
 import { useRevenueData } from '@/hooks/useDashboardData';
-import { getTranslatedPeriodOptions, Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
 import { formatCurrency, formatNumber } from '@/utils/formatters';
 
 export default function RevenuePage() {
   const t = useTranslations('dashboard.revenue');
   const tPeriods = useTranslations('dashboard.common.periods');
-  const [period, setPeriod] = useState<Period>('week');
-  const { metrics, chartData, revenueByHour, revenueByDay, isLoading, error, refetch } = useRevenueData({ period });
+  const { period, setPeriod, startDate, endDate } = usePeriod();
+  const { metrics, chartData, revenueByHour, revenueByDay, isLoading, error, refetch } = useRevenueData({ period, startDate, endDate });
 
   // Ensure all metrics are non-negative before displaying
   // Preserve exact financial values - no rounding

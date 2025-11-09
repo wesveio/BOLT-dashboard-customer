@@ -36,7 +36,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useAnalyticsEventsData, AnalyticsEvent } from '@/hooks/useDashboardData';
 import { formatNumber, formatRelativeTime, formatDuration, formatPercentage } from '@/utils/formatters';
-import { Period } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
 import Link from 'next/link';
 
 interface SessionGroup {
@@ -57,7 +57,7 @@ interface SessionGroup {
 
 export default function AnalyticsPage() {
   const t = useTranslations('dashboard.analytics');
-  const [period, setPeriod] = useState<Period>('week');
+  const { period, setPeriod, startDate, endDate } = usePeriod();
   const [sessionPage, setSessionPage] = useState(1);
   const [eventType, setEventType] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
@@ -73,6 +73,8 @@ export default function AnalyticsPage() {
   // Always fetch page 1 with high limit for session grouping (we need all events to group properly)
   const { summary, events, isLoading, error, refetch } = useAnalyticsEventsData({
     period,
+    startDate,
+    endDate,
     page: 1,
     limit: 1000, // High limit to get more events for grouping (API max is 1000)
     eventType,

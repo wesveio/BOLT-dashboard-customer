@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { Select, SelectItem } from '@heroui/react';
 import { ChartBarIcon, ExclamationTriangleIcon, ChartPieIcon, ClockIcon } from '@heroicons/react/24/outline';
@@ -21,12 +21,14 @@ import { useAbandonmentPredictionsRealtime } from '@/hooks/useAbandonmentPredict
 import { useApi } from '@/hooks/useApi';
 import { formatNumber, formatPercentage } from '@/utils/formatters';
 import { periodOptions, getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
+import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
 import type { ModelMetrics } from '@/lib/ai/models/abandonment-predictor';
 
 export default function PredictionsPage() {
   const t = useTranslations('dashboard.boltx');
   const tPeriods = useTranslations('dashboard.common.periods');
-  const [period, setPeriod] = useState<Period>('week');
+  const { period, setPeriod, startDate, endDate } = usePeriod();
 
   // Fetch real-time predictions data
   const {
@@ -38,6 +40,8 @@ export default function PredictionsPage() {
     lastUpdated,
   } = useAbandonmentPredictionsRealtime({
     period,
+    startDate,
+    endDate,
     pollingInterval: 10000, // 10 seconds
     enabled: true,
   });
@@ -113,6 +117,13 @@ export default function PredictionsPage() {
             </div>
           }
         />
+
+        {/* Custom Period Selector */}
+        {period === 'custom' && (
+          <div className="mb-6">
+            <CustomPeriodSelector />
+          </div>
+        )}
 
         {/* Help Section */}
         <PredictionsHelpSection />

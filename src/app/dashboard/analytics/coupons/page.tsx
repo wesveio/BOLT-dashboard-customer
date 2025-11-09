@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { ChartCard } from '@/components/Dashboard/ChartCard/ChartCard';
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
@@ -18,12 +17,13 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useCouponsData } from '@/hooks/useDashboardData';
 import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
-import { periodOptions, Period } from '@/utils/default-data';
+import { periodOptions } from '@/utils/default-data';
+import { usePeriod } from '@/contexts/PeriodContext';
 
 export default function CouponsAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.coupons');
-  const [period, setPeriod] = useState<Period>('week');
-  const { coupons, summary, isLoading, error, refetch } = useCouponsData({ period });
+  const { period, setPeriod, startDate, endDate } = usePeriod();
+  const { coupons, summary, isLoading, error, refetch } = useCouponsData({ period, startDate, endDate });
 
   if (isLoading) {
     return (
