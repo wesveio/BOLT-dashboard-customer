@@ -88,10 +88,19 @@ export async function OPTIONS(request: NextRequest) {
 /**
  * Get BoltX enabled status from environment variables
  */
-function getBoltXStatusFromEnv(): { enabled: boolean; source: 'env' } {
+function getBoltXStatusFromEnv(): {
+  enabled: boolean;
+  interventions_enabled: boolean;
+  personalization_enabled: boolean;
+  optimizations_enabled: boolean;
+  source: 'env';
+} {
   const enabled = process.env.BOLTX_ENABLED === 'true';
   return {
     enabled,
+    interventions_enabled: process.env.NEXT_PUBLIC_BOLTX_INTERVENTIONS !== 'false',
+    personalization_enabled: process.env.NEXT_PUBLIC_BOLTX_PERSONALIZATION !== 'false',
+    optimizations_enabled: process.env.NEXT_PUBLIC_BOLTX_OPTIMIZATIONS !== 'false',
     source: 'env',
   };
 }
@@ -188,11 +197,24 @@ export async function GET(request: NextRequest) {
 
       // Return status from database
       const enabled = config.enabled === true;
-      console.info('[⚡️BoltX] Status from database:', { enabled, accountId });
+      const interventionsEnabled = config.interventions_enabled !== false;
+      const personalizationEnabled = config.personalization_enabled !== false;
+      const optimizationsEnabled = config.optimizations_enabled !== false;
+      
+      console.info('[⚡️BoltX] Status from database:', {
+        enabled,
+        interventions_enabled: interventionsEnabled,
+        personalization_enabled: personalizationEnabled,
+        optimizations_enabled: optimizationsEnabled,
+        accountId,
+      });
 
       return NextResponse.json(
         {
           enabled,
+          interventions_enabled: interventionsEnabled,
+          personalization_enabled: personalizationEnabled,
+          optimizations_enabled: optimizationsEnabled,
           source: 'database',
         },
         { headers: corsHeaders }

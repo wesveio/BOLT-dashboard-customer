@@ -12,11 +12,15 @@ import type { InterventionMetricsResponse } from '@/hooks/useInterventionMetrics
 
 interface InterventionMetricsCardProps {
   metrics: InterventionMetricsResponse;
+  activeConfigs?: number; // Number of enabled intervention configurations
   isLoading?: boolean;
 }
 
-export function InterventionMetricsCard({ metrics, isLoading }: InterventionMetricsCardProps) {
-  const activeConfigs = Object.values(metrics.byType).filter((m) => m.total > 0).length;
+export function InterventionMetricsCard({ metrics, activeConfigs: activeConfigsProp, isLoading }: InterventionMetricsCardProps) {
+  // Use provided activeConfigs or fall back to counting by type (for backward compatibility)
+  const activeConfigs = activeConfigsProp !== undefined 
+    ? activeConfigsProp 
+    : Object.values(metrics.byType).filter((m) => m.total > 0).length;
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { getAuthenticatedUser } from '@/lib/api/auth';
 import { apiSuccess, apiError } from '@/lib/api/responses';
@@ -30,7 +30,7 @@ function maskApiKey(key: string): string {
  * GET /api/boltx/settings
  * Retrieve BoltX configuration for the current account
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Check Enterprise plan access
     const { hasEnterpriseAccess, error: planError } = await getUserPlan();
@@ -54,9 +54,9 @@ export async function GET(request: NextRequest) {
 
     if (configError) {
       // Check if error is due to missing table (relation does not exist)
-      const isTableMissing = configError.code === '42P01' || 
+      const isTableMissing = configError.code === '42P01' ||
         (configError.message && configError.message.includes('does not exist'));
-      
+
       if (isTableMissing) {
         console.warn('⚠️ [DEBUG] BoltX configuration table not found. Using default configuration. Please run migrations 041 and 042.');
       } else {
@@ -127,6 +127,9 @@ export async function PATCH(request: NextRequest) {
       cache_ttl,
       rate_limit,
       prediction_model_version,
+      interventions_enabled,
+      personalization_enabled,
+      optimizations_enabled,
       metadata,
     } = body;
 
@@ -151,7 +154,7 @@ export async function PATCH(request: NextRequest) {
 
       // If table doesn't exist, skip check and require API key
       const isTableMissing = checkError && (
-        checkError.code === '42P01' || 
+        checkError.code === '42P01' ||
         (checkError.message && checkError.message.includes('does not exist'))
       );
 
@@ -193,6 +196,19 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
+    // Validate feature flags
+    if (interventions_enabled !== undefined && typeof interventions_enabled !== 'boolean') {
+      return apiError('interventions_enabled must be a boolean', 400);
+    }
+
+    if (personalization_enabled !== undefined && typeof personalization_enabled !== 'boolean') {
+      return apiError('personalization_enabled must be a boolean', 400);
+    }
+
+    if (optimizations_enabled !== undefined && typeof optimizations_enabled !== 'boolean') {
+      return apiError('optimizations_enabled must be a boolean', 400);
+    }
+
     // Encrypt API key if provided
     let encryptedApiKey: string | null = null;
     if (openai_api_key) {
@@ -205,7 +221,7 @@ export async function PATCH(request: NextRequest) {
     const supabaseAdmin = getSupabaseAdmin();
 
     // Upsert configuration
-    const { data: configId, error: upsertError } = await supabaseAdmin
+    const { error: upsertError } = await supabaseAdmin
       .rpc('upsert_boltx_configuration', {
         p_customer_id: user.account_id,
         p_enabled: enabled,
@@ -218,6 +234,9 @@ export async function PATCH(request: NextRequest) {
         p_cache_ttl: cache_ttl,
         p_rate_limit: rate_limit,
         p_prediction_model_version: prediction_model_version,
+        p_interventions_enabled: interventions_enabled,
+        p_personalization_enabled: personalization_enabled,
+        p_optimizations_enabled: optimizations_enabled,
         p_metadata: metadata,
       });
 
@@ -270,6 +289,9 @@ function getDefaultConfiguration() {
     cache_ttl: parseInt(process.env.BOLTX_CACHE_TTL || '3600', 10),
     rate_limit: parseInt(process.env.BOLTX_RATE_LIMIT || '60', 10),
     prediction_model_version: process.env.BOLTX_PREDICTION_MODEL_VERSION || 'v1',
+    interventions_enabled: process.env.NEXT_PUBLIC_BOLTX_INTERVENTIONS !== 'false',
+    personalization_enabled: process.env.NEXT_PUBLIC_BOLTX_PERSONALIZATION !== 'false',
+    optimizations_enabled: process.env.NEXT_PUBLIC_BOLTX_OPTIMIZATIONS !== 'false',
     metadata: {},
   };
 }

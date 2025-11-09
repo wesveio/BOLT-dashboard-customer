@@ -18,7 +18,22 @@ import { InterventionsTable } from '@/components/Dashboard/InterventionsTable/In
 import { InterventionsHelpSection } from '@/components/Dashboard/InterventionsHelpSection/InterventionsHelpSection';
 import { useInterventionsData } from '@/hooks/useInterventionsData';
 import { useInterventionMetrics } from '@/hooks/useInterventionMetrics';
+import { useApi } from '@/hooks/useApi';
 import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
+
+interface InterventionsConfigResponse {
+  interventions: Array<{
+    type: string;
+    enabled: boolean;
+    threshold: number;
+    message?: string;
+    discount?: {
+      percentage?: number;
+      amount?: number;
+      code?: string;
+    };
+  }>;
+}
 
 export default function InterventionsPage() {
   const t = useTranslations('dashboard.boltx');
@@ -46,6 +61,19 @@ export default function InterventionsPage() {
     period,
     enabled: true,
   });
+
+  // Fetch intervention configurations to calculate active configs
+  const { data: configData } = useApi<InterventionsConfigResponse>(
+    '/api/boltx/interventions/config',
+    {
+      cacheKey: 'intervention_config',
+      cacheTTL: 1,
+      refetchOnMount: true,
+    }
+  );
+
+  // Calculate active configs (enabled interventions)
+  const activeConfigs = configData?.interventions?.filter((config) => config.enabled).length || 0;
 
   const isLoading = isLoadingInterventions || isLoadingMetrics;
   const error = interventionsError || metricsError;
@@ -125,7 +153,7 @@ export default function InterventionsPage() {
           <>
             {/* First Row: Core Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-              <InterventionMetricsCard metrics={metrics} isLoading={isLoading} />
+              <InterventionMetricsCard metrics={metrics} activeConfigs={activeConfigs} isLoading={isLoading} />
             </div>
 
             {/* Second Row: Effectiveness Chart */}

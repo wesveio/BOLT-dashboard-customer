@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useApi } from './useApi';
+import { usePageVisibility } from './usePageVisibility';
 import type { Period } from '@/utils/default-data';
 
 export interface UserProfile {
@@ -110,6 +111,29 @@ interface UsePersonalizationProfilesOptions {
 
 /**
  * Hook for fetching user profiles with filters and real-time polling
+ * 
+ * **Polling Behavior:**
+ * - Polling automatically pauses when the page/tab is not visible (user switched tabs or minimized window)
+ * - Polling resumes automatically when the page becomes visible again
+ * - When resuming, an immediate refetch is performed to ensure data is up-to-date
+ * - Manual refetch operations (e.g., button clicks) are not affected by page visibility
+ * 
+ * @param options - Configuration options for the hook
+ * @param options.period - Time period for profiles
+ * @param options.deviceType - Filter by device type ('mobile' | 'desktop' | 'tablet' | 'all')
+ * @param options.status - Filter by status ('active' | 'inactive' | 'all')
+ * @param options.pollingInterval - Interval between polling requests in milliseconds (default: 10000)
+ * @param options.enabled - Whether polling is enabled (default: true)
+ * 
+ * @example
+ * ```tsx
+ * const { profiles, lastUpdated } = usePersonalizationProfiles({
+ *   period: 'week',
+ *   deviceType: 'mobile',
+ *   pollingInterval: 10000, // 10 seconds
+ *   enabled: true
+ * });
+ * ```
  */
 export function usePersonalizationProfiles(options: UsePersonalizationProfilesOptions = {}) {
   const {
@@ -138,7 +162,10 @@ export function usePersonalizationProfiles(options: UsePersonalizationProfilesOp
     }
   );
 
+  const { isVisible } = usePageVisibility();
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const previousVisibleRef = useRef<boolean>(true);
 
   // Transform profiles
   const transformedProfiles = useMemo(() => {
@@ -164,27 +191,55 @@ export function usePersonalizationProfiles(options: UsePersonalizationProfilesOp
     };
   }, [transformedProfiles]);
 
-  // Polling effect
+  // Polling effect - only runs when page is visible
   useEffect(() => {
-    if (!enabled) {
+    if (!enabled || !isVisible) {
+      // Clear interval if disabled or page not visible
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
       return;
     }
 
     // Initial update
     setLastUpdated(new Date());
 
-    const interval = setInterval(() => {
-      refetch().then(() => {
-        setLastUpdated(new Date());
-      }).catch((err) => {
-        console.error('❌ [DEBUG] Error polling profiles:', err);
-      });
+    // Set up polling interval
+    intervalRef.current = setInterval(() => {
+      // Double-check visibility before each fetch
+      if (document.visibilityState === 'visible') {
+        refetch().then(() => {
+          setLastUpdated(new Date());
+        }).catch((err) => {
+          console.error('❌ [DEBUG] Error polling profiles:', err);
+        });
+      }
     }, pollingInterval);
 
     return () => {
-      clearInterval(interval);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     };
-  }, [enabled, pollingInterval, refetch]);
+  }, [enabled, isVisible, pollingInterval, refetch]);
+
+  // Immediate refetch when page becomes visible again
+  useEffect(() => {
+    // Only refetch if page just became visible (was hidden, now visible)
+    if (enabled && isVisible && !previousVisibleRef.current) {
+      console.info('✅ [DEBUG] Page became visible, refreshing profiles data');
+      refetch().then(() => {
+        setLastUpdated(new Date());
+      }).catch((err) => {
+        console.error('❌ [DEBUG] Error refreshing profiles on visibility change:', err);
+      });
+    }
+    
+    // Update previous visible state
+    previousVisibleRef.current = isVisible;
+  }, [enabled, isVisible, refetch]);
 
   return {
     profiles: transformedProfiles,

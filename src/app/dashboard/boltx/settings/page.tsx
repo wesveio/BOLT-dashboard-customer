@@ -22,6 +22,7 @@ import {
   KeyIcon,
   CpuChipIcon,
   ChartBarIcon,
+  FlagIcon,
 } from '@heroicons/react/24/outline';
 import { toast } from 'sonner';
 import { useApi } from '@/hooks/useApi';
@@ -37,6 +38,9 @@ interface BoltXConfiguration {
   cache_ttl: number;
   rate_limit: number;
   prediction_model_version: string;
+  interventions_enabled?: boolean;
+  personalization_enabled?: boolean;
+  optimizations_enabled?: boolean;
   metadata?: Record<string, any>;
 }
 
@@ -59,6 +63,9 @@ export default function BoltXSettingsPage() {
     cache_ttl: 3600,
     rate_limit: 60,
     prediction_model_version: 'v1',
+    interventions_enabled: true,
+    personalization_enabled: true,
+    optimizations_enabled: true,
     metadata: {},
   });
 
@@ -113,6 +120,12 @@ export default function BoltXSettingsPage() {
 
       if (section === 'advanced' || !section) {
         updateData.prediction_model_version = config.prediction_model_version;
+      }
+
+      if (section === 'features' || !section) {
+        updateData.interventions_enabled = config.interventions_enabled;
+        updateData.personalization_enabled = config.personalization_enabled;
+        updateData.optimizations_enabled = config.optimizations_enabled;
       }
 
       const response = await fetch('/api/boltx/settings', {
@@ -464,6 +477,87 @@ export default function BoltXSettingsPage() {
                       size="lg"
                       className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                       onPress={() => handleSave('advanced')}
+                      isLoading={isSaving}
+                    >
+                      {t('saveChanges')}
+                    </Button>
+                  </div>
+                </div>
+              </CardBody>
+            </Card>
+          </Tab>
+
+          {/* Feature Flags Tab */}
+          <Tab
+            key="features"
+            title={
+              <div className="flex items-center gap-2">
+                <FlagIcon className="w-5 h-5" />
+                <span>Feature Flags</span>
+              </div>
+            }
+          >
+            <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mt-6">
+              <CardBody className="p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-6">BoltX Feature Flags</h2>
+                <p className="text-sm text-gray-600 mb-6">
+                  Enable or disable individual BoltX features. These settings override environment variables.
+                </p>
+                <div className="space-y-6">
+                  {/* Interventions */}
+                  <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900">Interventions</p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Enable automatic interventions to reduce checkout abandonment
+                      </p>
+                    </div>
+                    <Switch
+                      isSelected={config.interventions_enabled ?? true}
+                      onValueChange={(value) =>
+                        setConfig({ ...config, interventions_enabled: value })
+                      }
+                    />
+                  </div>
+
+                  {/* Personalization */}
+                  <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900">Personalization</p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Enable personalized checkout experiences based on user behavior
+                      </p>
+                    </div>
+                    <Switch
+                      isSelected={config.personalization_enabled ?? true}
+                      onValueChange={(value) =>
+                        setConfig({ ...config, personalization_enabled: value })
+                      }
+                    />
+                  </div>
+
+                  {/* Optimizations */}
+                  <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900">Optimizations</p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Enable AI-powered checkout optimizations and form improvements
+                      </p>
+                    </div>
+                    <Switch
+                      isSelected={config.optimizations_enabled ?? true}
+                      onValueChange={(value) =>
+                        setConfig({ ...config, optimizations_enabled: value })
+                      }
+                    />
+                  </div>
+
+                  <div className="pt-4">
+                    <Button
+                      color="primary"
+                      size="lg"
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                      onPress={() => handleSave('features')}
                       isLoading={isSaving}
                     >
                       {t('saveChanges')}

@@ -137,7 +137,14 @@ export async function GET(request: NextRequest) {
  * Build prediction features from events
  */
 function buildPredictionFeatures(events: any[], customerId: string): PredictionFeatures {
-  const sessionStart = new Date(events[0]?.timestamp || Date.now());
+  // Sort events by timestamp to ensure chronological processing
+  const sortedEvents = [...events].sort((a, b) => {
+    const timeA = new Date(a.timestamp || 0).getTime();
+    const timeB = new Date(b.timestamp || 0).getTime();
+    return timeA - timeB;
+  });
+
+  const sessionStart = new Date(sortedEvents[0]?.timestamp || Date.now());
   const now = new Date();
   const totalDuration = (now.getTime() - sessionStart.getTime()) / 1000;
 
@@ -147,18 +154,20 @@ function buildPredictionFeatures(events: any[], customerId: string): PredictionF
   let hasReturned = false;
   let orderFormId: string | undefined;
 
-  const stepOrder = ['cart', 'profile', 'shipping', 'payment'];
+  const stepOrder = ['cart', 'login', 'profile', 'shipping', 'payment'];
   const stepsVisited = new Set<string>();
 
-  events.forEach((event) => {
-    if (event.step) {
+  sortedEvents.forEach((event) => {
+    // Update currentStep when step_viewed event occurs (most recent step_viewed is the current step)
+    if (event.event_type === 'step_viewed' && event.step) {
+      const step = event.step;
+      currentStep = step;
+      stepStartTime = new Date(event.timestamp).getTime();
+      stepsVisited.add(step);
+    } else if (event.step) {
+      // Track all steps visited for hasReturned calculation
       const step = event.step;
       stepsVisited.add(step);
-      
-      if (stepOrder.indexOf(step) > stepOrder.indexOf(currentStep)) {
-        currentStep = step;
-        stepStartTime = new Date(event.timestamp).getTime();
-      }
     }
 
     if (event.event_type === 'error_occurred') {
