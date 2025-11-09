@@ -6,7 +6,9 @@ import { DashboardBreadcrumbs } from '../Breadcrumbs/DashboardBreadcrumbs';
 interface PageHeaderProps {
   title: string;
   subtitle?: string;
+  description?: string; // Alias for subtitle for consistency
   action?: ReactNode;
+  icon?: React.ComponentType<{ className?: string }>;
   className?: string;
   showBreadcrumb?: boolean;
 }
@@ -19,17 +21,24 @@ interface PageHeaderProps {
 export const PageHeader = memo(function PageHeader({ 
   title, 
   subtitle, 
+  description,
   action, 
+  icon: Icon,
   className = '',
   showBreadcrumb = true,
 }: PageHeaderProps) {
+  const displaySubtitle = subtitle || description;
+  
   return (
     <div className={`mb-8 ${className}`}>
       {showBreadcrumb && <DashboardBreadcrumbs />}
       <div className={action ? 'flex items-center justify-between' : ''}>
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
-          {subtitle && <p className="text-gray-600">{subtitle}</p>}
+        <div className="flex items-center gap-3">
+          {Icon && <Icon className="w-8 h-8 text-gray-700" />}
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
+            {displaySubtitle && <p className="text-gray-600">{displaySubtitle}</p>}
+          </div>
         </div>
         {action && <div>{action}</div>}
       </div>

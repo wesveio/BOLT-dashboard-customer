@@ -728,7 +728,27 @@
       },
       "personalization": {
         "title": "Personalización",
-        "description": "Personalización dinámica del checkout basada en el comportamiento del usuario"
+        "description": "Personalización dinámica del checkout basada en el comportamiento del usuario",
+        "loading": "Cargando datos de personalización...",
+        "errors": {
+          "loadFailed": "Error al cargar datos de personalización"
+        },
+        "metrics": {
+          "title": "Métricas de Personalización",
+          "subtitle": "Métricas clave de rendimiento de personalización"
+        },
+        "charts": {
+          "deviceDistributionTitle": "Distribución por Dispositivo",
+          "deviceDistributionSubtitle": "Perfiles por tipo de dispositivo",
+          "conversionTitle": "Conversión por Dispositivo",
+          "conversionSubtitle": "Personalizado vs no personalizado",
+          "trendTitle": "Tendencia de Perfiles",
+          "trendSubtitle": "Creación y actualizaciones a lo largo del tiempo"
+        },
+        "table": {
+          "title": "Perfiles de Usuarios",
+          "subtitle": "Lista de perfiles de usuarios en el período seleccionado"
+        }
       },
       "optimization": {
         "title": "Optimización de Formularios",
