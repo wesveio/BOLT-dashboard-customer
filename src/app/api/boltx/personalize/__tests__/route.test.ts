@@ -109,7 +109,6 @@ describe('GET /api/boltx/personalize', () => {
     );
 
     const response = await GET(request);
-    const data = await response.json();
 
     expect(response.status).toBe(403);
   });

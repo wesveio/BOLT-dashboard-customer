@@ -11,7 +11,7 @@ import type { ModelMetrics } from '@/lib/ai/models/abandonment-predictor';
  */
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Check Enterprise plan access
     const { hasEnterpriseAccess, error: planError } = await getUserPlan();
@@ -57,9 +57,6 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Get session outcomes by checking events
-    const sessionIds = [...new Set(predictions.map((p) => p.session_id))];
-    
     // Get events for these sessions to determine outcomes
     const { data: events, error: eventsError } = await supabaseAdmin
       .rpc('get_analytics_events_by_types', {
@@ -80,7 +77,7 @@ export async function GET(request: NextRequest) {
 
     // Build session outcome map
     const sessionOutcomes = new Map<string, 'completed' | 'abandoned' | 'unknown'>();
-    
+
     if (events) {
       events.forEach((event: any) => {
         const sessionId = event.session_id;
@@ -111,16 +108,16 @@ export async function GET(request: NextRequest) {
 
     // Use the latest prediction per session
     const latestPredictions = new Map<string, typeof predictions[0]>();
-    predictions.forEach((pred) => {
+    predictions.forEach((pred: { session_id: string; created_at: string }) => {
       const existing = latestPredictions.get(pred.session_id);
       if (!existing || new Date(pred.created_at) > new Date(existing.created_at)) {
         latestPredictions.set(pred.session_id, pred);
       }
     });
 
-    latestPredictions.forEach((prediction, sessionId) => {
+    latestPredictions.forEach((prediction: { session_id: string; created_at: string; risk_score: number }, sessionId: string) => {
       const outcome = sessionOutcomes.get(sessionId) || 'unknown';
-      
+
       // Skip if outcome is unknown
       if (outcome === 'unknown') {
         return;

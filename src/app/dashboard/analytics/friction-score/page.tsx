@@ -18,7 +18,7 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { useFrictionScoreData } from '@/hooks/useDashboardData';
 import { formatNumber, formatPercentage } from '@/utils/formatters';
-import { getTranslatedPeriodOptions } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
 

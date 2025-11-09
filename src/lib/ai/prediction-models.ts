@@ -4,29 +4,13 @@
  * ML models for abandonment, conversion, and friction prediction
  */
 
-import { AbandonmentPrediction, RiskLevel } from './types';
-
-export interface PredictionFeatures {
-  timeExceeded: number;
-  errorCount: number;
-  currentStep: string;
-  stepDuration: number;
-  totalDuration: number;
-  hasReturned: boolean;
-  stepProgress: number;
-  deviceType?: string;
-  location?: string;
-  historicalAbandonments?: number;
-  avgCheckoutTime?: number;
-  historicalConversionRate?: number;
-}
+import { AbandonmentPrediction, RiskLevel, PredictionFeatures } from './types';
 
 /**
  * Enhanced abandonment prediction model
  * Uses ML-based approach with feature weighting
  */
 export class AbandonmentPredictor {
-  private modelVersion: string = 'v1';
 
   /**
    * Predict abandonment risk
@@ -38,8 +22,7 @@ export class AbandonmentPredictor {
     // Time-based risk (weighted)
     const timeRisk = this.calculateTimeRisk(
       features.timeExceeded,
-      features.totalDuration,
-      features.avgCheckoutTime
+      features.totalDuration
     );
     riskScore += timeRisk * weights.time;
 
@@ -65,8 +48,7 @@ export class AbandonmentPredictor {
 
     // Device/Location risk (weighted)
     const contextRisk = this.calculateContextRisk(
-      features.deviceType,
-      features.location
+      features.deviceType
     );
     riskScore += contextRisk * weights.context;
 
@@ -131,8 +113,7 @@ export class AbandonmentPredictor {
    */
   private calculateTimeRisk(
     timeExceeded: number,
-    totalDuration: number,
-    avgCheckoutTime?: number
+    totalDuration: number
   ): number {
     let risk = 0;
 
@@ -241,8 +222,7 @@ export class AbandonmentPredictor {
    * Calculate context-based risk (0-10 points)
    */
   private calculateContextRisk(
-    deviceType?: string,
-    location?: string
+    deviceType?: string
   ): number {
     let risk = 0;
 

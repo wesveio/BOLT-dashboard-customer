@@ -133,3 +133,18 @@ export interface AIServiceConfig {
   };
 }
 
+export interface PredictionFeatures {
+  timeExceeded: number;
+  errorCount: number;
+  currentStep: string;
+  stepDuration: number;
+  totalDuration: number;
+  hasReturned: boolean;
+  stepProgress: number;
+  deviceType?: string;
+  location?: string;
+  historicalAbandonments?: number;
+  avgCheckoutTime?: number;
+  historicalConversionRate?: number;
+}
+

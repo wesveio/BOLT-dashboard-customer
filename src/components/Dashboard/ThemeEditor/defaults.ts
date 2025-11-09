@@ -272,12 +272,14 @@ export function getDefaultThemeConfig(baseTheme?: 'default' | 'single-page' | 'l
       interface: {
         stepTitles: {
           cart: 'Cart',
+          login: 'Login',
           profile: 'Profile',
           shipping: 'Shipping',
           payment: 'Payment',
         },
         stepDescriptions: {
           cart: 'Review your items',
+          login: 'Sign in to your account',
           profile: 'Your details',
           shipping: 'Delivery address',
           payment: 'Complete order',

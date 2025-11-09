@@ -24,7 +24,6 @@ export interface ModelMetrics {
 }
 
 export class EnhancedAbandonmentPredictor extends BasePredictor {
-  private trainingData: HistoricalTrainingData[] = [];
   private modelMetrics: ModelMetrics | null = null;
   private predictionHistory: Map<string, AbandonmentPrediction[]> = new Map();
 
@@ -36,8 +35,6 @@ export class EnhancedAbandonmentPredictor extends BasePredictor {
       console.warn('⚠️ [DEBUG] No training data provided');
       return;
     }
-
-    this.trainingData = [...data];
     
     // Calculate model metrics
     const metrics = this.calculateMetrics(data);

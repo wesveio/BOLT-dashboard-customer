@@ -46,7 +46,6 @@ interface BoltXConfiguration {
 
 export default function BoltXSettingsPage() {
   const t = useTranslations('dashboard.boltx.settings');
-  const tCommon = useTranslations('dashboard.common');
   const [activeTab, setActiveTab] = useState('general');
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);

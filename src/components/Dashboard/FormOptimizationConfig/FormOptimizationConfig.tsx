@@ -45,7 +45,7 @@ const DEFAULT_FIELDS_BY_STEP: Record<string, string[]> = {
 };
 
 export function FormOptimizationConfig({ onSave, fields = [] }: FormOptimizationConfigProps) {
-  const { data, isLoading, error: configError, refetch } = useApi<FormOptimizationConfigResponse>(
+  const { data, isLoading, refetch } = useApi<FormOptimizationConfigResponse>(
     '/api/boltx/optimize?type=form_optimization&status=active',
     {
       cacheKey: 'form_optimization_config',
@@ -114,9 +114,9 @@ export function FormOptimizationConfig({ onSave, fields = [] }: FormOptimization
       if (data.config.fieldOrder || data.config.fieldVisibility) {
         setFieldConfigs((prev) => {
           return prev.map((config) => {
-            const stepOrder = data.config.fieldOrder?.[config.step] || [];
+            const stepOrder = data.config?.fieldOrder?.[config.step] || [];
             const order = stepOrder.indexOf(config.fieldName);
-            const visible = data.config.fieldVisibility?.[config.fieldName] !== false;
+            const visible = data.config?.fieldVisibility?.[config.fieldName] !== false;
 
             return {
               ...config,
@@ -367,7 +367,7 @@ export function FormOptimizationConfig({ onSave, fields = [] }: FormOptimization
               <label className="text-sm font-semibold text-gray-700 mb-2 block">
                 Field Order & Visibility ({selectedStep})
               </label>
-              {currentStepFields.map((config, index) => (
+              {currentStepFields.map((config) => (
                 <div
                   key={`${config.step}-${config.fieldName}`}
                   className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"

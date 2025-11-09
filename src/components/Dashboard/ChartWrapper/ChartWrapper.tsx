@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, ReactNode } from 'react';
+import { memo, ReactNode, ReactElement } from 'react';
 import { ResponsiveContainer, LineChart, BarChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import {
   defaultCartesianGrid,
@@ -101,7 +101,7 @@ export const ChartWrapper = memo(function ChartWrapper({
   if (children) {
     return (
       <ResponsiveContainer width="100%" height={height}>
-        {children}
+        {children as ReactElement}
       </ResponsiveContainer>
     );
   }

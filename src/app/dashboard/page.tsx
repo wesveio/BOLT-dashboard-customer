@@ -39,7 +39,7 @@ import type { Insight } from '@/app/dashboard/insights/page';
 export default function DashboardPage() {
   const tOverview = useTranslations('dashboard.overview');
   const { isLoading: isLoadingAuth } = useDashboardAuth();
-  const { period, setPeriod, startDate, endDate } = usePeriod();
+  const { period, startDate, endDate } = usePeriod();
   
   // Fetch all data in parallel
   const { metrics, isLoading: isLoadingMetrics, error: metricsError, refetch: refetchMetrics } = useMetricsData({ period, startDate, endDate });

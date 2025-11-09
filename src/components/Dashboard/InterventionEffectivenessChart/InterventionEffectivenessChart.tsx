@@ -9,13 +9,6 @@ interface InterventionEffectivenessChartProps {
   withoutInterventionRate: number;
 }
 
-const TYPE_COLORS: Record<string, string> = {
-  discount: '#f97316', // orange-500
-  security: '#3b82f6', // blue-500
-  simplify: '#10b981', // green-500
-  progress: '#eab308', // yellow-500
-};
-
 export function InterventionEffectivenessChart({
   byType,
   withInterventionRate,

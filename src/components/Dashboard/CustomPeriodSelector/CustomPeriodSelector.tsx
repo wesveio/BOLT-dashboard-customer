@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { DateRangePicker } from '@heroui/react';
 import { CalendarDate, parseDate, today, getLocalTimeZone } from '@internationalized/date';
-import type { RangeValue } from '@react-types/datepicker';
+import type { RangeValue } from '@react-types/shared';
 import { usePeriod } from '@/contexts/PeriodContext';
 import { validateCustomPeriodRange } from '@/utils/date-ranges';
 import { usePlanAccess } from '@/hooks/usePlanAccess';

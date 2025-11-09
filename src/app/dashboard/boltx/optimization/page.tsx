@@ -18,7 +18,7 @@ import { FormOptimizationConfig } from '@/components/Dashboard/FormOptimizationC
 import { FieldsPerformanceTable } from '@/components/Dashboard/FieldsPerformanceTable/FieldsPerformanceTable';
 import { OptimizationHelpSection } from '@/components/Dashboard/OptimizationHelpSection/OptimizationHelpSection';
 import { useFormOptimizationMetrics } from '@/hooks/useFormOptimizationMetrics';
-import { getTranslatedPeriodOptions } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
 import { formatPercentage } from '@/utils/formatters';

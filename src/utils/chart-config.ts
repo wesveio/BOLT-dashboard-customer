@@ -77,7 +77,7 @@ export function formatCurrencyTooltip(value: number, name?: string): [string, st
 export function createXAxisProps(options?: {
   dataKey?: string;
   angle?: number;
-  textAnchor?: string;
+  textAnchor?: 'end' | 'inherit' | 'start' | 'middle';
   height?: number;
   tickFormatter?: (value: any) => string;
 }) {
@@ -132,7 +132,7 @@ export function createTooltipProps(options?: {
 /**
  * Create default Line props
  */
-export function createLineProps(options?: {
+export function createLineProps(options: {
   dataKey: string;
   stroke?: string;
   strokeWidth?: number;
@@ -143,28 +143,28 @@ export function createLineProps(options?: {
 }) {
   return {
     type: defaultLineConfig.type,
-    dataKey: options?.dataKey,
-    stroke: options?.stroke || '#2563eb',
-    strokeWidth: options?.strokeWidth || defaultLineConfig.strokeWidth,
-    dot: options?.dot || defaultLineConfig.dot,
-    activeDot: options?.activeDot || defaultLineConfig.activeDot,
-    ...(options?.yAxisId !== undefined && { yAxisId: options.yAxisId }),
-    ...(options?.connectNulls !== undefined && { connectNulls: options.connectNulls }),
+    dataKey: options.dataKey,
+    stroke: options.stroke || '#2563eb',
+    strokeWidth: options.strokeWidth || defaultLineConfig.strokeWidth,
+    dot: options.dot || defaultLineConfig.dot,
+    activeDot: options.activeDot || defaultLineConfig.activeDot,
+    ...(options.yAxisId !== undefined && { yAxisId: options.yAxisId }),
+    ...(options.connectNulls !== undefined && { connectNulls: options.connectNulls }),
   };
 }
 
 /**
  * Create default Bar props
  */
-export function createBarProps(options?: {
+export function createBarProps(options: {
   dataKey: string;
   fill?: string;
   radius?: [number, number, number, number];
 }) {
   return {
-    dataKey: options?.dataKey,
-    fill: options?.fill || defaultBarConfig.fill,
-    radius: options?.radius || defaultBarConfig.radius,
+    dataKey: options.dataKey,
+    fill: options.fill || defaultBarConfig.fill,
+    radius: options.radius || defaultBarConfig.radius,
   };
 }
 

@@ -30,6 +30,7 @@ export class FormOptimizer {
       fieldVisibility: {},
       fieldOrder: {},
       validationRules: {},
+      grouping: {},
     };
 
     // Step-specific optimizations

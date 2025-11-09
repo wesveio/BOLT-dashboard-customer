@@ -12,7 +12,6 @@ import {
   AIInsight,
   AbandonmentPrediction,
   PredictionFeatures,
-  AIError,
   InsightCategory,
 } from './types';
 
@@ -111,7 +110,7 @@ export class AIService {
         recommendations = await this.openaiClient.generateRecommendations(context, data);
       } else {
         // Fallback recommendations
-        recommendations = this.generateFallbackRecommendations(context, data);
+        recommendations = this.generateFallbackRecommendations();
       }
 
       // Cache results
@@ -125,7 +124,7 @@ export class AIService {
       return recommendations;
     } catch (error) {
       console.error('❌ [DEBUG] Error generating recommendations:', error);
-      return this.generateFallbackRecommendations(context, data);
+      return this.generateFallbackRecommendations();
     }
   }
 
@@ -213,10 +212,7 @@ export class AIService {
   /**
    * Generate fallback recommendations
    */
-  private generateFallbackRecommendations(
-    context: string,
-    data: Record<string, any>
-  ): string[] {
+  private generateFallbackRecommendations(): string[] {
     return [
       'Review the data and identify patterns',
       'Test different approaches',

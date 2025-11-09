@@ -23,7 +23,7 @@ vi.mock('@/lib/ai/ai-service', () => ({
 
 vi.mock('@/lib/ai/models/abandonment-predictor', () => ({
   EnhancedAbandonmentPredictor: vi.fn(() => ({
-    predict: vi.fn((features: any) => ({
+    predict: vi.fn(() => ({
       riskScore: 60,
       riskLevel: 'high',
       confidence: 0.75,
@@ -161,7 +161,6 @@ describe('GET /api/boltx/predictions', () => {
     );
 
     const response = await GET(request);
-    const data = await response.json();
 
     expect(response.status).toBe(403);
   });

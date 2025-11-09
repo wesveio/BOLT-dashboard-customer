@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { vi, afterEach } from 'vitest';
 
 // Mock environment variables
 process.env.NEXT_PUBLIC_SUPABASE_URL = 'http://localhost:54321';

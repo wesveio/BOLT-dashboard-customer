@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { getAuthenticatedUser } from '@/lib/api/auth';
 import { apiSuccess, apiError } from '@/lib/api/responses';
@@ -142,7 +142,11 @@ async function getUserProfile(
       sessionId,
       deviceType: 'desktop',
       browser: 'unknown',
-      behavior: {},
+      behavior: {
+        timeOnSite: 0,
+        pagesVisited: 0,
+        checkoutAttempts: 0,
+      },
       preferences: {},
     };
   } catch (error) {
@@ -152,7 +156,11 @@ async function getUserProfile(
       sessionId,
       deviceType: 'desktop',
       browser: 'unknown',
-      behavior: {},
+      behavior: {
+        timeOnSite: 0,
+        pagesVisited: 0,
+        checkoutAttempts: 0,
+      },
       preferences: {},
     };
   }

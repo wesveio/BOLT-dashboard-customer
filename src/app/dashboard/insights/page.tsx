@@ -96,7 +96,7 @@ export default function InsightsPage() {
   return (
     <PageStateHandler
       isLoading={isLoading}
-      error={error}
+      error={error ? new Error(error.message) : null}
       onRetry={refetch}
       title={t('title')}
       subtitle={t('subtitle')}

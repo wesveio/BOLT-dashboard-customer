@@ -122,7 +122,6 @@ describe('POST /api/boltx/insights', () => {
     });
 
     const response = await POST(request);
-    const data = await response.json();
 
     expect(response.status).toBe(403);
   });

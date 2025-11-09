@@ -2,17 +2,10 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import type { FieldPerformance } from '@/hooks/useFormOptimizationMetrics';
-import { formatPercentage } from '@/utils/formatters';
 
 interface FieldPerformanceChartProps {
   fields: FieldPerformance[];
 }
-
-const STEP_COLORS: Record<string, string> = {
-  profile: '#3b82f6', // blue-500
-  shipping: '#8b5cf6', // purple-500
-  payment: '#f97316', // orange-500
-};
 
 export function FieldPerformanceChart({ fields }: FieldPerformanceChartProps) {
   // Group fields by step and prepare chart data

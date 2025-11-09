@@ -4,7 +4,7 @@
  */
 
 import { useMemo } from 'react';
-import { normalizeChartData, ensureNonNegative } from '@/utils/data-validation';
+import { normalizeChartData } from '@/utils/data-validation';
 
 export interface UseChartDataOptions {
   /**

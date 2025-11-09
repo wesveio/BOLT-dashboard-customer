@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { getAuthenticatedUser } from '@/lib/api/auth';
 import { apiSuccess, apiError } from '@/lib/api/responses';
@@ -77,8 +77,11 @@ export async function GET(request: NextRequest) {
       return apiError('Session not found', 404);
     }
 
+    // Extract orderFormId from events
+    const orderFormId = sessionEvents.find((e: any) => e.order_form_id)?.order_form_id;
+
     // Build prediction features
-    const features = buildPredictionFeatures(sessionEvents, user.account_id);
+    const features = buildPredictionFeatures(sessionEvents);
 
     // Get historical data
     const historicalData = await getHistoricalData(supabaseAdmin, user.account_id, sessionId);
@@ -110,7 +113,7 @@ export async function GET(request: NextRequest) {
       await supabaseAdmin.rpc('insert_ai_prediction', {
         p_customer_id: user.account_id,
         p_session_id: sessionId,
-        p_order_form_id: features.orderFormId,
+        p_order_form_id: orderFormId || null,
         p_prediction_type: 'abandonment',
         p_risk_score: prediction.riskScore,
         p_risk_level: prediction.riskLevel,
@@ -136,7 +139,7 @@ export async function GET(request: NextRequest) {
 /**
  * Build prediction features from events
  */
-function buildPredictionFeatures(events: any[], customerId: string): PredictionFeatures {
+function buildPredictionFeatures(events: any[]): PredictionFeatures {
   // Sort events by timestamp to ensure chronological processing
   const sortedEvents = [...events].sort((a, b) => {
     const timeA = new Date(a.timestamp || 0).getTime();
@@ -152,7 +155,6 @@ function buildPredictionFeatures(events: any[], customerId: string): PredictionF
   let stepStartTime = sessionStart.getTime();
   let errorCount = 0;
   let hasReturned = false;
-  let orderFormId: string | undefined;
 
   const stepOrder = ['cart', 'login', 'profile', 'shipping', 'payment'];
   const stepsVisited = new Set<string>();
@@ -177,10 +179,6 @@ function buildPredictionFeatures(events: any[], customerId: string): PredictionF
     if (event.event_type === 'checkout_started' && stepsVisited.size > 1) {
       hasReturned = true;
     }
-
-    if (event.order_form_id) {
-      orderFormId = event.order_form_id;
-    }
   });
 
   const currentStepIndex = stepOrder.indexOf(currentStep);
@@ -190,9 +188,9 @@ function buildPredictionFeatures(events: any[], customerId: string): PredictionF
   const typicalCheckoutTime = 180;
   const timeExceeded = typicalCheckoutTime > 0 ? totalDuration / typicalCheckoutTime : 0;
 
-  const deviceType = events[0]?.metadata?.deviceType || 
-                     events[0]?.metadata?.device_type || 
-                     undefined;
+  const deviceType = events[0]?.metadata?.deviceType ||
+    events[0]?.metadata?.device_type ||
+    undefined;
 
   const location = events[0]?.metadata?.location || undefined;
 
@@ -261,20 +259,20 @@ async function getHistoricalData(
 
     sessions.forEach((sid) => {
       const sessionEvents = filteredSessions.filter((e: any) => e.session_id === sid);
-      const startEvent = sessionEvents.find((e: any) => 
+      const startEvent = sessionEvents.find((e: any) =>
         e.event_type === 'checkout_start' || e.event_type === 'checkout_started'
       );
-      const completeEvent = sessionEvents.find((e: any) => 
+      const completeEvent = sessionEvents.find((e: any) =>
         e.event_type === 'checkout_complete' || e.event_type === 'order_confirmed'
       );
-      const abandonEvent = sessionEvents.find((e: any) => 
+      const abandonEvent = sessionEvents.find((e: any) =>
         e.event_type === 'step_abandoned'
       );
 
       if (completeEvent && startEvent) {
         completed++;
-        const duration = (new Date(completeEvent.timestamp).getTime() - 
-                        new Date(startEvent.timestamp).getTime()) / 1000;
+        const duration = (new Date(completeEvent.timestamp).getTime() -
+          new Date(startEvent.timestamp).getTime()) / 1000;
         if (duration > 0) {
           checkoutTimes.push(duration);
         }

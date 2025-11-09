@@ -10,7 +10,7 @@
 export function ensureNonNegative(value: number | string | null | undefined): number {
   const numValue = typeof value === 'string' ? parseFloat(value) : value;
   
-  if (value === null || value === undefined || isNaN(numValue)) {
+  if (value === null || value === undefined || numValue === null || numValue === undefined || isNaN(numValue)) {
     return 0;
   }
   
@@ -27,7 +27,7 @@ export function clampValue(
 ): number {
   const numValue = typeof value === 'string' ? parseFloat(value) : value;
   
-  if (value === null || value === undefined || isNaN(numValue)) {
+  if (value === null || value === undefined || numValue === null || numValue === undefined || isNaN(numValue)) {
     return min;
   }
   
@@ -73,11 +73,11 @@ export function normalizeMetrics<T extends Record<string, any>>(
     // Only process numeric values
     if (typeof value === 'number' || typeof value === 'string') {
       if (allowNegative) {
-        normalized[key] = clampValue(value, min, max);
+        (normalized as any)[key] = clampValue(value, min, max);
       } else {
-        normalized[key] = ensureNonNegative(value);
+        (normalized as any)[key] = ensureNonNegative(value);
       }
-    } else if (value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Date)) {
+    } else if (value && typeof value === 'object' && !Array.isArray(value) && !(value as any instanceof Date)) {
       // Recursively normalize nested objects
       normalized[key] = normalizeMetrics(value, options);
     }
@@ -130,7 +130,7 @@ export function normalizeChartData<T extends Record<string, any>>(
     if (numericKeys && numericKeys.length > 0) {
       numericKeys.forEach((key) => {
         if (key in normalized) {
-          normalized[key] = ensureNonNegative(normalized[key]);
+          (normalized as any)[key] = ensureNonNegative((normalized as any)[key]);
         }
       });
     } else {
@@ -138,7 +138,7 @@ export function normalizeChartData<T extends Record<string, any>>(
       for (const key in normalized) {
         const value = normalized[key];
         if (typeof value === 'number' || typeof value === 'string') {
-          normalized[key] = ensureNonNegative(value);
+          (normalized as any)[key] = ensureNonNegative(value);
         }
       }
     }

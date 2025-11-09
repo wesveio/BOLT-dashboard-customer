@@ -72,7 +72,6 @@ export function useAbandonmentPredictionsRealtime(
 
   const { isVisible } = usePageVisibility();
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [isPolling, setIsPolling] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const previousVisibleRef = useRef<boolean>(true);
 
@@ -153,7 +152,7 @@ export function useAbandonmentPredictionsRealtime(
     historicalSessions,
     summary,
     isLoading,
-    error: error || null,
+    error: error ? new Error(error.message) : null,
     lastUpdated,
   };
 }

@@ -20,7 +20,7 @@ import { PredictionsHelpSection } from '@/components/Dashboard/PredictionsHelpSe
 import { useAbandonmentPredictionsRealtime } from '@/hooks/useAbandonmentPredictionsRealtime';
 import { useApi } from '@/hooks/useApi';
 import { formatNumber, formatPercentage } from '@/utils/formatters';
-import { periodOptions, getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
 import type { ModelMetrics } from '@/lib/ai/models/abandonment-predictor';
@@ -176,7 +176,10 @@ export default function PredictionsPage() {
                 title={t('predictions.charts.trendTitle') || 'Risk Trend'}
                 subtitle={t('predictions.charts.trendSubtitle') || 'Average risk score over time'}
               >
-                <RiskTrendChart predictions={allPredictions} period={period} />
+                <RiskTrendChart 
+                  predictions={allPredictions} 
+                  period={period === 'custom' ? 'month' : period} 
+                />
               </ChartCard>
             </div>
 

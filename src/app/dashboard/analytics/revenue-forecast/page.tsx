@@ -18,8 +18,8 @@ import {
 } from '@heroicons/react/24/outline';
 import { Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart, CartesianGrid } from 'recharts';
 import { useRevenueForecastData } from '@/hooks/useDashboardData';
-import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
-import { getTranslatedPeriodOptions } from '@/utils/default-data';
+import { formatCurrency, formatPercentage } from '@/utils/formatters';
+import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 
 export default function RevenueForecastPage() {

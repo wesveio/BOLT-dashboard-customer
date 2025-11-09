@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
 
     // Update or insert configuration using RPC function
     // PostgREST doesn't expose analytics schema directly
-    const { data: configId, error: upsertError } = await supabaseAdmin.rpc(
+    const { error: upsertError } = await supabaseAdmin.rpc(
       'upsert_boltx_configuration',
       {
         p_customer_id: user.account_id,
@@ -161,7 +161,7 @@ export async function POST(request: NextRequest) {
       // If RPC function doesn't exist (error codes: 42883, P0001, PGRST202), try direct query as fallback
       if (upsertError.code === '42883' || upsertError.code === 'P0001' || upsertError.code === 'PGRST202') {
         console.warn('⚠️ [DEBUG] RPC function not found in PostgREST schema cache. Attempting direct query fallback...');
-        
+
         if (existingConfig) {
           const { error: updateError } = await supabaseAdmin
             .from('analytics.boltx_configurations')
@@ -261,7 +261,7 @@ export async function PATCH(request: NextRequest) {
 
     // Update or insert configuration using RPC function
     // PostgREST doesn't expose analytics schema directly
-    const { data: configId, error: upsertError } = await supabaseAdmin.rpc(
+    const { error: upsertError } = await supabaseAdmin.rpc(
       'upsert_boltx_configuration',
       {
         p_customer_id: user.account_id,
@@ -274,7 +274,7 @@ export async function PATCH(request: NextRequest) {
       // If RPC function doesn't exist (error codes: 42883, P0001, PGRST202), try direct query as fallback
       if (upsertError.code === '42883' || upsertError.code === 'P0001' || upsertError.code === 'PGRST202') {
         console.warn('⚠️ [DEBUG] RPC function not found in PostgREST schema cache. Attempting direct query fallback...');
-        
+
         if (existingConfig) {
           const { error: updateError } = await supabaseAdmin
             .from('analytics.boltx_configurations')

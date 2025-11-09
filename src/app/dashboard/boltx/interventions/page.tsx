@@ -18,7 +18,7 @@ import { InterventionsHelpSection } from '@/components/Dashboard/InterventionsHe
 import { useInterventionsData } from '@/hooks/useInterventionsData';
 import { useInterventionMetrics } from '@/hooks/useInterventionMetrics';
 import { useApi } from '@/hooks/useApi';
-import { getTranslatedPeriodOptions } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
 import { formatPercentage } from '@/utils/formatters';

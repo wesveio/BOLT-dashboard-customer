@@ -23,7 +23,7 @@ vi.mock('@/lib/ai/ai-service', () => ({
 
 vi.mock('@/lib/ai/models/abandonment-predictor', () => ({
   EnhancedAbandonmentPredictor: vi.fn(() => ({
-    predict: vi.fn((features: any) => ({
+    predict: vi.fn(() => ({
       riskScore: 75,
       riskLevel: 'critical',
       confidence: 0.85,

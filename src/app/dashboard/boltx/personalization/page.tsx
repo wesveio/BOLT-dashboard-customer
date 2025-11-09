@@ -20,7 +20,7 @@ import { PersonalizationRules } from '@/components/Dashboard/PersonalizationRule
 import { PersonalizationHelpSection } from '@/components/Dashboard/PersonalizationHelpSection/PersonalizationHelpSection';
 import { usePersonalizationProfiles } from '@/hooks/usePersonalizationProfiles';
 import { usePersonalizationMetrics } from '@/hooks/usePersonalizationMetrics';
-import { getTranslatedPeriodOptions } from '@/utils/default-data';
+import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
 

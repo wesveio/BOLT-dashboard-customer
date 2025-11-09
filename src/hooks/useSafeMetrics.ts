@@ -6,7 +6,6 @@
 import { useMemo } from 'react';
 import {
   ensureNonNegative,
-  clampValue,
   safeParseNumber,
   normalizeMetrics,
   ensurePercentage,

@@ -15,7 +15,7 @@ const InterventionRecordSchema = z.object({
   riskScore: z.number().min(0).max(100),
   riskLevel: z.enum(['low', 'medium', 'high', 'critical']),
   applied: z.boolean().default(true),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 
 /**
@@ -79,22 +79,22 @@ export async function POST(request: NextRequest) {
     // If RPC function doesn't exist or fails, try direct insert as fallback
     if (rpcError && (rpcError.code === '42883' || rpcError.code === 'P0001')) {
       console.warn('⚠️ [DEBUG] RPC function not found, trying direct insert. Please run migration 039.');
-      
+
       const { data: directData, error: directError } = await supabaseAdmin
         .from('analytics.ai_interventions')
         .insert({
-        customer_id: user.account_id,
-        session_id: sessionId,
-        order_form_id: orderFormId || null,
-        intervention_type: interventionType,
-        risk_score: riskScore,
-        risk_level: riskLevel,
-        applied: applied,
-        applied_at: applied ? new Date().toISOString() : null,
-        metadata: metadata || {},
-      })
-      .select('id')
-      .single();
+          customer_id: user.account_id,
+          session_id: sessionId,
+          order_form_id: orderFormId || null,
+          intervention_type: interventionType,
+          risk_score: riskScore,
+          risk_level: riskLevel,
+          applied: applied,
+          applied_at: applied ? new Date().toISOString() : null,
+          metadata: metadata || {},
+        })
+        .select('id')
+        .single();
 
       if (directError) {
         console.error('❌ [DEBUG] Error inserting intervention (both methods failed):', {

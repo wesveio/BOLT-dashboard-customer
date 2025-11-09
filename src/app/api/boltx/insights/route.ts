@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { getAuthenticatedUser } from '@/lib/api/auth';
 import { apiSuccess, apiError } from '@/lib/api/responses';
@@ -43,11 +43,11 @@ export async function POST(request: NextRequest) {
     if (period === 'custom') {
       const startDateParam = body.startDate;
       const endDateParam = body.endDate;
-      
+
       if (startDateParam && endDateParam) {
         customStartDate = new Date(startDateParam);
         customEndDate = new Date(endDateParam);
-        
+
         // Validate dates
         if (isNaN(customStartDate.getTime()) || isNaN(customEndDate.getTime())) {
           return apiError('Invalid date format. Use ISO 8601 format.', 400);

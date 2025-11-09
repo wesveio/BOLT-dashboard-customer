@@ -94,11 +94,15 @@ export class UserProfileBuilder {
       profile.preferences = metadata.preferences;
     }
 
+    const deviceType = profile.deviceType === 'tablet' ? 'desktop' : (profile.deviceType || 'desktop');
+    
     return {
       sessionId,
-      deviceType: profile.deviceType || 'desktop',
+      deviceType: deviceType as 'mobile' | 'desktop',
       browser: profile.browser || 'unknown',
-      location: profile.location,
+      location: profile.location && profile.location.country 
+        ? { country: profile.location.country, region: profile.location.region, city: profile.location.city }
+        : undefined,
       behavior: profile.behavior,
       preferences: profile.preferences,
       inferredIntent: profile.inferredIntent,
@@ -112,10 +116,11 @@ export class UserProfileBuilder {
     profile: ProfileData,
     events: any[]
   ): UserProfile['inferredIntent'] {
+    const deviceType = profile.deviceType === 'tablet' ? 'desktop' : (profile.deviceType || 'desktop');
     const intent: UserProfile['inferredIntent'] = {
       urgency: 'low',
       priceSensitivity: 'medium',
-      devicePreference: profile.deviceType || 'desktop',
+      devicePreference: deviceType as 'mobile' | 'desktop',
     };
 
     // Urgency: based on time spent and speed of progression
@@ -145,7 +150,7 @@ export class UserProfileBuilder {
     }
 
     // Device preference
-    intent.devicePreference = profile.deviceType || 'desktop';
+    intent.devicePreference = deviceType as 'mobile' | 'desktop';
 
     return intent;
   }
@@ -157,11 +162,27 @@ export class UserProfileBuilder {
     currentProfile: UserProfile,
     newData: Partial<ProfileData>
   ): UserProfile {
+    const newDeviceType = newData.deviceType 
+      ? (newData.deviceType === 'tablet' ? 'desktop' : newData.deviceType)
+      : currentProfile.deviceType;
+    
+    const newLocation = newData.location 
+      ? (newData.location.country 
+          ? { country: newData.location.country, region: newData.location.region, city: newData.location.city }
+          : currentProfile.location)
+      : currentProfile.location;
+    
+    const currentIntent = currentProfile.inferredIntent || {
+      urgency: 'low' as const,
+      priceSensitivity: 'medium' as const,
+      devicePreference: 'desktop' as const,
+    };
+    
     return {
       ...currentProfile,
-      deviceType: newData.deviceType || currentProfile.deviceType,
+      deviceType: newDeviceType as 'mobile' | 'desktop',
       browser: newData.browser || currentProfile.browser,
-      location: newData.location || currentProfile.location,
+      location: newLocation,
       behavior: {
         ...currentProfile.behavior,
         ...newData.behavior,
@@ -171,7 +192,7 @@ export class UserProfileBuilder {
         ...newData.preferences,
       },
       inferredIntent: {
-        ...currentProfile.inferredIntent,
+        ...currentIntent,
         ...newData.inferredIntent,
       },
     };
@@ -196,7 +217,7 @@ export class UserProfileBuilder {
       }, {} as Record<string, number>);
 
       preferences.preferredPaymentMethod = Object.entries(methodCounts)
-        .sort(([, a], [, b]) => b - a)[0][0];
+        .sort(([, a], [, b]) => (b as number) - (a as number))[0][0];
     }
 
     // Find most used shipping method
@@ -212,7 +233,7 @@ export class UserProfileBuilder {
       }, {} as Record<string, number>);
 
       preferences.preferredShippingMethod = Object.entries(methodCounts)
-        .sort(([, a], [, b]) => b - a)[0][0];
+        .sort(([, a], [, b]) => (b as number) - (a as number))[0][0];
     }
 
     return preferences;

@@ -32,7 +32,7 @@ export default function PerformancePage() {
   return (
     <PageStateHandler
       isLoading={isLoading}
-      error={error}
+      error={error ? new Error(error.message || 'Unknown error') : null}
       onRetry={refetch}
       title={t('title')}
       subtitle={t('subtitle')}
