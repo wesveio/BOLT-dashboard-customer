@@ -17,7 +17,7 @@ import {
 import { usePerformanceData } from '@/hooks/useDashboardData';
 import { useSafePerformanceMetrics, useSafeStepMetrics } from '@/hooks/useSafeMetrics';
 import { usePeriod } from '@/contexts/PeriodContext';
-import { formatDuration, formatPercentage } from '@/utils/formatters';
+import { formatDuration, formatPercentage, formatCompactNumber } from '@/utils/formatters';
 import { clampValue } from '@/utils/data-validation';
 
 export default function PerformancePage() {
@@ -68,7 +68,7 @@ export default function PerformancePage() {
         />
         <MetricCard
           title={t('totalSessions')}
-          value={safeMetrics.totalSessions.toLocaleString()}
+          value={formatCompactNumber(safeMetrics.totalSessions, { threshold: 1_000_000 })}
           subtitle={t('subtitles.sessionsStarted')}
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />

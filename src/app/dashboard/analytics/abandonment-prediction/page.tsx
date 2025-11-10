@@ -17,7 +17,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useAbandonmentPredictionData } from '@/hooks/useDashboardData';
-import { formatNumber, formatPercentage, formatDuration } from '@/utils/formatters';
+import { formatCompactNumber, formatNumber, formatPercentage, formatDuration } from '@/utils/formatters';
 import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 
@@ -126,7 +126,7 @@ export default function AbandonmentPredictionPage() {
         />
         <MetricCard
           title={t('highRiskSessions')}
-          value={formatNumber(summary.highRiskSessions)}
+          value={formatCompactNumber(summary.highRiskSessions, { threshold: 1_000_000 })}
           subtitle={`${formatPercentage(
             summary.totalSessions > 0 ? (summary.highRiskSessions / summary.totalSessions) * 100 : 0
           )} ${t('ofTotal')}`}

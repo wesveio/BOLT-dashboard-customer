@@ -19,7 +19,7 @@ import { ModelMetricsCard } from '@/components/Dashboard/ModelMetricsCard/ModelM
 import { PredictionsHelpSection } from '@/components/Dashboard/PredictionsHelpSection/PredictionsHelpSection';
 import { useAbandonmentPredictionsRealtime } from '@/hooks/useAbandonmentPredictionsRealtime';
 import { useApi } from '@/hooks/useApi';
-import { formatNumber, formatPercentage } from '@/utils/formatters';
+import { formatCompactNumber, formatPercentage } from '@/utils/formatters';
 import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
@@ -136,21 +136,21 @@ export default function PredictionsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
               <MetricCard
                 title={t('predictions.metrics.totalSessions') || 'Total Sessions'}
-                value={formatNumber(summary.totalSessions)}
+                value={formatCompactNumber(summary.totalSessions, { threshold: 1_000_000 })}
                 subtitle={t('predictions.metrics.subtitles.totalSessions') || 'All sessions in period'}
                 icon={<ChartBarIcon className="w-6 h-6 text-white" />}
                 isLoading={isLoading}
               />
               <MetricCard
                 title={t('predictions.metrics.highRiskSessions') || 'High Risk Sessions'}
-                value={formatNumber(highRiskSessions.length)}
+                value={formatCompactNumber(highRiskSessions.length, { threshold: 1_000_000 })}
                 subtitle={t('predictions.metrics.subtitles.highRiskSessions') || 'Sessions at high or critical risk'}
                 icon={<ExclamationTriangleIcon className="w-6 h-6 text-white" />}
                 isLoading={isLoading}
               />
               <MetricCard
                 title={t('predictions.metrics.avgRiskScore') || 'Avg Risk Score'}
-                value={formatNumber(summary.avgRiskScore, { maximumFractionDigits: 1 })}
+                value={formatCompactNumber(summary.avgRiskScore, { threshold: 1_000_000, maximumFractionDigits: 1 })}
                 subtitle={t('predictions.metrics.subtitles.avgRiskScore') || 'Average risk across all sessions'}
                 icon={<ChartPieIcon className="w-6 h-6 text-white" />}
                 isLoading={isLoading}

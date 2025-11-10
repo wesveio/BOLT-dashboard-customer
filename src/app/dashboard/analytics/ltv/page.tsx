@@ -16,7 +16,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useLTVData } from '@/hooks/useDashboardData';
-import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
+import { formatCurrency, formatCompactCurrency, formatCompactNumber, formatNumber, formatPercentage } from '@/utils/formatters';
 import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 
@@ -88,19 +88,19 @@ export default function LTVAnalyticsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
           title={t('averageLTV')}
-          value={formatCurrency(summary.avgLTV)}
+          value={formatCompactCurrency(summary.avgLTV, 'USD', undefined, { threshold: 1_000_000 })}
           subtitle={t('customerLifetimeValue')}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('totalCustomers')}
-          value={formatNumber(summary.totalCustomers)}
+          value={formatCompactNumber(summary.totalCustomers, { threshold: 1_000_000 })}
           subtitle={t('uniqueCustomersAnalyzed')}
           icon={<UserGroupIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('avgOrdersCustomer')}
-          value={formatNumber(summary.avgOrdersPerCustomer, { maximumFractionDigits: 1 })}
+          value={formatCompactNumber(summary.avgOrdersPerCustomer, { threshold: 1_000_000, maximumFractionDigits: 1 })}
           subtitle={t('averagePurchaseFrequency')}
           icon={<ShoppingBagIcon className="w-6 h-6 text-white" />}
         />

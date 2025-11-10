@@ -10,7 +10,7 @@ import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { CreditCardIcon } from '@heroicons/react/24/outline';
 import { useAnalyticsData } from '@/hooks/useDashboardData';
-import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
+import { formatCurrency, formatCompactNumber, formatNumber, formatPercentage } from '@/utils/formatters';
 
 const COLORS = ['#2563eb', '#9333ea', '#10b981', '#f59e0b'];
 
@@ -54,7 +54,7 @@ export default function PaymentAnalyticsPage() {
         />
         <MetricCard
           title="Transactions"
-          value={formatNumber(totalPayments)}
+          value={formatCompactNumber(totalPayments, { threshold: 1_000_000 })}
           subtitle="Total transactions processed"
         />
         <MetricCard

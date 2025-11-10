@@ -1172,3 +1172,278 @@ export function generateMockInsights(params: MockDataParams): MockInsight[] {
   }));
 }
 
+/**
+ * Generate mock analytics events data
+ * Creates realistic checkout flow events with proper distribution
+ */
+export function generateMockAnalyticsEvents(params: MockDataParams): {
+  summary: {
+    totalEvents: number;
+    uniqueSessions: number;
+    eventsByCategory: {
+      user_action: number;
+      api_call: number;
+      metric: number;
+      error: number;
+    };
+    topEventTypes: Array<{ type: string; count: number }>;
+    errorCount: number;
+  };
+  events: Array<{
+    id: string;
+    session_id: string;
+    order_form_id: string | null;
+    event_type: string;
+    category: 'user_action' | 'api_call' | 'metric' | 'error';
+    step: string | null;
+    metadata: Record<string, unknown> | null;
+    timestamp: string;
+  }>;
+} {
+  const { accountId, period, startDate, endDate } = params;
+  const { start, end } = getMockDateRange(period, startDate, endDate);
+  const metrics = generateMockMetrics(params);
+
+  // Generate sessions (based on metrics)
+  const numSessions = metrics.totalSessions;
+
+  // Generate events
+  const events: Array<{
+    id: string;
+    session_id: string;
+    order_form_id: string | null;
+    event_type: string;
+    category: 'user_action' | 'api_call' | 'metric' | 'error';
+    step: string | null;
+    metadata: Record<string, unknown> | null;
+    timestamp: string;
+  }> = [];
+
+  const eventsByCategory = {
+    user_action: 0,
+    api_call: 0,
+    metric: 0,
+    error: 0,
+  };
+
+  const eventsByType: Record<string, number> = {};
+
+  // Generate events for each session
+  for (let sessionIndex = 0; sessionIndex < numSessions; sessionIndex++) {
+    const sessionId = generateConsistentId(`${accountId}-sessions`, sessionIndex, 'sess-');
+    const orderFormId = generateRandomInRange(`${accountId}-order-${sessionIndex}`, 0, 1, 0) > 0.3
+      ? generateConsistentId(`${accountId}-orders`, sessionIndex, 'order-')
+      : null;
+    
+    // Create a realistic checkout flow
+    const timeOffset = generateRandomInRange(`${accountId}-session-time-${sessionIndex}`, 0, 1, 0);
+    const sessionStartTime = new Date(start.getTime() + 
+      timeOffset * (end.getTime() - start.getTime()));
+    
+    let currentTime = new Date(sessionStartTime);
+
+    // Start event
+    events.push({
+      id: generateConsistentId(`${accountId}-events`, events.length, 'evt-'),
+      session_id: sessionId,
+      order_form_id: orderFormId,
+      event_type: 'checkout_started',
+      category: 'user_action',
+      step: null,
+      metadata: { source: 'cart' },
+      timestamp: currentTime.toISOString(),
+    });
+    eventsByCategory.user_action++;
+    eventsByType['checkout_started'] = (eventsByType['checkout_started'] || 0) + 1;
+    currentTime.setSeconds(currentTime.getSeconds() + generateIntInRange(`${accountId}-time-${events.length}`, 5, 30, 0));
+
+    // Step events
+    const steps = ['cart', 'profile', 'shipping', 'payment'];
+    for (let stepIndex = 0; stepIndex < steps.length; stepIndex++) {
+      const step = steps[stepIndex];
+      const viewChance = generateRandomInRange(`${accountId}-view-${sessionIndex}-${stepIndex}`, 0, 1, 0);
+      if (viewChance > 0.2) { // 80% chance to view step
+        events.push({
+          id: generateConsistentId(`${accountId}-events`, events.length, 'evt-'),
+          session_id: sessionId,
+          order_form_id: orderFormId,
+          event_type: 'step_viewed',
+          category: 'user_action',
+          step,
+          metadata: { step },
+          timestamp: currentTime.toISOString(),
+        });
+        eventsByCategory.user_action++;
+        eventsByType['step_viewed'] = (eventsByType['step_viewed'] || 0) + 1;
+        currentTime.setSeconds(currentTime.getSeconds() + generateIntInRange(`${accountId}-time-${events.length}`, 10, 60, 0));
+
+        const completeChance = generateRandomInRange(`${accountId}-complete-${sessionIndex}-${stepIndex}`, 0, 1, 0);
+        if (completeChance > 0.3) { // 70% chance to complete step
+          events.push({
+            id: generateConsistentId(`${accountId}-events`, events.length, 'evt-'),
+            session_id: sessionId,
+            order_form_id: orderFormId,
+            event_type: 'step_completed',
+            category: 'user_action',
+            step,
+            metadata: { step, duration: generateIntInRange(`${accountId}-duration-${events.length}`, 15, 120, 0) },
+            timestamp: currentTime.toISOString(),
+          });
+          eventsByCategory.user_action++;
+          eventsByType['step_completed'] = (eventsByType['step_completed'] || 0) + 1;
+          currentTime.setSeconds(currentTime.getSeconds() + generateIntInRange(`${accountId}-time-${events.length}`, 5, 20, 0));
+        }
+      }
+    }
+
+    // Payment events
+    const paymentChance = generateRandomInRange(`${accountId}-payment-${sessionIndex}`, 0, 1, 0);
+    if (orderFormId && paymentChance > 0.4) { // 60% reach payment
+      events.push({
+        id: generateConsistentId(`${accountId}-events`, events.length, 'evt-'),
+        session_id: sessionId,
+        order_form_id: orderFormId,
+        event_type: 'payment_method_selected',
+        category: 'user_action',
+        step: 'payment',
+        metadata: { method: ['Visa', 'MasterCard', 'PIX', 'PayPal'][generateIntInRange(`${accountId}-method-${events.length}`, 0, 3, 0)] },
+        timestamp: currentTime.toISOString(),
+      });
+      eventsByCategory.user_action++;
+      eventsByType['payment_method_selected'] = (eventsByType['payment_method_selected'] || 0) + 1;
+      currentTime.setSeconds(currentTime.getSeconds() + generateIntInRange(`${accountId}-time-${events.length}`, 5, 15, 0));
+
+      const submitChance = generateRandomInRange(`${accountId}-submit-${sessionIndex}`, 0, 1, 0);
+      if (submitChance > 0.3) { // 70% submit payment
+        events.push({
+          id: generateConsistentId(`${accountId}-events`, events.length, 'evt-'),
+          session_id: sessionId,
+          order_form_id: orderFormId,
+          event_type: 'payment_submitted',
+          category: 'user_action',
+          step: 'payment',
+          metadata: {},
+          timestamp: currentTime.toISOString(),
+        });
+        eventsByCategory.user_action++;
+        eventsByType['payment_submitted'] = (eventsByType['payment_submitted'] || 0) + 1;
+        currentTime.setSeconds(currentTime.getSeconds() + generateIntInRange(`${accountId}-time-${events.length}`, 2, 10, 0));
+
+        const successChance = generateRandomInRange(`${accountId}-success-${sessionIndex}`, 0, 1, 0);
+        if (successChance > 0.2) { // 80% payment succeeds
+          events.push({
+            id: generateConsistentId(`${accountId}-events`, events.length, 'evt-'),
+            session_id: sessionId,
+            order_form_id: orderFormId,
+            event_type: 'payment_completed',
+            category: 'user_action',
+            step: 'payment',
+            metadata: { amount: generateRandomInRange(`${accountId}-amount-${events.length}`, 50, 500, 0) },
+            timestamp: currentTime.toISOString(),
+          });
+          eventsByCategory.user_action++;
+          eventsByType['payment_completed'] = (eventsByType['payment_completed'] || 0) + 1;
+          currentTime.setSeconds(currentTime.getSeconds() + 1);
+
+          events.push({
+            id: generateConsistentId(`${accountId}-events`, events.length, 'evt-'),
+            session_id: sessionId,
+            order_form_id: orderFormId,
+            event_type: 'order_confirmed',
+            category: 'user_action',
+            step: null,
+            metadata: {},
+            timestamp: currentTime.toISOString(),
+          });
+          eventsByCategory.user_action++;
+          eventsByType['order_confirmed'] = (eventsByType['order_confirmed'] || 0) + 1;
+        } else {
+          // Payment failed
+          events.push({
+            id: generateConsistentId(`${accountId}-events`, events.length, 'evt-'),
+            session_id: sessionId,
+            order_form_id: orderFormId,
+            event_type: 'error_occurred',
+            category: 'error',
+            step: 'payment',
+            metadata: { error: 'payment_failed', message: 'Payment processing failed' },
+            timestamp: currentTime.toISOString(),
+          });
+          eventsByCategory.error++;
+          eventsByType['error_occurred'] = (eventsByType['error_occurred'] || 0) + 1;
+        }
+      }
+    }
+
+    // Add some API calls and metrics
+    const apiChance = generateRandomInRange(`${accountId}-api-${sessionIndex}`, 0, 1, 0);
+    if (apiChance > 0.5) {
+      events.push({
+        id: generateConsistentId(`${accountId}-events`, events.length, 'evt-'),
+        session_id: sessionId,
+        order_form_id: orderFormId,
+        event_type: 'api_call_started',
+        category: 'api_call',
+        step: null,
+        metadata: { endpoint: '/api/checkout' },
+        timestamp: currentTime.toISOString(),
+      });
+      eventsByCategory.api_call++;
+      eventsByType['api_call_started'] = (eventsByType['api_call_started'] || 0) + 1;
+      currentTime.setSeconds(currentTime.getSeconds() + generateIntInRange(`${accountId}-time-${events.length}`, 1, 5, 0));
+
+      events.push({
+        id: generateConsistentId(`${accountId}-events`, events.length, 'evt-'),
+        session_id: sessionId,
+        order_form_id: orderFormId,
+        event_type: 'api_call_completed',
+        category: 'api_call',
+        step: null,
+        metadata: { duration: generateIntInRange(`${accountId}-duration-${events.length}`, 100, 500, 0) },
+        timestamp: currentTime.toISOString(),
+      });
+      eventsByCategory.api_call++;
+      eventsByType['api_call_completed'] = (eventsByType['api_call_completed'] || 0) + 1;
+    }
+
+    // Add metrics
+    const metricChance = generateRandomInRange(`${accountId}-metric-${sessionIndex}`, 0, 1, 0);
+    if (metricChance > 0.6) {
+      events.push({
+        id: generateConsistentId(`${accountId}-events`, events.length, 'evt-'),
+        session_id: sessionId,
+        order_form_id: orderFormId,
+        event_type: 'step_time_tracked',
+        category: 'metric',
+        step: 'profile',
+        metadata: { duration: generateIntInRange(`${accountId}-duration-${events.length}`, 30, 180, 0) },
+        timestamp: currentTime.toISOString(),
+      });
+      eventsByCategory.metric++;
+      eventsByType['step_time_tracked'] = (eventsByType['step_time_tracked'] || 0) + 1;
+    }
+  }
+
+  // Sort events by timestamp (descending)
+  events.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+  // Get top event types
+  const topEventTypes = Object.entries(eventsByType)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 10)
+    .map(([type, count]) => ({ type, count }));
+
+  const uniqueSessions = new Set(events.map(e => e.session_id)).size;
+
+  return {
+    summary: {
+      totalEvents: events.length,
+      uniqueSessions,
+      eventsByCategory,
+      topEventTypes,
+      errorCount: eventsByCategory.error,
+    },
+    events,
+  };
+}
+

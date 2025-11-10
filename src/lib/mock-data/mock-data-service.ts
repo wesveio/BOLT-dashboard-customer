@@ -32,6 +32,7 @@ import {
   generateMockPersonalizationMetrics,
   generateMockOptimizations,
   generateMockInsights,
+  generateMockAnalyticsEvents,
 } from './mock-data-generators';
 import { generateRandomInRange, generateIntInRange, getMockDateRange } from './mock-data-helpers';
 
@@ -43,7 +44,8 @@ export function getMockDataForEndpoint(
   accountId: string,
   period?: Period,
   startDate?: Date,
-  endDate?: Date
+  endDate?: Date,
+  queryParams?: Record<string, string | null>
 ): any {
   const params: MockDataParams = {
     accountId,
@@ -903,6 +905,79 @@ export function getMockDataForEndpoint(
         optimizations: generateMockOptimizations(params),
       };
 
+    case 'analytics-events':
+      {
+        const page = Math.max(1, parseInt(queryParams?.page || '1', 10));
+        const limit = Math.min(100, Math.max(10, parseInt(queryParams?.limit || '50', 10)));
+        const eventType = queryParams?.event_type || null;
+        const category = queryParams?.category || null;
+        const step = queryParams?.step || null;
+
+        const eventsData = generateMockAnalyticsEvents(params);
+        
+        // Apply filters
+        let filteredEvents = eventsData.events;
+        if (eventType) {
+          filteredEvents = filteredEvents.filter(e => e.event_type === eventType);
+        }
+        if (category) {
+          filteredEvents = filteredEvents.filter(e => e.category === category);
+        }
+        if (step) {
+          filteredEvents = filteredEvents.filter(e => e.step === step);
+        }
+
+        // Recalculate summary for filtered events
+        const filteredEventsByCategory = {
+          user_action: 0,
+          api_call: 0,
+          metric: 0,
+          error: 0,
+        };
+        const filteredEventsByType: Record<string, number> = {};
+        
+        filteredEvents.forEach(event => {
+          filteredEventsByCategory[event.category]++;
+          filteredEventsByType[event.event_type] = (filteredEventsByType[event.event_type] || 0) + 1;
+        });
+
+        const topEventTypes = Object.entries(filteredEventsByType)
+          .sort(([, a], [, b]) => b - a)
+          .slice(0, 10)
+          .map(([type, count]) => ({ type, count }));
+
+        // Paginate
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const paginatedEvents = filteredEvents.slice(startIndex, endIndex);
+        const totalPages = Math.ceil(filteredEvents.length / limit);
+
+        const { start, end } = getMockDateRange(params.period, params.startDate, params.endDate);
+
+        return {
+          summary: {
+            totalEvents: filteredEvents.length,
+            uniqueSessions: new Set(filteredEvents.map(e => e.session_id)).size,
+            eventsByCategory: filteredEventsByCategory,
+            topEventTypes,
+            errorCount: filteredEventsByCategory.error,
+          },
+          events: paginatedEvents,
+          pagination: {
+            page,
+            limit,
+            totalEvents: filteredEvents.length,
+            totalPages,
+            hasMore: page < totalPages,
+          },
+          period: params.period,
+          dateRange: {
+            start: start.toISOString(),
+            end: end.toISOString(),
+          },
+        };
+      }
+
     default:
       console.warn(`⚠️ [DEBUG] Unknown mock data endpoint: ${endpoint}`);
       return {};
@@ -927,6 +1002,12 @@ export async function getMockDataFromRequest(
   const startDate = startDateParam ? new Date(startDateParam) : undefined;
   const endDate = endDateParam ? new Date(endDateParam) : undefined;
 
-  return getMockDataForEndpoint(endpoint, accountId, period, startDate, endDate);
+  // Extract query params for endpoints that need them
+  const queryParams: Record<string, string | null> = {};
+  searchParams.forEach((value, key) => {
+    queryParams[key] = value;
+  });
+
+  return getMockDataForEndpoint(endpoint, accountId, period, startDate, endDate, queryParams);
 }
 
