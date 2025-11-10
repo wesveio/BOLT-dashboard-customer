@@ -248,8 +248,8 @@ Powered by BCKSTG
   // Notification email template (to company)
   const notificationContent = t.notification;
   // Add Enterprise suffix to subject if source is enterprise (only for notification emails)
-  const notificationSubject = source === 'enterprise' 
-    ? `${notificationContent.subject} [🟢 Enterprise]`
+  const notificationSubject = source === 'enterprise'
+    ? `🟢 ENTERPRISE 🟢 | ${notificationContent.subject}`
     : notificationContent.subject;
   const html = `
 <!DOCTYPE html>
