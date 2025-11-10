@@ -21,7 +21,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useSegmentsData } from '@/hooks/useDashboardData';
-import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
+import { formatCurrency, formatCompactCurrency, formatCompactNumber, formatNumber, formatPercentage } from '@/utils/formatters';
 import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 
@@ -118,25 +118,25 @@ export default function SegmentsAnalyticsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
           title={t('totalCustomers')}
-          value={formatNumber(summary.totalCustomers)}
+          value={formatCompactNumber(summary.totalCustomers, { threshold: 1_000_000 })}
           subtitle={t('acrossAllSegments')}
           icon={<UserGroupIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('overallAvgLTV')}
-          value={formatCurrency(summary.overallAvgLTV)}
+          value={formatCompactCurrency(summary.overallAvgLTV, 'USD', undefined, { threshold: 1_000_000 })}
           subtitle={t('averageLifetimeValue')}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('averageAOV')}
-          value={formatCurrency(summary.avgAOV)}
+          value={formatCompactCurrency(summary.avgAOV, 'USD', undefined, { threshold: 1_000_000 })}
           subtitle={t('averageOrderValue')}
           icon={<ShoppingBagIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('avgOrders')}
-          value={formatNumber(summary.avgOrders, { maximumFractionDigits: 1 })}
+          value={formatCompactNumber(summary.avgOrders, { threshold: 1_000_000, maximumFractionDigits: 1 })}
           subtitle={t('ordersPerCustomer')}
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />

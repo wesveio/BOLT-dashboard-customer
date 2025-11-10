@@ -4,6 +4,8 @@ import { getAuthenticatedUser } from '@/lib/api/auth';
 import { apiSuccess, apiError } from '@/lib/api/responses';
 import { getUserPlan } from '@/lib/api/plan-check';
 import { getDateRange, parsePeriod } from '@/utils/date-ranges';
+import { shouldUseDemoData } from '@/lib/automation/demo-mode';
+import { getMockDataFromRequest } from '@/lib/mock-data/mock-data-service';
 
 /**
  * GET /api/boltx/personalization/metrics
@@ -13,6 +15,20 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
+    const { user } = await getAuthenticatedUser();
+
+    if (!user.account_id) {
+      return apiError('User account not found', 404);
+    }
+
+    // Check if account is in demo mode
+    const isDemo = await shouldUseDemoData(user.account_id);
+    if (isDemo) {
+      console.info('✅ [DEBUG] Account in demo mode, returning mock personalization metrics');
+      const mockData = await getMockDataFromRequest('boltx-personalization-metrics', user.account_id, request);
+      return apiSuccess(mockData);
+    }
+
     // Check Enterprise plan access
     const { hasEnterpriseAccess, error: planError } = await getUserPlan();
     if (!hasEnterpriseAccess) {
@@ -20,12 +36,6 @@ export async function GET(request: NextRequest) {
         planError || 'BoltX is only available on Enterprise plan. Please upgrade to access this feature.',
         403
       );
-    }
-
-    const { user } = await getAuthenticatedUser();
-
-    if (!user.account_id) {
-      return apiError('User account not found', 404);
     }
 
     const supabaseAdmin = getSupabaseAdmin();

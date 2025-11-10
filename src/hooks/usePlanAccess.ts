@@ -13,6 +13,8 @@ export interface UsePlanAccessResult {
   currentPlan: PlanCode | null;
   subscription: Subscription | null;
   plan: Plan | null;
+  isDemoMode: boolean;
+  hasActiveSubscription: boolean;
 }
 
 /**
@@ -24,6 +26,8 @@ export function usePlanAccess(): UsePlanAccessResult {
   const [currentPlan, setCurrentPlan] = useState<PlanCode | null>(null);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [plan, setPlan] = useState<Plan | null>(null);
+  const [isDemoMode, setIsDemoMode] = useState(true);
+  const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
 
   useEffect(() => {
     const checkPlanAccess = async () => {
@@ -45,6 +49,11 @@ export function usePlanAccess(): UsePlanAccessResult {
         const activeSubscription = subscriptions.find(
           (sub) => sub.status === 'active'
         );
+
+        // Update demo mode status
+        const hasActive = !!activeSubscription;
+        setHasActiveSubscription(hasActive);
+        setIsDemoMode(!hasActive);
 
         if (!activeSubscription) {
           setHasEnterpriseAccess(false);
@@ -107,6 +116,8 @@ export function usePlanAccess(): UsePlanAccessResult {
     currentPlan,
     subscription,
     plan,
+    isDemoMode,
+    hasActiveSubscription,
   };
 }
 

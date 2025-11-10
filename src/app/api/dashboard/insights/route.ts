@@ -4,6 +4,8 @@ import { cookies } from 'next/headers';
 import { generateInsightsFromMetrics, generateBenchmarkInsights } from '@/utils/dashboard/insights-generator';
 import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 import { isSessionValid } from '@/lib/api/auth';
+import { shouldUseDemoData } from '@/lib/automation/demo-mode';
+import { getMockDataFromRequest } from '@/lib/mock-data/mock-data-service';
 
 /**
  * GET /api/dashboard/insights
@@ -53,6 +55,17 @@ export async function GET(_request: NextRequest) {
     if (userError || !user) {
       console.error('🚨 [DEBUG] User query error:', userError);
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Check if account is in demo mode
+    const isDemo = await shouldUseDemoData(user.account_id);
+    if (isDemo) {
+      console.info('✅ [DEBUG] Account in demo mode, returning mock insights');
+      const mockData = await getMockDataFromRequest('insights', user.account_id, _request);
+      return NextResponse.json({
+        ...mockData,
+        generatedAt: new Date().toISOString(),
+      });
     }
 
     // Get metrics for insights generation

@@ -18,7 +18,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart, CartesianGrid } from 'recharts';
 import { useRevenueForecastData } from '@/hooks/useDashboardData';
-import { formatCurrency, formatPercentage } from '@/utils/formatters';
+import { formatCurrency, formatCompactCurrency, formatPercentage } from '@/utils/formatters';
 import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 
@@ -132,19 +132,19 @@ export default function RevenueForecastPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
           title={t('forecast7')}
-          value={formatCurrency(summary.forecast7Revenue)}
+          value={formatCompactCurrency(summary.forecast7Revenue, 'USD', undefined, { threshold: 1_000_000 })}
           subtitle={t('next7Days')}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('forecast30')}
-          value={formatCurrency(summary.forecast30Revenue)}
+          value={formatCompactCurrency(summary.forecast30Revenue, 'USD', undefined, { threshold: 1_000_000 })}
           subtitle={t('next30Days')}
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('forecast90')}
-          value={formatCurrency(summary.forecast90Revenue)}
+          value={formatCompactCurrency(summary.forecast90Revenue, 'USD', undefined, { threshold: 1_000_000 })}
           subtitle={t('next90Days')}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />

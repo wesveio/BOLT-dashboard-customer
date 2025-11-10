@@ -112,6 +112,12 @@
       "portuguese": "Português",
       "spanish": "Español"
     },
+    "demoMode": {
+      "title": "Demo Mode",
+      "description": "You're currently viewing demo data. Upgrade to a plan to unlock real-time analytics and full features.",
+      "upgradeButton": "View Plans",
+      "dismiss": "Dismiss"
+    },
     "overview": {
       "title": "Overview",
       "welcome": "Welcome to your BOLT Dashboard",
@@ -211,6 +217,7 @@
         "noData": "No data available"
       },
       "messages": {
+        "loading": "Loading revenue data...",
         "failedToLoad": "Failed to load revenue data"
       }
     },

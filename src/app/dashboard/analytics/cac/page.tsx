@@ -16,7 +16,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useCACData } from '@/hooks/useDashboardData';
-import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
+import { formatCurrency, formatCompactCurrency, formatCompactNumber, formatNumber, formatPercentage } from '@/utils/formatters';
 import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
@@ -112,7 +112,7 @@ export default function CACAnalyticsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
           title={t('averageCAC')}
-          value={formatCurrency(summary.avgCAC)}
+          value={formatCompactCurrency(summary.avgCAC, 'USD', undefined, { threshold: 1_000_000 })}
           subtitle={t('customerAcquisitionCost')}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />
@@ -124,13 +124,13 @@ export default function CACAnalyticsPage() {
         />
         <MetricCard
           title={t('newCustomers')}
-          value={formatNumber(summary.totalNewCustomers)}
+          value={formatCompactNumber(summary.totalNewCustomers, { threshold: 1_000_000 })}
           subtitle={t('acquiredInPeriod')}
           icon={<UserPlusIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('totalMarketingSpend')}
-          value={formatCurrency(summary.totalEstimatedMarketingSpend)}
+          value={formatCompactCurrency(summary.totalEstimatedMarketingSpend, 'USD', undefined, { threshold: 1_000_000 })}
           subtitle={t('estimatedSpend')}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />
@@ -270,7 +270,7 @@ export default function CACAnalyticsPage() {
                             isEfficient ? 'text-green-600' : isGood ? 'text-yellow-600' : 'text-red-600'
                           }`}
                         >
-                          {channel.ltvCacRatio.toFixed(1)}:1
+                          {channel?.ltvCacRatio?.toFixed(1)}:1
                         </span>
                       </TableCell>
                       <TableCell>

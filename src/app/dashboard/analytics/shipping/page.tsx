@@ -10,7 +10,7 @@ import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TruckIcon } from '@heroicons/react/24/outline';
 import { useAnalyticsData } from '@/hooks/useDashboardData';
-import { formatCurrency, formatNumber } from '@/utils/formatters';
+import { formatCurrency, formatCompactCurrency, formatCompactNumber, formatNumber } from '@/utils/formatters';
 
 export default function ShippingAnalyticsPage() {
   const t = useTranslations('dashboard.analytics.shipping');
@@ -46,13 +46,13 @@ export default function ShippingAnalyticsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <MetricCard
           title="Total Shipments"
-          value={formatNumber(totalShipments)}
+          value={formatCompactNumber(totalShipments, { threshold: 1_000_000 })}
           subtitle="Shipping methods selected"
           icon={<TruckIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title="Avg Shipping Cost"
-          value={formatCurrency(parseFloat(avgShippingCost))}
+          value={formatCompactCurrency(parseFloat(avgShippingCost), 'USD', undefined, { threshold: 1_000_000 })}
           subtitle="Average shipping fee"
         />
         <MetricCard

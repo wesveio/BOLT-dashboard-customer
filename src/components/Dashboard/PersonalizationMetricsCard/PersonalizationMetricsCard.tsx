@@ -1,7 +1,7 @@
 'use client';
 
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
-import { formatNumber, formatPercentage } from '@/utils/formatters';
+import { formatCompactNumber, formatPercentage } from '@/utils/formatters';
 import {
   UserGroupIcon,
   ClockIcon,
@@ -20,14 +20,14 @@ export function PersonalizationMetricsCard({ metrics, isLoading }: Personalizati
     <>
       <MetricCard
         title="Total Profiles"
-        value={formatNumber(metrics.totalProfiles)}
+        value={formatCompactNumber(metrics.totalProfiles, { threshold: 1_000_000 })}
         subtitle="All user profiles created"
         icon={<UserGroupIcon className="w-6 h-6 text-white" />}
         isLoading={isLoading}
       />
       <MetricCard
         title="Active Profiles"
-        value={formatNumber(metrics.activeProfiles)}
+        value={formatCompactNumber(metrics.activeProfiles, { threshold: 1_000_000 })}
         subtitle="Updated in last 24h"
         icon={<ClockIcon className="w-6 h-6 text-white" />}
         isLoading={isLoading}

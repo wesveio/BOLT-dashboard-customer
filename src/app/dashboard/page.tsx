@@ -31,7 +31,7 @@ import { useMetricsData, useRevenueData, usePerformanceData } from '@/hooks/useD
 import { useApi } from '@/hooks/useApi';
 import { useSafeRevenueMetrics } from '@/hooks/useSafeMetrics';
 import { useRevenueChartData } from '@/hooks/useChartData';
-import { formatCurrency, formatNumber, formatPercentage, formatDuration } from '@/utils/formatters';
+import { formatCurrency, formatPercentage, formatDuration, formatCompactCurrency, formatCompactNumber } from '@/utils/formatters';
 import { usePeriod } from '@/contexts/PeriodContext';
 import { CustomPeriodSelector } from '@/components/Dashboard/CustomPeriodSelector/CustomPeriodSelector';
 import type { Insight } from '@/app/dashboard/insights/page';
@@ -105,7 +105,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
             <MetricCard
               title={tOverview('totalRevenue')}
-              value={formatCurrency(metrics.totalRevenue)}
+              value={formatCompactCurrency(metrics.totalRevenue, 'USD', undefined, { threshold: 1_000_000 })}
               subtitle={tOverview('subtitles.totalRevenue')}
               trend={{
                 value: revenueGrowth,
@@ -116,7 +116,7 @@ export default function DashboardPage() {
             />
             <MetricCard
               title={tOverview('totalOrders')}
-              value={formatNumber(metrics.totalOrders)}
+              value={formatCompactNumber(metrics.totalOrders, { threshold: 1_000_000 })}
               subtitle={tOverview('subtitles.totalOrders')}
               icon={<ShoppingBagIcon className="w-6 h-6 text-white" />}
               isLoading={isLoading}
@@ -130,7 +130,7 @@ export default function DashboardPage() {
             />
             <MetricCard
               title={tOverview('totalSessions')}
-              value={metrics.totalSessions.toLocaleString()}
+              value={formatCompactNumber(metrics.totalSessions, { threshold: 1_000_000 })}
               subtitle={tOverview('subtitles.totalSessions')}
               icon={<ChartBarIcon className="w-6 h-6 text-white" />}
               isLoading={isLoading}
@@ -141,7 +141,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <MetricCard
               title={tOverview('avgOrderValue')}
-              value={formatCurrency(safeRevenueMetrics.avgOrderValue)}
+              value={formatCompactCurrency(safeRevenueMetrics.avgOrderValue, 'USD', undefined, { threshold: 1_000_000 })}
               subtitle={tOverview('subtitles.avgOrderValue')}
               icon={<ArrowTrendingUpIcon className="w-6 h-6 text-white" />}
               isLoading={isLoadingRevenue}

@@ -9,6 +9,7 @@ import {
   calculateAverageFriction,
   type FrictionFactors,
 } from '@/utils/dashboard/friction-calculator';
+import { checkDemoModeAndReturnMockSuccess } from '@/lib/api/demo-mode-check';
 
 /**
  * GET /api/dashboard/analytics/friction-score
@@ -23,6 +24,10 @@ export async function GET(request: NextRequest) {
     if (!user.account_id) {
       return apiError('User account not found', 404);
     }
+
+    // Check demo mode
+    const mockResponse = await checkDemoModeAndReturnMockSuccess('analytics-friction-score', user.account_id, request);
+    if (mockResponse) return mockResponse;
 
     const supabaseAdmin = getSupabaseAdmin();
 

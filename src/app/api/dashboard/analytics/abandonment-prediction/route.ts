@@ -5,6 +5,7 @@ import { getDateRange, parsePeriod } from '@/utils/date-ranges';
 import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
 import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 import { predictAbandonment, getTypicalCheckoutDuration, type AbandonmentRiskFactors } from '@/utils/dashboard/abandonment-predictor';
+import { checkDemoModeAndReturnMockSuccess } from '@/lib/api/demo-mode-check';
 
 /**
  * GET /api/dashboard/analytics/abandonment-prediction
@@ -19,6 +20,10 @@ export async function GET(request: NextRequest) {
     if (!user.account_id) {
       return apiError('User account not found', 404);
     }
+
+    // Check demo mode
+    const mockResponse = await checkDemoModeAndReturnMockSuccess('analytics-abandonment-prediction', user.account_id, request);
+    if (mockResponse) return mockResponse;
 
     const supabaseAdmin = getSupabaseAdmin();
 

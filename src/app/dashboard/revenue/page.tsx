@@ -19,7 +19,7 @@ import { useRevenueData } from '@/hooks/useDashboardData';
 import { useSafeRevenueMetrics } from '@/hooks/useSafeMetrics';
 import { useRevenueChartData, useRevenueByHourData, useRevenueByDayData } from '@/hooks/useChartData';
 import { usePeriod } from '@/contexts/PeriodContext';
-import { formatCurrency, formatNumber } from '@/utils/formatters';
+import { formatCurrency, formatCompactCurrency, formatCompactNumber } from '@/utils/formatters';
 
 export default function RevenuePage() {
   const t = useTranslations('dashboard.revenue');
@@ -53,7 +53,7 @@ export default function RevenuePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
           title={t('totalRevenue')}
-          value={formatCurrency(displayMetrics.totalRevenue)}
+          value={formatCompactCurrency(displayMetrics.totalRevenue, 'USD', undefined, { threshold: 1_000_000 })}
           subtitle={t('subtitles.forSelectedPeriod')}
           trend={{
             value: displayMetrics.revenueGrowth,
@@ -64,21 +64,21 @@ export default function RevenuePage() {
         />
         <MetricCard
           title={t('avgOrderValue')}
-          value={formatCurrency(displayMetrics.avgOrderValue)}
+          value={formatCompactCurrency(displayMetrics.avgOrderValue, 'USD', undefined, { threshold: 1_000_000 })}
           subtitle={t('subtitles.averageTransactionValue')}
           icon={<ShoppingBagIcon className="w-6 h-6 text-white" />}
           isLoading={isLoading}
         />
         <MetricCard
           title={t('totalOrders')}
-          value={formatNumber(displayMetrics.totalOrders)}
+          value={formatCompactNumber(displayMetrics.totalOrders, { threshold: 1_000_000 })}
           subtitle={t('subtitles.ordersProcessed')}
           icon={<ArrowTrendingUpIcon className="w-6 h-6 text-white" />}
           isLoading={isLoading}
         />
         <MetricCard
           title={t('revenuePerHour')}
-          value={formatCurrency(displayMetrics.revenuePerHour)}
+          value={formatCompactCurrency(displayMetrics.revenuePerHour, 'USD', undefined, { threshold: 1_000_000 })}
           subtitle={t('subtitles.averageHourlyRevenue')}
           icon={<ClockIcon className="w-6 h-6 text-white" />}
           isLoading={isLoading}

@@ -97,12 +97,13 @@ export async function POST(request: NextRequest) {
     // Since Supabase doesn't support transactions directly, we'll use error handling
     try {
       // First, create the account using SQL function
+      // New accounts start in 'trial' status with demo_mode = true
       const { data: accountId, error: accountError } = await supabaseAdmin
         .rpc('create_account', {
           p_vtex_account_name: sanitizedVTEXAccount,
           p_company_name: sanitizedCompanyName || sanitizedVTEXAccount,
           p_plan_type: 'basic',
-          p_status: 'active',
+          p_status: 'trial', // Start in trial status (no subscription)
         });
 
       if (accountError) {

@@ -1,7 +1,7 @@
 'use client';
 
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
-import { formatNumber, formatPercentage } from '@/utils/formatters';
+import { formatCompactNumber, formatPercentage } from '@/utils/formatters';
 import {
   PaintBrushIcon,
   ArrowTrendingUpIcon,
@@ -20,7 +20,7 @@ export function FormOptimizationMetricsCard({ metrics, isLoading }: FormOptimiza
     <>
       <MetricCard
         title="Total Optimizations"
-        value={formatNumber(metrics.totalOptimizations)}
+        value={formatCompactNumber(metrics.totalOptimizations, { threshold: 1_000_000 })}
         subtitle="Optimizations applied in period"
         icon={<PaintBrushIcon className="w-6 h-6 text-white" />}
         isLoading={isLoading}
@@ -49,7 +49,7 @@ export function FormOptimizationMetricsCard({ metrics, isLoading }: FormOptimiza
       />
       <MetricCard
         title="Avg Completion Time"
-        value={metrics.avgCompletionTime > 0 ? `${formatNumber(metrics.avgCompletionTime / 1000, { maximumFractionDigits: 1 })}s` : 'N/A'}
+        value={metrics.avgCompletionTime > 0 ? `${formatCompactNumber(metrics.avgCompletionTime / 1000, { threshold: 1_000_000, maximumFractionDigits: 1 })}s` : 'N/A'}
         subtitle="Average time to complete fields"
         icon={<ClockIcon className="w-6 h-6 text-white" />}
         isLoading={isLoading}

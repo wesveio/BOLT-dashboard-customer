@@ -17,7 +17,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { useCohortsData } from '@/hooks/useDashboardData';
-import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
+import { formatCurrency, formatCompactCurrency, formatCompactNumber, formatNumber, formatPercentage } from '@/utils/formatters';
 import { getTranslatedPeriodOptions, type Period } from '@/utils/default-data';
 import { usePeriod } from '@/contexts/PeriodContext';
 
@@ -90,19 +90,19 @@ export default function CohortsAnalyticsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
           title={t('totalCohorts')}
-          value={formatNumber(summary.totalCohorts)}
+          value={formatCompactNumber(summary.totalCohorts, { threshold: 1_000_000 })}
           subtitle={t('cohortsAnalyzed')}
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('totalCustomers')}
-          value={formatNumber(summary.totalCustomers)}
-          subtitle={t('avgPerCohort', { count: formatNumber(summary.avgCohortSize, { maximumFractionDigits: 0 }) })}
+          value={formatCompactNumber(summary.totalCustomers, { threshold: 1_000_000 })}
+          subtitle={t('avgPerCohort', { count: formatCompactNumber(summary.avgCohortSize, { threshold: 1_000_000, maximumFractionDigits: 0 }) })}
           icon={<UserGroupIcon className="w-6 h-6 text-white" />}
         />
         <MetricCard
           title={t('averageLTV')}
-          value={formatCurrency(summary.avgLTV)}
+          value={formatCompactCurrency(summary.avgLTV, 'USD', undefined, { threshold: 1_000_000 })}
           subtitle={t('perCohort')}
           icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
         />

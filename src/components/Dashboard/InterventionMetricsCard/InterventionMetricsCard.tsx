@@ -1,7 +1,7 @@
 'use client';
 
 import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
-import { formatNumber, formatPercentage } from '@/utils/formatters';
+import { formatCompactNumber, formatPercentage } from '@/utils/formatters';
 import {
   BoltIcon,
   CheckCircleIcon,
@@ -26,7 +26,7 @@ export function InterventionMetricsCard({ metrics, activeConfigs: activeConfigsP
     <>
       <MetricCard
         title="Total Interventions"
-        value={formatNumber(metrics.totalInterventions)}
+        value={formatCompactNumber(metrics.totalInterventions, { threshold: 1_000_000 })}
         subtitle="All interventions in period"
         icon={<BoltIcon className="w-6 h-6 text-white" />}
         isLoading={isLoading}
@@ -40,7 +40,7 @@ export function InterventionMetricsCard({ metrics, activeConfigs: activeConfigsP
       />
       <MetricCard
         title="Active Configs"
-        value={formatNumber(activeConfigs)}
+        value={formatCompactNumber(activeConfigs, { threshold: 1_000_000 })}
         subtitle="Intervention types configured"
         icon={<ChartBarIcon className="w-6 h-6 text-white" />}
         isLoading={isLoading}
