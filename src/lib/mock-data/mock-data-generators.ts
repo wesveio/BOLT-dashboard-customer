@@ -40,7 +40,6 @@ import {
   generateTimeSeriesData,
   generateHourlyData,
   getMockDateRange,
-  generateDistribution,
   daysBetween,
   calculateGrowthFactor,
 } from './mock-data-helpers';
@@ -1499,7 +1498,6 @@ export function generateMockAnalyticsEvents(
     .slice(0, 10)
     .map(([type, count]) => ({ type, count }));
 
-  const uniqueSessions = new Set(filteredEvents.map(e => e.session_id)).size;
   const estimatedUniqueSessions = Math.round(totalSessions * 0.95); // Most sessions have events
 
   return {

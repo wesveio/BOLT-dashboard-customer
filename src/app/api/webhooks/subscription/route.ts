@@ -26,9 +26,9 @@ export async function POST(request: NextRequest) {
     // Verify webhook signature (if using Stripe/Paddle)
     const webhookSecret = process.env.SUBSCRIPTION_WEBHOOK_SECRET;
     if (webhookSecret) {
-      const signature = request.headers.get('x-webhook-signature');
       // TODO: Implement signature verification based on provider
       // For now, we'll trust the request if secret is configured
+      // const signature = request.headers.get('x-webhook-signature');
     }
 
     const body = await request.json();

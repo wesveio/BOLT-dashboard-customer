@@ -17,16 +17,16 @@ export async function GET(request: NextRequest) {
   try {
     const { user } = await getAuthenticatedUser();
 
+    if (!user.account_id) {
+      return apiError('User account not found', 404);
+    }
+
     // Check if account is in demo mode
     const isDemo = await shouldUseDemoData(user.account_id);
     if (isDemo) {
       console.info('✅ [DEBUG] Account in demo mode, returning mock shipping data');
       const mockData = await getMockDataFromRequest('analytics-shipping', user.account_id, request);
       return apiSuccess(mockData);
-    }
-
-    if (!user.account_id) {
-      return apiError('User account not found', 404);
     }
 
     const supabaseAdmin = getSupabaseAdmin();

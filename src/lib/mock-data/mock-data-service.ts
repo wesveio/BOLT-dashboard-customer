@@ -186,7 +186,6 @@ export function getMockDataForEndpoint(
         const platformData = platforms.map((p, index) => {
           const sessions = Math.round(totalSessions * p.baseRate);
           const conversionRate = generateRandomInRange(`${params.accountId}-platform-${index}`, 0.07, 0.13, 0);
-          const conversions = Math.round(sessions * conversionRate);
           const revenue = Math.round(totalSessions * p.baseRate * 100);
           return {
             platform: p.name,

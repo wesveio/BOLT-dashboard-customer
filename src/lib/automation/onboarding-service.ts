@@ -38,7 +38,7 @@ export async function triggerOnboarding(
 
   try {
     // Create onboarding status record
-    const { data: onboardingRecord, error: createError } = await supabase.rpc(
+    const { error: createError } = await supabase.rpc(
       'create_onboarding_status',
       {
         p_account_id: accountId,

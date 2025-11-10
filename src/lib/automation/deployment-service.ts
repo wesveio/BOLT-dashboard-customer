@@ -354,7 +354,7 @@ export async function getDeploymentStatus(accountId: string): Promise<{
  */
 export async function triggerDeployment(
   accountId: string,
-  branch: string = 'main'
+  _branch: string = 'main'
 ): Promise<DeploymentResult> {
   const supabase = getSupabaseAdmin();
 
