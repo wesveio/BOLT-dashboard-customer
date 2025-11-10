@@ -79,7 +79,7 @@ export function PublicPricingCard({ plan, isPopular = false, onSelect }: PublicP
             {isEnterprise ? (
               <Button
                 as={Link}
-                href="/dashboard?contact=sales"
+                href="/contact?sales=enterprise"
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:shadow-lg transition-all duration-200"
                 size="lg"
               >

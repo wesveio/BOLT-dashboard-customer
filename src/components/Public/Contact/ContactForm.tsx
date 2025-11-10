@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 import { z } from 'zod';
 
 const contactSchema = z.object({
@@ -39,11 +40,13 @@ interface ContactFormState {
   phone: string;
   message: string;
   wantsDemo: boolean;
+  source?: string;
 }
 
 export function ContactForm() {
   const t = useTranslations('public.contact.form');
   const tMessages = useTranslations('public.contact.messages');
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState<ContactFormState>({
     name: '',
     email: '',
@@ -51,11 +54,20 @@ export function ContactForm() {
     phone: '',
     message: '',
     wantsDemo: false,
+    source: undefined,
   });
   const [errors, setErrors] = useState<Partial<Record<keyof ContactFormState, string>>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Read sales parameter from URL and set source
+  useEffect(() => {
+    const salesParam = searchParams.get('sales');
+    if (salesParam === 'enterprise') {
+      setFormData((prev) => ({ ...prev, source: 'enterprise' }));
+    }
+  }, [searchParams]);
 
   const handleChange = (field: keyof ContactFormState) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -128,6 +140,7 @@ export function ContactForm() {
         phone: '',
         message: '',
         wantsDemo: false,
+        source: undefined,
       });
       
       // Reset success message after 5 seconds

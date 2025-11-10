@@ -10,12 +10,14 @@ interface ContactFormData {
   phone?: string;
   message: string;
   wantsDemo: boolean;
+  source?: string;
 }
 
 export function generateContactEmail(
   data: ContactFormData,
   locale: string = 'en',
-  isConfirmation: boolean = false
+  isConfirmation: boolean = false,
+  source?: string
 ): { html: string; text: string; subject: string } {
   const translations: Record<string, {
     notification: {
@@ -245,6 +247,10 @@ Powered by BCKSTG
 
   // Notification email template (to company)
   const notificationContent = t.notification;
+  // Add Enterprise suffix to subject if source is enterprise (only for notification emails)
+  const notificationSubject = source === 'enterprise' 
+    ? `${notificationContent.subject} [🟢 Enterprise]`
+    : notificationContent.subject;
   const html = `
 <!DOCTYPE html>
 <html lang="${locale}">
@@ -410,6 +416,6 @@ ${notificationContent.footer}
 Powered by BCKSTG
   `.trim();
 
-  return { html, text, subject: notificationContent.subject };
+  return { html, text, subject: notificationSubject };
 }
 

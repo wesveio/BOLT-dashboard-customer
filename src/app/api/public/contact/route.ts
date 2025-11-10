@@ -30,6 +30,7 @@ const contactSchema = z.object({
     .min(10, 'Message must be at least 10 characters')
     .max(2000, 'Message is too long'),
   wantsDemo: z.boolean().default(false),
+  source: z.string().optional(),
 });
 
 // Simple in-memory rate limiting (for production, consider using Redis or similar)
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest) {
     const contactEmail = process.env.CONTACT_EMAIL || process.env.EMAIL_SERVICE_FROM || 'hello@bckstg.com';
 
     // Generate email templates
-    const { html, text, subject } = generateContactEmail(validatedData, locale);
+    const { html, text, subject } = generateContactEmail(validatedData, locale, false, validatedData.source);
 
     // Send email to company
     try {
