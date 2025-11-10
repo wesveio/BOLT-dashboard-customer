@@ -2,10 +2,12 @@
  * Hook to check user's plan access
  * 
  * Checks if user has Enterprise plan and active subscription
+ * Provides feature-based access control for dashboard routes
  */
 
-import { useState, useEffect } from 'react';
-import { PlanCode, Subscription, Plan, hasFeature } from '@/utils/plans';
+import { useState, useEffect, useMemo } from 'react';
+import { PlanCode, Subscription, Plan, hasFeature as checkPlanFeature } from '@/utils/plans';
+import { canAccessRoute as checkRouteAccess } from '@/utils/feature-routes';
 
 export interface UsePlanAccessResult {
   hasEnterpriseAccess: boolean;
@@ -15,6 +17,8 @@ export interface UsePlanAccessResult {
   plan: Plan | null;
   isDemoMode: boolean;
   hasActiveSubscription: boolean;
+  hasFeature: (featureCode: string) => boolean;
+  canAccessRoute: (route: string) => boolean;
 }
 
 /**
@@ -72,8 +76,16 @@ export function usePlanAccess(): UsePlanAccessResult {
           setCurrentPlan(userPlan.code);
 
           // Verify plan has 'boltx' feature
-          const hasBoltXFeature = hasFeature(userPlan, 'boltx');
+          const hasBoltXFeature = checkPlanFeature(userPlan, 'boltx');
           const isEnterprise = userPlan.code === 'enterprise';
+
+          console.info('✅ [DEBUG] Plan check:', {
+            planCode: userPlan.code,
+            isEnterprise,
+            planFeatures: userPlan.features,
+            hasBoltXFeature,
+            hasEnterpriseAccess: isEnterprise && hasBoltXFeature,
+          });
 
           setHasEnterpriseAccess(isEnterprise && hasBoltXFeature);
         } else {
@@ -88,7 +100,7 @@ export function usePlanAccess(): UsePlanAccessResult {
               setPlan(userPlan);
               setCurrentPlan(userPlan.code);
 
-              const hasBoltXFeature = hasFeature(userPlan, 'boltx');
+              const hasBoltXFeature = checkPlanFeature(userPlan, 'boltx');
               const isEnterprise = userPlan.code === 'enterprise';
 
               setHasEnterpriseAccess(isEnterprise && hasBoltXFeature);
@@ -110,6 +122,23 @@ export function usePlanAccess(): UsePlanAccessResult {
     checkPlanAccess();
   }, []);
 
+  // Memoize feature check function
+  const hasFeature = useMemo(
+    () => (featureCode: string) => {
+      if (!plan) return false;
+      return checkPlanFeature(plan, featureCode);
+    },
+    [plan]
+  );
+
+  // Memoize route access check function
+  const canAccessRoute = useMemo(
+    () => (route: string) => {
+      return checkRouteAccess(plan, route);
+    },
+    [plan]
+  );
+
   return {
     hasEnterpriseAccess,
     isLoading,
@@ -118,6 +147,8 @@ export function usePlanAccess(): UsePlanAccessResult {
     plan,
     isDemoMode,
     hasActiveSubscription,
+    hasFeature,
+    canAccessRoute,
   };
 }
 

@@ -30,7 +30,7 @@ export const PageHeader = memo(function PageHeader({
   const displaySubtitle = subtitle || description;
   
   return (
-    <div className={`mb-8 ${className}`}>
+    <div className={`pt-8 mb-8 ${className}`}>
       {showBreadcrumb && <DashboardBreadcrumbs />}
       <div className={action ? 'flex items-center justify-between' : ''}>
         <div className="flex items-center gap-3">

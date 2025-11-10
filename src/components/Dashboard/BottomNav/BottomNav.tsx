@@ -11,6 +11,8 @@ import {
   HomeIcon,
   BoltIcon,
 } from '@heroicons/react/24/outline';
+import { usePlanAccess } from '@/hooks/usePlanAccess';
+
 interface NavItem {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -20,15 +22,20 @@ interface NavItem {
 export function BottomNav() {
   const t = useTranslations('dashboard.sidebar');
   const pathname = usePathname();
+  const { canAccessRoute } = usePlanAccess();
 
   // Select most important items for bottom nav (5 items total)
-  const navItems: NavItem[] = [
+  // Filter based on plan features
+  const allNavItems: NavItem[] = [
     { href: '/dashboard', icon: HomeIcon, label: t('overview') },
     { href: '/dashboard/performance', icon: BoltIcon, label: t('performance') },
     { href: '/dashboard/revenue', icon: CurrencyDollarIcon, label: t('revenue') },
     { href: '/dashboard/analytics', icon: ChartBarIcon, label: t('analytics') },
     { href: '/dashboard/themes', icon: PaintBrushIcon, label: t('themes') },
   ];
+
+  // Filter nav items based on plan features
+  const navItems: NavItem[] = allNavItems.filter((item) => canAccessRoute(item.href));
 
   const isActive = (href: string) => {
     if (href === '/dashboard') {

@@ -47,9 +47,11 @@ export function Sidebar() {
   const tBoltX = useTranslations('dashboard.boltx');
   const pathname = usePathname();
   const { user, isLoading } = useDashboardAuth();
-  const { hasEnterpriseAccess } = usePlanAccess();
+  const { canAccessRoute } = usePlanAccess();
 
-  const navItems: NavItem[] = [
+  // Define all nav items (will be filtered by plan features)
+  // Note: BoltX is included here and will be filtered by canAccessRoute
+  const allNavItems: NavItem[] = [
     { href: '/dashboard', icon: HomeIcon, label: t('overview') },
     { href: '/dashboard/performance', icon: BoltIcon, label: t('performance') },
     { href: '/dashboard/revenue', icon: CurrencyDollarIcon, label: t('revenue') },
@@ -142,47 +144,74 @@ export function Sidebar() {
     },
     { href: '/dashboard/themes', icon: PaintBrushIcon, label: t('themes') },
     { href: '/dashboard/insights', icon: LightBulbIcon, label: t('insights') },
-    // BoltX - only show for Enterprise plan
-    ...(hasEnterpriseAccess
-      ? [
-          {
-            href: '/dashboard/boltx',
-            icon: CpuChipIcon,
-            label: t('boltx'),
-            subItems: [
-              {
-                href: '/dashboard/boltx/predictions',
-                label: tBoltX('predictions.title'),
-                translationKey: 'dashboard.boltx.predictions.title',
-              },
-              {
-                href: '/dashboard/boltx/interventions',
-                label: tBoltX('interventions.title'),
-                translationKey: 'dashboard.boltx.interventions.title',
-              },
-              {
-                href: '/dashboard/boltx/personalization',
-                label: tBoltX('personalization.title'),
-                translationKey: 'dashboard.boltx.personalization.title',
-              },
-              {
-                href: '/dashboard/boltx/optimization',
-                label: tBoltX('optimization.title'),
-                translationKey: 'dashboard.boltx.optimization.title',
-              },
-              {
-                href: '/dashboard/boltx/settings',
-                label: t('settings'),
-                translationKey: 'dashboard.settings.title',
-              },
-            ],
-          },
-        ]
-      : []),
+    {
+      href: '/dashboard/boltx',
+      icon: CpuChipIcon,
+      label: t('boltx'),
+      subItems: [
+        {
+          href: '/dashboard/boltx/predictions',
+          label: tBoltX('predictions.title'),
+          translationKey: 'dashboard.boltx.predictions.title',
+        },
+        {
+          href: '/dashboard/boltx/interventions',
+          label: tBoltX('interventions.title'),
+          translationKey: 'dashboard.boltx.interventions.title',
+        },
+        {
+          href: '/dashboard/boltx/personalization',
+          label: tBoltX('personalization.title'),
+          translationKey: 'dashboard.boltx.personalization.title',
+        },
+        {
+          href: '/dashboard/boltx/optimization',
+          label: tBoltX('optimization.title'),
+          translationKey: 'dashboard.boltx.optimization.title',
+        },
+        {
+          href: '/dashboard/boltx/settings',
+          label: t('settings'),
+          translationKey: 'dashboard.settings.title',
+        },
+      ],
+    },
     { href: '/dashboard/plans', icon: CreditCardIcon, label: t('plans') },
     { href: '/dashboard/integrations', icon: KeyIcon, label: t('integrations') },
     { href: '/dashboard/settings', icon: Cog6ToothIcon, label: t('settings') },
   ];
+
+  // Filter nav items based on plan features
+  const navItems: NavItem[] = allNavItems
+    .map((item) => {
+      // Check if parent route is accessible
+      const parentAccessible = canAccessRoute(item.href);
+      
+      // Debug log for BoltX
+      if (item.href === '/dashboard/boltx') {
+        console.info('✅ [DEBUG] BoltX route check:', {
+          href: item.href,
+          parentAccessible,
+        });
+      }
+      
+      // Filter sub-items if they exist
+      if (item.subItems) {
+        const filteredSubItems = item.subItems.filter((subItem) => canAccessRoute(subItem.href));
+        // Only include parent item if it has accessible sub-items or if parent route is accessible
+        if (filteredSubItems.length > 0 || parentAccessible) {
+          return {
+            ...item,
+            subItems: filteredSubItems,
+          };
+        }
+        return null;
+      }
+      
+      // For items without sub-items, include only if parent route is accessible
+      return parentAccessible ? item : null;
+    })
+    .filter((item): item is NavItem => item !== null);
 
   const isActive = (href: string) => {
     if (href === '/dashboard') {
