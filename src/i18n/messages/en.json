@@ -1496,6 +1496,7 @@
       "navigation": {
         "home": "Home",
         "pricing": "Pricing",
+        "contact": "Contact",
         "login": "Login",
         "dashboard": "Dashboard"
       }
@@ -1908,6 +1909,70 @@
         "title": "Contact Us",
         "content": "If you have any questions about these Terms & Conditions, please contact us:",
         "email": "Email"
+      }
+    },
+    "contact": {
+      "seo": {
+        "title": "Contact Us - BOLT",
+        "description": "Get in touch with the BOLT team. Request more information or schedule a demo of our checkout platform."
+      },
+      "hero": {
+        "badge": "Get in Touch",
+        "title": "Contact Us",
+        "description": "Have questions? Want to schedule a demo? We're here to help! Fill out the form below and we'll get back to you as soon as possible."
+      },
+      "form": {
+        "name": {
+          "label": "Full Name",
+          "placeholder": "John Doe"
+        },
+        "email": {
+          "label": "Email Address",
+          "placeholder": "john@example.com"
+        },
+        "company": {
+          "label": "Company",
+          "placeholder": "Your Company Name"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "placeholder": "+1 (555) 123-4567"
+        },
+        "message": {
+          "label": "Message",
+          "placeholder": "Tell us about your needs, questions, or how we can help..."
+        },
+        "demo": {
+          "label": "I would like to schedule a demo"
+        },
+        "submit": {
+          "label": "Send Message",
+          "loading": "Sending..."
+        }
+      },
+      "messages": {
+        "success": {
+          "title": "Message Sent Successfully!",
+          "message": "Thank you for contacting us. We have received your message and will get back to you within 24 hours."
+        },
+        "error": {
+          "generic": "An error occurred while sending your message. Please try again.",
+          "network": "Network error. Please check your connection and try again."
+        }
+      },
+      "info": {
+        "email": {
+          "title": "Email Us",
+          "description": "Send us an email anytime"
+        },
+        "response": {
+          "title": "Quick Response",
+          "description": "We typically respond within 24 hours"
+        },
+        "demo": {
+          "title": "Schedule a Demo",
+          "description": "See BOLT in action with a personalized demo"
+        }
       }
     }
   }

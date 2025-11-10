@@ -28,6 +28,7 @@ export function PublicHeader({ showDashboard = false }: PublicHeaderProps) {
   const navLinks = [
     { href: '/', label: t('home') },
     { href: '/pricing', label: t('pricing') },
+    { href: '/contact', label: t('contact') },
     { href: '/login', label: t('login') },
     ...(showDashboard ? [{ href: '/dashboard', label: t('dashboard') }] : []),
   ];
