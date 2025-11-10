@@ -26,7 +26,7 @@
 
 /* Custom minimal styles */
 body {
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: var(--font-inter), "Inter", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--color-bg-secondary);
@@ -104,6 +104,153 @@ body {
 
   .text-lead {
     @apply text-xl md:text-2xl text-gray-600 leading-relaxed;
+  }
+}
+
+/* CSS Animations to replace Framer Motion */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Animation utility classes */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.4s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s ease-out forwards;
+}
+
+/* Stagger container - children animate with delay */
+.stagger-container {
+  opacity: 1;
+}
+
+.stagger-container > * {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.stagger-container > *:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.stagger-container > *:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.stagger-container > *:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.stagger-container > *:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.stagger-container > *:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+.stagger-container > *:nth-child(6) {
+  animation-delay: 0.6s;
+}
+
+.stagger-container > *:nth-child(7) {
+  animation-delay: 0.7s;
+}
+
+.stagger-container > *:nth-child(8) {
+  animation-delay: 0.8s;
+}
+
+/* Viewport-based animations (for scroll animations) */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-fade-in-up,
+  .animate-slide-in,
+  .animate-scale-in,
+  .stagger-container > *,
+  .animate-on-scroll {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 

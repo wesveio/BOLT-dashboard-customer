@@ -1,26 +1,34 @@
-'use client';
-
-import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import { AnimatedWrapper } from '@/components/Dashboard/AnimatedWrapper/AnimatedWrapper';
-import { motion as m } from 'framer-motion';
-import { fadeIn, staggerContainer } from '@/utils/animations';
-import { NextSeo } from 'next-seo';
+import { getTranslations } from 'next-intl/server';
+import { AnimatedWrapperCSS } from '@/components/Dashboard/AnimatedWrapper/AnimatedWrapperCSS';
 import { PublicHeader } from '@/components/Public/PublicHeader/PublicHeader';
 import { PublicFooter } from '@/components/Public/PublicFooter/PublicFooter';
-import {
-  ChartBarIcon,
-  CurrencyDollarIcon,
-  BoltIcon,
-  PaintBrushIcon,
-  LightBulbIcon,
-  KeyIcon,
-} from '@heroicons/react/24/outline';
+import { HeroButtons } from '@/components/Public/Home/HeroButtons';
+import { FeatureCard } from '@/components/Public/Home/FeatureCard';
+import { FeatureDetailButton } from '@/components/Public/Home/FeatureDetailButton';
+import { ViewDashboardButton } from '@/components/Public/Home/ViewDashboardButton';
+import { CTAButton } from '@/components/Public/Home/CTAButton';
+import { Metadata } from 'next';
 
-export default function Home() {
-  const router = useRouter();
-  const t = useTranslations('public.home');
-  const tSeo = useTranslations('public.home.seo');
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('public.home.seo');
+  return {
+    title: t('title'),
+    description: t('description'),
+    openGraph: {
+      url: 'https://bolt.bckstg.com.br/',
+      title: t('title'),
+      description: t('description'),
+      siteName: t('title'),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      site: '@bckstg',
+    },
+  };
+}
+
+export default async function Home() {
+  const t = await getTranslations('public.home');
 
   const features = [
     {
@@ -96,34 +104,12 @@ export default function Home() {
   ];
 
   return (
-    <>
-      <NextSeo
-        title={tSeo('title')}
-        description={tSeo('description')}
-        canonical="https://bolt.bckstg.com.br/"
-        openGraph={{
-          url: 'https://bolt.bckstg.com.br/',
-          title: tSeo('title'),
-          description: tSeo('description'),
-          siteName: tSeo('title'),
-        }}
-        twitter={{
-          cardType: 'summary_large_image',
-          site: '@bckstg',
-        }}
-      />
-      <AnimatedWrapper>
+    <AnimatedWrapperCSS>
         <div className="min-h-screen flex flex-col">
           <PublicHeader />
           <main className="flex-1">
             {/* Hero Section */}
-          <m.section
-            className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20 md:py-32"
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
+          <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20 md:py-32 stagger-container">
             {/* Decorative background elements */}
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
@@ -132,13 +118,8 @@ export default function Home() {
             </div>
 
             <div className="container-custom relative z-10">
-              <m.div className="max-w-4xl mx-auto text-center" variants={fadeIn}>
-                <m.div
-                  className="inline-block mb-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
+              <div className="max-w-4xl mx-auto text-center">
+                <div className="inline-block mb-6 animate-fade-in-up">
                   <span className="inline-flex items-center px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path
@@ -149,70 +130,26 @@ export default function Home() {
                     </svg>
                     {t('hero.badge')}
                   </span>
-                </m.div>
+                </div>
 
-                <m.h1
-                  className="heading-hero mb-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
+                <h1 className="heading-hero mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
                   {t('hero.title')}
                   <br />{t('hero.subtitle')}
                   <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
                     {t('hero.gradientText')}
                   </span>
-                </m.h1>
+                </h1>
 
-                <m.p
-                  className="text-lead mb-10 max-w-2xl mx-auto"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
+                <p className="text-lead mb-10 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                   {t('hero.description')}
-                </m.p>
+                </p>
 
-                <m.div
-                  className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  <button
-                    onClick={() => router.push('/dashboard')}
-                    className="btn-primary-enhanced w-full sm:w-auto group"
-                  >
-                    {t('hero.accessDashboard')}
-                    <svg
-                      className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => router.push('/login')}
-                    className="btn-secondary-enhanced w-full sm:w-auto"
-                  >
-                    {t('hero.signIn')}
-                  </button>
-                </m.div>
+                <div className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+                  <HeroButtons />
+                </div>
 
                 {/* Trust Indicators */}
-                <m.div
-                  className="mt-12 flex flex-wrap justify-center items-center gap-8 text-sm text-gray-500"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                >
+                <div className="mt-12 flex flex-wrap justify-center items-center gap-8 text-sm text-gray-500 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                   <div className="flex items-center gap-2">
                     <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                       <path
@@ -244,67 +181,40 @@ export default function Home() {
                     </svg>
                     {t('trustIndicators.support24_7')}
                   </div>
-                </m.div>
-              </m.div>
             </div>
-          </m.section>
+              </div>
+            </div>
+          </section>
 
           {/* Features Section */}
-          <m.section
-            className="py-20 bg-white"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-          >
+          <section className="py-20 bg-white">
             <div className="container-custom">
-              <m.div
-                className="text-center mb-16"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
+              <div className="text-center mb-16 animate-fade-in-up">
                 <h2 className="heading-section mb-4">{t('features.title')}</h2>
                 <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                   {t('features.subtitle')}
                 </p>
-              </m.div>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-container">
                 {features.map((feature, index) => (
-                  <m.div
+                  <FeatureCard
                     key={feature.title}
-                    className="card-elevated-md p-8 text-center group hover:scale-105 transition-transform duration-200"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-200">
-                      {feature.icon}
-                    </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                    <p className="text-gray-600">{feature.description}</p>
-                  </m.div>
+                    icon={feature.icon}
+                    title={feature.title}
+                    description={feature.description}
+                    index={index}
+                  />
                 ))}
               </div>
             </div>
-          </m.section>
+          </section>
 
           {/* Feature Detail: Customizable Theme System */}
-          <m.section
-            className="py-20 bg-gradient-to-br from-gray-50 to-blue-50"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
+          <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50 animate-on-scroll">
             <div className="container-custom">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <m.div
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-                >
+                <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-6">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -387,68 +297,27 @@ export default function Home() {
                       </div>
                     </li>
                   </ul>
-                  <button
-                    onClick={() => router.push('/dashboard')}
-                    className="btn-primary-enhanced group"
-                  >
-                    {t('featureDetails.themeSystem.accessDashboard')}
-                    <svg
-                      className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                      />
-                    </svg>
-                  </button>
-                </m.div>
-                <m.div
-                  className="relative"
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.4 }}
-                >
+                  <FeatureDetailButton />
+                </div>
+                <div className="relative animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                   <div className="aspect-video bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center border-2 border-gray-200">
                     <p className="text-gray-500 font-medium">Theme Preview Placeholder</p>
                   </div>
-                </m.div>
               </div>
             </div>
-          </m.section>
+            </div>
+          </section>
 
           {/* Feature Detail: Enterprise Security */}
-          <m.section
-            className="py-20 bg-white"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
+          <section className="py-20 bg-white animate-on-scroll">
             <div className="container-custom">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <m.div
-                  className="lg:order-2"
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-                >
+                <div className="lg:order-2 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                   <div className="aspect-video bg-gradient-to-br from-gray-100 to-blue-100 rounded-2xl flex items-center justify-center border-2 border-gray-200">
                     <p className="text-gray-500 font-medium">Security Badge Placeholder</p>
                   </div>
-                </m.div>
-                <m.div
-                  className="lg:order-1"
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-                >
+                </div>
+                <div className="lg:order-1 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-medium mb-6">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -554,26 +423,16 @@ export default function Home() {
                       </div>
                     </li>
                   </ul>
-                </m.div>
               </div>
             </div>
-          </m.section>
+            </div>
+          </section>
 
           {/* Feature Detail: Intelligent Checkout Flow */}
-          <m.section
-            className="py-20 bg-gradient-to-br from-purple-50 to-indigo-50"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
+          <section className="py-20 bg-gradient-to-br from-purple-50 to-indigo-50 animate-on-scroll">
             <div className="container-custom">
-              <div className="text-center mb-16">
-                <m.div
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100 text-purple-700 text-sm font-medium mb-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                >
+              <div className="text-center mb-16 stagger-container">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100 text-purple-700 text-sm font-medium mb-6">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -583,28 +442,16 @@ export default function Home() {
                     />
                   </svg>
                   {t('featureDetails.intelligentFlow.badge')}
-                </m.div>
-                <m.h2
-                  className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1 }}
-                >
+                </div>
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
                   {t('featureDetails.intelligentFlow.title')}
-                </m.h2>
-                <m.p
-                  className="text-xl text-gray-600 max-w-3xl mx-auto"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-                >
+                </h2>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                   {t('featureDetails.intelligentFlow.description')}
-                </m.p>
+                </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 stagger-container">
                 {[
                   {
                     step: '1',
@@ -622,31 +469,18 @@ export default function Home() {
                     step: '4',
                     key: 'payment',
                   },
-                ].map((item, index) => (
-                  <m.div
-                    key={item.step}
-                    className="card-elevated-md p-6 text-center"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 + index * 0.1 }}
-                  >
+                ].map((item) => (
+                  <div key={item.step} className="card-elevated-md p-6 text-center">
                     <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                       {item.step}
                     </div>
                     <h3 className="text-xl font-bold text-gray-900 mb-2">{t(`featureDetails.intelligentFlow.steps.${item.key}.title`)}</h3>
                     <p className="text-gray-600 text-sm">{t(`featureDetails.intelligentFlow.steps.${item.key}.description`)}</p>
-                  </m.div>
+                  </div>
                 ))}
               </div>
 
-              <m.div
-                className="mt-12 text-center"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.7 }}
-              >
+              <div className="mt-12 text-center animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
                 <div className="inline-flex items-center gap-4 p-6 bg-white rounded-xl shadow-md">
                   <div className="text-left">
                     <p className="text-sm text-gray-500 mb-1">{t('featureDetails.intelligentFlow.supports')}</p>
@@ -667,25 +501,15 @@ export default function Home() {
                     </p>
                   </div>
                 </div>
-              </m.div>
             </div>
-          </m.section>
+            </div>
+          </section>
 
           {/* Feature Detail: Native VTEX Integration */}
-          <m.section
-            className="py-20 bg-white"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
+          <section className="py-20 bg-white animate-on-scroll">
             <div className="container-custom">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <m.div
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-                >
+                <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium mb-6">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -789,51 +613,28 @@ export default function Home() {
                       </div>
                     </li>
                   </ul>
-                </m.div>
-                <m.div
-                  className="relative"
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.4 }}
-                >
+                </div>
+                <div className="relative animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                   <div className="aspect-video bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center border-2 border-gray-200">
                     <p className="text-gray-500 font-medium">
                       VTEX Architecture Diagram Placeholder
                     </p>
                   </div>
-                </m.div>
               </div>
             </div>
-          </m.section>
+            </div>
+          </section>
 
           {/* Feature Detail: Fully Responsive & Accessible */}
-          <m.section
-            className="py-20 bg-gradient-to-br from-blue-50 to-gray-50"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
+          <section className="py-20 bg-gradient-to-br from-blue-50 to-gray-50 animate-on-scroll">
             <div className="container-custom">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <m.div
-                  className="lg:order-2"
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-                >
+                <div className="lg:order-2 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                   <div className="aspect-video bg-gradient-to-br from-blue-100 to-gray-100 rounded-2xl flex items-center justify-center border-2 border-gray-200">
                     <p className="text-gray-500 font-medium">Multi-Device Preview Placeholder</p>
                   </div>
-                </m.div>
-                <m.div
-                  className="lg:order-1"
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-                >
+                </div>
+                <div className="lg:order-1 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-6">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -939,157 +740,118 @@ export default function Home() {
                       </div>
                     </li>
                   </ul>
-                </m.div>
               </div>
             </div>
-          </m.section>
+            </div>
+          </section>
 
           {/* Dashboard Features Section */}
-          <m.section
-            className="py-20 bg-white"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
+          <section className="py-20 bg-white animate-on-scroll">
             <div className="container-custom">
-              <m.div
-                className="text-center mb-16"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
+              <div className="text-center mb-16 animate-fade-in-up">
                 <h2 className="heading-section mb-4">{t('dashboardFeatures.title')}</h2>
                 <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                   {t('dashboardFeatures.subtitle')}
                 </p>
-              </m.div>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-container">
                 {[
                   {
-                    icon: <ChartBarIcon className="w-8 h-8" />,
+                    icon: (
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    ),
                     title: t('dashboardFeatures.overview.title'),
                     description: t('dashboardFeatures.overview.description'),
                   },
                   {
-                    icon: <BoltIcon className="w-8 h-8" />,
+                    icon: (
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    ),
                     title: t('dashboardFeatures.performance.title'),
                     description: t('dashboardFeatures.performance.description'),
                   },
                   {
-                    icon: <CurrencyDollarIcon className="w-8 h-8" />,
+                    icon: (
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    ),
                     title: t('dashboardFeatures.revenue.title'),
                     description: t('dashboardFeatures.revenue.description'),
                   },
                   {
-                    icon: <ChartBarIcon className="w-8 h-8" />,
+                    icon: (
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    ),
                     title: t('dashboardFeatures.analytics.title'),
                     description: t('dashboardFeatures.analytics.description'),
                   },
                   {
-                    icon: <PaintBrushIcon className="w-8 h-8" />,
+                    icon: (
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                      </svg>
+                    ),
                     title: t('dashboardFeatures.themes.title'),
                     description: t('dashboardFeatures.themes.description'),
                   },
                   {
-                    icon: <LightBulbIcon className="w-8 h-8" />,
+                    icon: (
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                    ),
                     title: t('dashboardFeatures.insights.title'),
                     description: t('dashboardFeatures.insights.description'),
                   },
                   {
-                    icon: <KeyIcon className="w-8 h-8" />,
+                    icon: (
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                      </svg>
+                    ),
                     title: t('dashboardFeatures.integrations.title'),
                     description: t('dashboardFeatures.integrations.description'),
                   },
-                ].map((feature, index) => (
-                  <m.div
+                ].map((feature) => (
+                  <FeatureCard
                     key={feature.title}
-                    className="card-elevated-md p-8 text-center group hover:scale-105 transition-transform duration-200"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-200">
-                      {feature.icon}
-                    </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                    <p className="text-gray-600">{feature.description}</p>
-                  </m.div>
+                    icon={feature.icon}
+                    title={feature.title}
+                    description={feature.description}
+                    index={0}
+                  />
                 ))}
               </div>
 
-              <m.div
-                className="mt-12 text-center"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.7 }}
-              >
-                <button
-                  onClick={() => router.push('/dashboard')}
-                  className="btn-primary-enhanced group"
-                >
-                  {t('viewDashboard')}
-                  <svg
-                    className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 8l4 4m0 0l-4 4m4-4H3"
-                    />
-                  </svg>
-                </button>
-              </m.div>
+              <div className="mt-12 text-center animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
+                <ViewDashboardButton />
             </div>
-          </m.section>
+            </div>
+          </section>
 
           {/* CTA Section */}
-          <m.section
-            className="py-20 bg-gradient-to-r from-blue-600 to-purple-600"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
-            <div className="container-custom text-center">
-              <m.h2
-                className="text-4xl md:text-5xl font-bold text-white mb-6"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
+          <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 animate-on-scroll">
+            <div className="container-custom text-center stagger-container">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
                 {t('cta.title')}
-              </m.h2>
-              <m.p
-                className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-              >
+              </h2>
+              <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
                 {t('cta.description')}
-              </m.p>
-              <m.button
-                onClick={() => router.push('/dashboard')}
-                className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-              >
-                {t('cta.accessDashboard')}
-              </m.button>
+              </p>
+              <CTAButton />
             </div>
-          </m.section>
+          </section>
           </main>
           <PublicFooter />
         </div>
-      </AnimatedWrapper>
-    </>
+      </AnimatedWrapperCSS>
   );
 }

@@ -5,8 +5,6 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion as m, AnimatePresence } from 'framer-motion';
-import { fadeIn } from '@/utils/animations';
 
 interface PublicHeaderProps {
   showDashboard?: boolean;
@@ -48,12 +46,7 @@ export function PublicHeader({ showDashboard = false }: PublicHeaderProps) {
   }`;
 
   return (
-    <m.header
-      className={headerClasses}
-      initial="hidden"
-      animate="visible"
-      variants={fadeIn}
-    >
+    <header className={`${headerClasses} animate-fade-in`}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
@@ -95,16 +88,7 @@ export function PublicHeader({ showDashboard = false }: PublicHeaderProps) {
                 >
                   {link.label}
                   {!isLoginLink && isActive(link.href) && (
-                    <m.div
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600"
-                      layoutId="activeIndicator"
-                      initial={false}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 380,
-                        damping: 30,
-                      }}
-                    />
+                    <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300" />
                   )}
                 </Link>
               );
@@ -119,14 +103,9 @@ export function PublicHeader({ showDashboard = false }: PublicHeaderProps) {
         aria-label="Toggle menu"
         aria-expanded={isMenuOpen}
       >
-        <AnimatePresence mode="wait">
           {isMenuOpen ? (
-            <m.svg
-              key="close"
-              initial={{ opacity: 0, rotate: -90 }}
-              animate={{ opacity: 1, rotate: 0 }}
-              exit={{ opacity: 0, rotate: 90 }}
-              className="w-6 h-6"
+          <svg
+            className="w-6 h-6 transition-transform duration-200"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -137,14 +116,10 @@ export function PublicHeader({ showDashboard = false }: PublicHeaderProps) {
                 strokeWidth={2}
                 d="M6 18L18 6M6 6l12 12"
               />
-            </m.svg>
+          </svg>
           ) : (
-            <m.svg
-              key="menu"
-              initial={{ opacity: 0, rotate: 90 }}
-              animate={{ opacity: 1, rotate: 0 }}
-              exit={{ opacity: 0, rotate: -90 }}
-              className="w-6 h-6"
+          <svg
+            className="w-6 h-6 transition-transform duration-200"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -155,45 +130,28 @@ export function PublicHeader({ showDashboard = false }: PublicHeaderProps) {
                 strokeWidth={2}
                 d="M4 6h16M4 12h16M4 18h16"
               />
-            </m.svg>
+          </svg>
           )}
-        </AnimatePresence>
       </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
-      <AnimatePresence>
       {isMenuOpen && (
         <>
           {/* Backdrop */}
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
+          <div
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden animate-fade-in"
             onClick={() => setIsMenuOpen(false)}
           />
 
           {/* Slide-out Menu */}
-          <m.nav
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed top-16 right-0 bottom-0 w-64 bg-white shadow-xl z-50 md:hidden overflow-y-auto"
-          >
-            <div className="flex flex-col p-6 gap-4">
-              {navLinks.map((link, index) => {
+          <nav className="fixed top-16 right-0 bottom-0 w-64 bg-white shadow-xl z-50 md:hidden overflow-y-auto animate-slide-in-right">
+            <div className="flex flex-col p-6 gap-4 stagger-container">
+              {navLinks.map((link) => {
                 const isLoginLink = link.href === '/login';
                 return (
-                  <m.div
-                    key={link.href}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
+                  <div key={link.href}>
                     <Link
                       href={link.href}
                       onClick={() => setIsMenuOpen(false)}
@@ -207,15 +165,14 @@ export function PublicHeader({ showDashboard = false }: PublicHeaderProps) {
                     >
                       {link.label}
                     </Link>
-                  </m.div>
+                  </div>
                 );
               })}
             </div>
-          </m.nav>
+          </nav>
         </>
       )}
-      </AnimatePresence>
-    </m.header>
+    </header>
   );
 }
 

@@ -1,7 +1,6 @@
 'use client';
 
 import { Card, CardBody, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
-import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Plan, BOLT_FEATURES } from '@/utils/plans';
 
 interface PlanComparisonProps {
@@ -47,9 +46,13 @@ export function PlanComparison({ plans }: PlanComparisonProps) {
                         return (
                           <TableCell key={plan.id} className="text-center">
                             {hasFeature ? (
-                              <CheckIcon className="w-5 h-5 text-green-500 mx-auto" />
+                              <svg className="w-5 h-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                              </svg>
                             ) : (
-                              <XMarkIcon className="w-5 h-5 text-gray-300 mx-auto" />
+                              <svg className="w-5 h-5 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
                             )}
                           </TableCell>
                         );
