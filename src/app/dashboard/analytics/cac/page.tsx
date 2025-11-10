@@ -270,7 +270,7 @@ export default function CACAnalyticsPage() {
                             isEfficient ? 'text-green-600' : isGood ? 'text-yellow-600' : 'text-red-600'
                           }`}
                         >
-                          {channel.ltvCacRatio.toFixed(1)}:1
+                          {channel?.ltvCacRatio?.toFixed(1)}:1
                         </span>
                       </TableCell>
                       <TableCell>

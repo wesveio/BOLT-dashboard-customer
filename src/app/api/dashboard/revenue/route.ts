@@ -4,6 +4,8 @@ import { getAuthenticatedUser } from '@/lib/api/auth';
 import { getDateRange, getPreviousDateRange, parsePeriod } from '@/utils/date-ranges';
 import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
 import type { AnalyticsEvent } from '@/hooks/useDashboardData';
+import { shouldUseDemoData } from '@/lib/automation/demo-mode';
+import { getMockDataFromRequest } from '@/lib/mock-data/mock-data-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,6 +52,14 @@ export async function GET(_request: NextRequest) {
 
     if (!user.account_id) {
       return apiError('User account not found', 404);
+    }
+
+    // Check if account is in demo mode
+    const isDemo = await shouldUseDemoData(user.account_id);
+    if (isDemo) {
+      console.info('✅ [DEBUG] Account in demo mode, returning mock revenue data');
+      const mockData = await getMockDataFromRequest('revenue', user.account_id, _request);
+      return apiSuccess(mockData);
     }
 
     const supabaseAdmin = getSupabaseAdmin();

@@ -4,6 +4,8 @@ import { cookies } from 'next/headers';
 import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 import { isSessionValid } from '@/lib/api/auth';
 import { getDateRange, parsePeriod } from '@/utils/date-ranges';
+import { shouldUseDemoData } from '@/lib/automation/demo-mode';
+import { getMockDataFromRequest } from '@/lib/mock-data/mock-data-service';
 
 /**
  * GET /api/dashboard/metrics
@@ -53,6 +55,14 @@ export async function GET(_request: NextRequest) {
     if (userError || !user) {
       console.error('🚨 [DEBUG] User query error:', userError);
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Check if account is in demo mode
+    const isDemo = await shouldUseDemoData(user.account_id);
+    if (isDemo) {
+      console.info('✅ [DEBUG] Account in demo mode, returning mock data');
+      const mockData = await getMockDataFromRequest('metrics', user.account_id, _request);
+      return NextResponse.json(mockData);
     }
 
     const { searchParams } = new URL(_request.url);

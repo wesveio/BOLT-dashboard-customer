@@ -110,11 +110,16 @@ export async function shouldUseDemoData(accountId: string): Promise<boolean> {
 /**
  * Get mock data for demo mode
  * Returns sample data that matches the structure of real data
+ * 
+ * @deprecated Use getMockDataForEndpoint from mock-data-service instead
  */
-export function getMockData<T>(dataType: string): T {
-  // This will be expanded with actual mock data structures
-  // For now, return empty object as placeholder
-  console.warn(`⚠️ [DEBUG] Using mock data for: ${dataType}`);
+export function getMockData<T>(dataType: string, accountId?: string, period?: string): T {
+  if (accountId) {
+    const { getMockDataForEndpoint } = require('@/lib/mock-data/mock-data-service');
+    return getMockDataForEndpoint(dataType, accountId, period as any) as T;
+  }
+  
+  console.warn(`⚠️ [DEBUG] Using mock data for: ${dataType} (no accountId provided)`);
   return {} as T;
 }
 

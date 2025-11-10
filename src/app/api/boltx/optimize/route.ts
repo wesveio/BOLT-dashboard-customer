@@ -5,6 +5,8 @@ import { apiSuccess, apiError } from '@/lib/api/responses';
 import { UserProfile } from '@/lib/ai/types';
 import { createFormOptimizer } from '@/lib/ai/form-optimizer';
 import { getUserPlan } from '@/lib/api/plan-check';
+import { shouldUseDemoData } from '@/lib/automation/demo-mode';
+import { getMockDataFromRequest } from '@/lib/mock-data/mock-data-service';
 
 /**
  * POST /api/boltx/optimize
@@ -14,6 +16,20 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
+    const { user } = await getAuthenticatedUser();
+
+    if (!user.account_id) {
+      return apiError('User account not found', 404);
+    }
+
+    // Check if account is in demo mode
+    const isDemo = await shouldUseDemoData(user.account_id);
+    if (isDemo) {
+      console.info('✅ [DEBUG] Account in demo mode, returning mock optimization data');
+      const mockData = await getMockDataFromRequest('boltx-optimization', user.account_id, request);
+      return apiSuccess(mockData);
+    }
+
     // Check Enterprise plan access
     const { hasEnterpriseAccess, error: planError } = await getUserPlan();
     if (!hasEnterpriseAccess) {
@@ -21,12 +37,6 @@ export async function POST(request: NextRequest) {
         planError || 'BoltX is only available on Enterprise plan. Please upgrade to access this feature.',
         403
       );
-    }
-
-    const { user } = await getAuthenticatedUser();
-
-    if (!user.account_id) {
-      return apiError('User account not found', 404);
     }
 
     const body = await request.json();
@@ -104,6 +114,20 @@ export async function POST(request: NextRequest) {
  */
 export async function GET(request: NextRequest) {
   try {
+    const { user } = await getAuthenticatedUser();
+
+    if (!user.account_id) {
+      return apiError('User account not found', 404);
+    }
+
+    // Check if account is in demo mode
+    const isDemo = await shouldUseDemoData(user.account_id);
+    if (isDemo) {
+      console.info('✅ [DEBUG] Account in demo mode, returning mock optimization data');
+      const mockData = await getMockDataFromRequest('boltx-optimization', user.account_id, request);
+      return apiSuccess(mockData);
+    }
+
     // Check Enterprise plan access
     const { hasEnterpriseAccess, error: planError } = await getUserPlan();
     if (!hasEnterpriseAccess) {
@@ -111,12 +135,6 @@ export async function GET(request: NextRequest) {
         planError || 'BoltX is only available on Enterprise plan. Please upgrade to access this feature.',
         403
       );
-    }
-
-    const { user } = await getAuthenticatedUser();
-
-    if (!user.account_id) {
-      return apiError('User account not found', 404);
     }
 
     const { searchParams } = new URL(request.url);

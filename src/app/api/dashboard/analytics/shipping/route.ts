@@ -4,6 +4,8 @@ import { getAuthenticatedUser } from '@/lib/api/auth';
 import { getDateRange, parsePeriod } from '@/utils/date-ranges';
 import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
 import type { AnalyticsEvent } from '@/hooks/useDashboardData';
+import { shouldUseDemoData } from '@/lib/automation/demo-mode';
+import { getMockDataFromRequest } from '@/lib/mock-data/mock-data-service';
 
 /**
  * GET /api/dashboard/analytics/shipping
@@ -14,6 +16,14 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   try {
     const { user } = await getAuthenticatedUser();
+
+    // Check if account is in demo mode
+    const isDemo = await shouldUseDemoData(user.account_id);
+    if (isDemo) {
+      console.info('✅ [DEBUG] Account in demo mode, returning mock shipping data');
+      const mockData = await getMockDataFromRequest('analytics-shipping', user.account_id, request);
+      return apiSuccess(mockData);
+    }
 
     if (!user.account_id) {
       return apiError('User account not found', 404);

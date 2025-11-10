@@ -70,7 +70,7 @@ export default function AbandonmentPredictionPage() {
     }));
 
   const highRiskSessions = predictions.filter(
-    (p) => p.prediction.riskLevel === 'high' || p.prediction.riskLevel === 'critical'
+    (p) => p?.prediction?.riskLevel === 'high' || p?.prediction?.riskLevel === 'critical'
   );
 
   return (

@@ -5,6 +5,7 @@ import { getDateRange, parsePeriod } from '@/utils/date-ranges';
 import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
 import type { AnalyticsEvent } from '@/hooks/useDashboardData';
 import { extractRevenue } from '@/utils/analytics';
+import { checkDemoModeAndReturnMockSuccess } from '@/lib/api/demo-mode-check';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,6 +20,10 @@ export async function GET(request: NextRequest) {
     if (!user.account_id) {
       return apiError('User account not found', 404);
     }
+
+    // Check demo mode
+    const mockResponse = await checkDemoModeAndReturnMockSuccess('analytics-browsers', user.account_id, request);
+    if (mockResponse) return mockResponse;
 
     const supabaseAdmin = getSupabaseAdmin();
 
