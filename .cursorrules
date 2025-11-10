@@ -349,6 +349,14 @@ import { MetricCard } from '@/components/Dashboard/MetricCard/MetricCard';
 - `yarn audit`: Security audit
 - `yarn audit:console`: Verificar console statements
 
+### Workflow de Implementação
+**IMPORTANTE**: Sempre ao final de uma implementação, é obrigatório:
+1. Executar `yarn type-check` para verificar erros de TypeScript
+2. Corrigir todos os erros de tipo encontrados
+3. Garantir que o código está type-safe antes de finalizar
+
+Isso evita problemas de tipagem e mantém a qualidade do código.
+
 ### Linting
 - **Config**: `.eslintrc.json`
 - **Framework**: ESLint com Next.js config
