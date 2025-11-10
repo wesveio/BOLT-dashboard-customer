@@ -66,6 +66,9 @@ export function PricingCard({
                 + {formatPercentage(plan.transaction_fee_percent)} transaction fee
               </p>
             )}
+            {!isEnterprise && (
+              <p className="text-xs text-gray-500 mt-1">All prices in USD</p>
+            )}
           </div>
 
           {/* Features List */}

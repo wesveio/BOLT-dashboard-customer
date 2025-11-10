@@ -75,10 +75,10 @@ export const BOLT_FEATURES = {
     name: 'BoltX',
     description: 'AI-powered optimizations and predictive UX flows',
   },
-  priority_support: {
-    code: 'priority_support',
-    name: 'Priority Support',
-    description: 'Dedicated support with faster response times',
+  support: {
+    code: 'support',
+    name: 'Support',
+    description: 'Support with faster response times',
   },
 } as const;
 
@@ -95,10 +95,47 @@ export const PLAN_DEFINITIONS: Record<PlanCode, { features: string[]; descriptio
     description: 'For growing businesses that need advanced features',
   },
   enterprise: {
-    features: ['bolt_core', 'boltflow_complete', 'boltguard', 'boltmetrics', 'boltx', 'priority_support'],
+    features: ['bolt_core', 'boltflow_complete', 'boltguard', 'boltmetrics', 'boltx', 'support'],
     description: 'Custom solutions for large enterprises',
   },
 };
+
+/**
+ * Public pricing plans - static constants for public pricing page
+ * These values are hardcoded to avoid database queries on the public pricing page
+ */
+export const PUBLIC_PRICING_PLANS: Plan[] = [
+  {
+    id: '00000000-0000-0000-0000-000000000001',
+    name: 'Starter',
+    code: 'starter',
+    monthly_price: 200.00,
+    transaction_fee_percent: 1.00,
+    features: ['bolt_core', 'boltflow_basic'],
+    is_active: true,
+    display_order: 1,
+  },
+  {
+    id: '00000000-0000-0000-0000-000000000002',
+    name: 'Professional',
+    code: 'professional',
+    monthly_price: 500.00,
+    transaction_fee_percent: 0.80,
+    features: ['bolt_core', 'boltflow_complete', 'boltguard', 'boltmetrics'],
+    is_active: true,
+    display_order: 2,
+  },
+  {
+    id: '00000000-0000-0000-0000-000000000003',
+    name: 'Enterprise',
+    code: 'enterprise',
+    monthly_price: 0.00,
+    transaction_fee_percent: 0.00,
+    features: ['bolt_core', 'boltflow_complete', 'boltguard', 'boltmetrics', 'boltx', 'support'],
+    is_active: true,
+    display_order: 3,
+  },
+];
 
 /**
  * Format currency amount based on currency code
@@ -122,7 +159,7 @@ export function formatPercentage(value: number): string {
   const formatted = value.toFixed(2);
   // Remove trailing zeros and decimal point if not needed
   const cleaned = parseFloat(formatted).toString();
-  
+
   return `${cleaned}%`;
 }
 

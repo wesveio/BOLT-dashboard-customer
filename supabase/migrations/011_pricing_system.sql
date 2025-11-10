@@ -230,7 +230,7 @@ VALUES (
   'Professional',
   'professional',
   500.00,
-  0.50,
+  0.80,
   '["bolt_core", "boltflow_complete", "boltguard", "boltmetrics"]'::jsonb,
   2
 ) ON CONFLICT (code) DO NOTHING;

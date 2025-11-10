@@ -47,6 +47,9 @@ export function PublicPricingCard({ plan, isPopular = false, onSelect }: PublicP
                 + {formatPercentage(plan.transaction_fee_percent)} transaction fee
               </p>
             )}
+            {!isEnterprise && (
+              <p className="text-xs text-gray-500 mt-1">All prices in USD</p>
+            )}
             {isEnterprise && (
               <p className="text-sm text-gray-600 mt-2">Contact us for custom pricing</p>
             )}
