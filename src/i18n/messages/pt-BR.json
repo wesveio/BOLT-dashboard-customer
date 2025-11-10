@@ -1386,6 +1386,12 @@
       "english": "Inglês",
       "portuguese": "Português",
       "spanish": "Espanhol"
+    },
+    "demoMode": {
+      "title": "Modo Demo",
+      "description": "Você está visualizando dados de demonstração. Faça upgrade para um plano para desbloquear analytics em tempo real e todos os recursos.",
+      "upgradeButton": "Ver Planos",
+      "dismiss": "Dispensar"
     }
   },
   "auth": {

@@ -9,6 +9,7 @@ import { Sidebar } from '@/components/Dashboard/Sidebar/Sidebar';
 import { BottomNav } from '@/components/Dashboard/BottomNav/BottomNav';
 import { DashboardHeader } from '@/components/Dashboard/Header/DashboardHeader';
 import { AuthGuard } from '@/components/Dashboard/AuthGuard/AuthGuard';
+import { DemoModeBanner } from '@/components/Dashboard/DemoModeBanner/DemoModeBanner';
 
 function DashboardContent({ children }: { children: React.ReactNode }) {
   const { isCollapsed } = useSidebar();
@@ -23,6 +24,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
             isCollapsed ? 'md:ml-20' : 'md:ml-64'
           } pb-20 md:pb-6`}
         >
+          <DemoModeBanner />
           {children}
         </main>
       </div>
