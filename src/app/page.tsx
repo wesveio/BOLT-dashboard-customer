@@ -197,13 +197,12 @@ export default async function Home() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-container">
-                {features.map((feature, index) => (
+                {features.map((feature) => (
                   <FeatureCard
                     key={feature.title}
                     icon={feature.icon}
                     title={feature.title}
                     description={feature.description}
-                    index={index}
                   />
                 ))}
               </div>
@@ -826,7 +825,6 @@ export default async function Home() {
                     icon={feature.icon}
                     title={feature.title}
                     description={feature.description}
-                    index={0}
                   />
                 ))}
               </div>

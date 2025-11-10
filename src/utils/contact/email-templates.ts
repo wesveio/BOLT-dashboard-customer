@@ -116,7 +116,6 @@ export function generateContactEmail(
   };
 
   const t = translations[locale] || translations.en;
-  const content = isConfirmation ? t.confirmation : t.notification;
 
   // SVG Logo (same as other email templates)
   const boltLogoSvg = `
@@ -141,6 +140,7 @@ export function generateContactEmail(
 
   if (isConfirmation) {
     // Confirmation email template
+    const confirmationContent = t.confirmation;
     const html = `
 <!DOCTYPE html>
 <html lang="${locale}">
@@ -149,7 +149,7 @@ export function generateContactEmail(
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <meta name="supported-color-schemes" content="light dark">
-  <title>${content.subject}</title>
+  <title>${confirmationContent.subject}</title>
   <style>
     @media (prefers-color-scheme: dark) {
       .email-body {
@@ -185,17 +185,17 @@ export function generateContactEmail(
     
     <!-- Greeting -->
     <h1 class="email-heading" style="font-size: 28px; font-weight: 700; color: #111827; margin: 0 0 12px 0; text-align: center; line-height: 1.2;">
-      ${content.greeting}
+      ${confirmationContent.greeting}
     </h1>
     
     <!-- Title -->
     <p class="email-text" style="font-size: 18px; font-weight: 600; color: #374151; margin: 0 0 24px 0; text-align: center; line-height: 1.4;">
-      ${content.title}
+      ${confirmationContent.title}
     </p>
     
     <!-- Message -->
     <p class="email-text" style="font-size: 16px; color: #4b5563; margin: 0 0 32px 0; text-align: center; line-height: 1.6;">
-      ${content.message}
+      ${confirmationContent.message}
     </p>
     
     ${data.wantsDemo ? `
@@ -211,7 +211,7 @@ export function generateContactEmail(
     
     <!-- Footer -->
     <p class="footer-text" style="font-size: 12px; color: #9ca3af; margin: 0; text-align: center; line-height: 1.5;">
-      ${content.footer}
+      ${confirmationContent.footer}
     </p>
     
     <!-- Brand Footer -->
@@ -226,24 +226,25 @@ export function generateContactEmail(
     `.trim();
 
     const text = `
-${content.greeting}
+${confirmationContent.greeting}
 
-${content.title}
+${confirmationContent.title}
 
-${content.message}
+${confirmationContent.message}
 
 ${data.wantsDemo ? '\n💡 Demo Request: We\'ll contact you soon to schedule your demo!' : ''}
 
-${content.footer}
+${confirmationContent.footer}
 
 ---
 Powered by BCKSTG
     `.trim();
 
-    return { html, text, subject: content.subject };
+    return { html, text, subject: confirmationContent.subject };
   }
 
   // Notification email template (to company)
+  const notificationContent = t.notification;
   const html = `
 <!DOCTYPE html>
 <html lang="${locale}">
@@ -252,7 +253,7 @@ Powered by BCKSTG
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <meta name="supported-color-schemes" content="light dark">
-  <title>${content.subject}</title>
+  <title>${notificationContent.subject}</title>
   <style>
     @media (prefers-color-scheme: dark) {
       .email-body {
@@ -298,24 +299,24 @@ Powered by BCKSTG
     
     <!-- Greeting -->
     <h1 class="email-heading" style="font-size: 28px; font-weight: 700; color: #111827; margin: 0 0 12px 0; text-align: center; line-height: 1.2;">
-      ${content.greeting}
+      ${notificationContent.greeting}
     </h1>
     
     <!-- Title -->
     <p class="email-text" style="font-size: 18px; font-weight: 600; color: #374151; margin: 0 0 8px 0; text-align: center; line-height: 1.4;">
-      ${content.title}
+      ${notificationContent.title}
     </p>
     
     <!-- Intro -->
     <p class="email-text" style="font-size: 16px; color: #4b5563; margin: 0 0 32px 0; text-align: center; line-height: 1.6;">
-      ${content.intro}
+      ${notificationContent.intro}
     </p>
     
     <!-- Contact Information -->
     <div class="info-box" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 24px 0;">
       <div style="margin-bottom: 16px;">
         <p class="field-label" style="font-size: 12px; color: #64748b; margin: 0 0 4px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-          ${content.fields.name}
+          ${notificationContent.fields.name}
         </p>
         <p class="field-value" style="font-size: 16px; color: #111827; margin: 0; font-weight: 600;">
           ${data.name}
@@ -324,7 +325,7 @@ Powered by BCKSTG
       
       <div style="margin-bottom: 16px;">
         <p class="field-label" style="font-size: 12px; color: #64748b; margin: 0 0 4px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-          ${content.fields.email}
+          ${notificationContent.fields.email}
         </p>
         <p class="field-value" style="font-size: 16px; color: #111827; margin: 0;">
           <a href="mailto:${data.email}" style="color: #2563eb; text-decoration: none;">${data.email}</a>
@@ -334,7 +335,7 @@ Powered by BCKSTG
       ${data.company ? `
       <div style="margin-bottom: 16px;">
         <p class="field-label" style="font-size: 12px; color: #64748b; margin: 0 0 4px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-          ${content.fields.company}
+          ${notificationContent.fields.company}
         </p>
         <p class="field-value" style="font-size: 16px; color: #111827; margin: 0;">
           ${data.company}
@@ -345,7 +346,7 @@ Powered by BCKSTG
       ${data.phone ? `
       <div style="margin-bottom: 16px;">
         <p class="field-label" style="font-size: 12px; color: #64748b; margin: 0 0 4px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-          ${content.fields.phone}
+          ${notificationContent.fields.phone}
         </p>
         <p class="field-value" style="font-size: 16px; color: #111827; margin: 0;">
           <a href="tel:${data.phone}" style="color: #2563eb; text-decoration: none;">${data.phone}</a>
@@ -355,7 +356,7 @@ Powered by BCKSTG
       
       <div style="margin-bottom: 16px;">
         <p class="field-label" style="font-size: 12px; color: #64748b; margin: 0 0 4px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-          ${content.fields.message}
+          ${notificationContent.fields.message}
         </p>
         <p class="field-value" style="font-size: 16px; color: #111827; margin: 0; white-space: pre-wrap; line-height: 1.6;">
           ${data.message}
@@ -365,7 +366,7 @@ Powered by BCKSTG
       ${data.wantsDemo ? `
       <div style="background-color: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 12px; margin-top: 16px;">
         <p style="font-size: 14px; color: #92400e; margin: 0; font-weight: 600;">
-          ⭐ ${content.fields.wantsDemo}: YES
+          ⭐ ${notificationContent.fields.wantsDemo}: YES
         </p>
       </div>
       ` : ''}
@@ -373,7 +374,7 @@ Powered by BCKSTG
     
     <!-- Footer -->
     <p class="footer-text" style="font-size: 12px; color: #9ca3af; margin: 24px 0 0 0; text-align: center; line-height: 1.5;">
-      ${content.footer}
+      ${notificationContent.footer}
     </p>
     
     <!-- Brand Footer -->
@@ -388,27 +389,27 @@ Powered by BCKSTG
   `.trim();
 
   const text = `
-${content.greeting}
+${notificationContent.greeting}
 
-${content.title}
+${notificationContent.title}
 
-${content.intro}
+${notificationContent.intro}
 
-${content.fields.name}: ${data.name}
-${content.fields.email}: ${data.email}
-${data.company ? `${content.fields.company}: ${data.company}` : ''}
-${data.phone ? `${content.fields.phone}: ${data.phone}` : ''}
-${content.fields.message}:
+${notificationContent.fields.name}: ${data.name}
+${notificationContent.fields.email}: ${data.email}
+${data.company ? `${notificationContent.fields.company}: ${data.company}` : ''}
+${data.phone ? `${notificationContent.fields.phone}: ${data.phone}` : ''}
+${notificationContent.fields.message}:
 ${data.message}
 
-${data.wantsDemo ? `⭐ ${content.fields.wantsDemo}: YES` : ''}
+${data.wantsDemo ? `⭐ ${notificationContent.fields.wantsDemo}: YES` : ''}
 
-${content.footer}
+${notificationContent.footer}
 
 ---
 Powered by BCKSTG
   `.trim();
 
-  return { html, text, subject: content.subject };
+  return { html, text, subject: notificationContent.subject };
 }
 

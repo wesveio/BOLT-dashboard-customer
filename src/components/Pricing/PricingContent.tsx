@@ -3,7 +3,6 @@
 import { useApi } from '@/hooks/useApi';
 import { Plan } from '@/utils/plans';
 import { PublicPricingCard } from '@/components/Pricing/PublicPricingCard';
-import { PlanComparison } from '@/components/Dashboard/Plans/PlanComparison';
 import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
 import { ErrorState } from '@/components/Dashboard/ErrorState/ErrorState';
 import { useTranslations } from 'next-intl';

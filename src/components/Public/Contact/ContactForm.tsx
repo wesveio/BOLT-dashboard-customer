@@ -32,8 +32,6 @@ const contactSchema = z.object({
   wantsDemo: z.boolean().default(false),
 });
 
-type ContactFormData = z.infer<typeof contactSchema>;
-
 interface ContactFormState {
   name: string;
   email: string;
