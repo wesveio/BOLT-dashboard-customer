@@ -1507,6 +1507,7 @@
       "navigation": {
         "home": "Início",
         "pricing": "Preços",
+        "contact": "Contato",
         "login": "Entrar",
         "dashboard": "Dashboard"
       }
@@ -1919,6 +1920,70 @@
         "title": "Entre em Contato",
         "content": "Se você tiver alguma dúvida sobre estes Termos e Condições, entre em contato conosco:",
         "email": "Email"
+      }
+    },
+    "contact": {
+      "seo": {
+        "title": "Entre em Contato - BOLT",
+        "description": "Entre em contato com a equipe BOLT. Solicite mais informações ou agende uma demo da nossa plataforma de checkout."
+      },
+      "hero": {
+        "badge": "Entre em Contato",
+        "title": "Entre em Contato",
+        "description": "Tem perguntas? Quer agendar uma demo? Estamos aqui para ajudar! Preencha o formulário abaixo e entraremos em contato o mais breve possível."
+      },
+      "form": {
+        "name": {
+          "label": "Nome Completo",
+          "placeholder": "João Silva"
+        },
+        "email": {
+          "label": "Endereço de Email",
+          "placeholder": "joao@exemplo.com"
+        },
+        "company": {
+          "label": "Empresa",
+          "placeholder": "Nome da Sua Empresa"
+        },
+        "phone": {
+          "label": "Telefone",
+          "placeholder": "+55 (11) 98765-4321"
+        },
+        "message": {
+          "label": "Mensagem",
+          "placeholder": "Conte-nos sobre suas necessidades, perguntas ou como podemos ajudar..."
+        },
+        "demo": {
+          "label": "Gostaria de agendar uma demo"
+        },
+        "submit": {
+          "label": "Enviar Mensagem",
+          "loading": "Enviando..."
+        }
+      },
+      "messages": {
+        "success": {
+          "title": "Mensagem Enviada com Sucesso!",
+          "message": "Obrigado por entrar em contato. Recebemos sua mensagem e entraremos em contato em até 24 horas."
+        },
+        "error": {
+          "generic": "Ocorreu um erro ao enviar sua mensagem. Por favor, tente novamente.",
+          "network": "Erro de rede. Por favor, verifique sua conexão e tente novamente."
+        }
+      },
+      "info": {
+        "email": {
+          "title": "Envie um Email",
+          "description": "Envie-nos um email a qualquer momento"
+        },
+        "response": {
+          "title": "Resposta Rápida",
+          "description": "Normalmente respondemos em até 24 horas"
+        },
+        "demo": {
+          "title": "Agendar uma Demo",
+          "description": "Veja o BOLT em ação com uma demo personalizada"
+        }
       }
     }
   }

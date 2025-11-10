@@ -1507,6 +1507,7 @@
       "navigation": {
         "home": "Inicio",
         "pricing": "Precios",
+        "contact": "Contacto",
         "login": "Iniciar Sesión",
         "dashboard": "Dashboard"
       }
@@ -1919,6 +1920,70 @@
         "title": "Contáctenos",
         "content": "Si tiene alguna pregunta sobre estos Términos y Condiciones, contáctenos:",
         "email": "Email"
+      }
+    },
+    "contact": {
+      "seo": {
+        "title": "Contáctenos - BOLT",
+        "description": "Póngase en contacto con el equipo BOLT. Solicite más información o programe una demo de nuestra plataforma de checkout."
+      },
+      "hero": {
+        "badge": "Contáctenos",
+        "title": "Contáctenos",
+        "description": "¿Tiene preguntas? ¿Quiere programar una demo? ¡Estamos aquí para ayudar! Complete el formulario a continuación y nos pondremos en contacto lo antes posible."
+      },
+      "form": {
+        "name": {
+          "label": "Nombre Completo",
+          "placeholder": "Juan Pérez"
+        },
+        "email": {
+          "label": "Dirección de Email",
+          "placeholder": "juan@ejemplo.com"
+        },
+        "company": {
+          "label": "Empresa",
+          "placeholder": "Nombre de Su Empresa"
+        },
+        "phone": {
+          "label": "Número de Teléfono",
+          "placeholder": "+34 612 345 678"
+        },
+        "message": {
+          "label": "Mensaje",
+          "placeholder": "Cuéntenos sobre sus necesidades, preguntas o cómo podemos ayudar..."
+        },
+        "demo": {
+          "label": "Me gustaría programar una demo"
+        },
+        "submit": {
+          "label": "Enviar Mensaje",
+          "loading": "Enviando..."
+        }
+      },
+      "messages": {
+        "success": {
+          "title": "¡Mensaje Enviado con Éxito!",
+          "message": "Gracias por contactarnos. Hemos recibido su mensaje y le responderemos en 24 horas."
+        },
+        "error": {
+          "generic": "Ocurrió un error al enviar su mensaje. Por favor, inténtelo de nuevo.",
+          "network": "Error de red. Por favor, verifique su conexión e inténtelo de nuevo."
+        }
+      },
+      "info": {
+        "email": {
+          "title": "Envíenos un Email",
+          "description": "Envíenos un email en cualquier momento"
+        },
+        "response": {
+          "title": "Respuesta Rápida",
+          "description": "Normalmente respondemos en 24 horas"
+        },
+        "demo": {
+          "title": "Programar una Demo",
+          "description": "Vea BOLT en acción con una demo personalizada"
+        }
       }
     }
   }
