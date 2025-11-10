@@ -1175,8 +1175,20 @@ export function generateMockInsights(params: MockDataParams): MockInsight[] {
 /**
  * Generate mock analytics events data
  * Creates realistic checkout flow events with proper distribution
+ * 
+ * @param params - Mock data parameters
+ * @param paginationParams - Optional pagination parameters to limit generation
  */
-export function generateMockAnalyticsEvents(params: MockDataParams): {
+export function generateMockAnalyticsEvents(
+  params: MockDataParams,
+  paginationParams?: {
+    page?: number;
+    limit?: number;
+    eventType?: string | null;
+    category?: string | null;
+    step?: string | null;
+  }
+): {
   summary: {
     totalEvents: number;
     uniqueSessions: number;
@@ -1204,8 +1216,29 @@ export function generateMockAnalyticsEvents(params: MockDataParams): {
   const { start, end } = getMockDateRange(period, startDate, endDate);
   const metrics = generateMockMetrics(params);
 
-  // Generate sessions (based on metrics)
-  const numSessions = metrics.totalSessions;
+  // Calculate total sessions (for summary)
+  const totalSessions = metrics.totalSessions;
+  
+  // Limit sessions processed based on pagination to avoid memory issues
+  // Estimate: ~10-15 events per session on average
+  // For pagination, we need to generate enough sessions to cover the requested page
+  const page = paginationParams?.page || 1;
+  const limit = paginationParams?.limit || 50;
+  const eventsPerSession = 12; // Average events per session
+  
+  // Calculate how many events we need to generate
+  // Account for filters that might reduce the number of events
+  const eventsNeeded = page * limit;
+  const filterReductionFactor = paginationParams?.eventType || paginationParams?.category || paginationParams?.step ? 0.3 : 1; // Filters reduce events by ~70%
+  const eventsToGenerate = Math.ceil(eventsNeeded / filterReductionFactor) + (limit * 2); // Generate extra buffer
+  const sessionsNeeded = Math.ceil(eventsToGenerate / eventsPerSession);
+  const maxSessionsToProcess = Math.min(500, Math.max(sessionsNeeded, 50)); // Cap at 500 sessions, min 50
+  
+  // Use a smaller sample for summary calculation (representative sample)
+  const summarySampleSize = Math.min(200, totalSessions);
+  
+  // Generate events only for the sessions we need
+  const numSessions = paginationParams ? maxSessionsToProcess : Math.min(500, totalSessions);
 
   // Generate events
   const events: Array<{
@@ -1424,26 +1457,60 @@ export function generateMockAnalyticsEvents(params: MockDataParams): {
     }
   }
 
+  // Apply filters if provided (before sorting for better performance)
+  let filteredEvents = events;
+  if (paginationParams) {
+    if (paginationParams.eventType) {
+      filteredEvents = filteredEvents.filter(e => e.event_type === paginationParams.eventType);
+    }
+    if (paginationParams.category) {
+      filteredEvents = filteredEvents.filter(e => e.category === paginationParams.category);
+    }
+    if (paginationParams.step) {
+      filteredEvents = filteredEvents.filter(e => e.step === paginationParams.step);
+    }
+  }
+
   // Sort events by timestamp (descending)
-  events.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  filteredEvents.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+  // Calculate summary based on estimated totals (not just generated events)
+  // Estimate total events: totalSessions * average events per session
+  const estimatedTotalEvents = Math.round(totalSessions * eventsPerSession);
+  
+  // Estimate summary metrics based on generated sample
+  const sampleRatio = numSessions > 0 ? Math.min(1, summarySampleSize / numSessions) : 1;
+  const estimatedEventsByCategory = {
+    user_action: Math.round(eventsByCategory.user_action / sampleRatio),
+    api_call: Math.round(eventsByCategory.api_call / sampleRatio),
+    metric: Math.round(eventsByCategory.metric / sampleRatio),
+    error: Math.round(eventsByCategory.error / sampleRatio),
+  };
+  
+  // Estimate event types distribution
+  const estimatedEventsByType: Record<string, number> = {};
+  Object.entries(eventsByType).forEach(([type, count]) => {
+    estimatedEventsByType[type] = Math.round(count / sampleRatio);
+  });
 
   // Get top event types
-  const topEventTypes = Object.entries(eventsByType)
+  const topEventTypes = Object.entries(estimatedEventsByType)
     .sort(([, a], [, b]) => b - a)
     .slice(0, 10)
     .map(([type, count]) => ({ type, count }));
 
-  const uniqueSessions = new Set(events.map(e => e.session_id)).size;
+  const uniqueSessions = new Set(filteredEvents.map(e => e.session_id)).size;
+  const estimatedUniqueSessions = Math.round(totalSessions * 0.95); // Most sessions have events
 
   return {
     summary: {
-      totalEvents: events.length,
-      uniqueSessions,
-      eventsByCategory,
+      totalEvents: estimatedTotalEvents,
+      uniqueSessions: estimatedUniqueSessions,
+      eventsByCategory: estimatedEventsByCategory,
       topEventTypes,
-      errorCount: eventsByCategory.error,
+      errorCount: estimatedEventsByCategory.error,
     },
-    events,
+    events: filteredEvents,
   };
 }
 

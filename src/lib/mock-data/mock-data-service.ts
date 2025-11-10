@@ -613,8 +613,8 @@ export function getMockDataForEndpoint(
               roiFormatted: optimizationCost > 0
                 ? `${typeof roi === 'number' ? roi.toFixed(1) : '∞'}%`
                 : revenueChange > 0
-                ? '∞'
-                : '0%',
+                  ? '∞'
+                  : '0%',
             },
           },
           period: params.period,
@@ -797,7 +797,7 @@ export function getMockDataForEndpoint(
           abandoned: number;
           conversionRate: number;
         }> = {};
-        
+
         interventions.forEach((intervention) => {
           const type = intervention.type;
           if (!effectivenessByType[type]) {
@@ -819,14 +819,14 @@ export function getMockDataForEndpoint(
             effectivenessByType[type].abandoned++;
           }
         });
-        
+
         Object.keys(effectivenessByType).forEach((type) => {
           const data = effectivenessByType[type];
           data.conversionRate = data.applied > 0
             ? (data.converted / data.applied) * 100
             : 0;
         });
-        
+
         return {
           interventions: interventions.map(i => ({
             id: i.id,
@@ -913,60 +913,32 @@ export function getMockDataForEndpoint(
         const category = queryParams?.category || null;
         const step = queryParams?.step || null;
 
-        const eventsData = generateMockAnalyticsEvents(params);
-        
-        // Apply filters
-        let filteredEvents = eventsData.events;
-        if (eventType) {
-          filteredEvents = filteredEvents.filter(e => e.event_type === eventType);
-        }
-        if (category) {
-          filteredEvents = filteredEvents.filter(e => e.category === category);
-        }
-        if (step) {
-          filteredEvents = filteredEvents.filter(e => e.step === step);
-        }
-
-        // Recalculate summary for filtered events
-        const filteredEventsByCategory = {
-          user_action: 0,
-          api_call: 0,
-          metric: 0,
-          error: 0,
-        };
-        const filteredEventsByType: Record<string, number> = {};
-        
-        filteredEvents.forEach(event => {
-          filteredEventsByCategory[event.category]++;
-          filteredEventsByType[event.event_type] = (filteredEventsByType[event.event_type] || 0) + 1;
+        // Pass pagination params to limit memory usage
+        const eventsData = generateMockAnalyticsEvents(params, {
+          page,
+          limit,
+          eventType,
+          category,
+          step,
         });
 
-        const topEventTypes = Object.entries(filteredEventsByType)
-          .sort(([, a], [, b]) => b - a)
-          .slice(0, 10)
-          .map(([type, count]) => ({ type, count }));
-
-        // Paginate
+        // Paginate the already filtered events
         const startIndex = (page - 1) * limit;
         const endIndex = startIndex + limit;
-        const paginatedEvents = filteredEvents.slice(startIndex, endIndex);
-        const totalPages = Math.ceil(filteredEvents.length / limit);
+        const paginatedEvents = eventsData.events.slice(startIndex, endIndex);
+
+        // Calculate total pages based on estimated total (from summary)
+        const totalPages = Math.ceil(eventsData.summary.totalEvents / limit);
 
         const { start, end } = getMockDateRange(params.period, params.startDate, params.endDate);
 
         return {
-          summary: {
-            totalEvents: filteredEvents.length,
-            uniqueSessions: new Set(filteredEvents.map(e => e.session_id)).size,
-            eventsByCategory: filteredEventsByCategory,
-            topEventTypes,
-            errorCount: filteredEventsByCategory.error,
-          },
+          summary: eventsData.summary,
           events: paginatedEvents,
           pagination: {
             page,
             limit,
-            totalEvents: filteredEvents.length,
+            totalEvents: eventsData.summary.totalEvents,
             totalPages,
             hasMore: page < totalPages,
           },
@@ -994,11 +966,11 @@ export async function getMockDataFromRequest(
 ): Promise<any> {
   const url = new URL(request.url);
   const searchParams = url.searchParams;
-  
+
   const period = parsePeriod(searchParams.get('period') || 'month');
   const startDateParam = searchParams.get('startDate');
   const endDateParam = searchParams.get('endDate');
-  
+
   const startDate = startDateParam ? new Date(startDateParam) : undefined;
   const endDate = endDateParam ? new Date(endDateParam) : undefined;
 

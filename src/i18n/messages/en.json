@@ -217,6 +217,7 @@
         "noData": "No data available"
       },
       "messages": {
+        "loading": "Loading revenue data...",
         "failedToLoad": "Failed to load revenue data"
       }
     },

@@ -206,6 +206,7 @@
         "noData": "Nenhum dado disponível"
       },
       "messages": {
+        "loading": "Carregando dados de receita...",
         "failedToLoad": "Falha ao carregar dados de receita"
       }
     },

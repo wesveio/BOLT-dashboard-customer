@@ -206,6 +206,7 @@
         "noData": "No hay datos disponibles"
       },
       "messages": {
+        "loading": "Cargando datos de ingresos...",
         "failedToLoad": "Error al cargar datos de ingresos"
       }
     },
