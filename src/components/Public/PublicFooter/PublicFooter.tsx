@@ -1,10 +1,10 @@
 'use client';
 
+import { lazy, Suspense } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { motion as m } from 'framer-motion';
-import { fadeIn, staggerContainer } from '@/utils/animations';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+
+const LanguageSwitcher = lazy(() => import('@/components/LanguageSwitcher').then(mod => ({ default: mod.LanguageSwitcher })));
 
 interface PublicFooterProps {
   contactEmail?: string;
@@ -21,20 +21,11 @@ export function PublicFooter({
 }: PublicFooterProps) {
   const t = useTranslations('public.footer');
   return (
-    <m.footer
-      className="w-full bg-gray-50 border-t border-gray-200"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: '-100px' }}
-      variants={staggerContainer}
-    >
+    <footer className="w-full bg-gray-50 border-t border-gray-200">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
           {/* Contact Section */}
-          <m.div
-            className="space-y-4"
-            variants={fadeIn}
-          >
+          <div className="space-y-4 animate-fade-in-up">
             <h3 className="text-lg font-bold text-gray-900 mb-4">{t('sections.contactUs')}</h3>
             <div className="space-y-3">
               {contactEmail && (
@@ -84,13 +75,10 @@ export function PublicFooter({
                 </a>
               )}
             </div>
-          </m.div>
+          </div>
 
           {/* Legal Links Section */}
-          <m.div
-            className="space-y-4"
-            variants={fadeIn}
-          >
+          <div className="space-y-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             <h3 className="text-lg font-bold text-gray-900 mb-4">{t('sections.legal')}</h3>
             <nav className="flex flex-col space-y-2">
               <Link
@@ -106,13 +94,10 @@ export function PublicFooter({
                 {t('termsAndConditions')}
               </Link>
             </nav>
-          </m.div>
+          </div>
 
           {/* Security Badges Section */}
-          <m.div
-            className="space-y-4"
-            variants={fadeIn}
-          >
+          <div className="space-y-4 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             <h3 className="text-lg font-bold text-gray-900 mb-4">{t('sections.secureCheckout')}</h3>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2">
@@ -158,7 +143,7 @@ export function PublicFooter({
                 <span className="text-sm font-semibold text-gray-900">{t('badges.safeCheckout')}</span>
               </div>
             </div>
-          </m.div>
+          </div>
         </div>
 
         {/* Bottom divider */}
@@ -169,12 +154,14 @@ export function PublicFooter({
               <span className="font-bold text-blue-600">{t('poweredBy')}</span>
             </p>
             <div className="flex items-center gap-2">
+              <Suspense fallback={<div className="w-20 h-10 bg-gray-200 rounded animate-pulse" />}>
               <LanguageSwitcher />
+              </Suspense>
             </div>
           </div>
         </div>
       </div>
-    </m.footer>
+    </footer>
   );
 }
 

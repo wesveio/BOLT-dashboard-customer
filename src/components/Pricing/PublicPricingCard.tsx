@@ -1,8 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { Card, CardBody, Button } from '@heroui/react';
-import { CheckIcon } from '@heroicons/react/24/solid';
 import { Plan, formatCurrency, formatPercentage, getPlanFeatures } from '@/utils/plans';
 import Link from 'next/link';
 
@@ -17,12 +15,7 @@ export function PublicPricingCard({ plan, isPopular = false, onSelect }: PublicP
   const features = getPlanFeatures(plan.features);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="h-full"
-    >
+    <div className="h-full animate-fade-in-up">
       <div className="relative h-full">
         {isPopular && (
           <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
@@ -65,7 +58,9 @@ export function PublicPricingCard({ plan, isPopular = false, onSelect }: PublicP
               {features.map((feature) => (
                 <li key={feature.code} className="flex items-start gap-3">
                   <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center mt-0.5">
-                    <CheckIcon className="w-4 h-4 text-white" />
+                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-medium text-gray-900">{feature.name}</p>
@@ -102,7 +97,7 @@ export function PublicPricingCard({ plan, isPopular = false, onSelect }: PublicP
         </CardBody>
       </Card>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
