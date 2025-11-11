@@ -9,7 +9,6 @@
 
 import React, { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 import { Card, CardBody, Button } from '@heroui/react';
 import { usePlanAccess } from '@/hooks/usePlanAccess';
 import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
@@ -34,7 +33,6 @@ export function RouteGuard({
   const pathname = usePathname();
   const router = useRouter();
   const { canAccessRoute, isLoading, plan } = usePlanAccess();
-  const t = useTranslations('dashboard.sidebar');
 
   // Use provided route or current pathname
   const routeToCheck = route || pathname;

@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { getAuthenticatedUser } from '@/lib/api/auth';
 import { apiSuccess, apiError } from '@/lib/api/responses';
@@ -13,35 +13,205 @@ import { getUserPlan } from '@/lib/api/plan-check';
  */
 export const dynamic = 'force-dynamic';
 
+/**
+ * Get allowed origins for CORS
+ */
+function getAllowedOrigins(): string[] {
+  const envOrigins = process.env.CORS_ALLOWED_ORIGINS?.split(',').filter(Boolean) || [];
+
+  // In development, always allow localhost on any port
+  if (process.env.NODE_ENV === 'development') {
+    return ['http://localhost', 'http://127.0.0.1', ...envOrigins];
+  }
+
+  // In production, require explicit configuration
+  return envOrigins.length > 0 ? envOrigins : [];
+}
+
+/**
+ * Get CORS headers
+ */
+function getCorsHeaders(origin: string | null): Record<string, string> {
+  const allowedOrigins = getAllowedOrigins();
+
+  // Check if origin is allowed (supports wildcards like localhost:*)
+  const isAllowed = origin && (
+    allowedOrigins.some(allowed => {
+      if (allowed === '*') return true;
+      if (origin === allowed) return true;
+      // Support localhost:* pattern - match any localhost with any port
+      if ((allowed.includes('localhost') || allowed.includes('127.0.0.1')) && 
+          (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+        return true;
+      }
+      return false;
+    })
+  );
+
+  // Use origin if allowed, otherwise use first allowed origin
+  // When using credentials, we cannot use '*' - must use specific origin
+  let corsOrigin: string;
+  if (isAllowed && origin) {
+    corsOrigin = origin;
+  } else if (allowedOrigins.length > 0) {
+    corsOrigin = allowedOrigins[0];
+  } else if (process.env.NODE_ENV === 'development') {
+    // In development, use the request origin if available, otherwise allow localhost
+    // Cannot use '*' when credentials are included
+    corsOrigin = origin || 'http://localhost:3000';
+  } else {
+    // In production, require explicit configuration
+    // Default to first allowed origin or request origin
+    corsOrigin = allowedOrigins[0] || origin || 'http://localhost:3000';
+  }
+
+  return {
+    'Access-Control-Allow-Origin': corsOrigin,
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, X-API-Key, Authorization',
+    'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Max-Age': '86400', // 24 hours
+  };
+}
+
+/**
+ * Handle OPTIONS request (preflight)
+ */
+export async function OPTIONS(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  const headers = getCorsHeaders(origin);
+
+  return new NextResponse(null, {
+    status: 204,
+    headers,
+  });
+}
+
 export async function GET(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+
+  // Debug logging in development
+  if (process.env.NODE_ENV === 'development') {
+    console.info('[⚡️BoltX Realtime] CORS Debug:', {
+      origin,
+      corsHeaders,
+      allowedOrigins: getAllowedOrigins(),
+    });
+  }
+
   try {
-    // Check Enterprise plan access
-    const { hasEnterpriseAccess, error: planError } = await getUserPlan();
-    if (!hasEnterpriseAccess) {
-      return apiError(
-        planError || 'BoltX is only available on Enterprise plan. Please upgrade to access this feature.',
-        403
-      );
-    }
-
-    const { user } = await getAuthenticatedUser();
-
-    if (!user.account_id) {
-      return apiError('User account not found', 404);
-    }
-
+    // Get query parameters first
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get('sessionId');
+    const vtexAccount = searchParams.get('vtexAccount');
 
     if (!sessionId) {
-      return apiError('Session ID is required', 400);
+      const response = apiError('Session ID is required', 400);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
+    }
+
+    // Support both API key (for cross-origin requests) and cookie-based auth
+    const apiKey = request.headers.get('X-API-Key');
+    const expectedApiKey = process.env.METRICS_API_KEY;
+    
+    let accountId: string | null = null;
+
+    // Try API key authentication first (for cross-origin requests from checkout)
+    if (apiKey && expectedApiKey && apiKey === expectedApiKey) {
+      console.info('[⚡️BoltX Realtime] Authenticated via API key');
+      
+      // For API key auth, try to get account_id from vtexAccount parameter
+      // If not provided, we'll try to get it from the events themselves
+      if (vtexAccount) {
+        const supabaseAdmin = getSupabaseAdmin();
+        // Use RPC function to query customer.accounts (PostgREST doesn't expose customer schema directly)
+        const { data: accounts, error: accountError } = await supabaseAdmin
+          .rpc('get_account_by_vtex_name', { p_vtex_account_name: vtexAccount });
+        
+        if (accountError) {
+          console.error('❌ [DEBUG] Error fetching account by vtex_account_name:', accountError);
+        } else if (accounts && accounts.length > 0) {
+          accountId = accounts[0].id;
+          console.info('✅ [DEBUG] Found account_id for vtex_account_name:', vtexAccount, 'account_id:', accountId);
+        } else {
+          console.warn('⚠️ [DEBUG] No account found for vtex_account_name:', vtexAccount);
+        }
+      }
+      
+      // If no account found from vtexAccount, we'll try to get it from events
+      // This will be handled later when we fetch events
+    } else {
+      // Fall back to cookie-based authentication
+      try {
+        // Check Enterprise plan access
+        const { hasEnterpriseAccess, error: planError } = await getUserPlan();
+        if (!hasEnterpriseAccess) {
+          const response = apiError(
+            planError || 'BoltX is only available on Enterprise plan. Please upgrade to access this feature.',
+            403
+          );
+          Object.entries(corsHeaders).forEach(([key, value]) => {
+            response.headers.set(key, value);
+          });
+          return response;
+        }
+
+        const authResult = await getAuthenticatedUser();
+        accountId = authResult.user.account_id ?? null;
+
+        if (!accountId) {
+          const response = apiError('User account not found', 404);
+          Object.entries(corsHeaders).forEach(([key, value]) => {
+            response.headers.set(key, value);
+          });
+          return response;
+        }
+      } catch (authError) {
+        // If cookie auth fails and no API key provided, return 401
+        if (!apiKey) {
+          const response = apiError('Authentication required. Provide X-API-Key header or valid session cookie.', 401);
+          Object.entries(corsHeaders).forEach(([key, value]) => {
+            response.headers.set(key, value);
+          });
+          return response;
+        }
+        // If API key was provided but invalid, return 401
+        const response = apiError('Invalid API key', 401);
+        Object.entries(corsHeaders).forEach(([key, value]) => {
+          response.headers.set(key, value);
+        });
+        return response;
+      }
     }
 
     const supabaseAdmin = getSupabaseAdmin();
     const aiService = createAIService();
 
     if (!aiService) {
-      return apiError('BoltX AI service is not available', 503);
+      const response = apiError('BoltX AI service is not available', 503);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
+    }
+
+    // Use the account_id we determined (from user or API key lookup)
+    const customerId = accountId;
+    
+    // If no customerId, return error with helpful message
+    if (!customerId) {
+      const errorMessage = apiKey && expectedApiKey && apiKey === expectedApiKey
+        ? 'Customer account ID not found. For API key authentication, provide vtexAccount query parameter (e.g., ?sessionId=...&vtexAccount=your-account).'
+        : 'Customer account ID not found';
+      const response = apiError(errorMessage, 400);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     // Use enhanced predictor for better accuracy
@@ -50,7 +220,7 @@ export async function GET(request: NextRequest) {
     // Get latest events for the session
     const { data: events, error: eventsError } = await supabaseAdmin
       .rpc('get_analytics_events_by_types', {
-        p_customer_id: user.account_id,
+        p_customer_id: customerId,
         p_event_types: [
           'checkout_start',
           'checkout_started',
@@ -67,14 +237,22 @@ export async function GET(request: NextRequest) {
 
     if (eventsError) {
       console.error('❌ [DEBUG] Error fetching events:', eventsError);
-      return apiError('Failed to fetch session data', 500);
+      const response = apiError('Failed to fetch session data', 500);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     // Filter by session ID
     const sessionEvents = events?.filter((e: any) => e.session_id === sessionId) || [];
 
     if (sessionEvents.length === 0) {
-      return apiError('Session not found', 404);
+      const response = apiError('Session not found', 404);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     // Extract orderFormId from events
@@ -84,7 +262,7 @@ export async function GET(request: NextRequest) {
     const features = buildPredictionFeatures(sessionEvents);
 
     // Get historical data
-    const historicalData = await getHistoricalData(supabaseAdmin, user.account_id, sessionId);
+    const historicalData = await getHistoricalData(supabaseAdmin, customerId, sessionId);
 
     // Merge features with historical data
     const fullFeatures: PredictionFeatures = {
@@ -111,7 +289,7 @@ export async function GET(request: NextRequest) {
     // Store prediction if significant change or first prediction
     if (hasSignificantChange || !latestPrediction || latestPrediction.length === 0) {
       await supabaseAdmin.rpc('insert_ai_prediction', {
-        p_customer_id: user.account_id,
+        p_customer_id: customerId,
         p_session_id: sessionId,
         p_order_form_id: orderFormId || null,
         p_prediction_type: 'abandonment',
@@ -125,14 +303,23 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    return apiSuccess({
+    const response = apiSuccess({
       prediction,
       timestamp: new Date().toISOString(),
       hasUpdate: hasSignificantChange,
     });
+    // Add CORS headers to success response
+    Object.entries(corsHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+    return response;
   } catch (error) {
     console.error('❌ [DEBUG] Error in realtime API:', error);
-    return apiError('Internal server error', 500);
+    const response = apiError('Internal server error', 500);
+    Object.entries(corsHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+    return response;
   }
 }
 

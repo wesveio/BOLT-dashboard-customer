@@ -107,11 +107,12 @@ BEGIN
   PERFORM public.deactivate_all_themes(p_account_id);
   
   -- Then activate the specified theme
+  -- Fixed: Explicitly qualify column names to avoid ambiguity
   UPDATE dashboard.theme_configs
   SET is_active = true,
       updated_at = NOW()
-  WHERE id = p_theme_id
-    AND account_id = p_account_id;
+  WHERE dashboard.theme_configs.id = p_theme_id
+    AND dashboard.theme_configs.account_id = p_account_id;
   
   RETURN QUERY
   SELECT 
