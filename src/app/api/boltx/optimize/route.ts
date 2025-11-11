@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { getAuthenticatedUser } from '@/lib/api/auth';
 import { apiSuccess, apiError } from '@/lib/api/responses';
@@ -14,12 +14,102 @@ import { getMockDataFromRequest } from '@/lib/mock-data/mock-data-service';
  */
 export const dynamic = 'force-dynamic';
 
+/**
+ * Get allowed origins for CORS
+ */
+function getAllowedOrigins(): string[] {
+  const envOrigins = process.env.CORS_ALLOWED_ORIGINS?.split(',').filter(Boolean) || [];
+
+  // In development, always allow localhost on any port
+  if (process.env.NODE_ENV === 'development') {
+    return ['http://localhost', 'http://127.0.0.1', ...envOrigins];
+  }
+
+  // In production, require explicit configuration
+  return envOrigins.length > 0 ? envOrigins : [];
+}
+
+/**
+ * Get CORS headers
+ */
+function getCorsHeaders(origin: string | null): Record<string, string> {
+  const allowedOrigins = getAllowedOrigins();
+
+  // Check if origin is allowed (supports wildcards like localhost:*)
+  const isAllowed = origin && (
+    allowedOrigins.some(allowed => {
+      if (allowed === '*') return true;
+      if (origin === allowed) return true;
+      // Support localhost:* pattern - match any localhost with any port
+      if ((allowed.includes('localhost') || allowed.includes('127.0.0.1')) &&
+        (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+        return true;
+      }
+      return false;
+    })
+  );
+
+  // Use origin if allowed, otherwise use first allowed origin
+  // When using credentials, we cannot use '*' - must use specific origin
+  let corsOrigin: string;
+  if (isAllowed && origin) {
+    corsOrigin = origin;
+  } else if (allowedOrigins.length > 0) {
+    corsOrigin = allowedOrigins[0];
+  } else if (process.env.NODE_ENV === 'development') {
+    // In development, use the request origin if available, otherwise allow localhost
+    // Cannot use '*' when credentials are included
+    corsOrigin = origin || 'http://localhost:3000';
+  } else {
+    // In production, require explicit configuration
+    // Default to first allowed origin or request origin
+    corsOrigin = allowedOrigins[0] || origin || 'http://localhost:3000';
+  }
+
+  return {
+    'Access-Control-Allow-Origin': corsOrigin,
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, X-API-Key, Authorization',
+    'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Max-Age': '86400', // 24 hours
+  };
+}
+
+/**
+ * Handle OPTIONS request (preflight)
+ */
+export async function OPTIONS(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  const headers = getCorsHeaders(origin);
+
+  return new NextResponse(null, {
+    status: 204,
+    headers,
+  });
+}
+
 export async function POST(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+
+  // Debug logging in development
+  if (process.env.NODE_ENV === 'development') {
+    console.info('[⚡️BoltX Optimize] CORS Debug:', {
+      origin,
+      corsHeaders,
+      allowedOrigins: getAllowedOrigins(),
+    });
+  }
+
   try {
     const { user } = await getAuthenticatedUser();
 
     if (!user.account_id) {
-      return apiError('User account not found', 404);
+      const response = apiError('User account not found', 404);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     // Check if account is in demo mode
@@ -27,16 +117,24 @@ export async function POST(request: NextRequest) {
     if (isDemo) {
       console.info('✅ [DEBUG] Account in demo mode, returning mock optimization data');
       const mockData = await getMockDataFromRequest('boltx-optimization', user.account_id, request);
-      return apiSuccess(mockData);
+      const response = apiSuccess(mockData);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     // Check Enterprise plan access
     const { hasEnterpriseAccess, error: planError } = await getUserPlan();
     if (!hasEnterpriseAccess) {
-      return apiError(
+      const response = apiError(
         planError || 'BoltX is only available on Enterprise plan. Please upgrade to access this feature.',
         403
       );
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     const body = await request.json();
@@ -48,7 +146,11 @@ export async function POST(request: NextRequest) {
     } = body;
 
     if (!optimizationType || !name || !config) {
-      return apiError('Missing required fields: optimizationType, name, config', 400);
+      const response = apiError('Missing required fields: optimizationType, name, config', 400);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     const supabaseAdmin = getSupabaseAdmin();
@@ -89,22 +191,42 @@ export async function POST(request: NextRequest) {
 
         if (directError) {
           console.error('❌ [DEBUG] Error creating optimization:', directError);
-          return apiError('Failed to create optimization. Please run migration 052 to expose the table via RPC functions.', 500);
+          const response = apiError('Failed to create optimization. Please run migration 052 to expose the table via RPC functions.', 500);
+          Object.entries(corsHeaders).forEach(([key, value]) => {
+            response.headers.set(key, value);
+          });
+          return response;
         }
 
-        return apiSuccess({ optimization });
+        const response = apiSuccess({ optimization });
+        Object.entries(corsHeaders).forEach(([key, value]) => {
+          response.headers.set(key, value);
+        });
+        return response;
       }
 
       console.error('❌ [DEBUG] Error creating optimization:', rpcError);
-      return apiError('Failed to create optimization', 500);
+      const response = apiError('Failed to create optimization', 500);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     const optimization = optimizationData && optimizationData.length > 0 ? optimizationData[0] : null;
 
-    return apiSuccess({ optimization });
+    const response = apiSuccess({ optimization });
+    Object.entries(corsHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+    return response;
   } catch (error) {
     console.error('❌ [DEBUG] Error in optimize API:', error);
-    return apiError('Internal server error', 500);
+    const response = apiError('Internal server error', 500);
+    Object.entries(corsHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+    return response;
   }
 }
 
@@ -113,11 +235,27 @@ export async function POST(request: NextRequest) {
  * Get form optimization for a checkout session
  */
 export async function GET(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+
+  // Debug logging in development
+  if (process.env.NODE_ENV === 'development') {
+    console.info('[⚡️BoltX Optimize] CORS Debug:', {
+      origin,
+      corsHeaders,
+      allowedOrigins: getAllowedOrigins(),
+    });
+  }
+
   try {
     const { user } = await getAuthenticatedUser();
 
     if (!user.account_id) {
-      return apiError('User account not found', 404);
+      const response = apiError('User account not found', 404);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     // Check if account is in demo mode
@@ -125,16 +263,24 @@ export async function GET(request: NextRequest) {
     if (isDemo) {
       console.info('✅ [DEBUG] Account in demo mode, returning mock optimization data');
       const mockData = await getMockDataFromRequest('boltx-optimization', user.account_id, request);
-      return apiSuccess(mockData);
+      const response = apiSuccess(mockData);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     // Check Enterprise plan access
     const { hasEnterpriseAccess, error: planError } = await getUserPlan();
     if (!hasEnterpriseAccess) {
-      return apiError(
+      const response = apiError(
         planError || 'BoltX is only available on Enterprise plan. Please upgrade to access this feature.',
         403
       );
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     const { searchParams } = new URL(request.url);
@@ -144,7 +290,11 @@ export async function GET(request: NextRequest) {
     // If sessionId provided, return real-time optimization
     if (sessionId) {
       if (!step) {
-        return apiError('Step is required when sessionId is provided', 400);
+        const response = apiError('Step is required when sessionId is provided', 400);
+        Object.entries(corsHeaders).forEach(([key, value]) => {
+          response.headers.set(key, value);
+        });
+        return response;
       }
 
       const supabaseAdmin = getSupabaseAdmin();
@@ -159,7 +309,11 @@ export async function GET(request: NextRequest) {
       const optimizer = createFormOptimizer();
       const optimization = optimizer.generateOptimization(profile, step, fieldAnalytics);
 
-      return apiSuccess(optimization);
+      const response = apiSuccess(optimization);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     // Otherwise, return stored optimizations (for dashboard)
@@ -204,28 +358,52 @@ export async function GET(request: NextRequest) {
           console.error('❌ [DEBUG] Solution: Run migration 052 to expose ai_optimizations via RPC functions.');
           console.warn('⚠️ [DEBUG] Returning empty data temporarily. PostgREST cache will refresh automatically in 1-5 minutes.');
 
-          return apiSuccess({
+          const response = apiSuccess({
             optimizations: [],
             warning: 'Database schema cache is refreshing. Data will be available shortly. If this persists, please run migration 052.',
           });
+          Object.entries(corsHeaders).forEach(([key, value]) => {
+            response.headers.set(key, value);
+          });
+          return response;
         }
 
         if (directError) {
           console.error('❌ [DEBUG] Error fetching optimizations:', directError);
-          return apiError('Failed to fetch optimizations', 500);
+          const response = apiError('Failed to fetch optimizations', 500);
+          Object.entries(corsHeaders).forEach(([key, value]) => {
+            response.headers.set(key, value);
+          });
+          return response;
         }
 
-        return apiSuccess({ optimizations: directData || [] });
+        const response = apiSuccess({ optimizations: directData || [] });
+        Object.entries(corsHeaders).forEach(([key, value]) => {
+          response.headers.set(key, value);
+        });
+        return response;
       }
 
       console.error('❌ [DEBUG] Error fetching optimizations:', rpcError);
-      return apiError('Failed to fetch optimizations', 500);
+      const response = apiError('Failed to fetch optimizations', 500);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
-    return apiSuccess({ optimizations: optimizations || [] });
+    const response = apiSuccess({ optimizations: optimizations || [] });
+    Object.entries(corsHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+    return response;
   } catch (error) {
     console.error('❌ [DEBUG] Error in optimize GET API:', error);
-    return apiError('Internal server error', 500);
+    const response = apiError('Internal server error', 500);
+    Object.entries(corsHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+    return response;
   }
 }
 
@@ -368,27 +546,42 @@ async function getFieldAnalytics(
  * Update optimization status
  */
 export async function PATCH(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+
   try {
     // Check Enterprise plan access
     const { hasEnterpriseAccess, error: planError } = await getUserPlan();
     if (!hasEnterpriseAccess) {
-      return apiError(
+      const response = apiError(
         planError || 'BoltX is only available on Enterprise plan. Please upgrade to access this feature.',
         403
       );
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     const { user } = await getAuthenticatedUser();
 
     if (!user.account_id) {
-      return apiError('User account not found', 404);
+      const response = apiError('User account not found', 404);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     const body = await request.json();
     const { id, status, metrics } = body;
 
     if (!id || !status) {
-      return apiError('Missing required fields: id, status', 400);
+      const response = apiError('Missing required fields: id, status', 400);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     const supabaseAdmin = getSupabaseAdmin();
@@ -434,22 +627,42 @@ export async function PATCH(request: NextRequest) {
 
         if (directError) {
           console.error('❌ [DEBUG] Error updating optimization:', directError);
-          return apiError('Failed to update optimization. Please run migration 052 to expose the table via RPC functions.', 500);
+          const response = apiError('Failed to update optimization. Please run migration 052 to expose the table via RPC functions.', 500);
+          Object.entries(corsHeaders).forEach(([key, value]) => {
+            response.headers.set(key, value);
+          });
+          return response;
         }
 
-        return apiSuccess({ optimization });
+        const response = apiSuccess({ optimization });
+        Object.entries(corsHeaders).forEach(([key, value]) => {
+          response.headers.set(key, value);
+        });
+        return response;
       }
 
       console.error('❌ [DEBUG] Error updating optimization:', rpcError);
-      return apiError('Failed to update optimization', 500);
+      const response = apiError('Failed to update optimization', 500);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     const optimization = optimizationData && optimizationData.length > 0 ? optimizationData[0] : null;
 
-    return apiSuccess({ optimization });
+    const response = apiSuccess({ optimization });
+    Object.entries(corsHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+    return response;
   } catch (error) {
     console.error('❌ [DEBUG] Error in optimize PATCH API:', error);
-    return apiError('Internal server error', 500);
+    const response = apiError('Internal server error', 500);
+    Object.entries(corsHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+    return response;
   }
 }
 

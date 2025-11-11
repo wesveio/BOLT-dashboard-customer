@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { getAuthenticatedUser } from '@/lib/api/auth';
 import { apiSuccess, apiError, apiValidationError } from '@/lib/api/responses';
@@ -24,21 +24,115 @@ const InterventionRecordSchema = z.object({
  */
 export const dynamic = 'force-dynamic';
 
+/**
+ * Get allowed origins for CORS
+ */
+function getAllowedOrigins(): string[] {
+  const envOrigins = process.env.CORS_ALLOWED_ORIGINS?.split(',').filter(Boolean) || [];
+
+  // In development, always allow localhost on any port
+  if (process.env.NODE_ENV === 'development') {
+    return ['http://localhost', 'http://127.0.0.1', ...envOrigins];
+  }
+
+  // In production, require explicit configuration
+  return envOrigins.length > 0 ? envOrigins : [];
+}
+
+/**
+ * Get CORS headers
+ */
+function getCorsHeaders(origin: string | null): Record<string, string> {
+  const allowedOrigins = getAllowedOrigins();
+
+  // Check if origin is allowed (supports wildcards like localhost:*)
+  const isAllowed = origin && (
+    allowedOrigins.some(allowed => {
+      if (allowed === '*') return true;
+      if (origin === allowed) return true;
+      // Support localhost:* pattern - match any localhost with any port
+      if ((allowed.includes('localhost') || allowed.includes('127.0.0.1')) && 
+          (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+        return true;
+      }
+      return false;
+    })
+  );
+
+  // Use origin if allowed, otherwise use first allowed origin
+  // When using credentials, we cannot use '*' - must use specific origin
+  let corsOrigin: string;
+  if (isAllowed && origin) {
+    corsOrigin = origin;
+  } else if (allowedOrigins.length > 0) {
+    corsOrigin = allowedOrigins[0];
+  } else if (process.env.NODE_ENV === 'development') {
+    // In development, use the request origin if available, otherwise allow localhost
+    // Cannot use '*' when credentials are included
+    corsOrigin = origin || 'http://localhost:3000';
+  } else {
+    // In production, require explicit configuration
+    // Default to first allowed origin or request origin
+    corsOrigin = allowedOrigins[0] || origin || 'http://localhost:3000';
+  }
+
+  return {
+    'Access-Control-Allow-Origin': corsOrigin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, X-API-Key, Authorization',
+    'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Max-Age': '86400', // 24 hours
+  };
+}
+
+/**
+ * Handle OPTIONS request (preflight)
+ */
+export async function OPTIONS(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  const headers = getCorsHeaders(origin);
+
+  return new NextResponse(null, {
+    status: 204,
+    headers,
+  });
+}
+
 export async function POST(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+
+  // Debug logging in development
+  if (process.env.NODE_ENV === 'development') {
+    console.info('[⚡️BoltX Interventions Record] CORS Debug:', {
+      origin,
+      corsHeaders,
+      allowedOrigins: getAllowedOrigins(),
+    });
+  }
+
   try {
     // Check Enterprise plan access
     const { hasEnterpriseAccess, error: planError } = await getUserPlan();
     if (!hasEnterpriseAccess) {
-      return apiError(
+      const response = apiError(
         planError || 'BoltX is only available on Enterprise plan. Please upgrade to access this feature.',
         403
       );
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     const { user } = await getAuthenticatedUser();
 
     if (!user.account_id) {
-      return apiError('User account not found', 404);
+      const response = apiError('User account not found', 404);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     const body = await request.json();
@@ -46,7 +140,11 @@ export async function POST(request: NextRequest) {
     // Validate request body
     const validationResult = InterventionRecordSchema.safeParse(body);
     if (!validationResult.success) {
-      return apiValidationError(validationResult.error);
+      const response = apiValidationError(validationResult.error);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     const {
@@ -101,7 +199,11 @@ export async function POST(request: NextRequest) {
           rpcError,
           directError,
         });
-        return apiError('Failed to record intervention', 500);
+        const response = apiError('Failed to record intervention', 500);
+        Object.entries(corsHeaders).forEach(([key, value]) => {
+          response.headers.set(key, value);
+        });
+        return response;
       }
 
       console.info('✅ [DEBUG] Intervention recorded via direct insert:', {
@@ -112,17 +214,25 @@ export async function POST(request: NextRequest) {
         riskLevel,
       });
 
-      return apiSuccess({
+      const response = apiSuccess({
         id: directData?.id,
         sessionId,
         interventionType,
         applied,
       });
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     if (rpcError) {
       console.error('❌ [DEBUG] Error recording intervention:', rpcError);
-      return apiError('Failed to record intervention', 500);
+      const response = apiError('Failed to record intervention', 500);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+      return response;
     }
 
     console.info('✅ [DEBUG] Intervention recorded via RPC:', {
@@ -133,15 +243,23 @@ export async function POST(request: NextRequest) {
       riskLevel,
     });
 
-    return apiSuccess({
+    const response = apiSuccess({
       id: interventionId,
       sessionId,
       interventionType,
       applied,
     });
+    Object.entries(corsHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+    return response;
   } catch (error) {
     console.error('❌ [DEBUG] Error in interventions record POST:', error);
-    return apiError('Internal server error', 500);
+    const response = apiError('Internal server error', 500);
+    Object.entries(corsHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+    return response;
   }
 }
 
