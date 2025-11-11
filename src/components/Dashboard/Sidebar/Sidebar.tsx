@@ -149,18 +149,6 @@ export function Sidebar() {
       href: '/dashboard/dashboards',
       icon: Squares2X2Icon,
       label: t('dashboards'),
-      subItems: [
-        {
-          href: '/dashboard/dashboards',
-          label: tDashboards('sidebar.myDashboards'),
-          translationKey: 'dashboard.dashboards.sidebar.myDashboards',
-        },
-        {
-          href: '/dashboard/dashboards/builder',
-          label: tDashboards('sidebar.builder'),
-          translationKey: 'dashboard.dashboards.sidebar.builder',
-        },
-      ],
     },
     { href: '/dashboard/security', icon: ShieldCheckIcon, label: t('security') },
     { href: '/dashboard/themes', icon: PaintBrushIcon, label: t('themes') },

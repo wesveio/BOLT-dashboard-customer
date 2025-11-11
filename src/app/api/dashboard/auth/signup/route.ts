@@ -7,6 +7,7 @@ import {
   sanitizeText,
   sanitizeCompanyName,
 } from '@/utils/auth/sanitize';
+import { getEmailService, generateNewAccountNotificationEmail } from '@/utils/auth/email-service';
 
 /**
  * POST /api/dashboard/auth/signup
@@ -176,6 +177,108 @@ export async function POST(request: NextRequest) {
           { error: 'Failed to create user account' },
           { status: 500 }
         );
+      }
+
+      // Fetch complete account and user details for email notification
+      let accountDetails = null;
+      let userCreatedAt: string | null = null;
+
+      try {
+        const { data: accounts, error: accountFetchError } = await supabaseAdmin
+          .rpc('get_account_by_id', { p_account_id: newAccount.id });
+
+        if (!accountFetchError && accounts && accounts.length > 0) {
+          accountDetails = accounts[0];
+        }
+      } catch (error) {
+        console.warn('⚠️ [DEBUG] Could not fetch account details for email notification:', error);
+      }
+
+      // Query account directly to get demo_mode and onboarding_required if RPC doesn't return them
+      if (accountDetails) {
+        try {
+          const { data: accountData, error: accountQueryError } = await supabaseAdmin
+            .from('customer.accounts')
+            .select('demo_mode, onboarding_required')
+            .eq('id', newAccount.id)
+            .single();
+
+          if (!accountQueryError && accountData) {
+            accountDetails = {
+              ...accountDetails,
+              demo_mode: accountData.demo_mode ?? true,
+              onboarding_required: accountData.onboarding_required ?? true,
+            };
+          }
+        } catch (error) {
+          // If query fails, use defaults (new accounts default to demo_mode=true and onboarding_required=true)
+          accountDetails = {
+            ...accountDetails,
+            demo_mode: true,
+            onboarding_required: true,
+          };
+        }
+      }
+
+      // Query user to get created_at timestamp
+      try {
+        const { data: userData, error: userQueryError } = await supabaseAdmin
+          .from('dashboard.users')
+          .select('created_at')
+          .eq('id', newUser.id)
+          .single();
+
+        if (!userQueryError && userData) {
+          userCreatedAt = userData.created_at;
+        }
+      } catch (error) {
+        // If query fails, use current timestamp
+        userCreatedAt = new Date().toISOString();
+      }
+
+      // Send email notification (non-blocking)
+      if (accountDetails) {
+        try {
+          const emailService = getEmailService();
+          const notificationEmail = process.env.CONTACT_EMAIL || process.env.EMAIL_SERVICE_FROM;
+
+          if (notificationEmail) {
+            const { html, text, subject } = generateNewAccountNotificationEmail(
+              {
+                id: accountDetails.id,
+                vtex_account_name: accountDetails.vtex_account_name,
+                company_name: accountDetails.company_name,
+                plan_type: accountDetails.plan_type,
+                status: accountDetails.status,
+                demo_mode: accountDetails.demo_mode,
+                onboarding_required: accountDetails.onboarding_required,
+                created_at: accountDetails.created_at,
+              },
+              {
+                id: newUser.id,
+                email: newUser.email,
+                first_name: newUser.first_name,
+                last_name: newUser.last_name,
+                role: newUser.role,
+                created_at: userCreatedAt || new Date().toISOString(),
+              }
+            );
+
+            await emailService.sendEmail({
+              to: notificationEmail,
+              subject,
+              html,
+              text,
+            });
+
+            console.info('✅ [DEBUG] New account notification email sent successfully');
+          } else {
+            console.warn('⚠️ [DEBUG] CONTACT_EMAIL not configured, skipping email notification');
+          }
+        } catch (emailError) {
+          // Log error but don't fail the signup
+          console.error('❌ [DEBUG] Failed to send new account notification email:', emailError);
+        }
       }
 
       // Success - return user data (without sensitive info)

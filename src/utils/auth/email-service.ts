@@ -587,3 +587,270 @@ Powered by BCKSTG
   return { html, text, subject: t.subject };
 }
 
+/**
+ * Generate HTML email template for new account notification
+ * Sends notification to admin when a new account is created
+ */
+export function generateNewAccountNotificationEmail(
+  account: {
+    id: string;
+    vtex_account_name: string;
+    company_name: string;
+    plan_type: string;
+    status: string;
+    demo_mode?: boolean;
+    onboarding_required?: boolean;
+    created_at: string;
+  },
+  user: {
+    id: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    role: string;
+    created_at: string;
+  }
+): { html: string; text: string; subject: string } {
+  const subject = `[🤩 NEW ACCOUNT 🤩] New Account Created: ${account.company_name}`;
+
+  // Format timestamps
+  const formatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZoneName: 'short',
+      });
+    } catch {
+      return dateString;
+    }
+  };
+
+  const accountCreatedAt = formatDate(account.created_at);
+  const userCreatedAt = formatDate(user.created_at);
+  const fullName = `${user.first_name} ${user.last_name}`.trim();
+
+  // SVG Logo (same as other email templates)
+  const boltLogoSvg = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 670 120" fill="none" style="width: 180px; height: auto; max-width: 100%;">
+  <g transform="matrix(2.19 0 0 2.19 335 60)">
+    <g transform="translate(-122.724,-0.108)">
+      <path fill="#111827" style="fill: #111827;"
+        d="M24.516-2.412c1.44-2.304 2.304-5.04 2.304-7.92 0-8.28-6.696-14.904-14.904-14.976H-30.636v50.616h45.792c8.568 0 15.48-6.912 15.48-15.408 0-5.04-2.448-9.504-6.12-12.312zm-44.856-12.744h32.256c2.592 0 4.752 2.16 4.752 4.824 0 2.592-2.16 4.752-4.752 4.752h-32.256zm35.496 30.312H-20.34v-10.584h35.136c2.952-.072 5.4 2.232 5.472 5.112.144 2.952-2.16 5.4-5.112 5.472z" />
+    </g>
+    <g transform="translate(-35.028,0.108)">
+      <path fill="#111827" style="fill: #111827;"
+        d="M28.836-25.308H-28.908C-42.876-25.308-54.18-14.004-54.18-.036s11.304 25.344 25.272 25.344H28.836C42.804 25.308 54.18 13.932 54.18-.036S42.804-25.308 28.836-25.308zm0 40.464H-28.908c-8.352 0-15.12-6.768-15.12-15.192 0-8.352 6.768-15.12 15.12-15.12H28.836c8.424 0 15.192 6.768 15.192 15.12 0 8.424-6.768 15.192-15.192 15.192z" />
+    </g>
+    <g transform="translate(54.828,-0.108)">
+      <path fill="#111827" style="fill: #111827;" d="M30.636 15.156H-20.34v-40.464H-30.636v50.616H30.636z" />
+    </g>
+    <g transform="translate(119.52,-0.108)">
+      <path fill="#111827" style="fill: #111827;" d="M33.804-15.156v-10.152H-33.876v10.152h29.232v40.464h10.296v-40.464z" />
+    </g>
+  </g>
+</svg>`;
+
+  const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <title>${subject}</title>
+  <style>
+    /* Dark mode support for email clients */
+    @media (prefers-color-scheme: dark) {
+      .email-body {
+        background-color: #0f172a !important;
+        color: #f1f5f9 !important;
+      }
+      .email-container {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+      }
+      .email-heading {
+        color: #f1f5f9 !important;
+      }
+      .email-text {
+        color: #cbd5e1 !important;
+      }
+      .info-section {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+      }
+      .info-label {
+        color: #94a3b8 !important;
+      }
+      .info-value {
+        color: #f1f5f9 !important;
+      }
+      .divider {
+        border-color: #334155 !important;
+      }
+      .footer-text {
+        color: #64748b !important;
+      }
+      .logo-container svg path {
+        fill: #FEFEFE !important;
+      }
+    }
+  </style>
+</head>
+<body class="email-body" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #111827; background-color: #f9fafb; padding: 20px; margin: 0;">
+  <div class="email-container" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; padding: 40px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border: 1px solid #e5e7eb;">
+    
+    <!-- Logo Section -->
+    <div class="logo-container" style="text-align: center; margin-bottom: 32px;">
+      ${boltLogoSvg}
+    </div>
+    
+    <!-- Header -->
+    <h1 class="email-heading" style="font-size: 28px; font-weight: 700; color: #111827; margin: 0 0 12px 0; text-align: center; line-height: 1.2;">
+      🤩 New Account Created! 🤩
+    </h1>
+    
+    <!-- Introduction -->
+    <p class="email-text" style="font-size: 16px; color: #4b5563; margin: 0 0 32px 0; text-align: center; line-height: 1.6;">
+      A new account has been successfully created in the system.
+    </p>
+    
+    <!-- Account Information Section -->
+    <div class="info-section" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 24px 0;">
+      <h2 style="font-size: 18px; font-weight: 700; color: #111827; margin: 0 0 20px 0; text-align: center;">
+        Account Information
+      </h2>
+      
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+          <td class="info-label" style="padding: 8px 0; font-size: 13px; color: #64748b; font-weight: 600; width: 40%;">Account ID:</td>
+          <td class="info-value" style="padding: 8px 0; font-size: 13px; color: #111827; font-family: 'Courier New', monospace;">${account.id}</td>
+        </tr>
+        <tr>
+          <td class="info-label" style="padding: 8px 0; font-size: 13px; color: #64748b; font-weight: 600;">Company Name:</td>
+          <td class="info-value" style="padding: 8px 0; font-size: 13px; color: #111827; font-weight: 600;">${account.company_name}</td>
+        </tr>
+        <tr>
+          <td class="info-label" style="padding: 8px 0; font-size: 13px; color: #64748b; font-weight: 600;">VTEX Account:</td>
+          <td class="info-value" style="padding: 8px 0; font-size: 13px; color: #111827;">${account.vtex_account_name}</td>
+        </tr>
+        <tr>
+          <td class="info-label" style="padding: 8px 0; font-size: 13px; color: #64748b; font-weight: 600;">Plan Type:</td>
+          <td class="info-value" style="padding: 8px 0; font-size: 13px; color: #111827; text-transform: capitalize;">${account.plan_type}</td>
+        </tr>
+        <tr>
+          <td class="info-label" style="padding: 8px 0; font-size: 13px; color: #64748b; font-weight: 600;">Status:</td>
+          <td class="info-value" style="padding: 8px 0; font-size: 13px; color: #111827; text-transform: capitalize;">${account.status}</td>
+        </tr>
+        <tr>
+          <td class="info-label" style="padding: 8px 0; font-size: 13px; color: #64748b; font-weight: 600;">Demo Mode:</td>
+          <td class="info-value" style="padding: 8px 0; font-size: 13px; color: #111827;">${account.demo_mode !== undefined ? (account.demo_mode ? 'Yes' : 'No') : 'Yes (default)'}</td>
+        </tr>
+        <tr>
+          <td class="info-label" style="padding: 8px 0; font-size: 13px; color: #64748b; font-weight: 600;">Onboarding Required:</td>
+          <td class="info-value" style="padding: 8px 0; font-size: 13px; color: #111827;">${account.onboarding_required !== undefined ? (account.onboarding_required ? 'Yes' : 'No') : 'Yes (default)'}</td>
+        </tr>
+        <tr>
+          <td class="info-label" style="padding: 8px 0; font-size: 13px; color: #64748b; font-weight: 600;">Created At:</td>
+          <td class="info-value" style="padding: 8px 0; font-size: 13px; color: #111827;">${accountCreatedAt}</td>
+        </tr>
+      </table>
+    </div>
+    
+    <!-- User Information Section -->
+    <div class="info-section" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 24px 0;">
+      <h2 style="font-size: 18px; font-weight: 700; color: #111827; margin: 0 0 20px 0; text-align: center;">
+        User Information
+      </h2>
+      
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+          <td class="info-label" style="padding: 8px 0; font-size: 13px; color: #64748b; font-weight: 600; width: 40%;">User ID:</td>
+          <td class="info-value" style="padding: 8px 0; font-size: 13px; color: #111827; font-family: 'Courier New', monospace;">${user.id}</td>
+        </tr>
+        <tr>
+          <td class="info-label" style="padding: 8px 0; font-size: 13px; color: #64748b; font-weight: 600;">Email:</td>
+          <td class="info-value" style="padding: 8px 0; font-size: 13px; color: #111827;">${user.email}</td>
+        </tr>
+        <tr>
+          <td class="info-label" style="padding: 8px 0; font-size: 13px; color: #64748b; font-weight: 600;">Full Name:</td>
+          <td class="info-value" style="padding: 8px 0; font-size: 13px; color: #111827; font-weight: 600;">${fullName}</td>
+        </tr>
+        <tr>
+          <td class="info-label" style="padding: 8px 0; font-size: 13px; color: #64748b; font-weight: 600;">First Name:</td>
+          <td class="info-value" style="padding: 8px 0; font-size: 13px; color: #111827;">${user.first_name}</td>
+        </tr>
+        <tr>
+          <td class="info-label" style="padding: 8px 0; font-size: 13px; color: #64748b; font-weight: 600;">Last Name:</td>
+          <td class="info-value" style="padding: 8px 0; font-size: 13px; color: #111827;">${user.last_name}</td>
+        </tr>
+        <tr>
+          <td class="info-label" style="padding: 8px 0; font-size: 13px; color: #64748b; font-weight: 600;">Role:</td>
+          <td class="info-value" style="padding: 8px 0; font-size: 13px; color: #111827; text-transform: capitalize;">${user.role}</td>
+        </tr>
+        <tr>
+          <td class="info-label" style="padding: 8px 0; font-size: 13px; color: #64748b; font-weight: 600;">Created At:</td>
+          <td class="info-value" style="padding: 8px 0; font-size: 13px; color: #111827;">${userCreatedAt}</td>
+        </tr>
+      </table>
+    </div>
+    
+    <!-- Divider -->
+    <hr class="divider" style="border: none; border-top: 1px solid #e5e7eb; margin: 32px 0;">
+    
+    <!-- Footer -->
+    <p class="footer-text" style="font-size: 12px; color: #9ca3af; margin: 0; text-align: center; line-height: 1.5;">
+      This is an automated notification from the BOLT account creation system.
+    </p>
+    
+    <!-- Brand Footer -->
+    <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e5e7eb; text-align: center;">
+      <p style="font-size: 11px; color: #d1d5db; margin: 0;">
+        Powered by <span style="font-weight: 600; background: linear-gradient(to right, #2563eb, #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">BOLT</span>
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+  `.trim();
+
+  const text = `
+🤩 NEW ACCOUNT CREATED 🤩
+
+A new account has been successfully created in the system.
+
+ACCOUNT INFORMATION
+===================
+Account ID: ${account.id}
+Company Name: ${account.company_name}
+VTEX Account: ${account.vtex_account_name}
+Plan Type: ${account.plan_type}
+Status: ${account.status}
+Demo Mode: ${account.demo_mode !== undefined ? (account.demo_mode ? 'Yes' : 'No') : 'Yes (default)'}
+Onboarding Required: ${account.onboarding_required !== undefined ? (account.onboarding_required ? 'Yes' : 'No') : 'Yes (default)'}
+Created At: ${accountCreatedAt}
+
+USER INFORMATION
+================
+User ID: ${user.id}
+Email: ${user.email}
+Full Name: ${fullName}
+First Name: ${user.first_name}
+Last Name: ${user.last_name}
+Role: ${user.role}
+Created At: ${userCreatedAt}
+
+---
+This is an automated notification from the BOLT account creation system.
+Powered by BCKSTG
+  `.trim();
+
+  return { html, text, subject };
+}
+

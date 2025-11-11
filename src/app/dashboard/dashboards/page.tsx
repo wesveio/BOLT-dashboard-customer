@@ -6,11 +6,11 @@ import { useRouter } from 'next/navigation';
 import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
 import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
 import { LoadingState } from '@/components/Dashboard/LoadingState/LoadingState';
-import { useApi } from '@/hooks/useApi';
+import { useApi, useApiDelete } from '@/hooks/useApi';
 import { Card, CardBody, Button } from '@heroui/react';
 import { motion } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
-import { PlusIcon, PencilIcon, DocumentDuplicateIcon, TrashIcon, Squares2X2Icon } from '@heroicons/react/24/outline';
+import { PlusIcon, PencilIcon, DocumentDuplicateIcon, TrashIcon, Squares2X2Icon, GlobeAltIcon, LockClosedIcon } from '@heroicons/react/24/outline';
 import { toast } from 'sonner';
 import { formatRelativeTime } from '@/utils/formatters';
 import type { DashboardLayout } from '@/components/Dashboard/Builder/types';
@@ -21,13 +21,15 @@ export default function DashboardsPage() {
   const router = useRouter();
   const [deletingDashboard, setDeletingDashboard] = useState<string | null>(null);
 
-  const { data, isLoading, refetch } = useApi<{ dashboards: DashboardLayout[] }>(
+  const { data, isLoading, refetch, clearCache } = useApi<{ dashboards: DashboardLayout[] }>(
     '/api/dashboard/dashboards',
     {
       cacheKey: 'dashboards',
       cacheTTL: 5,
     },
   );
+
+  const { mutate: deleteDashboard, isLoading: isDeleting } = useApiDelete<{ success: boolean; message: string }>();
 
   const dashboards = data?.dashboards || [];
 
@@ -72,15 +74,24 @@ export default function DashboardsPage() {
   };
 
   const handleDelete = async () => {
+    if (!deletingDashboard) return;
+
     try {
-      // TODO: Implement DELETE endpoint when backend is ready
-      // For now, just show success message
-      toast.success(t('deleteSuccess'));
-      setDeletingDashboard(null);
-      refetch();
+      const result = await deleteDashboard(`/api/dashboard/dashboards/${deletingDashboard}`);
+      
+      if (result?.success) {
+        toast.success(t('deleteSuccess'));
+        // Clear cache and refetch
+        clearCache();
+        await refetch();
+        setDeletingDashboard(null);
+      } else {
+        throw new Error('Failed to delete dashboard');
+      }
     } catch (error: any) {
       console.error('❌ [DEBUG] Delete dashboard error:', error);
       toast.error(error.message || t('deleteError'));
+      setDeletingDashboard(null);
     }
   };
 
@@ -141,6 +152,27 @@ export default function DashboardsPage() {
                         <span className="text-sm text-gray-600">
                           {dashboard.widgets?.length || 0} {t('widgets')}
                         </span>
+                        {dashboard.isPublic !== undefined && (
+                          <span
+                            className={`text-xs px-2 py-1 rounded-full ${
+                              dashboard.isPublic
+                                ? 'bg-blue-100 text-blue-700'
+                                : 'bg-gray-100 text-gray-600'
+                            }`}
+                          >
+                            {dashboard.isPublic ? (
+                              <>
+                                <GlobeAltIcon className="w-3 h-3 inline mr-1" />
+                                Public
+                              </>
+                            ) : (
+                              <>
+                                <LockClosedIcon className="w-3 h-3 inline mr-1" />
+                                Private
+                              </>
+                            )}
+                          </span>
+                        )}
                       </div>
 
                       <div className="flex gap-2 mt-auto">
@@ -213,13 +245,11 @@ export default function DashboardsPage() {
                 </Button>
                 <Button
                   color="danger"
-                  onPress={() => {
-                    if (deletingDashboard) {
-                      handleDelete();
-                    }
-                  }}
+                  isLoading={isDeleting}
+                  disabled={isDeleting}
+                  onPress={handleDelete}
                 >
-                  {t('delete')}
+                  {isDeleting ? tCommon('deleting') || 'Deleting...' : t('delete')}
                 </Button>
               </div>
             </CardBody>

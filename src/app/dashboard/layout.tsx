@@ -5,6 +5,7 @@ import { Toaster } from 'sonner';
 import { DashboardAuthProvider } from '@/contexts/DashboardAuthContext';
 import { SidebarProvider, useSidebar } from '@/contexts/SidebarContext';
 import { PeriodProvider } from '@/contexts/PeriodContext';
+import { PlanAccessProvider } from '@/contexts/PlanAccessContext';
 import { Sidebar } from '@/components/Dashboard/Sidebar/Sidebar';
 import { BottomNav } from '@/components/Dashboard/BottomNav/BottomNav';
 import { DashboardHeader } from '@/components/Dashboard/Header/DashboardHeader';
@@ -41,14 +42,16 @@ export default function DashboardLayout({
   return (
     <HeroUIProvider>
       <DashboardAuthProvider>
-        <SidebarProvider>
-          <PeriodProvider>
-          <AuthGuard>
-            <DashboardContent>{children}</DashboardContent>
-            <Toaster position="top-right" richColors />
-          </AuthGuard>
-          </PeriodProvider>
-        </SidebarProvider>
+        <PlanAccessProvider>
+          <SidebarProvider>
+            <PeriodProvider>
+              <AuthGuard>
+                <DashboardContent>{children}</DashboardContent>
+                <Toaster position="top-right" richColors />
+              </AuthGuard>
+            </PeriodProvider>
+          </SidebarProvider>
+        </PlanAccessProvider>
       </DashboardAuthProvider>
     </HeroUIProvider>
   );

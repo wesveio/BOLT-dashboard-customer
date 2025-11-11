@@ -1,5 +1,10 @@
 'use client';
 
+import { MetricWidget } from './Widgets/MetricWidget';
+import { RevenueChartWidget } from './Widgets/RevenueChartWidget';
+import { FunnelWidget } from './Widgets/FunnelWidget';
+import { BoltXMetricsWidget } from './Widgets/BoltXMetricsWidget';
+import { AnalyticsTableWidget } from './Widgets/AnalyticsTableWidget';
 import { MetricCard } from '../MetricCard/MetricCard';
 import { ChartCard } from '../ChartCard/ChartCard';
 import { ChartWrapper } from '../ChartWrapper/ChartWrapper';
@@ -7,10 +12,43 @@ import type { DashboardWidget } from './types';
 
 interface WidgetRendererProps {
   widget: DashboardWidget;
-  isEditing: boolean;
+  isEditing?: boolean;
 }
 
-export function WidgetRenderer({ widget }: WidgetRendererProps) {
+export function WidgetRenderer({ widget, isEditing = false }: WidgetRendererProps) {
+  // Check if widget has a dataSource configured - use specialized widgets
+  const hasDataSource = widget.config?.dataSource || 
+    (widget.type === 'metric' && widget.config?.metric) ||
+    (widget.type === 'chart' && widget.config?.dataSource) ||
+    (widget.type === 'funnel') ||
+    (widget.type === 'table' && widget.config?.tableType) ||
+    widget.type.startsWith('boltx-');
+
+  // Use specialized widgets for data-driven widgets
+  if (hasDataSource) {
+    switch (widget.type) {
+      case 'metric':
+        return <MetricWidget widget={widget} isEditing={isEditing} />;
+      
+      case 'chart':
+      case 'revenue-chart':
+        return <RevenueChartWidget widget={widget} isEditing={isEditing} />;
+      
+      case 'funnel':
+        return <FunnelWidget widget={widget} isEditing={isEditing} />;
+      
+      case 'boltx-interventions':
+      case 'boltx-personalization':
+      case 'boltx-optimization':
+        return <BoltXMetricsWidget widget={widget} isEditing={isEditing} />;
+      
+      case 'table':
+      case 'analytics-table':
+        return <AnalyticsTableWidget widget={widget} isEditing={isEditing} />;
+    }
+  }
+
+  // Fallback to static widgets for non-data-driven widgets
   switch (widget.type) {
     case 'metric':
       return (

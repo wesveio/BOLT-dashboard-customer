@@ -15,6 +15,8 @@ export interface DashboardWidget {
 export interface DashboardLayout {
   id: string;
   name: string;
+  description?: string;
+  isPublic?: boolean;
   widgets: DashboardWidget[];
   columns: number;
   createdAt?: string;

@@ -1,7 +1,9 @@
 'use client';
 
-import { Button, Input } from '@heroui/react';
-import { PencilIcon, CheckIcon, XMarkIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import { Button, Input, Switch, Spinner } from '@heroui/react';
+import { PencilIcon, CheckIcon, XMarkIcon, ArrowDownTrayIcon, LockClosedIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
+import { fadeIn } from '@/utils/animations';
 import type { DashboardLayout } from './types';
 
 interface DashboardToolbarProps {
@@ -10,6 +12,8 @@ interface DashboardToolbarProps {
   onToggleEdit: () => void;
   onSave: () => void;
   onUpdateName: (name: string) => void;
+  onUpdateVisibility?: (isPublic: boolean) => void;
+  isSaving?: boolean;
 }
 
 export function DashboardToolbar({
@@ -18,38 +22,80 @@ export function DashboardToolbar({
   onToggleEdit,
   onSave,
   onUpdateName,
+  onUpdateVisibility,
+  isSaving = false,
 }: DashboardToolbarProps) {
   return (
-    <div className="border-b border-gray-200 bg-white p-4 flex items-center justify-between">
-      <div className="flex items-center gap-4 flex-1">
-        {isEditing ? (
-          <Input
-            value={layout.name}
-            onChange={(e) => onUpdateName(e.target.value)}
-            className="max-w-xs"
-            size="sm"
-            variant="bordered"
-          />
-        ) : (
-          <h2 className="text-xl font-semibold">{layout.name}</h2>
-        )}
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={fadeIn}
+      className="border-b border-gray-100 bg-white shadow-sm"
+    >
+      <div className="px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-6 flex-1 min-w-0">
+          {isEditing ? (
+            <Input
+              value={layout.name}
+              onChange={(e) => onUpdateName(e.target.value)}
+              className="max-w-md"
+              size="lg"
+              variant="bordered"
+              placeholder="Dashboard name"
+              classNames={{
+                input: 'text-lg font-bold',
+              }}
+            />
+          ) : (
+            <h1 className="text-2xl font-bold text-gray-900 truncate">{layout.name}</h1>
+          )}
 
-        <div className="flex items-center gap-2">
+          {isEditing && onUpdateVisibility && (
+            <div className="flex items-center gap-3 px-4 py-2 rounded-lg bg-gray-50 border border-gray-200">
+              {layout.isPublic ? (
+                <GlobeAltIcon className="w-5 h-5 text-blue-600 flex-shrink-0" />
+              ) : (
+                <LockClosedIcon className="w-5 h-5 text-gray-500 flex-shrink-0" />
+              )}
+              <Switch
+                size="sm"
+                isSelected={layout.isPublic || false}
+                onValueChange={onUpdateVisibility}
+                aria-label="Make dashboard public"
+                classNames={{
+                  base: 'max-w-fit',
+                  wrapper: 'group-data-[selected=true]:bg-gradient-to-r group-data-[selected=true]:from-blue-600 group-data-[selected=true]:to-purple-600',
+                }}
+              >
+                <span className="text-sm font-semibold text-gray-700">
+                  {layout.isPublic ? 'Public' : 'Private'}
+                </span>
+              </Switch>
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center gap-3 flex-shrink-0">
           {isEditing ? (
             <>
               <Button
-                size="sm"
+                size="lg"
                 color="primary"
-                startContent={<CheckIcon className="w-4 h-4" />}
-                onClick={onSave}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 font-semibold"
+                startContent={isSaving ? <Spinner size="sm" /> : <CheckIcon className="w-5 h-5" />}
+                onPress={onSave}
+                isLoading={isSaving}
+                isDisabled={isSaving}
               >
-                Save
+                {isSaving ? 'Saving...' : 'Save'}
               </Button>
               <Button
-                size="sm"
+                size="lg"
                 variant="light"
-                startContent={<XMarkIcon className="w-4 h-4" />}
-                onClick={onToggleEdit}
+                className="hover:bg-gray-100 transition-colors font-semibold"
+                startContent={<XMarkIcon className="w-5 h-5" />}
+                onPress={onToggleEdit}
+                isDisabled={isSaving}
               >
                 Cancel
               </Button>
@@ -57,17 +103,19 @@ export function DashboardToolbar({
           ) : (
             <>
               <Button
-                size="sm"
+                size="lg"
                 variant="light"
-                startContent={<PencilIcon className="w-4 h-4" />}
-                onClick={onToggleEdit}
+                className="hover:bg-gray-100 transition-colors font-semibold"
+                startContent={<PencilIcon className="w-5 h-5" />}
+                onPress={onToggleEdit}
               >
                 Edit
               </Button>
               <Button
-                size="sm"
+                size="lg"
                 variant="light"
-                startContent={<ArrowDownTrayIcon className="w-4 h-4" />}
+                className="hover:bg-gray-100 transition-colors font-semibold"
+                startContent={<ArrowDownTrayIcon className="w-5 h-5" />}
               >
                 Export
               </Button>
@@ -75,7 +123,7 @@ export function DashboardToolbar({
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

@@ -1,67 +1,68 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion as m } from 'framer-motion';
 import { Card, CardBody, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Spinner } from '@heroui/react';
 import { fadeIn, slideIn } from '@/utils/animations';
 import { useDashboardAuth } from '@/hooks/useDashboardAuth';
+import { usePlanAccessContext } from '@/contexts/PlanAccessContext';
+import { useApi } from '@/hooks/useApi';
 import { PricingCard } from '@/components/Dashboard/Plans/PricingCard';
 import { SubscriptionHistory } from '@/components/Dashboard/Plans/SubscriptionHistory';
 import { PlanComparison } from '@/components/Dashboard/Plans/PlanComparison';
-import { Plan, Subscription, SubscriptionTransaction, comparePlans, getPlanDisplayName } from '@/utils/plans';
+import { Plan, SubscriptionTransaction, comparePlans, getPlanDisplayName } from '@/utils/plans';
 import { toast } from 'sonner';
+
+interface PlansResponse {
+  plans: Plan[];
+}
+
+interface TransactionsResponse {
+  transactions: SubscriptionTransaction[];
+}
 
 export default function PlansPage() {
   const t = useTranslations('dashboard.plans');
   const { user, isLoading: authLoading } = useDashboardAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  
+  // Use context for subscriptions (shared across app)
+  const { subscriptions, subscription: currentSubscription, refetch: refetchSubscriptions } = usePlanAccessContext();
+  
+  // Use useApi for plans and transactions with caching
+  const { data: plansData, isLoading: plansLoading, refetch: refetchPlans } = useApi<PlansResponse>(
+    '/api/dashboard/plans',
+    {
+      cacheKey: 'dashboard-plans',
+      cacheTTL: 30, // 30 minutes
+      deduplicateRequests: true,
+    }
+  );
+  
+  const { data: transactionsData, isLoading: transactionsLoading, refetch: refetchTransactions } = useApi<TransactionsResponse>(
+    '/api/dashboard/subscriptions/transactions',
+    {
+      cacheKey: 'dashboard-subscriptions-transactions',
+      cacheTTL: 5, // 5 minutes
+      deduplicateRequests: true,
+    }
+  );
 
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [currentSubscription, setCurrentSubscription] = useState<Subscription | null>(null);
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
-  const [transactions, setTransactions] = useState<SubscriptionTransaction[]>([]);
+  const plans = plansData?.plans || [];
+  const transactions = transactionsData?.transactions || [];
+  const isLoading = plansLoading || transactionsLoading || authLoading;
+  
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  useEffect(() => {
-    if (!authLoading && user) {
-      fetchData();
-    }
-  }, [authLoading, user]);
-
   const fetchData = async () => {
-    setIsLoading(true);
-    try {
-      // Fetch plans
-      const plansResponse = await fetch('/api/dashboard/plans');
-      if (plansResponse.ok) {
-        const plansData = await plansResponse.json();
-        setPlans(plansData.plans || []);
-      }
-
-      // Fetch subscriptions
-      const subscriptionsResponse = await fetch('/api/dashboard/subscriptions');
-      if (subscriptionsResponse.ok) {
-        const subscriptionsData = await subscriptionsResponse.json();
-        setSubscriptions(subscriptionsData.subscriptions || []);
-        const activeSub = subscriptionsData.subscriptions?.find((s: Subscription) => s.status === 'active');
-        setCurrentSubscription(activeSub || null);
-      }
-
-      // Fetch transactions
-      const transactionsResponse = await fetch('/api/dashboard/subscriptions/transactions');
-      if (transactionsResponse.ok) {
-        const transactionsData = await transactionsResponse.json();
-        setTransactions(transactionsData.transactions || []);
-      }
-    } catch (error) {
-      console.error('❌ [DEBUG] Failed to fetch plans data:', error);
-      toast.error(t('toast.failedToLoad'));
-    } finally {
-      setIsLoading(false);
-    }
+    // Refetch all data when needed
+    await Promise.all([
+      refetchPlans(),
+      refetchSubscriptions(),
+      refetchTransactions(),
+    ]);
   };
 
   const handlePlanSelect = (plan: Plan) => {
@@ -88,7 +89,8 @@ export default function PlansPage() {
         toast.success(t('toast.updateSuccess'));
         onClose();
         setSelectedPlan(null);
-        fetchData(); // Refresh data
+        // Refresh all data after subscription update
+        await fetchData();
       } else {
         const error = await response.json();
         toast.error(error.error || t('toast.updateError'));

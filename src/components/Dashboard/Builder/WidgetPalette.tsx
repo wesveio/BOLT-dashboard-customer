@@ -81,7 +81,11 @@ export function WidgetPalette({ onAddWidget }: WidgetPaletteProps) {
           >
             <Card
               className="cursor-pointer border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-200"
-              onClick={() => onAddWidget(widget.type)}
+              isPressable
+              onPress={() => {
+                console.log('✅ [DEBUG] Adding widget:', widget.type);
+                onAddWidget(widget.type);
+              }}
             >
               <CardBody className="p-4">
                 <div className="flex items-start gap-3">
