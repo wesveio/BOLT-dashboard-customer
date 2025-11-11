@@ -69,6 +69,7 @@
       "performance": "Rendimiento",
       "revenue": "Ingresos",
       "analytics": "Analíticas",
+      "security": "Seguridad",
       "themes": "Temas",
       "insights": "Insights",
       "boltx": "BoltX",
@@ -85,6 +86,7 @@
       "performance": "Rendimiento",
       "revenue": "Ingresos",
       "analytics": "Analíticas",
+      "security": "Seguridad",
       "payment": "Métodos de Pago",
       "shipping": "Envío y Entrega",
       "devices": "Distribución por Dispositivo",
@@ -208,6 +210,31 @@
       "messages": {
         "loading": "Cargando datos de ingresos...",
         "failedToLoad": "Error al cargar datos de ingresos"
+      }
+    },
+    "security": {
+      "title": "Seguridad y Protección contra Fraude",
+      "subtitle": "Monitorea transacciones, detecta fraude y protege tu checkout",
+      "metrics": {
+        "totalTransactions": "Total de Transacciones",
+        "highRiskTransactions": "Transacciones de Alto Riesgo",
+        "blockedTransactions": "Transacciones Bloqueadas",
+        "avgRiskScore": "Puntuación Promedio de Riesgo",
+        "fraudDetected": "Fraude Detectado",
+        "validationErrors": "Errores de Validación",
+        "scaRequired": "SCA Requerido",
+        "anomaliesDetected": "Anomalías Detectadas"
+      },
+      "charts": {
+        "riskDistribution": "Distribución de Riesgo",
+        "trends": "Tendencias de Seguridad"
+      },
+      "recentAlerts": {
+        "title": "Alertas de Seguridad Recientes"
+      },
+      "messages": {
+        "loading": "Cargando datos de seguridad...",
+        "failedToLoad": "Error al cargar datos de seguridad"
       }
     },
     "analytics": {
@@ -389,6 +416,7 @@
         "status": "ESTADO",
         "recommendations": "RECOMENDACIONES",
         "completed": "Completado",
+        "abandoned": "Abandonado",
         "active": "Activo",
         "noHighRiskTitle": "Sin Sesiones de Alto Riesgo",
         "noHighRiskSubtitle": "No se detectaron sesiones de alto riesgo en el período seleccionado",

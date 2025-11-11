@@ -69,6 +69,7 @@
       "performance": "Desempenho",
       "revenue": "Receita",
       "analytics": "Analytics",
+      "security": "Segurança",
       "themes": "Temas",
       "insights": "Insights",
       "boltx": "BoltX",
@@ -85,6 +86,7 @@
       "performance": "Desempenho",
       "revenue": "Receita",
       "analytics": "Analytics",
+      "security": "Segurança",
       "payment": "Métodos de Pagamento",
       "shipping": "Frete e Entrega",
       "devices": "Distribuição por Dispositivo",
@@ -208,6 +210,31 @@
       "messages": {
         "loading": "Carregando dados de receita...",
         "failedToLoad": "Falha ao carregar dados de receita"
+      }
+    },
+    "security": {
+      "title": "Segurança e Proteção contra Fraude",
+      "subtitle": "Monitore transações, detecte fraudes e proteja seu checkout",
+      "metrics": {
+        "totalTransactions": "Total de Transações",
+        "highRiskTransactions": "Transações de Alto Risco",
+        "blockedTransactions": "Transações Bloqueadas",
+        "avgRiskScore": "Score Médio de Risco",
+        "fraudDetected": "Fraude Detectada",
+        "validationErrors": "Erros de Validação",
+        "scaRequired": "SCA Necessário",
+        "anomaliesDetected": "Anomalias Detectadas"
+      },
+      "charts": {
+        "riskDistribution": "Distribuição de Risco",
+        "trends": "Tendências de Segurança"
+      },
+      "recentAlerts": {
+        "title": "Alertas de Segurança Recentes"
+      },
+      "messages": {
+        "loading": "Carregando dados de segurança...",
+        "failedToLoad": "Falha ao carregar dados de segurança"
       }
     },
     "analytics": {
@@ -389,6 +416,7 @@
         "status": "STATUS",
         "recommendations": "RECOMENDAÇÕES",
         "completed": "Concluído",
+        "abandoned": "Abandonado",
         "active": "Ativo",
         "noHighRiskTitle": "Sem Sessões de Alto Risco",
         "noHighRiskSubtitle": "Nenhuma sessão de alto risco detectada no período selecionado",

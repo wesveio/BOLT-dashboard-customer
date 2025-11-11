@@ -21,6 +21,7 @@ import {
   KeyIcon,
   BoltIcon,
   CpuChipIcon,
+  ShieldCheckIcon,
 } from '@heroicons/react/24/outline';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useDashboardAuth } from '@/hooks/useDashboardAuth';
@@ -142,6 +143,7 @@ export function Sidebar() {
         },
       ],
     },
+    { href: '/dashboard/security', icon: ShieldCheckIcon, label: t('security') },
     { href: '/dashboard/themes', icon: PaintBrushIcon, label: t('themes') },
     { href: '/dashboard/insights', icon: LightBulbIcon, label: t('insights') },
     {

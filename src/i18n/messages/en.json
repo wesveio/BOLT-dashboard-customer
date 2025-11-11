@@ -69,6 +69,7 @@
       "performance": "Performance",
       "revenue": "Revenue",
       "analytics": "Analytics",
+      "security": "Security",
       "themes": "Themes",
       "insights": "Insights",
       "boltx": "BoltX",
@@ -85,6 +86,7 @@
       "performance": "Performance",
       "revenue": "Revenue",
       "analytics": "Analytics",
+      "security": "Security",
       "payment": "Payment Methods",
       "shipping": "Shipping & Delivery",
       "devices": "Device Breakdown",
@@ -219,6 +221,31 @@
       "messages": {
         "loading": "Loading revenue data...",
         "failedToLoad": "Failed to load revenue data"
+      }
+    },
+    "security": {
+      "title": "Security & Fraud Protection",
+      "subtitle": "Monitor transactions, detect fraud, and protect your checkout",
+      "metrics": {
+        "totalTransactions": "Total Transactions",
+        "highRiskTransactions": "High Risk Transactions",
+        "blockedTransactions": "Blocked Transactions",
+        "avgRiskScore": "Average Risk Score",
+        "fraudDetected": "Fraud Detected",
+        "validationErrors": "Validation Errors",
+        "scaRequired": "SCA Required",
+        "anomaliesDetected": "Anomalies Detected"
+      },
+      "charts": {
+        "riskDistribution": "Risk Distribution",
+        "trends": "Security Trends"
+      },
+      "recentAlerts": {
+        "title": "Recent Security Alerts"
+      },
+      "messages": {
+        "loading": "Loading security data...",
+        "failedToLoad": "Failed to load security data"
       }
     },
     "analytics": {
