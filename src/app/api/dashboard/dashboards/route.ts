@@ -1,16 +1,14 @@
 /**
- * BoltMetrics Custom Dashboards API
+ * Custom Dashboards API
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseAdmin, validateSupabaseAdmin } from '@/lib/supabase';
-import { cookies } from 'next/headers';
-import { isSessionValid } from '@/lib/api/auth';
+import { validateSupabaseAdmin } from '@/lib/supabase';
 import { getAuthenticatedUser } from '@/lib/api/auth';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const validationError = validateSupabaseAdmin();
     if (validationError) return validationError;
@@ -20,8 +18,6 @@ export async function GET(request: NextRequest) {
     if (!user.account_id) {
       return NextResponse.json({ error: 'User account not found' }, { status: 404 });
     }
-
-    const supabase = getSupabaseAdmin();
 
     // TODO: In production, fetch dashboards from database
     // For now, return mock data

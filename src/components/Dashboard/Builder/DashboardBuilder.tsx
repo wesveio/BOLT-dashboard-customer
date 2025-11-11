@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Card, CardBody, Button } from '@heroui/react';
-import { motion } from 'framer-motion';
 import { DashboardGrid } from './DashboardGrid';
 import { WidgetPalette } from './WidgetPalette';
 import { DashboardToolbar } from './DashboardToolbar';

@@ -69,6 +69,7 @@
       "performance": "Performance",
       "revenue": "Revenue",
       "analytics": "Analytics",
+      "dashboards": "Dashboards",
       "security": "Security",
       "themes": "Themes",
       "insights": "Insights",
@@ -1174,6 +1175,32 @@
       "messages": {
         "generating": "Generating insights...",
         "failedToLoad": "Failed to load insights"
+      }
+    },
+    "dashboards": {
+      "title": "My Dashboards",
+      "subtitle": "Create and manage custom dashboards",
+      "createNew": "Create New Dashboard",
+      "edit": "Edit",
+      "delete": "Delete",
+      "loading": "Loading dashboards...",
+      "empty": "No dashboards yet",
+      "emptyDescription": "Create your first custom dashboard to get started.",
+      "updatedAt": "Updated",
+      "createdAt": "Created",
+      "widgets": "widgets",
+      "confirmDelete": "Confirm Deletion",
+      "deleteWarning": "This action cannot be undone.",
+      "deleteSuccess": "Dashboard deleted successfully",
+      "deleteError": "Failed to delete dashboard",
+      "duplicateSuccess": "Dashboard duplicated successfully",
+      "duplicateError": "Failed to duplicate dashboard",
+      "sidebar": {
+        "myDashboards": "My Dashboards",
+        "builder": "Builder"
+      },
+      "builder": {
+        "title": "Dashboard Builder"
       }
     },
     "profile": {

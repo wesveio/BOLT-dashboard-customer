@@ -69,6 +69,7 @@
       "performance": "Rendimiento",
       "revenue": "Ingresos",
       "analytics": "Analíticas",
+      "dashboards": "Dashboards",
       "security": "Seguridad",
       "themes": "Temas",
       "insights": "Insights",
@@ -1163,6 +1164,32 @@
       "messages": {
         "generating": "Generando insights...",
         "failedToLoad": "Error al cargar insights"
+      }
+    },
+    "dashboards": {
+      "title": "Mis Dashboards",
+      "subtitle": "Crea y gestiona dashboards personalizados",
+      "createNew": "Crear Nuevo Dashboard",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "loading": "Cargando dashboards...",
+      "empty": "Aún no hay dashboards",
+      "emptyDescription": "Crea tu primer dashboard personalizado para comenzar.",
+      "updatedAt": "Actualizado",
+      "createdAt": "Creado",
+      "widgets": "widgets",
+      "confirmDelete": "Confirmar Eliminación",
+      "deleteWarning": "Esta acción no se puede deshacer.",
+      "deleteSuccess": "Dashboard eliminado con éxito",
+      "deleteError": "Error al eliminar dashboard",
+      "duplicateSuccess": "Dashboard duplicado con éxito",
+      "duplicateError": "Error al duplicar dashboard",
+      "sidebar": {
+        "myDashboards": "Mis Dashboards",
+        "builder": "Constructor"
+      },
+      "builder": {
+        "title": "Constructor de Dashboard"
       }
     },
     "profile": {

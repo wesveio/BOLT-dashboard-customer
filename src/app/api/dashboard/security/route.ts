@@ -57,6 +57,8 @@ export async function GET(request: NextRequest) {
     const endDate = searchParams.get('endDate');
 
     // Calculate date range
+    // Note: dateFrom is calculated but not yet used in mock data
+    // In production, this will be used to filter data from the database
     let dateFrom: Date;
     let dateTo = new Date();
 
@@ -81,6 +83,9 @@ export async function GET(request: NextRequest) {
           dateFrom = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
       }
     }
+
+    // Suppress unused variable warning - dateFrom will be used in production
+    void dateFrom;
 
     // TODO: In production, fetch actual data from BoltGuard monitoring system
     // For now, return mock data structure

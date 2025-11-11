@@ -22,6 +22,7 @@ import {
   BoltIcon,
   CpuChipIcon,
   ShieldCheckIcon,
+  Squares2X2Icon,
 } from '@heroicons/react/24/outline';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useDashboardAuth } from '@/hooks/useDashboardAuth';
@@ -46,6 +47,7 @@ export function Sidebar() {
   const t = useTranslations('dashboard.sidebar');
   const tAnalytics = useTranslations('dashboard.analytics');
   const tBoltX = useTranslations('dashboard.boltx');
+  const tDashboards = useTranslations('dashboard.dashboards');
   const pathname = usePathname();
   const { user, isLoading } = useDashboardAuth();
   const { canAccessRoute } = usePlanAccess();
@@ -140,6 +142,23 @@ export function Sidebar() {
           href: '/dashboard/analytics/browsers',
           label: tAnalytics('browsers.title'),
           translationKey: 'dashboard.analytics.browsers.title',
+        },
+      ],
+    },
+    {
+      href: '/dashboard/dashboards',
+      icon: Squares2X2Icon,
+      label: t('dashboards'),
+      subItems: [
+        {
+          href: '/dashboard/dashboards',
+          label: tDashboards('sidebar.myDashboards'),
+          translationKey: 'dashboard.dashboards.sidebar.myDashboards',
+        },
+        {
+          href: '/dashboard/dashboards/builder',
+          label: tDashboards('sidebar.builder'),
+          translationKey: 'dashboard.dashboards.sidebar.builder',
         },
       ],
     },

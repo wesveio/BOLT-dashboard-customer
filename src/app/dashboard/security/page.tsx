@@ -7,9 +7,7 @@ import {
   ShieldCheckIcon,
   ExclamationTriangleIcon,
   ChartBarIcon,
-  ClockIcon,
   XCircleIcon,
-  CheckCircleIcon,
   LockClosedIcon,
   EyeIcon,
 } from '@heroicons/react/24/outline';
@@ -24,6 +22,7 @@ import { RealtimeIndicator } from '@/components/Dashboard/RealtimeIndicator/Real
 import { useApi } from '@/hooks/useApi';
 import { usePeriod } from '@/contexts/PeriodContext';
 import { formatNumber, formatPercentage } from '@/utils/formatters';
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend, LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 interface SecurityMetrics {
   totalTransactions: number;
@@ -107,45 +106,24 @@ export default function SecurityPage() {
     return (metrics.fraudDetected / metrics.totalTransactions) * 100;
   }, [metrics]);
 
-  // Prepare chart data
+  // Prepare chart data for Recharts
   const riskChartData = useMemo(() => {
-    return {
-      labels: ['Low', 'Medium', 'High', 'Critical'],
-      datasets: [
-        {
-          label: 'Risk Distribution',
-          data: [riskDistribution.low, riskDistribution.medium, riskDistribution.high, riskDistribution.critical],
-          backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#dc2626'],
-        },
-      ],
-    };
+    return [
+      { name: 'Low', value: riskDistribution.low, color: '#10b981' },
+      { name: 'Medium', value: riskDistribution.medium, color: '#f59e0b' },
+      { name: 'High', value: riskDistribution.high, color: '#ef4444' },
+      { name: 'Critical', value: riskDistribution.critical, color: '#dc2626' },
+    ];
   }, [riskDistribution]);
 
   const trendChartData = useMemo(() => {
     const trend = data?.trendData || [];
-    return {
-      labels: trend.map((d) => new Date(d.date).toLocaleDateString()),
-      datasets: [
-        {
-          label: 'Total Transactions',
-          data: trend.map((d) => d.transactions),
-          borderColor: '#3b82f6',
-          backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        },
-        {
-          label: 'High Risk',
-          data: trend.map((d) => d.highRisk),
-          borderColor: '#ef4444',
-          backgroundColor: 'rgba(239, 68, 68, 0.1)',
-        },
-        {
-          label: 'Blocked',
-          data: trend.map((d) => d.blocked),
-          borderColor: '#dc2626',
-          backgroundColor: 'rgba(220, 38, 38, 0.1)',
-        },
-      ],
-    };
+    return trend.map((d) => ({
+      date: new Date(d.date).toLocaleDateString(),
+      'Total Transactions': d.transactions,
+      'High Risk': d.highRisk,
+      'Blocked': d.blocked,
+    }));
   }, [data]);
 
   if (isLoading) {
@@ -233,18 +211,42 @@ export default function SecurityPage() {
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <ChartCard
-          title={t('charts.riskDistribution')}
-          chartType="doughnut"
-          data={riskChartData}
-          height={300}
-        />
-        <ChartCard
-          title={t('charts.trends')}
-          chartType="line"
-          data={trendChartData}
-          height={300}
-        />
+        <ChartCard title={t('charts.riskDistribution')}>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={riskChartData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {riskChartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </ChartCard>
+        <ChartCard title={t('charts.trends')}>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={trendChartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="date" stroke="#6b7280" tick={{ fill: '#6b7280', fontSize: 12 }} />
+              <YAxis stroke="#6b7280" tick={{ fill: '#6b7280', fontSize: 12 }} />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="Total Transactions" stroke="#3b82f6" strokeWidth={2} />
+              <Line type="monotone" dataKey="High Risk" stroke="#ef4444" strokeWidth={2} />
+              <Line type="monotone" dataKey="Blocked" stroke="#dc2626" strokeWidth={2} />
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartCard>
       </div>
 
       {/* Recent Alerts */}

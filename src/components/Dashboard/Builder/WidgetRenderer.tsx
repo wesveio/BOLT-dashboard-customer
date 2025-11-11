@@ -2,6 +2,7 @@
 
 import { MetricCard } from '../MetricCard/MetricCard';
 import { ChartCard } from '../ChartCard/ChartCard';
+import { ChartWrapper } from '../ChartWrapper/ChartWrapper';
 import type { DashboardWidget } from './types';
 
 interface WidgetRendererProps {
@@ -9,7 +10,7 @@ interface WidgetRendererProps {
   isEditing: boolean;
 }
 
-export function WidgetRenderer({ widget, isEditing }: WidgetRendererProps) {
+export function WidgetRenderer({ widget }: WidgetRendererProps) {
   switch (widget.type) {
     case 'metric':
       return (
@@ -22,13 +23,39 @@ export function WidgetRenderer({ widget, isEditing }: WidgetRendererProps) {
       );
 
     case 'chart':
+      // Convert Chart.js format to Recharts format if needed
+      const chartData = widget.config.data;
+      const chartType = widget.config.chartType || 'line';
+      
+      // If data is in Chart.js format (labels, datasets), convert it
+      let rechartsData: any[] = [];
+      if (chartData && 'labels' in chartData && 'datasets' in chartData) {
+        const labels = chartData.labels || [];
+        const datasets = chartData.datasets || [];
+        if (datasets.length > 0) {
+          rechartsData = labels.map((label: string, index: number) => {
+            const item: any = { name: label };
+            datasets.forEach((dataset: any) => {
+              item[dataset.label || 'value'] = dataset.data?.[index] || 0;
+            });
+            return item;
+          });
+        }
+      } else if (Array.isArray(chartData)) {
+        rechartsData = chartData;
+      }
+      
       return (
-        <ChartCard
-          title={widget.config.title || 'Chart'}
-          chartType={widget.config.chartType || 'line'}
-          data={widget.config.data || { labels: [], datasets: [] }}
-          height={200}
-        />
+        <ChartCard title={widget.config.title || 'Chart'}>
+          <ChartWrapper
+            data={rechartsData}
+            type={chartType === 'doughnut' || chartType === 'pie' ? 'bar' : chartType}
+            dataKey={rechartsData.length > 0 ? Object.keys(rechartsData[0]).find(key => key !== 'name') || 'value' : 'value'}
+            xAxisKey="name"
+            height={200}
+            emptyMessage="No chart data available"
+          />
+        </ChartCard>
       );
 
     case 'table':

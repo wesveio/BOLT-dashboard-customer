@@ -15,6 +15,7 @@ export const FEATURE_ROUTE_MAP: Record<string, string | null> = {
   '/dashboard/performance': 'bolt_core', // Performance - available to all plans
   '/dashboard/revenue': 'bolt_core', // Revenue - available to all plans
   '/dashboard/analytics': 'boltmetrics', // Analytics - Professional and Enterprise
+  '/dashboard/dashboards': 'boltmetrics', // Dashboards - Professional and Enterprise
   '/dashboard/themes': 'boltflow_complete', // Themes - Professional and Enterprise
   '/dashboard/insights': 'boltmetrics', // Insights - Professional and Enterprise
   '/dashboard/boltx': 'boltx', // BoltX - Enterprise only
