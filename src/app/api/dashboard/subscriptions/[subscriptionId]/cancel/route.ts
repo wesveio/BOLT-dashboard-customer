@@ -92,26 +92,47 @@ export async function DELETE(
       );
     }
 
-    // Get the last successful transaction for this subscription
+    // Get the last successful transaction for this subscription using RPC function
+    // (required for custom schema access)
     const { data: transactions, error: transactionsError } = await supabase
-      .from('subscription_transactions')
-      .select('transaction_date, status')
-      .eq('subscription_id', subscriptionId)
-      .eq('status', 'completed')
-      .order('transaction_date', { ascending: false })
-      .limit(1);
+      .rpc('get_subscription_transactions', { p_subscription_ids: [subscriptionId] });
 
     if (transactionsError) {
-      console.error('❌ [DEBUG] Error fetching transactions:', transactionsError);
-      return NextResponse.json({ error: 'Failed to fetch transactions' }, { status: 500 });
+      console.error('❌ [DEBUG] Error fetching transactions:', {
+        error: transactionsError,
+        message: transactionsError.message,
+        details: transactionsError.details,
+        hint: transactionsError.hint,
+        code: transactionsError.code,
+        subscriptionId,
+      });
+      return NextResponse.json(
+        { 
+          error: 'Failed to fetch transactions',
+          details: transactionsError.message || 'Unknown error',
+        },
+        { status: 500 }
+      );
     }
+
+    // Filter for completed transactions and get the most recent one
+    const completedTransactions = transactions?.filter(
+      (t: any) => t.status === 'completed'
+    ) || [];
+    
+    const lastTransaction = completedTransactions.length > 0
+      ? completedTransactions.sort(
+          (a: any, b: any) => 
+            new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
+        )[0]
+      : null;
 
     const paymentGateway = getPaymentGatewayFromEnv();
     const now = new Date();
     let endedAt: Date | null = null;
 
     // If there are no successful transactions, cancel immediately
-    if (!transactions || transactions.length === 0) {
+    if (!lastTransaction) {
       endedAt = now;
       
       // Cancel immediately in payment gateway
@@ -150,7 +171,6 @@ export async function DELETE(
     }
 
     // If there are successful transactions, calculate period end
-    const lastTransaction = transactions[0];
     const lastTransactionDate = new Date(lastTransaction.transaction_date);
     endedAt = calculatePeriodEnd(lastTransactionDate, subscription.billing_cycle);
 

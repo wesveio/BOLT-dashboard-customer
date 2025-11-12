@@ -18,6 +18,7 @@ export const FEATURE_ROUTE_MAP: Record<string, string | null> = {
   '/dashboard/dashboards': 'boltmetrics', // Dashboards - Professional and Enterprise
   '/dashboard/themes': 'boltflow_complete', // Themes - Professional and Enterprise
   '/dashboard/insights': 'boltmetrics', // Insights - Professional and Enterprise
+  '/dashboard/security': 'boltguard', // Security - Professional and Enterprise (BoltGuard)
   '/dashboard/boltx': 'boltx', // BoltX - Enterprise only
   '/dashboard/plans': null, // Plans - always available
   '/dashboard/integrations': 'bolt_core', // Integrations - available to all plans
@@ -27,9 +28,9 @@ export const FEATURE_ROUTE_MAP: Record<string, string | null> = {
 /**
  * Get the required feature for a route
  * @param route - The route path to check
- * @returns The feature code required, or null if no feature is required
+ * @returns The feature code required, or null if no feature is required, or undefined if route is unknown
  */
-export function getRouteRequiredFeature(route: string): string | null {
+export function getRouteRequiredFeature(route: string): string | null | undefined {
   // Normalize route (remove trailing slash, ensure it starts with /dashboard)
   const normalizedRoute = route.replace(/\/$/, '') || '/dashboard';
   
@@ -47,8 +48,8 @@ export function getRouteRequiredFeature(route: string): string | null {
     }
   }
   
-  // Default: require bolt_core for unknown routes
-  return 'bolt_core';
+  // Unknown route - return undefined to deny access by default
+  return undefined;
 }
 
 /**
@@ -58,17 +59,21 @@ export function getRouteRequiredFeature(route: string): string | null {
  * @returns true if the plan has access to the route, false otherwise
  */
 export function canAccessRoute(plan: Plan | null, route: string): boolean {
-  // If no plan, deny access (except for always-available routes)
-  if (!plan) {
-    const requiredFeature = getRouteRequiredFeature(route);
-    return requiredFeature === null;
-  }
-  
   const requiredFeature = getRouteRequiredFeature(route);
   
-  // If no feature is required, allow access
+  // If route is unknown (undefined), deny access by default
+  if (requiredFeature === undefined) {
+    return false;
+  }
+  
+  // If no feature is required (null), allow access
   if (requiredFeature === null) {
     return true;
+  }
+  
+  // If no plan, deny access (feature is required but no plan available)
+  if (!plan) {
+    return false;
   }
   
   // Check if plan has the required feature

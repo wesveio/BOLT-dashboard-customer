@@ -27,6 +27,7 @@ import {
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useDashboardAuth } from '@/hooks/useDashboardAuth';
 import { usePlanAccess } from '@/hooks/usePlanAccess';
+import { getRouteRequiredFeature } from '@/utils/feature-routes';
 import { Avatar } from '@heroui/react';
 
 interface NavSubItem {
@@ -48,8 +49,11 @@ export function Sidebar() {
   const tAnalytics = useTranslations('dashboard.analytics');
   const tBoltX = useTranslations('dashboard.boltx');
   const pathname = usePathname();
-  const { user, isLoading } = useDashboardAuth();
-  const { canAccessRoute } = usePlanAccess();
+  const { user, isLoading: authLoading } = useDashboardAuth();
+  const { canAccessRoute, isLoading: planLoading } = usePlanAccess();
+  
+  // Combined loading state - show only always-available routes while loading
+  const isLoading = authLoading || planLoading;
 
   // Define all nav items (will be filtered by plan features)
   // Note: BoltX is included here and will be filtered by canAccessRoute
@@ -190,8 +194,29 @@ export function Sidebar() {
   ];
 
   // Filter nav items based on plan features
+  // During loading, only show routes that are always available (no feature required)
   const navItems: NavItem[] = allNavItems
     .map((item) => {
+      // During loading, only show routes that are always available (no feature required)
+      if (isLoading) {
+        // Check if route is always available by checking if it requires a feature
+        const requiredFeature = getRouteRequiredFeature(item.href);
+        // Only show routes that don't require a feature (null) or are unknown (undefined - deny by default)
+        if (requiredFeature !== null) {
+          return null;
+        }
+        
+        // For always-available routes during loading, show without sub-items
+        if (item.subItems) {
+          return {
+            ...item,
+            subItems: [],
+          };
+        }
+        return item;
+      }
+      
+      // Normal filtering when not loading
       // Check if parent route is accessible
       const parentAccessible = canAccessRoute(item.href);
       
@@ -257,7 +282,7 @@ export function Sidebar() {
     >
       <div className={`flex-1 overflow-y-auto p-6 transition-all duration-200 ${isCollapsed ? 'px-4' : ''}`}>
         {/* Account Info Section */}
-        {!isLoading && user && (
+        {!authLoading && user && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
