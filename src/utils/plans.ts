@@ -26,8 +26,13 @@ export interface Subscription {
   status: SubscriptionStatus;
   started_at: string;
   ended_at: string | null;
+  cancelled_at?: string | null;
   billing_cycle: BillingCycle;
   plan?: Plan;
+  // Payment gateway fields
+  payment_provider?: string;
+  gateway_subscription_id?: string;
+  gateway_customer_id?: string;
 }
 
 export interface SubscriptionTransaction {
@@ -39,6 +44,15 @@ export interface SubscriptionTransaction {
   status: TransactionStatus;
   transaction_type: 'subscription' | 'upgrade' | 'downgrade' | 'refund';
   metadata?: Record<string, any>;
+  // Payment gateway fields
+  payment_provider?: string;
+  payment_intent_id?: string;
+  payment_method_id?: string;
+  gateway_subscription_id?: string;
+  gateway_customer_id?: string;
+  gateway_invoice_id?: string;
+  receipt_url?: string;
+  invoice_url?: string;
 }
 
 /**
@@ -233,5 +247,35 @@ export function hasFeature(plan: Plan, featureCode: string): boolean {
 export function comparePlans(plan1: PlanCode, plan2: PlanCode): 'same' | 'upgrade' | 'downgrade' {
   if (plan1 === plan2) return 'same';
   return canUpgrade(plan1, plan2) ? 'upgrade' : 'downgrade';
+}
+
+/**
+ * Calculate the end date of the billing period based on the last successful transaction
+ * @param lastTransactionDate - Date of the last successful transaction
+ * @param billingCycle - Billing cycle ('monthly' or 'yearly')
+ * @returns End date of the current billing period
+ */
+export function calculatePeriodEnd(
+  lastTransactionDate: Date,
+  billingCycle: BillingCycle
+): Date {
+  const endDate = new Date(lastTransactionDate);
+  
+  if (billingCycle === 'monthly') {
+    endDate.setMonth(endDate.getMonth() + 1);
+  } else if (billingCycle === 'yearly') {
+    endDate.setFullYear(endDate.getFullYear() + 1);
+  }
+  
+  return endDate;
+}
+
+/**
+ * Check if a subscription can be cancelled
+ * @param subscription - Subscription to check
+ * @returns true if the subscription can be cancelled
+ */
+export function canCancelSubscription(subscription: Subscription): boolean {
+  return subscription.status === 'active';
 }
 

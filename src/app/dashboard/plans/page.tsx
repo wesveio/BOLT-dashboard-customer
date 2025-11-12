@@ -11,6 +11,8 @@ import { useApi } from '@/hooks/useApi';
 import { PricingCard } from '@/components/Dashboard/Plans/PricingCard';
 import { SubscriptionHistory } from '@/components/Dashboard/Plans/SubscriptionHistory';
 import { PlanComparison } from '@/components/Dashboard/Plans/PlanComparison';
+import { PaymentForm } from '@/components/Dashboard/Plans/PaymentForm';
+import { CancelSubscriptionModal } from '@/components/Dashboard/Plans/CancelSubscriptionModal';
 import { Plan, SubscriptionTransaction, comparePlans, getPlanDisplayName } from '@/utils/plans';
 import { toast } from 'sonner';
 
@@ -26,6 +28,8 @@ export default function PlansPage() {
   const t = useTranslations('dashboard.plans');
   const { user, isLoading: authLoading } = useDashboardAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isPaymentOpen, onOpen: onPaymentOpen, onClose: onPaymentClose } = useDisclosure();
+  const { isOpen: isCancelOpen, onOpen: onCancelOpen, onClose: onCancelClose } = useDisclosure();
   
   // Use context for subscriptions (shared across app)
   const { subscriptions, subscription: currentSubscription, refetch: refetchSubscriptions } = usePlanAccessContext();
@@ -67,11 +71,65 @@ export default function PlansPage() {
 
   const handlePlanSelect = (plan: Plan) => {
     setSelectedPlan(plan);
-    onOpen();
+    // If plan has a price, show payment form first
+    if (plan.monthly_price > 0) {
+      onPaymentOpen();
+    } else {
+      // Free plan, go directly to confirmation
+      onOpen();
+    }
+  };
+
+  const handlePaymentSuccess = async (paymentIntentId: string) => {
+    if (!selectedPlan) return;
+
+    onPaymentClose();
+    setIsUpdating(true);
+
+    // Create subscription with payment intent
+    try {
+      const response = await fetch('/api/dashboard/subscriptions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          plan_id: selectedPlan.id,
+          payment_intent_id: paymentIntentId,
+          currency: 'USD', // TODO: Get from user preference or plan
+        }),
+      });
+
+      if (response.ok) {
+        toast.success(t('toast.updateSuccess'));
+        setSelectedPlan(null);
+        // Refresh all data after subscription update
+        await fetchData();
+      } else {
+        const error = await response.json();
+        toast.error(error.error || t('toast.updateError'));
+      }
+    } catch (error) {
+      console.error('❌ [DEBUG] Failed to create subscription:', error);
+      toast.error(t('toast.updateError'));
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handlePaymentCancel = () => {
+    onPaymentClose();
+    setSelectedPlan(null);
   };
 
   const handleConfirmChange = async () => {
     if (!selectedPlan) return;
+
+    // If plan has a price, payment should have been processed already
+    if (selectedPlan.monthly_price > 0) {
+      toast.error('Please complete payment first');
+      return;
+    }
 
     setIsUpdating(true);
     try {
@@ -136,8 +194,23 @@ export default function PlansPage() {
                         Started {new Date(currentSubscription.started_at).toLocaleDateString()}
                       </span>
                     )}
+                    {currentSubscription.ended_at && currentSubscription.status === 'active' && (
+                      <span className="text-sm text-orange-600 ml-2 font-semibold">
+                        (Access until {new Date(currentSubscription.ended_at).toLocaleDateString()})
+                      </span>
+                    )}
                   </p>
                 </div>
+                {currentSubscription.status === 'active' && (
+                  <Button
+                    color="danger"
+                    variant="bordered"
+                    onPress={onCancelOpen}
+                    disabled={isUpdating}
+                  >
+                    Cancel Subscription
+                  </Button>
+                )}
               </div>
             </CardBody>
           </Card>
@@ -184,6 +257,50 @@ export default function PlansPage() {
         <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('history')}</h2>
         <SubscriptionHistory subscriptions={subscriptions} transactions={transactions} isLoading={isLoading} />
       </div>
+
+      {/* Payment Modal */}
+      {selectedPlan && selectedPlan.monthly_price > 0 && (
+        <Modal isOpen={isPaymentOpen} onClose={handlePaymentCancel} size="lg">
+          <ModalContent>
+            <ModalHeader className="flex flex-col gap-1">
+              Payment Information
+            </ModalHeader>
+            <ModalBody>
+              <div className="mb-4">
+                <p className="text-gray-600 mb-2">
+                  Complete payment to subscribe to the <strong>{selectedPlan.name}</strong> plan.
+                </p>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600 mb-2">Plan details:</p>
+                  <ul className="space-y-1 text-sm text-gray-700">
+                    <li>• Monthly fee: ${selectedPlan.monthly_price.toFixed(2)}</li>
+                    <li>• Transaction fee: {selectedPlan.transaction_fee_percent}%</li>
+                    <li>• Features: {selectedPlan.features.length} included</li>
+                  </ul>
+                </div>
+              </div>
+              <PaymentForm
+                planId={selectedPlan.id}
+                amount={selectedPlan.monthly_price}
+                currency="USD"
+                onSuccess={handlePaymentSuccess}
+                onCancel={handlePaymentCancel}
+                isLoading={isUpdating}
+              />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      )}
+
+      {/* Cancel Subscription Modal */}
+      {currentSubscription && (
+        <CancelSubscriptionModal
+          isOpen={isCancelOpen}
+          onClose={onCancelClose}
+          subscription={currentSubscription}
+          onSuccess={fetchData}
+        />
+      )}
 
       {/* Confirmation Modal */}
       <Modal isOpen={isOpen} onClose={onClose} size="lg">

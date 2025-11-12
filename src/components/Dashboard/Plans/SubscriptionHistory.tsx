@@ -1,8 +1,11 @@
 'use client';
 
-import { Card, CardBody, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip } from '@heroui/react';
+import { useState } from 'react';
+import { Card, CardBody, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip, Button } from '@heroui/react';
 import { formatCurrency } from '@/utils/plans';
 import { Subscription, SubscriptionTransaction } from '@/utils/plans';
+import { TransactionDetailsModal } from './TransactionDetailsModal';
+import { CancelSubscriptionModal } from './CancelSubscriptionModal';
 
 interface SubscriptionHistoryProps {
   subscriptions: Subscription[];
@@ -11,6 +14,26 @@ interface SubscriptionHistoryProps {
 }
 
 export function SubscriptionHistory({ subscriptions, transactions, isLoading }: SubscriptionHistoryProps) {
+  const [selectedTransactionId, setSelectedTransactionId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+
+  const handleTransactionClick = (transactionId: string) => {
+    setSelectedTransactionId(transactionId);
+    setIsModalOpen(true);
+  };
+
+  const handleCancelClick = (subscription: Subscription) => {
+    setSelectedSubscription(subscription);
+    setIsCancelModalOpen(true);
+  };
+
+  const handleCancelSuccess = () => {
+    // Refresh the page or refetch subscriptions
+    window.location.reload();
+  };
+
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'N/A';
     try {
@@ -72,6 +95,7 @@ export function SubscriptionHistory({ subscriptions, transactions, isLoading }: 
               <TableColumn>Billing Cycle</TableColumn>
               <TableColumn>Started</TableColumn>
               <TableColumn>Ended</TableColumn>
+              <TableColumn>Actions</TableColumn>
             </TableHeader>
             <TableBody>
               {subscriptions.map((subscription) => (
@@ -86,10 +110,27 @@ export function SubscriptionHistory({ subscriptions, transactions, isLoading }: 
                     <Chip color={getStatusColor(subscription.status)} size="sm" variant="flat">
                       {subscription.status}
                     </Chip>
+                    {subscription.status === 'active' && subscription.ended_at && (
+                      <p className="text-xs text-orange-600 mt-1">
+                        Ends {formatDate(subscription.ended_at)}
+                      </p>
+                    )}
                   </TableCell>
                   <TableCell className="capitalize">{subscription.billing_cycle}</TableCell>
                   <TableCell>{formatDate(subscription.started_at)}</TableCell>
                   <TableCell>{formatDate(subscription.ended_at)}</TableCell>
+                  <TableCell>
+                    {subscription.status === 'active' && (
+                      <Button
+                        size="sm"
+                        color="danger"
+                        variant="light"
+                        onPress={() => handleCancelClick(subscription)}
+                      >
+                        Cancel
+                      </Button>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -111,7 +152,11 @@ export function SubscriptionHistory({ subscriptions, transactions, isLoading }: 
               </TableHeader>
               <TableBody>
                 {transactions.map((transaction) => (
-                  <TableRow key={transaction.id}>
+                  <TableRow
+                    key={transaction.id}
+                    className="cursor-pointer hover:bg-gray-50 transition-colors"
+                    onClick={() => handleTransactionClick(transaction.id)}
+                  >
                     <TableCell>{formatDate(transaction.transaction_date)}</TableCell>
                     <TableCell className="capitalize">{transaction.transaction_type}</TableCell>
                     <TableCell className="font-semibold">
@@ -128,6 +173,29 @@ export function SubscriptionHistory({ subscriptions, transactions, isLoading }: 
             </Table>
           </CardBody>
         </Card>
+      )}
+
+      {/* Transaction Details Modal */}
+      <TransactionDetailsModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedTransactionId(null);
+        }}
+        transactionId={selectedTransactionId}
+      />
+
+      {/* Cancel Subscription Modal */}
+      {selectedSubscription && (
+        <CancelSubscriptionModal
+          isOpen={isCancelModalOpen}
+          onClose={() => {
+            setIsCancelModalOpen(false);
+            setSelectedSubscription(null);
+          }}
+          subscription={selectedSubscription}
+          onSuccess={handleCancelSuccess}
+        />
       )}
     </div>
   );

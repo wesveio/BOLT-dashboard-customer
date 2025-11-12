@@ -2,6 +2,31 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin, validateSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import { isSessionValid } from '@/lib/api/auth';
+import { getPaymentGatewayFromEnv } from '@/lib/payments/payment-gateway-factory';
+import { validateCurrency, convertCurrency, CurrencyCode } from '@/lib/payments/currency-service';
+import { PaymentGatewayError } from '@/lib/payments/types';
+import { BillingCycle } from '@/utils/plans';
+
+/**
+ * Calculate the end date of the billing period based on the last successful transaction
+ * @param lastTransactionDate - Date of the last successful transaction
+ * @param billingCycle - Billing cycle ('monthly' or 'yearly')
+ * @returns End date of the current billing period
+ */
+export function calculatePeriodEnd(
+  lastTransactionDate: Date,
+  billingCycle: BillingCycle
+): Date {
+  const endDate = new Date(lastTransactionDate);
+  
+  if (billingCycle === 'monthly') {
+    endDate.setMonth(endDate.getMonth() + 1);
+  } else if (billingCycle === 'yearly') {
+    endDate.setFullYear(endDate.getFullYear() + 1);
+  }
+  
+  return endDate;
+}
 
 /**
  * GET /api/dashboard/subscriptions
@@ -115,7 +140,7 @@ export async function POST(request: NextRequest) {
 
     // Parse request body
     const body = await request.json();
-    const { plan_id, billing_cycle = 'monthly' } = body;
+    const { plan_id, billing_cycle = 'monthly', payment_intent_id, currency = 'USD' } = body;
 
     if (!plan_id) {
       return NextResponse.json({ error: 'plan_id is required' }, { status: 400 });
@@ -130,7 +155,83 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
     }
 
-    // Create subscription using the function
+    // Validate currency
+    let targetCurrency: CurrencyCode = 'USD';
+    try {
+      targetCurrency = validateCurrency(currency);
+    } catch (error: any) {
+      return NextResponse.json({ error: `Invalid currency: ${error.message}` }, { status: 400 });
+    }
+
+    // Get account information
+    const { data: accounts, error: accountError } = await supabase
+      .rpc('get_account_by_id', { p_account_id: user.account_id });
+
+    const account = accounts && accounts.length > 0 ? accounts[0] : null;
+
+    if (accountError || !account) {
+      return NextResponse.json({ error: 'Account not found' }, { status: 404 });
+    }
+
+    // Get payment gateway
+    const paymentGateway = getPaymentGatewayFromEnv();
+
+    // Get or create payment gateway customer
+    let gatewayCustomerId = account.payment_gateway_customer_id;
+
+    if (!gatewayCustomerId) {
+      const customerResult = await paymentGateway.createCustomer({
+        email: user.email || account.billing_email || '',
+        name: user.name || account.name || undefined,
+        metadata: {
+          account_id: user.account_id,
+          user_id: user.id,
+        },
+      });
+
+      gatewayCustomerId = customerResult.customerId;
+
+      // Update account with gateway customer ID
+      await supabase
+        .from('accounts')
+        .update({ payment_gateway_customer_id: gatewayCustomerId })
+        .eq('id', user.account_id);
+    }
+
+    // Convert price if needed (plans are stored in USD)
+    const baseCurrency: CurrencyCode = 'USD';
+    const planAmount = plan.monthly_price || 0;
+    const finalAmount = targetCurrency === baseCurrency
+      ? planAmount
+      : convertCurrency(planAmount, baseCurrency, targetCurrency);
+
+    // Create subscription in payment gateway
+    let gatewaySubscription;
+    try {
+      gatewaySubscription = await paymentGateway.createSubscription({
+        customerId: gatewayCustomerId,
+        planId: plan.id,
+        amount: finalAmount,
+        currency: targetCurrency,
+        billingCycle: billing_cycle,
+        metadata: {
+          plan_id: plan.id,
+          plan_code: plan.code,
+          account_id: user.account_id,
+        },
+      });
+    } catch (error: any) {
+      console.error('❌ [DEBUG] Error creating payment gateway subscription:', error);
+      if (error instanceof PaymentGatewayError) {
+        return NextResponse.json(
+          { error: error.message, code: error.code },
+          { status: error.statusCode || 500 }
+        );
+      }
+      throw error;
+    }
+
+    // Create subscription in database
     const { data: subscriptionIdResult, error: createError } = await supabase
       .rpc('create_subscription', {
         p_account_id: user.account_id,
@@ -139,7 +240,13 @@ export async function POST(request: NextRequest) {
       });
 
     if (createError) {
-      console.error('❌ [DEBUG] Error creating subscription:', createError);
+      console.error('❌ [DEBUG] Error creating subscription in database:', createError);
+      // Try to cancel gateway subscription if database creation fails
+      try {
+        await paymentGateway.cancelSubscription(gatewaySubscription.subscriptionId, true);
+      } catch (cancelError) {
+        console.error('❌ [DEBUG] Error cancelling gateway subscription:', cancelError);
+      }
       return NextResponse.json({ error: 'Failed to create subscription' }, { status: 500 });
     }
 
@@ -148,7 +255,43 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to create subscription' }, { status: 500 });
     }
 
-    // Fetch the newly created subscription with plan details using public function
+    // Update subscription with gateway information
+    await supabase
+      .from('subscriptions')
+      .update({
+        payment_provider: paymentGateway.getProvider(),
+        gateway_subscription_id: gatewaySubscription.subscriptionId,
+        gateway_customer_id: gatewaySubscription.customerId,
+      })
+      .eq('id', subscriptionId);
+
+    // Create initial transaction record
+    if (payment_intent_id) {
+      try {
+        const transaction = await paymentGateway.getTransaction(payment_intent_id);
+        
+        await supabase.from('subscription_transactions').insert({
+          subscription_id: subscriptionId,
+          amount: transaction.amount,
+          currency: transaction.currency,
+          status: transaction.status === 'completed' ? 'completed' : 'pending',
+          transaction_type: 'subscription',
+          payment_provider: paymentGateway.getProvider(),
+          payment_intent_id: payment_intent_id,
+          gateway_subscription_id: gatewaySubscription.subscriptionId,
+          gateway_customer_id: gatewaySubscription.customerId,
+          gateway_invoice_id: transaction.invoiceUrl ? transaction.id : undefined,
+          receipt_url: transaction.receiptUrl,
+          invoice_url: transaction.invoiceUrl,
+          metadata: transaction.metadata,
+        });
+      } catch (transactionError) {
+        console.error('❌ [DEBUG] Error creating transaction record:', transactionError);
+        // Don't fail the subscription creation if transaction record fails
+      }
+    }
+
+    // Fetch the newly created subscription with plan details
     const { data: subscriptions, error: fetchError } = await supabase
       .rpc('get_subscriptions_by_account', { p_account_id: user.account_id });
     const newSubscription = subscriptions?.find((s: any) => s.id === subscriptionId);
