@@ -43,7 +43,12 @@ interface ContactFormState {
   source?: string;
 }
 
-export function ContactForm() {
+interface ContactFormProps {
+  source?: string;
+  onSuccess?: () => void;
+}
+
+export function ContactForm({ source: sourceProp, onSuccess }: ContactFormProps = {}) {
   const t = useTranslations('public.contact.form');
   const tMessages = useTranslations('public.contact.messages');
   const searchParams = useSearchParams();
@@ -54,20 +59,26 @@ export function ContactForm() {
     phone: '',
     message: '',
     wantsDemo: false,
-    source: undefined,
+    source: sourceProp,
   });
   const [errors, setErrors] = useState<Partial<Record<keyof ContactFormState, string>>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Read sales parameter from URL and set source
+  // Read sales parameter from URL and set source (only if source prop is not provided)
   useEffect(() => {
-    const salesParam = searchParams.get('sales');
-    if (salesParam === 'enterprise') {
-      setFormData((prev) => ({ ...prev, source: 'enterprise' }));
+    if (sourceProp) {
+      // If source is provided via prop, use it
+      setFormData((prev) => ({ ...prev, source: sourceProp }));
+    } else {
+      // Otherwise, check URL params as fallback
+      const salesParam = searchParams.get('sales');
+      if (salesParam === 'enterprise') {
+        setFormData((prev) => ({ ...prev, source: 'enterprise' }));
+      }
     }
-  }, [searchParams]);
+  }, [searchParams, sourceProp]);
 
   const handleChange = (field: keyof ContactFormState) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -140,13 +151,20 @@ export function ContactForm() {
         phone: '',
         message: '',
         wantsDemo: false,
-        source: undefined,
+        source: sourceProp,
       });
       
-      // Reset success message after 5 seconds
-      setTimeout(() => {
-        setSuccess(false);
-      }, 5000);
+      // Call onSuccess callback if provided (e.g., to close modal)
+      if (onSuccess) {
+        setTimeout(() => {
+          onSuccess();
+        }, 2000); // Wait 2 seconds to show success message before closing
+      } else {
+        // Reset success message after 5 seconds (default behavior)
+        setTimeout(() => {
+          setSuccess(false);
+        }, 5000);
+      }
 
     } catch (err) {
       setError(tMessages('error.network'));

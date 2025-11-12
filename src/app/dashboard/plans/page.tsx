@@ -13,6 +13,7 @@ import { SubscriptionHistory } from '@/components/Dashboard/Plans/SubscriptionHi
 import { PlanComparison } from '@/components/Dashboard/Plans/PlanComparison';
 import { PaymentForm } from '@/components/Dashboard/Plans/PaymentForm';
 import { CancelSubscriptionModal } from '@/components/Dashboard/Plans/CancelSubscriptionModal';
+import { ContactSalesModal } from '@/components/Dashboard/Plans/ContactSalesModal';
 import { Plan, SubscriptionTransaction, comparePlans, getPlanDisplayName } from '@/utils/plans';
 import { toast } from 'sonner';
 
@@ -30,6 +31,7 @@ export default function PlansPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isPaymentOpen, onOpen: onPaymentOpen, onClose: onPaymentClose } = useDisclosure();
   const { isOpen: isCancelOpen, onOpen: onCancelOpen, onClose: onCancelClose } = useDisclosure();
+  const { isOpen: isContactOpen, onOpen: onContactOpen, onClose: onContactClose } = useDisclosure();
   
   // Use context for subscriptions (shared across app)
   const { subscriptions, subscription: currentSubscription, refetch: refetchSubscriptions } = usePlanAccessContext();
@@ -70,6 +72,12 @@ export default function PlansPage() {
   };
 
   const handlePlanSelect = (plan: Plan) => {
+    // If Enterprise plan, open contact sales modal
+    if (plan.code === 'enterprise') {
+      onContactOpen();
+      return;
+    }
+
     setSelectedPlan(plan);
     // If plan has a price, show payment form first
     if (plan.monthly_price > 0) {
@@ -301,6 +309,12 @@ export default function PlansPage() {
           onSuccess={fetchData}
         />
       )}
+
+      {/* Contact Sales Modal */}
+      <ContactSalesModal
+        isOpen={isContactOpen}
+        onClose={onContactClose}
+      />
 
       {/* Confirmation Modal */}
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
