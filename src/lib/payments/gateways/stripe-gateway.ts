@@ -18,7 +18,6 @@ import {
   GetTransactionResult,
   WebhookEventData,
   PaymentGatewayError,
-  PaymentProcessingError,
 } from '../types';
 
 export class StripeGateway extends BasePaymentGateway implements IPaymentGateway {
@@ -32,7 +31,7 @@ export class StripeGateway extends BasePaymentGateway implements IPaymentGateway
     }
 
     this.stripe = new Stripe(config.secretKey, {
-      apiVersion: config.apiVersion || '2024-11-20.acacia',
+      apiVersion: (config.apiVersion || '2024-11-20.acacia') as Stripe.LatestApiVersion,
     });
   }
 
@@ -249,7 +248,7 @@ export class StripeGateway extends BasePaymentGateway implements IPaymentGateway
             price: updates.priceId,
           },
         ];
-        updateParams.proration_behavior = 'always';
+        updateParams.proration_behavior = 'always' as Stripe.SubscriptionUpdateParams.ProrationBehavior;
       }
 
       if (updates.paymentMethodId) {
@@ -382,7 +381,7 @@ export class StripeGateway extends BasePaymentGateway implements IPaymentGateway
         status: invoice.status === 'paid' ? 'completed' : invoice.status || 'pending',
         receiptUrl: invoice.hosted_invoice_url || undefined,
         invoiceUrl: invoice.invoice_pdf || undefined,
-        metadata: invoice.metadata,
+        metadata: invoice.metadata || undefined,
       };
     } catch (error: any) {
       this.handleError(error, 'getInvoice');

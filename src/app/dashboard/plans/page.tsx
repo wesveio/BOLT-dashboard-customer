@@ -26,7 +26,7 @@ interface TransactionsResponse {
 
 export default function PlansPage() {
   const t = useTranslations('dashboard.plans');
-  const { user, isLoading: authLoading } = useDashboardAuth();
+  const { isLoading: authLoading } = useDashboardAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isPaymentOpen, onOpen: onPaymentOpen, onClose: onPaymentClose } = useDisclosure();
   const { isOpen: isCancelOpen, onOpen: onCancelOpen, onClose: onCancelClose } = useDisclosure();

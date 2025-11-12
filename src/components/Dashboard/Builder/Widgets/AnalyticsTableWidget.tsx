@@ -19,7 +19,7 @@ const ANALYTICS_ENDPOINTS: Record<string, string> = {
   browsers: '/api/dashboard/analytics/browsers',
 };
 
-export function AnalyticsTableWidget({ widget, isEditing = false }: AnalyticsTableWidgetProps) {
+export function AnalyticsTableWidget({ widget }: AnalyticsTableWidgetProps) {
   const { period, startDate, endDate } = usePeriod();
   const tableType = widget.config.tableType || 'payment';
   const endpoint = ANALYTICS_ENDPOINTS[tableType] || ANALYTICS_ENDPOINTS.payment;

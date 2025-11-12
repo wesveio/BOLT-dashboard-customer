@@ -13,7 +13,7 @@ import { PaymentGatewayError } from '@/lib/payments/types';
 export const dynamic = 'force-dynamic';
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { transactionId: string } }
 ) {
   try {

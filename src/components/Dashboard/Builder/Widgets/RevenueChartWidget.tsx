@@ -11,7 +11,7 @@ interface RevenueChartWidgetProps {
   isEditing?: boolean;
 }
 
-export function RevenueChartWidget({ widget, isEditing = false }: RevenueChartWidgetProps) {
+export function RevenueChartWidget({ widget }: RevenueChartWidgetProps) {
   const { period, startDate, endDate } = usePeriod();
   const chartType = widget.config.chartType || 'line';
 

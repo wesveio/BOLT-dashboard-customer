@@ -5,28 +5,6 @@ import { isSessionValid } from '@/lib/api/auth';
 import { getPaymentGatewayFromEnv } from '@/lib/payments/payment-gateway-factory';
 import { validateCurrency, convertCurrency, CurrencyCode } from '@/lib/payments/currency-service';
 import { PaymentGatewayError } from '@/lib/payments/types';
-import { BillingCycle } from '@/utils/plans';
-
-/**
- * Calculate the end date of the billing period based on the last successful transaction
- * @param lastTransactionDate - Date of the last successful transaction
- * @param billingCycle - Billing cycle ('monthly' or 'yearly')
- * @returns End date of the current billing period
- */
-export function calculatePeriodEnd(
-  lastTransactionDate: Date,
-  billingCycle: BillingCycle
-): Date {
-  const endDate = new Date(lastTransactionDate);
-  
-  if (billingCycle === 'monthly') {
-    endDate.setMonth(endDate.getMonth() + 1);
-  } else if (billingCycle === 'yearly') {
-    endDate.setFullYear(endDate.getFullYear() + 1);
-  }
-  
-  return endDate;
-}
 
 /**
  * GET /api/dashboard/subscriptions

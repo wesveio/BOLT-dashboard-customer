@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
  * Get a specific dashboard by ID
  */
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -199,7 +199,7 @@ async function handleUpdate(
  * Delete a dashboard
  */
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {

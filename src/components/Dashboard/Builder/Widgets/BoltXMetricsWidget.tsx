@@ -20,7 +20,7 @@ const BOLTX_ENDPOINTS: Record<string, string> = {
   optimization: '/api/boltx/optimization/metrics',
 };
 
-export function BoltXMetricsWidget({ widget, isEditing = false }: BoltXMetricsWidgetProps) {
+export function BoltXMetricsWidget({ widget }: BoltXMetricsWidgetProps) {
   const { period, startDate, endDate } = usePeriod();
   const boltXType = widget.config.boltxType || 'interventions';
   const displayType = widget.config.displayType || 'metric'; // 'metric' or 'chart'

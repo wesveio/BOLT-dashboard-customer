@@ -22,7 +22,7 @@ const METRIC_FORMATTERS: Record<string, (value: any) => string> = {
   totalConversions: (v) => formatCompactNumber(v),
 };
 
-export function MetricWidget({ widget, isEditing = false }: MetricWidgetProps) {
+export function MetricWidget({ widget }: MetricWidgetProps) {
   const { period, startDate, endDate } = usePeriod();
   const metricKey = widget.config.metric || 'totalRevenue';
 

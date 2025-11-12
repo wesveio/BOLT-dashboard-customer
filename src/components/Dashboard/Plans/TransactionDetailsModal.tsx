@@ -93,20 +93,6 @@ export function TransactionDetailsModal({
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'success';
-      case 'pending':
-        return 'warning';
-      case 'failed':
-        return 'danger';
-      case 'refunded':
-        return 'default';
-      default:
-        return 'default';
-    }
-  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg" scrollBehavior="inside">

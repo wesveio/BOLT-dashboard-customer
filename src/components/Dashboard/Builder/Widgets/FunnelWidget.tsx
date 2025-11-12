@@ -11,7 +11,7 @@ interface FunnelWidgetProps {
   isEditing?: boolean;
 }
 
-export function FunnelWidget({ widget, isEditing = false }: FunnelWidgetProps) {
+export function FunnelWidget({ widget }: FunnelWidgetProps) {
   const { period, startDate, endDate } = usePeriod();
 
   const { data, isLoading, error } = useWidgetData({
@@ -40,7 +40,6 @@ export function FunnelWidget({ widget, isEditing = false }: FunnelWidgetProps) {
       <FunnelChart
         data={funnelData}
         isLoading={isLoading}
-        emptyMessage="No funnel data available"
       />
     </ChartCard>
   );

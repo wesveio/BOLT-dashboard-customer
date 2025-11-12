@@ -95,7 +95,7 @@ export function WidgetConfigModal({ widget, isOpen, onClose, onSave }: WidgetCon
                 variant="bordered"
               >
                 {DATA_SOURCE_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} textValue={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -114,7 +114,7 @@ export function WidgetConfigModal({ widget, isOpen, onClose, onSave }: WidgetCon
                 variant="bordered"
               >
                 {METRIC_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} textValue={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -133,7 +133,7 @@ export function WidgetConfigModal({ widget, isOpen, onClose, onSave }: WidgetCon
                 variant="bordered"
               >
                 {CHART_TYPE_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} textValue={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}

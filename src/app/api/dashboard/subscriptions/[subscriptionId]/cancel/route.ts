@@ -3,8 +3,7 @@ import { getSupabaseAdmin, validateSupabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import { isSessionValid } from '@/lib/api/auth';
 import { getPaymentGatewayFromEnv } from '@/lib/payments/payment-gateway-factory';
-import { PaymentGatewayError } from '@/lib/payments/types';
-import { calculatePeriodEnd } from '../../route';
+import { calculatePeriodEnd } from '@/utils/plans';
 
 /**
  * DELETE /api/dashboard/subscriptions/[subscriptionId]/cancel
@@ -16,7 +15,7 @@ import { calculatePeriodEnd } from '../../route';
 export const dynamic = 'force-dynamic';
 
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { subscriptionId: string } }
 ) {
   try {
@@ -110,11 +109,9 @@ export async function DELETE(
     const paymentGateway = getPaymentGatewayFromEnv();
     const now = new Date();
     let endedAt: Date | null = null;
-    let cancelledImmediately = false;
 
     // If there are no successful transactions, cancel immediately
     if (!transactions || transactions.length === 0) {
-      cancelledImmediately = true;
       endedAt = now;
       
       // Cancel immediately in payment gateway
@@ -159,7 +156,6 @@ export async function DELETE(
 
     // If period end is in the past, cancel immediately
     if (endedAt <= now) {
-      cancelledImmediately = true;
       endedAt = now;
 
       if (subscription.gateway_subscription_id) {

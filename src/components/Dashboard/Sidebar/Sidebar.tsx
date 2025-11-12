@@ -47,7 +47,6 @@ export function Sidebar() {
   const t = useTranslations('dashboard.sidebar');
   const tAnalytics = useTranslations('dashboard.analytics');
   const tBoltX = useTranslations('dashboard.boltx');
-  const tDashboards = useTranslations('dashboard.dashboards');
   const pathname = usePathname();
   const { user, isLoading } = useDashboardAuth();
   const { canAccessRoute } = usePlanAccess();

@@ -162,7 +162,7 @@ function transformMetricData(config: WidgetConfig, data: any): any {
 /**
  * Transform revenue chart data
  */
-function transformRevenueChartData(config: WidgetConfig, data: any): any {
+function transformRevenueChartData(_config: WidgetConfig, data: any): any {
   if (data.chartData && Array.isArray(data.chartData)) {
     return data.chartData.map((item: any) => ({
       name: item.date || item.name,
@@ -176,7 +176,7 @@ function transformRevenueChartData(config: WidgetConfig, data: any): any {
 /**
  * Transform funnel data
  */
-function transformFunnelData(config: WidgetConfig, data: any): any {
+function transformFunnelData(_config: WidgetConfig, data: any): any {
   if (data.funnel && Array.isArray(data.funnel)) {
     return data.funnel.map((item: any) => ({
       step: item.step || item.name,
@@ -192,7 +192,7 @@ function transformFunnelData(config: WidgetConfig, data: any): any {
 /**
  * Transform BoltX data
  */
-function transformBoltXData(config: WidgetConfig, data: any): any {
+function transformBoltXData(_config: WidgetConfig, data: any): any {
   // BoltX endpoints return different structures
   // Return as-is for now, widgets will handle transformation
   return data;
