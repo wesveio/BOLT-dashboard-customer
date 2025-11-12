@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin, validateSupabaseAdmin } from '@/lib/supabase';
 import { getPaymentGatewayFromEnv } from '@/lib/payments/payment-gateway-factory';
 import { PaymentGatewayError } from '@/lib/payments/types';
+import { createIdempotencyKey } from '@/lib/payments/error-handler';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,9 +37,31 @@ export async function POST(request: NextRequest) {
     // Parse webhook event
     const event = JSON.parse(body);
 
+    // Check for duplicate webhook events (idempotency)
+    const idempotencyKey = createIdempotencyKey('webhook', {
+      event_id: event.id,
+      event_type: event.type,
+    });
+
+    // Check if we've already processed this event
+    const { data: existingEvent } = await supabase
+      .from('subscription_transactions')
+      .select('id')
+      .eq('metadata->>webhook_event_id', event.id)
+      .single();
+
+    if (existingEvent) {
+      console.warn('⚠️ [DEBUG] Duplicate webhook event, skipping', {
+        event_id: event.id,
+        event_type: event.type,
+      });
+      return NextResponse.json({ received: true, processed: false, duplicate: true });
+    }
+
     console.info('✅ [DEBUG] Processing Stripe webhook', {
       type: event.type,
       id: event.id,
+      idempotency_key: idempotencyKey,
     });
 
     // Handle webhook event

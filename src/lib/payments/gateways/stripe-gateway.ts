@@ -19,6 +19,8 @@ import {
   WebhookEventData,
   PaymentGatewayError,
 } from '../types';
+import { mapStripeError } from './stripe-error-mapper';
+import { handlePaymentOperation } from '../error-handler';
 
 export class StripeGateway extends BasePaymentGateway implements IPaymentGateway {
   private stripe: Stripe;
@@ -40,7 +42,7 @@ export class StripeGateway extends BasePaymentGateway implements IPaymentGateway
   }
 
   async createCustomer(data: CustomerData): Promise<CreateCustomerResult> {
-    try {
+    return handlePaymentOperation(async () => {
       this.log('info', 'Creating Stripe customer', { email: data.email });
 
       const customer = await this.stripe.customers.create({
@@ -67,10 +69,12 @@ export class StripeGateway extends BasePaymentGateway implements IPaymentGateway
         email: customer.email || data.email,
         metadata: customer.metadata,
       };
-    } catch (error: any) {
-      this.handleError(error, 'createCustomer');
+    }, 'createCustomer').catch((error: any) => {
+      if (error instanceof Stripe.errors.StripeError) {
+        throw mapStripeError(error, 'createCustomer');
+      }
       throw error;
-    }
+    });
   }
 
   async getCustomer(customerId: string): Promise<CustomerData & { id: string }> {
@@ -135,7 +139,7 @@ export class StripeGateway extends BasePaymentGateway implements IPaymentGateway
   }
 
   async createSubscription(data: SubscriptionData): Promise<CreateSubscriptionResult> {
-    try {
+    return handlePaymentOperation(async () => {
       this.validateAmount(data.amount);
       this.validateCurrency(data.currency);
 
@@ -204,10 +208,12 @@ export class StripeGateway extends BasePaymentGateway implements IPaymentGateway
         currentPeriodEnd: subscription.current_period_end,
         metadata: subscription.metadata,
       };
-    } catch (error: any) {
-      this.handleError(error, 'createSubscription');
+    }, 'createSubscription').catch((error: any) => {
+      if (error instanceof Stripe.errors.StripeError) {
+        throw mapStripeError(error, 'createSubscription');
+      }
       throw error;
-    }
+    });
   }
 
   async getSubscription(subscriptionId: string): Promise<CreateSubscriptionResult> {
@@ -301,7 +307,7 @@ export class StripeGateway extends BasePaymentGateway implements IPaymentGateway
     paymentMethodId?: string,
     metadata?: Record<string, string>
   ): Promise<CreatePaymentIntentResult> {
-    try {
+    return handlePaymentOperation(async () => {
       this.validateAmount(amount);
       this.validateCurrency(currency);
 
@@ -334,10 +340,12 @@ export class StripeGateway extends BasePaymentGateway implements IPaymentGateway
         amount: this.convertFromSmallestUnit(paymentIntent.amount),
         currency: paymentIntent.currency.toUpperCase(),
       };
-    } catch (error: any) {
-      this.handleError(error, 'createPaymentIntent');
+    }, 'createPaymentIntent').catch((error: any) => {
+      if (error instanceof Stripe.errors.StripeError) {
+        throw mapStripeError(error, 'createPaymentIntent');
+      }
       throw error;
-    }
+    });
   }
 
   async getTransaction(transactionId: string): Promise<GetTransactionResult> {

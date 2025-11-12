@@ -15,6 +15,7 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import { toast } from 'sonner';
+import { getUserFriendlyErrorMessage } from '@/lib/payments/error-handler';
 
 // Initialize Stripe
 const stripePromise = loadStripe(
@@ -109,8 +110,9 @@ function PaymentFormContent({
       }
     } catch (err: any) {
       console.error('❌ [DEBUG] Payment error:', err);
-      setError(err.message || 'Payment failed. Please try again.');
-      toast.error(err.message || 'Payment failed');
+      const userMessage = getUserFriendlyErrorMessage(err);
+      setError(userMessage);
+      toast.error(userMessage);
     } finally {
       setIsProcessing(false);
     }
