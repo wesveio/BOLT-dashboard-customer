@@ -2085,6 +2085,12 @@
         }
       }
     }
+  },
+  "notFound": {
+    "title": "Página No Encontrada",
+    "subtitle": "¡Oops! La página que buscas no existe o ha sido movida.",
+    "goToDashboard": "Ir al Dashboard",
+    "returnToHome": "Volver al Inicio"
   }
 }
 
