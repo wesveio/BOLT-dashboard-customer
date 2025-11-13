@@ -74,6 +74,7 @@
       "themes": "Temas",
       "insights": "Insights",
       "boltx": "BoltX",
+      "b2b": "B2B",
       "plans": "Planes",
       "integrations": "Integraciones",
       "settings": "Configuración",
@@ -95,6 +96,7 @@
       "themes": "Temas",
       "insights": "Insights",
       "boltx": "BoltX",
+      "b2b": "B2B",
       "predictions": "Predicciones",
       "interventions": "Intervenciones",
       "personalization": "Personalización",
@@ -417,7 +419,6 @@
         "status": "ESTADO",
         "recommendations": "RECOMENDACIONES",
         "completed": "Completado",
-        "abandoned": "Abandonado",
         "active": "Activo",
         "noHighRiskTitle": "Sin Sesiones de Alto Riesgo",
         "noHighRiskSubtitle": "No se detectaron sesiones de alto riesgo en el período seleccionado",
@@ -700,6 +701,49 @@
         "duplicateError": "Error al duplicar tema",
         "alreadyActive": "El tema \"{name}\" ya está activo",
         "createdAndActivated": "Tema \"{name}\" creado y activado exitosamente"
+      }
+    },
+    "b2b": {
+      "overview": {
+        "title": "Resumen B2B",
+        "subtitle": "Gestione flujos de aprobación, límites de crédito, compradores y órdenes de compra",
+        "metrics": {
+          "workflows": "Total de Flujos",
+          "buyers": "Compradores Activos",
+          "creditLimits": "Límites de Crédito",
+          "purchaseOrders": "Órdenes de Compra"
+        },
+        "quickLinks": {
+          "workflows": "Flujos de Aprobación",
+          "workflowsDesc": "Configure flujos de aprobación para pedidos",
+          "creditLimits": "Límites de Crédito",
+          "creditLimitsDesc": "Gestione límites de crédito para compradores",
+          "buyers": "Compradores",
+          "buyersDesc": "Gestione compradores, aprobadores y administradores",
+          "purchaseOrders": "Órdenes de Compra",
+          "purchaseOrdersDesc": "Configure configuraciones de órdenes de compra"
+        }
+      },
+      "workflows": {
+        "title": "Flujos de Aprobación",
+        "subtitle": "Configure flujos de aprobación para pedidos según monto y condiciones",
+        "createWorkflow": "Crear Flujo"
+      },
+      "creditLimits": {
+        "title": "Límites de Crédito",
+        "subtitle": "Gestione límites de crédito para compradores",
+        "createLimit": "Crear Límite de Crédito"
+      },
+      "buyers": {
+        "title": "Compradores",
+        "subtitle": "Gestione compradores, aprobadores y administradores",
+        "createBuyer": "Crear Comprador"
+      },
+      "purchaseOrders": {
+        "title": "Órdenes de Compra",
+        "subtitle": "Configure configuraciones de órdenes de compra y visualice órdenes de compra",
+        "configuration": "Configuración",
+        "purchaseOrders": "Órdenes de Compra"
       }
     },
     "boltx": {

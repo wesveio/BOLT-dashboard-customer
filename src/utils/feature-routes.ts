@@ -19,6 +19,7 @@ export const FEATURE_ROUTE_MAP: Record<string, string | null> = {
   '/dashboard/themes': 'boltflow_complete', // Themes - Professional and Enterprise
   '/dashboard/insights': 'boltmetrics', // Insights - Professional and Enterprise
   '/dashboard/security': 'boltguard', // Security - Professional and Enterprise (BoltGuard)
+  '/dashboard/b2b': 'b2b', // B2B - Professional and Enterprise
   '/dashboard/boltx': 'boltx', // BoltX - Enterprise only
   '/dashboard/plans': null, // Plans - always available
   '/dashboard/integrations': 'bolt_core', // Integrations - available to all plans

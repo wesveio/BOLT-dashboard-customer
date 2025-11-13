@@ -74,6 +74,7 @@
       "themes": "Themes",
       "insights": "Insights",
       "boltx": "BoltX",
+      "b2b": "B2B",
       "plans": "Plans",
       "integrations": "Integrations",
       "settings": "Settings",
@@ -95,6 +96,7 @@
       "themes": "Themes",
       "insights": "Insights",
       "boltx": "BoltX",
+      "b2b": "B2B",
       "predictions": "Predictions",
       "interventions": "Interventions",
       "personalization": "Personalization",
@@ -428,7 +430,6 @@
         "status": "STATUS",
         "recommendations": "RECOMMENDATIONS",
         "completed": "Completed",
-        "abandoned": "Abandoned",
         "active": "Active",
         "noHighRiskTitle": "No High Risk Sessions",
         "noHighRiskSubtitle": "No high-risk sessions detected in the selected period",
@@ -711,6 +712,49 @@
         "duplicateError": "Failed to duplicate theme",
         "alreadyActive": "Theme \"{name}\" is already active",
         "createdAndActivated": "Theme \"{name}\" created and activated successfully"
+      }
+    },
+    "b2b": {
+      "overview": {
+        "title": "B2B Overview",
+        "subtitle": "Manage approval workflows, credit limits, buyers, and purchase orders",
+        "metrics": {
+          "workflows": "Total Workflows",
+          "buyers": "Active Buyers",
+          "creditLimits": "Credit Limits",
+          "purchaseOrders": "Purchase Orders"
+        },
+        "quickLinks": {
+          "workflows": "Approval Workflows",
+          "workflowsDesc": "Configure approval workflows for orders",
+          "creditLimits": "Credit Limits",
+          "creditLimitsDesc": "Manage credit limits for buyers",
+          "buyers": "Buyers",
+          "buyersDesc": "Manage buyers, approvers, and admins",
+          "purchaseOrders": "Purchase Orders",
+          "purchaseOrdersDesc": "Configure purchase order settings"
+        }
+      },
+      "workflows": {
+        "title": "Approval Workflows",
+        "subtitle": "Configure approval workflows for orders based on amount and conditions",
+        "createWorkflow": "Create Workflow"
+      },
+      "creditLimits": {
+        "title": "Credit Limits",
+        "subtitle": "Manage credit limits for buyers",
+        "createLimit": "Create Credit Limit"
+      },
+      "buyers": {
+        "title": "Buyers",
+        "subtitle": "Manage buyers, approvers, and admins",
+        "createBuyer": "Create Buyer"
+      },
+      "purchaseOrders": {
+        "title": "Purchase Orders",
+        "subtitle": "Configure purchase order settings and view purchase orders",
+        "configuration": "Configuration",
+        "purchaseOrders": "Purchase Orders"
       }
     },
     "boltx": {

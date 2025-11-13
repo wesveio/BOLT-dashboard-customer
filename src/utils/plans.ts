@@ -89,6 +89,11 @@ export const BOLT_FEATURES = {
     name: 'BoltX',
     description: 'AI-powered optimizations and predictive UX flows',
   },
+  b2b: {
+    code: 'b2b',
+    name: 'B2B Features',
+    description: 'Approval workflows, credit limits, multi-buyers, and purchase orders',
+  },
   support: {
     code: 'support',
     name: 'Support',
@@ -105,11 +110,11 @@ export const PLAN_DEFINITIONS: Record<PlanCode, { features: string[]; descriptio
     description: 'Perfect for small stores getting started',
   },
   professional: {
-    features: ['bolt_core', 'boltflow_complete', 'boltguard', 'boltmetrics'],
+    features: ['bolt_core', 'boltflow_complete', 'boltguard', 'boltmetrics', 'b2b'],
     description: 'For growing businesses that need advanced features',
   },
   enterprise: {
-    features: ['bolt_core', 'boltflow_complete', 'boltguard', 'boltmetrics', 'boltx', 'support'],
+    features: ['bolt_core', 'boltflow_complete', 'boltguard', 'boltmetrics', 'b2b', 'boltx', 'support'],
     description: 'Custom solutions for large enterprises',
   },
 };
@@ -135,7 +140,7 @@ export const PUBLIC_PRICING_PLANS: Plan[] = [
     code: 'professional',
     monthly_price: 500.00,
     transaction_fee_percent: 0.80,
-    features: ['bolt_core', 'boltflow_complete', 'boltguard', 'boltmetrics'],
+    features: ['bolt_core', 'boltflow_complete', 'boltguard', 'boltmetrics', 'b2b'],
     is_active: true,
     display_order: 2,
   },
@@ -145,7 +150,7 @@ export const PUBLIC_PRICING_PLANS: Plan[] = [
     code: 'enterprise',
     monthly_price: 0.00,
     transaction_fee_percent: 0.00,
-    features: ['bolt_core', 'boltflow_complete', 'boltguard', 'boltmetrics', 'boltx', 'support'],
+    features: ['bolt_core', 'boltflow_complete', 'boltguard', 'boltmetrics', 'b2b', 'boltx', 'support'],
     is_active: true,
     display_order: 3,
   },

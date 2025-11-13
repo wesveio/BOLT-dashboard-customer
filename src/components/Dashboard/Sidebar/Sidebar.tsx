@@ -23,6 +23,7 @@ import {
   CpuChipIcon,
   ShieldCheckIcon,
   Squares2X2Icon,
+  BuildingOfficeIcon,
 } from '@heroicons/react/24/outline';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useDashboardAuth } from '@/hooks/useDashboardAuth';
@@ -48,6 +49,7 @@ export function Sidebar() {
   const t = useTranslations('dashboard.sidebar');
   const tAnalytics = useTranslations('dashboard.analytics');
   const tBoltX = useTranslations('dashboard.boltx');
+  const tB2B = useTranslations('dashboard.b2b');
   const pathname = usePathname();
   const { user, isLoading: authLoading } = useDashboardAuth();
   const { canAccessRoute, isLoading: planLoading } = usePlanAccess();
@@ -185,6 +187,38 @@ export function Sidebar() {
           href: '/dashboard/boltx/settings',
           label: t('settings'),
           translationKey: 'dashboard.settings.title',
+        },
+      ],
+    },
+    {
+      href: '/dashboard/b2b',
+      icon: BuildingOfficeIcon,
+      label: t('b2b'),
+      subItems: [
+        {
+          href: '/dashboard/b2b',
+          label: tB2B('overview.title'),
+          translationKey: 'dashboard.b2b.overview.title',
+        },
+        {
+          href: '/dashboard/b2b/workflows',
+          label: tB2B('workflows.title'),
+          translationKey: 'dashboard.b2b.workflows.title',
+        },
+        {
+          href: '/dashboard/b2b/credit-limits',
+          label: tB2B('creditLimits.title'),
+          translationKey: 'dashboard.b2b.creditLimits.title',
+        },
+        {
+          href: '/dashboard/b2b/buyers',
+          label: tB2B('buyers.title'),
+          translationKey: 'dashboard.b2b.buyers.title',
+        },
+        {
+          href: '/dashboard/b2b/purchase-orders',
+          label: tB2B('purchaseOrders.title'),
+          translationKey: 'dashboard.b2b.purchaseOrders.title',
         },
       ],
     },
