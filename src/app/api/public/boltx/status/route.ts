@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
+import { Plan, Subscription, hasFeature } from '@/utils/plans';
 
 export const dynamic = 'force-dynamic';
 
@@ -86,6 +87,59 @@ export async function OPTIONS(request: NextRequest) {
 }
 
 /**
+ * Check if account has Enterprise plan access
+ */
+async function checkEnterpriseAccess(accountId: string): Promise<boolean> {
+  try {
+    const supabaseAdmin = getSupabaseAdmin();
+
+    // Fetch subscriptions for this account
+    const { data: subscriptions, error: subscriptionsError } = await supabaseAdmin.rpc(
+      'get_subscriptions_by_account',
+      { p_account_id: accountId }
+    );
+
+    if (subscriptionsError || !subscriptions || subscriptions.length === 0) {
+      return false;
+    }
+
+    // Find active subscription
+    const activeSubscription = (subscriptions as Subscription[]).find(
+      (sub: Subscription) => sub.status === 'active'
+    );
+
+    if (!activeSubscription) {
+      return false;
+    }
+
+    // Get plan details
+    let plan: Plan | null = null;
+    if (activeSubscription.plan) {
+      plan = activeSubscription.plan;
+    } else {
+      // Fetch plan if not included
+      const { data: plans, error: plansError } = await supabaseAdmin.rpc('get_plans');
+      if (!plansError && plans) {
+        plan = (plans as Plan[]).find((p: Plan) => p.id === activeSubscription.plan_id) || null;
+      }
+    }
+
+    if (!plan) {
+      return false;
+    }
+
+    // Check Enterprise access
+    const isEnterprise = plan.code === 'enterprise';
+    const hasBoltXFeature = hasFeature(plan, 'boltx');
+
+    return isEnterprise && hasBoltXFeature;
+  } catch (error) {
+    console.error('[⚡️BoltX] Error checking Enterprise access:', error);
+    return false;
+  }
+}
+
+/**
  * Get BoltX enabled status from environment variables
  */
 function getBoltXStatusFromEnv(): {
@@ -93,6 +147,7 @@ function getBoltXStatusFromEnv(): {
   interventions_enabled: boolean;
   personalization_enabled: boolean;
   optimizations_enabled: boolean;
+  has_enterprise_access: boolean;
   source: 'env';
 } {
   const enabled = process.env.BOLTX_ENABLED === 'true';
@@ -101,6 +156,7 @@ function getBoltXStatusFromEnv(): {
     interventions_enabled: process.env.NEXT_PUBLIC_BOLTX_INTERVENTIONS !== 'false',
     personalization_enabled: process.env.NEXT_PUBLIC_BOLTX_PERSONALIZATION !== 'false',
     optimizations_enabled: process.env.NEXT_PUBLIC_BOLTX_OPTIMIZATIONS !== 'false',
+    has_enterprise_access: false, // Default to false when using ENV fallback
     source: 'env',
   };
 }
@@ -201,11 +257,15 @@ export async function GET(request: NextRequest) {
       const personalizationEnabled = config.personalization_enabled !== false;
       const optimizationsEnabled = config.optimizations_enabled !== false;
       
+      // Check Enterprise plan access
+      const hasEnterpriseAccess = await checkEnterpriseAccess(accountId);
+      
       console.info('[⚡️BoltX] Status from database:', {
         enabled,
         interventions_enabled: interventionsEnabled,
         personalization_enabled: personalizationEnabled,
         optimizations_enabled: optimizationsEnabled,
+        has_enterprise_access: hasEnterpriseAccess,
         accountId,
       });
 
@@ -215,6 +275,7 @@ export async function GET(request: NextRequest) {
           interventions_enabled: interventionsEnabled,
           personalization_enabled: personalizationEnabled,
           optimizations_enabled: optimizationsEnabled,
+          has_enterprise_access: hasEnterpriseAccess,
           source: 'database',
         },
         { headers: corsHeaders }
