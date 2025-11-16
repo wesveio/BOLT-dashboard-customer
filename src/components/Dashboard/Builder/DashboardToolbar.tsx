@@ -1,6 +1,7 @@
 'use client';
 
-import { Button, Input, Switch, Spinner } from '@heroui/react';
+import { Button, Input, Switch } from '@heroui/react';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import { PencilIcon, CheckIcon, XMarkIcon, ArrowDownTrayIcon, LockClosedIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';

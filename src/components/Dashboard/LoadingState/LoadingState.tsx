@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 import { useTranslations } from 'next-intl';
-import { Spinner } from '@heroui/react';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 
 interface LoadingStateProps {
   message?: string;

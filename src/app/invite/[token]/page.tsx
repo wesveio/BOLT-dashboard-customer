@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Card, CardBody, Button, Spinner } from '@heroui/react';
+import { Card, CardBody, Button } from '@heroui/react';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';;
 
 /**

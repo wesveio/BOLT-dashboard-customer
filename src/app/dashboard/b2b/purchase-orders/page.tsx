@@ -8,7 +8,6 @@ import {
   Card,
   CardBody,
   Button,
-  Spinner,
   Input,
   Switch,
   Table,
@@ -19,6 +18,7 @@ import {
   TableCell,
   Chip,
 } from '@heroui/react';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import { toast } from 'sonner';
 import { useApi } from '@/hooks/useApi';
 

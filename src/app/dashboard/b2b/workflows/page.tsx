@@ -8,9 +8,9 @@ import {
   Card,
   CardBody,
   Button,
-  Spinner,
   useDisclosure,
 } from '@heroui/react';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { toast } from 'sonner';
 import { WorkflowForm, ApprovalWorkflow } from '@/components/Dashboard/B2B/WorkflowForm';

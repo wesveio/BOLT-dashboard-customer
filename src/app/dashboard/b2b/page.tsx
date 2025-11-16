@@ -5,7 +5,8 @@ import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { PageHeader } from '@/components/Dashboard/PageHeader/PageHeader';
 import { PageWrapper } from '@/components/Dashboard/PageWrapper/PageWrapper';
-import { Card, CardBody, Spinner } from '@heroui/react';
+import { Card, CardBody } from '@heroui/react';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import {
   BuildingOfficeIcon,
   DocumentCheckIcon,

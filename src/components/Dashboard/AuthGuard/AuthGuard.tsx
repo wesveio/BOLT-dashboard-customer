@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDashboardAuth } from '@/hooks/useDashboardAuth';
-import { Spinner } from '@heroui/react';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 
 interface AuthGuardProps {
   children: React.ReactNode;

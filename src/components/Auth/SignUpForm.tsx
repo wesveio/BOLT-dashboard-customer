@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Input, Button, Spinner } from '@heroui/react';
+import { Input, Button } from '@heroui/react';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import { signupSchema, type SignupInput } from '@/lib/validations/auth';
 import {
   sanitizeEmail,

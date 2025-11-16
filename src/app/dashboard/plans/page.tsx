@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion as m } from 'framer-motion';
-import { Card, CardBody, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Spinner } from '@heroui/react';
+import { Card, CardBody, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from '@heroui/react';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import { fadeIn, slideIn } from '@/utils/animations';
 import { useDashboardAuth } from '@/hooks/useDashboardAuth';
 import { usePlanAccessContext } from '@/contexts/PlanAccessContext';

@@ -5,8 +5,8 @@ import {
   Card,
   CardBody,
   Button,
-  Spinner,
 } from '@heroui/react';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   Elements,

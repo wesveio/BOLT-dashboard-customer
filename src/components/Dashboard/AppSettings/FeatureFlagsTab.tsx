@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardBody, Button, Switch, Spinner } from '@heroui/react';
+import { Card, CardBody, Button, Switch } from '@heroui/react';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import { toast } from 'sonner';
 import { useFeatureFlags } from '@/hooks/useFeatureFlags';
 

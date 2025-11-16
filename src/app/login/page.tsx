@@ -4,8 +4,9 @@ import { useState, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { motion as m, AnimatePresence } from 'framer-motion';
-import { Card, CardBody, Input, Button, Spinner } from '@heroui/react';
+import { Card, CardBody, Input, Button } from '@heroui/react';
 import { SignUpForm } from '@/components/Auth/SignUpForm';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import { OtpInput } from '@/components/Auth/OtpInput';
 import { useApiPost } from '@/hooks/useApi';
 import { ApiError } from '@/utils/api-client';
@@ -486,7 +487,7 @@ export default function LoginPage() {
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <Spinner size="lg" />
         </div>
       }
     >

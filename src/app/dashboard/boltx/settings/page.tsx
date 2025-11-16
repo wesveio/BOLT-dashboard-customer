@@ -15,8 +15,8 @@ import {
   SelectItem,
   Tabs,
   Tab,
-  Spinner,
 } from '@heroui/react';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import {
   Cog6ToothIcon,
   KeyIcon,

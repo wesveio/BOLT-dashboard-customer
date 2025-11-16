@@ -8,11 +8,11 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Spinner,
   Card,
   CardBody,
   Divider,
 } from '@heroui/react';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import { formatCurrency } from '@/utils/plans';
 import { SubscriptionTransaction } from '@/utils/plans';
 

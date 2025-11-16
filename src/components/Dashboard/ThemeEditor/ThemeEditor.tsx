@@ -15,6 +15,7 @@ import {
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { PreviewPane } from './PreviewPane';
 import { useRolePermissions } from '@/hooks/useRolePermissions';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import type { ExpandedThemeConfig } from './types';
 import { getDefaultThemeConfig } from './defaults';
 import { VisualTab } from './tabs/VisualTab';
@@ -208,7 +209,7 @@ export function ThemeEditor({ themeId, onBack, onSave }: ThemeEditorProps) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <Spinner size="lg" className="mx-auto mb-4" />
           <p className="text-gray-600">Loading theme...</p>
         </div>
       </div>

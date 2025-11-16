@@ -8,7 +8,6 @@ import {
   Card,
   CardBody,
   Button,
-  Spinner,
   useDisclosure,
   Table,
   TableHeader,
@@ -18,6 +17,7 @@ import {
   TableCell,
   Chip,
 } from '@heroui/react';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { toast } from 'sonner';
 import { CreditLimitForm, CreditLimit } from '@/components/Dashboard/B2B/CreditLimitForm';

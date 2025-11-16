@@ -8,10 +8,10 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Spinner,
   Card,
   CardBody,
 } from '@heroui/react';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import { Subscription } from '@/utils/plans';
 import { toast } from 'sonner';
 
