@@ -13,6 +13,7 @@ import {
   SelectItem,
 } from '@heroui/react';
 import { formatDate } from '@/utils/formatters';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 import type { UserProfileTransformed } from '@/hooks/usePersonalizationProfiles';
 
 interface ProfilesTableProps {
@@ -75,7 +76,8 @@ export function ProfilesTable({ profiles, isLoading = false, maxRows = 100 }: Pr
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex flex-col items-center justify-center h-64 gap-4">
+        <Spinner size="md" />
         <div className="text-gray-500">Loading profiles...</div>
       </div>
     );

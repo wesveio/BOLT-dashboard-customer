@@ -5,6 +5,7 @@ import { Card, CardBody, Switch, Textarea, Button, Slider } from '@heroui/react'
 import { motion } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
 import { usePersonalizationConfig, type PersonalizationConfig as PersonalizationConfigType } from '@/hooks/usePersonalizationConfig';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 
 interface PersonalizationConfigProps {
   onSave?: () => void;
@@ -88,7 +89,10 @@ export function PersonalizationConfig({ onSave }: PersonalizationConfigProps) {
       <Card className="border border-gray-100">
         <CardBody className="p-6">
           <div className="h-64 flex items-center justify-center">
-            <div className="text-gray-500">Loading configuration...</div>
+            <div className="flex flex-col items-center justify-center gap-4">
+              <Spinner size="md" />
+              <div className="text-gray-500">Loading configuration...</div>
+            </div>
           </div>
         </CardBody>
       </Card>

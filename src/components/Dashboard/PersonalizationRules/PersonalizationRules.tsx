@@ -5,6 +5,7 @@ import { Card, CardBody, Button, Switch, Input, Select, SelectItem } from '@hero
 import { motion } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
 import { useApi, useApiPatch } from '@/hooks/useApi';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 
 interface PersonalizationRule {
   id?: string;
@@ -98,7 +99,8 @@ export function PersonalizationRules() {
     return (
       <Card className="border border-gray-100">
         <CardBody className="p-6">
-          <div className="h-64 flex items-center justify-center">
+          <div className="h-64 flex flex-col items-center justify-center gap-4">
+            <Spinner size="md" />
             <div className="text-gray-500">Loading rules...</div>
           </div>
         </CardBody>

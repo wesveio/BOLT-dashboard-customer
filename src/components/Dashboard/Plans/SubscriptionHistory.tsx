@@ -6,6 +6,7 @@ import { formatCurrency } from '@/utils/plans';
 import { Subscription, SubscriptionTransaction } from '@/utils/plans';
 import { TransactionDetailsModal } from './TransactionDetailsModal';
 import { CancelSubscriptionModal } from './CancelSubscriptionModal';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 
 interface SubscriptionHistoryProps {
   subscriptions: Subscription[];
@@ -66,7 +67,10 @@ export function SubscriptionHistory({ subscriptions, transactions, isLoading }: 
     return (
       <Card className="border border-gray-100">
         <CardBody className="p-6">
-          <div className="text-center py-8 text-gray-500">Loading subscription history...</div>
+          <div className="flex flex-col items-center justify-center py-8 gap-4">
+            <Spinner size="md" />
+            <div className="text-gray-500">Loading subscription history...</div>
+          </div>
         </CardBody>
       </Card>
     );

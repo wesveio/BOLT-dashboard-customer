@@ -5,6 +5,7 @@ import { Card, CardBody, Switch, Input, Textarea, Button, Slider } from '@heroui
 import { motion } from 'framer-motion';
 import { fadeIn } from '@/utils/animations';
 import { useApi, useApiPatch } from '@/hooks/useApi';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 
 interface InterventionConfigProps {
   onSave?: () => void;
@@ -106,7 +107,10 @@ export function InterventionConfig({ onSave }: InterventionConfigProps) {
       <Card className="border border-gray-100">
         <CardBody className="p-6">
           <div className="h-64 flex items-center justify-center">
-            <div className="text-gray-500">Loading configuration...</div>
+            <div className="flex flex-col items-center justify-center gap-4">
+              <Spinner size="md" />
+              <div className="text-gray-500">Loading configuration...</div>
+            </div>
           </div>
         </CardBody>
       </Card>

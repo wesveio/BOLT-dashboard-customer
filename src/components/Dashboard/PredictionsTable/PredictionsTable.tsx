@@ -13,6 +13,7 @@ import {
   SelectItem,
 } from '@heroui/react';
 import { formatDuration } from '@/utils/formatters';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 
 interface PredictionData {
   sessionId: string;
@@ -94,7 +95,8 @@ export function PredictionsTable({ predictions, isLoading = false, maxRows = 50 
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex flex-col items-center justify-center h-64 gap-4">
+        <Spinner size="md" />
         <div className="text-gray-500">Loading predictions...</div>
       </div>
     );

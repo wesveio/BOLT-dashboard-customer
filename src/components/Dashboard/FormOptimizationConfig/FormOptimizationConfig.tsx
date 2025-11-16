@@ -7,6 +7,7 @@ import { fadeIn } from '@/utils/animations';
 import { useApi, useApiPost } from '@/hooks/useApi';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import type { FieldPerformance } from '@/hooks/useFormOptimizationMetrics';
+import { Spinner } from '@/components/Dashboard/Spinner/Spinner';
 
 interface FormOptimizationConfigProps {
   onSave?: () => void;
@@ -273,7 +274,10 @@ export function FormOptimizationConfig({ onSave, fields = [] }: FormOptimization
       <Card className="border border-gray-100">
         <CardBody className="p-6">
           <div className="h-64 flex items-center justify-center">
-            <div className="text-gray-500">Loading configuration...</div>
+            <div className="flex flex-col items-center justify-center gap-4">
+              <Spinner size="md" />
+              <div className="text-gray-500">Loading configuration...</div>
+            </div>
           </div>
         </CardBody>
       </Card>
