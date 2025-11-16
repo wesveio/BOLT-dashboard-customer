@@ -119,25 +119,25 @@ export default function InsightsPage() {
             </div>
           </CardBody>
         </Card>
-        <Card className="border border-red-200 bg-red-50 hover:shadow-lg transition-all duration-200">
+        <Card className="border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/30 hover:shadow-lg transition-all duration-200">
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-red-700 mb-1">{t('labels.highImpact')}</p>
-                <p className="text-2xl font-bold text-red-900">{filteredInsights.high.length}</p>
+                <p className="text-sm text-red-700 dark:text-red-300 mb-1">{t('labels.highImpact')}</p>
+                <p className="text-2xl font-bold text-red-900 dark:text-red-200">{filteredInsights.high.length}</p>
               </div>
-              <ExclamationTriangleIcon className="w-8 h-8 text-red-600" />
+              <ExclamationTriangleIcon className="w-8 h-8 text-red-600 dark:text-red-400" />
             </div>
           </CardBody>
         </Card>
-        <Card className="border border-blue-200 bg-blue-50 hover:shadow-lg transition-all duration-200">
+        <Card className="border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30 hover:shadow-lg transition-all duration-200">
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-blue-700 mb-1">{t('labels.mediumImpact')}</p>
-                <p className="text-2xl font-bold text-blue-900">{filteredInsights.medium.length}</p>
+                <p className="text-sm text-blue-700 dark:text-blue-300 mb-1">{t('labels.mediumImpact')}</p>
+                <p className="text-2xl font-bold text-blue-900 dark:text-blue-200">{filteredInsights.medium.length}</p>
               </div>
-              <InformationCircleIcon className="w-8 h-8 text-blue-600" />
+              <InformationCircleIcon className="w-8 h-8 text-blue-600 dark:text-blue-400" />
             </div>
           </CardBody>
         </Card>

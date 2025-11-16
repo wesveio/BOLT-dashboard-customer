@@ -124,7 +124,8 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
       if (response.ok) {
         const data = await response.json();
-        const savedTheme = data.data?.settings?.theme?.theme as Theme | undefined;
+        // apiSuccess retorna { settings: { theme: { theme: 'dark' } } }
+        const savedTheme = data.settings?.theme?.theme as Theme | undefined;
         
         if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
           console.info(`✅ [DEBUG] Loaded theme preference: ${savedTheme}`);

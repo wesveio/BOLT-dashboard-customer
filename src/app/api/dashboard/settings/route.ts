@@ -19,9 +19,19 @@ export const dynamic = 'force-dynamic';
 export const GET = async (_request: NextRequest) => {
   try {
     const { user } = await getAuthenticatedUser();
+    const supabaseAdmin = getSupabaseAdmin();
+
+    // Buscar settings usando RPC function (compatível com PostgREST)
+    const { data: settings, error: settingsError } = await supabaseAdmin
+      .rpc('get_user_settings', { p_user_id: user.id });
+
+    if (settingsError) {
+      console.warn('⚠️ [DEBUG] Error fetching user settings, using empty object:', settingsError);
+      // Não falha, apenas retorna objeto vazio
+    }
 
     return apiSuccess({
-      settings: user.settings || {},
+      settings: (settings || {}) as Record<string, any>,
     });
   } catch (error) {
     return apiInternalError(error);
@@ -38,41 +48,40 @@ export const PATCH = withAuthAndValidation(
     try {
       const supabaseAdmin = getSupabaseAdmin();
 
-      // Get current settings using RPC function (required for custom schema)
-      const { data: users, error: userError } = await supabaseAdmin
-        .rpc('get_user_by_id', { p_user_id: authUser.id });
+      // Buscar settings atuais usando RPC function
+      const { data: currentSettingsData, error: fetchError } = await supabaseAdmin
+        .rpc('get_user_settings', { p_user_id: authUser.id });
 
-      const user = users && users.length > 0 ? users[0] : null;
-
-      if (userError || !user) {
-        return apiError('User not found', 404);
+      if (fetchError) {
+        console.error('❌ [DEBUG] Error fetching user settings:', fetchError);
+        return apiError('Failed to fetch current settings', 500);
       }
 
       // Merge new settings with existing
-      const currentSettings = (user.settings || {}) as Record<string, string>;
+      const currentSettings = (currentSettingsData || {}) as Record<string, any>;
       const updatedSettings = {
         ...currentSettings,
         [body.category]: body.settings,
       };
 
-      // Update settings
-      const { error: updateError } = await supabaseAdmin
-        .from('dashboard.users')
-        .update({
-          settings: updatedSettings,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', authUser.id);
+      // Update settings usando RPC function
+      const { data: updatedSettingsData, error: updateError } = await supabaseAdmin
+        .rpc('update_user_settings', {
+          p_user_id: authUser.id,
+          p_settings: updatedSettings as any,
+        });
 
       if (updateError) {
-        console.error('Update settings error:', updateError);
+        console.error('❌ [DEBUG] Update settings error:', updateError);
         return apiError('Failed to update settings', 500);
       }
 
+      console.info(`✅ [DEBUG] Settings updated successfully for category: ${body.category}`);
       return apiSuccess({
-        settings: updatedSettings,
+        settings: (updatedSettingsData || updatedSettings) as Record<string, any>,
       });
     } catch (error) {
+      console.error('❌ [DEBUG] Error in PATCH settings:', error);
       return apiInternalError(error);
     }
   }

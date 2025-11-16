@@ -45,10 +45,7 @@ export function DashboardHeader() {
                   alt="Bolt Logo"
                   width={68}
                   height={23}
-                  className="h-full w-auto object-contain"
-                  style={{
-                    filter: 'brightness(0) saturate(100%)',
-                  }}
+                  className="h-full w-auto object-contain brightness-0 dark:invert"
                   priority
                   unoptimized
                 />

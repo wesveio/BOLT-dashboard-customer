@@ -191,7 +191,7 @@ export default function PlansPage() {
       {/* Current Plan Section */}
       {currentSubscription && (
         <m.div variants={slideIn} initial="hidden" animate="visible" className="mb-8">
-          <Card className="border border-blue-200 bg-gradient-to-r from-blue-50 to-purple-50 mb-8">
+          <Card className="border border-blue-200 dark:border-blue-800 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 mb-8">
             <CardBody className="p-6">
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
@@ -204,7 +204,7 @@ export default function PlansPage() {
                       </span>
                     )}
                     {currentSubscription.ended_at && currentSubscription.status === 'active' && (
-                      <span className="text-sm text-orange-600 ml-2 font-semibold">
+                      <span className="text-sm text-orange-600 dark:text-orange-400 ml-2 font-semibold">
                         (Access until {new Date(currentSubscription.ended_at).toLocaleDateString()})
                       </span>
                     )}

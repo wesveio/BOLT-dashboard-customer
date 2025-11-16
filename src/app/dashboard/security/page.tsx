@@ -260,12 +260,12 @@ export default function SecurityPage() {
                   key={alert.id}
                   className={`p-4 rounded-lg border ${
                     alert.severity === 'critical'
-                      ? 'bg-red-50 border-red-200'
+                      ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800'
                       : alert.severity === 'high'
-                        ? 'bg-orange-50 border-orange-200'
+                        ? 'bg-orange-50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-800'
                         : alert.severity === 'medium'
-                          ? 'bg-yellow-50 border-yellow-200'
-                          : 'bg-blue-50 border-blue-200'
+                          ? 'bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800'
+                          : 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800'
                   }`}
                 >
                   <div className="flex items-start justify-between">
@@ -274,12 +274,12 @@ export default function SecurityPage() {
                         <span
                           className={`px-2 py-1 rounded text-xs font-semibold ${
                             alert.severity === 'critical'
-                              ? 'bg-red-100 text-red-800'
+                              ? 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200'
                               : alert.severity === 'high'
-                                ? 'bg-orange-100 text-orange-800'
+                                ? 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-200'
                                 : alert.severity === 'medium'
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : 'bg-blue-100 text-blue-800'
+                                  ? 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-200'
+                                  : 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200'
                           }`}
                         >
                           {alert.severity.toUpperCase()}

@@ -62,10 +62,7 @@ export function PublicHeader({ showDashboard = false }: PublicHeaderProps) {
                 alt="Bolt Logo"
                 width={68}
                 height={23}
-                className="h-full w-auto object-contain"
-                style={{
-                  filter: 'brightness(0)',
-                }}
+                className="h-full w-auto object-contain brightness-0 dark:invert"
                 priority
               />
             </div>

@@ -318,26 +318,26 @@ export default function AnalyticsPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             {summary?.eventsByCategory && (
               <>
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <p className="text-2xl font-bold text-blue-600">
+                <div className="text-center p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg">
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                     {formatNumber(summary.eventsByCategory.user_action)}
                   </p>
                   <p className="text-sm text-foreground/70 mt-1">User Actions</p>
                 </div>
-                <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <p className="text-2xl font-bold text-purple-600">
+                <div className="text-center p-4 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                  <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
                     {formatNumber(summary.eventsByCategory.api_call)}
                   </p>
                   <p className="text-sm text-foreground/70 mt-1">API Calls</p>
                 </div>
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <p className="text-2xl font-bold text-green-600">
+                <div className="text-center p-4 bg-green-50 dark:bg-green-950/30 rounded-lg">
+                  <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                     {formatNumber(summary.eventsByCategory.metric)}
                   </p>
                   <p className="text-sm text-foreground/70 mt-1">Metrics</p>
                 </div>
-                <div className="text-center p-4 bg-red-50 rounded-lg">
-                  <p className="text-2xl font-bold text-red-600">
+                <div className="text-center p-4 bg-red-50 dark:bg-red-950/30 rounded-lg">
+                  <p className="text-2xl font-bold text-red-600 dark:text-red-400">
                     {formatNumber(summary.eventsByCategory.error)}
                   </p>
                   <p className="text-sm text-foreground/70 mt-1">Errors</p>
