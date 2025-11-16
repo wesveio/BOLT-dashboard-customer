@@ -19,9 +19,9 @@ export function FeatureList({ featureCodes, showDescriptions = true }: FeatureLi
             <CheckIcon className="w-3 h-3 text-white" />
           </div>
           <div className="flex-1">
-            <p className="text-sm font-medium text-gray-900">{feature.name}</p>
+            <p className="text-sm font-medium text-foreground">{feature.name}</p>
             {showDescriptions && (
-              <p className="text-xs text-gray-500 mt-0.5">{feature.description}</p>
+              <p className="text-xs text-foreground/60 mt-0.5">{feature.description}</p>
             )}
           </div>
         </li>

@@ -153,33 +153,33 @@ export default function OptimizationPage() {
               >
                 <div className="space-y-4">
                   {Object.entries(metrics.byStep).map(([step, stepData]) => (
-                    <div key={step} className="p-4 border border-gray-200 rounded-lg">
+                    <div key={step} className="p-4 border border-default-200 rounded-lg">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-semibold text-gray-900 capitalize">{step}</h4>
-                        <span className="text-sm text-gray-600">
+                        <h4 className="font-semibold text-foreground capitalize">{step}</h4>
+                        <span className="text-sm text-foreground/70">
                           {formatPercentage(stepData.optimizedConversionRate)} optimized
                         </span>
                       </div>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <span className="text-gray-600">Fields:</span>
-                          <span className="ml-2 font-semibold text-gray-900">{stepData.totalFields}</span>
+                          <span className="text-foreground/70">Fields:</span>
+                          <span className="ml-2 font-semibold text-foreground">{stepData.totalFields}</span>
                         </div>
                         <div>
-                          <span className="text-gray-600">Completion Rate:</span>
-                          <span className="ml-2 font-semibold text-gray-900">
+                          <span className="text-foreground/70">Completion Rate:</span>
+                          <span className="ml-2 font-semibold text-foreground">
                             {formatPercentage(stepData.avgCompletionRate * 100)}
                           </span>
                         </div>
                         <div>
-                          <span className="text-gray-600">Error Rate:</span>
+                          <span className="text-foreground/70">Error Rate:</span>
                           <span className="ml-2 font-semibold text-red-600">
                             {formatPercentage(stepData.avgErrorRate * 100)}
                           </span>
                         </div>
                         <div>
-                          <span className="text-gray-600">Avg Time:</span>
-                          <span className="ml-2 font-semibold text-gray-900">
+                          <span className="text-foreground/70">Avg Time:</span>
+                          <span className="ml-2 font-semibold text-foreground">
                             {(stepData.avgTimeToComplete / 1000).toFixed(2)}s
                           </span>
                         </div>
@@ -187,7 +187,7 @@ export default function OptimizationPage() {
                     </div>
                   ))}
                   {Object.keys(metrics.byStep).length === 0 && (
-                    <p className="text-gray-500 text-center py-8">No step metrics available</p>
+                    <p className="text-foreground/60 text-center py-8">No step metrics available</p>
                   )}
                 </div>
               </ChartCard>

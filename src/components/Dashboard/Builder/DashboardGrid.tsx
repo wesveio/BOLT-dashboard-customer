@@ -217,8 +217,8 @@ export function DashboardGrid({
               {isEditing ? (
                 <Card className={`h-full border transition-all duration-200 ${
                   isDragging
-                    ? 'border-blue-500 shadow-xl ring-2 ring-blue-200 opacity-90'
-                    : 'border-gray-100 hover:border-blue-200 hover:shadow-lg'
+                    ? 'border-primary shadow-xl ring-2 ring-primary/20 opacity-90'
+                    : 'border-default hover:border-primary/20 hover:shadow-lg'
                 } ${!isDragging ? 'cursor-move' : ''}`}>
                   <CardBody className="p-4 relative">
                     <div className="absolute top-2 right-2 z-10 flex gap-2">
@@ -228,7 +228,7 @@ export function DashboardGrid({
                             e.stopPropagation();
                             onConfigureWidget(widget.id);
                           }}
-                          className="p-1 rounded bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors"
+                          className="p-1 rounded bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
                           title="Configure widget"
                         >
                           <svg
@@ -257,7 +257,7 @@ export function DashboardGrid({
                           e.stopPropagation();
                           onRemoveWidget(widget.id);
                         }}
-                        className="p-1 rounded bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
+                        className="p-1 rounded bg-danger/10 text-danger hover:bg-danger/20 transition-colors"
                         title="Remove widget"
                       >
                         <svg
@@ -300,7 +300,7 @@ export function DashboardGrid({
       </div>
 
       {layout.widgets.length === 0 && (
-        <div className="flex items-center justify-center h-64 text-gray-400 col-span-12">
+        <div className="flex items-center justify-center h-64 text-foreground/40 col-span-12">
           <div className="text-center">
             <p className="text-lg mb-2">No widgets yet</p>
             <p className="text-sm">Add widgets from the palette to get started</p>
@@ -310,7 +310,7 @@ export function DashboardGrid({
       
       {/* Debug info in development */}
       {process.env.NODE_ENV === 'development' && layout.widgets.length > 0 && (
-        <div className="col-span-12 text-xs text-gray-400 p-2">
+        <div className="col-span-12 text-xs text-foreground/40 p-2">
           Debug: {layout.widgets.length} widget(s) in layout
         </div>
       )}

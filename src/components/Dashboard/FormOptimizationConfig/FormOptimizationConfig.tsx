@@ -271,12 +271,12 @@ export function FormOptimizationConfig({ onSave, fields = [] }: FormOptimization
 
   if (isLoading) {
     return (
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
           <div className="h-64 flex items-center justify-center">
             <div className="flex flex-col items-center justify-center gap-4">
               <Spinner size="md" />
-              <div className="text-gray-500">Loading configuration...</div>
+              <div className="text-foreground/60">Loading configuration...</div>
             </div>
           </div>
         </CardBody>
@@ -293,10 +293,10 @@ export function FormOptimizationConfig({ onSave, fields = [] }: FormOptimization
       animate="visible"
       variants={fadeIn}
     >
-      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+      <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
         <CardBody className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-gray-900">Form Optimization Configuration</h3>
+            <h3 className="text-xl font-bold text-foreground">Form Optimization Configuration</h3>
             {hasChanges && (
               <Button
                 color="primary"
@@ -310,29 +310,29 @@ export function FormOptimizationConfig({ onSave, fields = [] }: FormOptimization
           </div>
 
           {saveStatus === 'success' && (
-            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+            <div className="mb-4 p-3 bg-success/10 border border-success/20 rounded-lg text-success text-sm">
               Configuration saved successfully
             </div>
           )}
 
           {saveStatus === 'error' && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            <div className="mb-4 p-3 bg-danger/10 border border-danger/20 rounded-lg text-danger text-sm">
               Failed to save configuration. Please try again.
             </div>
           )}
 
           {showSchemaWarning && (
-            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-700 text-sm">
+            <div className="mb-4 p-3 bg-warning/10 border border-warning/20 rounded-lg text-warning text-sm">
               {(data as any).warning || 'Database schema cache is refreshing. Configuration will be available shortly.'}
             </div>
           )}
 
           <div className="space-y-6">
             {/* Auto-optimize toggle */}
-            <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+            <div className="flex items-center justify-between p-4 border border-default-200 rounded-lg">
               <div>
-                <h4 className="font-semibold text-gray-900 mb-1">Auto-Optimize Fields</h4>
-                <p className="text-sm text-gray-600">
+                <h4 className="font-semibold text-foreground mb-1">Auto-Optimize Fields</h4>
+                <p className="text-sm text-foreground/70">
                   Automatically optimize field order and visibility based on performance data
                 </p>
               </div>
@@ -345,7 +345,7 @@ export function FormOptimizationConfig({ onSave, fields = [] }: FormOptimization
 
             {/* Step selector */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">Select Step</label>
+              <label className="text-sm font-semibold text-foreground/80 mb-2 block">Select Step</label>
               <Select
                 selectedKeys={[selectedStep]}
                 onSelectionChange={(keys) => {
@@ -368,18 +368,18 @@ export function FormOptimizationConfig({ onSave, fields = [] }: FormOptimization
 
             {/* Field list for selected step */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">
+              <label className="text-sm font-semibold text-foreground/80 mb-2 block">
                 Field Order & Visibility ({selectedStep})
               </label>
               {currentStepFields.map((config) => (
                 <div
                   key={`${config.step}-${config.fieldName}`}
-                  className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-center gap-3 p-3 border border-default-200 rounded-lg hover:bg-default-100 transition-colors"
                 >
-                  <Bars3Icon className="w-5 h-5 text-gray-400 rotate-90" />
+                  <Bars3Icon className="w-5 h-5 text-foreground/40 rotate-90" />
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-900">
+                      <span className="font-medium text-foreground">
                         {config.fieldName.charAt(0).toUpperCase() + config.fieldName.slice(1)}
                       </span>
                       {config.required && (
@@ -388,7 +388,7 @@ export function FormOptimizationConfig({ onSave, fields = [] }: FormOptimization
                         </Chip>
                       )}
                     </div>
-                    <span className="text-xs text-gray-500">Order: {config.order + 1}</span>
+                    <span className="text-xs text-foreground/60">Order: {config.order + 1}</span>
                   </div>
                   <Switch
                     isSelected={config.visible}

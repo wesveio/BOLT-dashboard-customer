@@ -242,7 +242,7 @@ export default function SettingsPage() {
         onSelectionChange={(key) => setActiveTab(key as string)}
         className="mb-6"
         classNames={{
-          tabList: 'bg-white border border-gray-200 rounded-lg p-1',
+          tabList: 'bg-background border border-default-200 rounded-lg p-1',
           tab: 'data-[selected=true]:bg-gradient-to-r data-[selected=true]:from-blue-500 data-[selected=true]:to-purple-500 data-[selected=true]:text-white data-[selected=true]:[&_*]:text-white data-[selected=true]:[&_svg]:text-white',
         }}
       >
@@ -255,9 +255,9 @@ export default function SettingsPage() {
             </div>
           }
         >
-          <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mt-6">
+          <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 mt-6">
             <CardBody className="p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">{t('generalSettings')}</h2>
+              <h2 className="text-xl font-bold text-foreground mb-6">{t('generalSettings')}</h2>
               <div className="space-y-4">
                 <Select
                   label={t('language')}
@@ -354,14 +354,14 @@ export default function SettingsPage() {
             </div>
           }
         >
-          <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mt-6">
+          <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 mt-6">
             <CardBody className="p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">{t('notificationSettings')}</h2>
+              <h2 className="text-xl font-bold text-foreground mb-6">{t('notificationSettings')}</h2>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-gray-900">{t('emailReports')}</p>
-                    <p className="text-sm text-gray-600">{t('emailReportsDesc')}</p>
+                    <p className="font-semibold text-foreground">{t('emailReports')}</p>
+                    <p className="text-sm text-foreground/70">{t('emailReportsDesc')}</p>
                   </div>
                   <Switch
                     isSelected={notificationSettings.emailReports}
@@ -376,8 +376,8 @@ export default function SettingsPage() {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-gray-900">{t('weeklyDigest')}</p>
-                    <p className="text-sm text-gray-600">{t('weeklyDigestDesc')}</p>
+                    <p className="font-semibold text-foreground">{t('weeklyDigest')}</p>
+                    <p className="text-sm text-foreground/70">{t('weeklyDigestDesc')}</p>
                   </div>
                   <Switch
                     isSelected={notificationSettings.weeklyDigest}
@@ -392,8 +392,8 @@ export default function SettingsPage() {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-gray-900">{t('conversionAlerts')}</p>
-                    <p className="text-sm text-gray-600">{t('conversionAlertsDesc')}</p>
+                    <p className="font-semibold text-foreground">{t('conversionAlerts')}</p>
+                    <p className="text-sm text-foreground/70">{t('conversionAlertsDesc')}</p>
                   </div>
                   <Switch
                     isSelected={notificationSettings.conversionAlerts}
@@ -408,8 +408,8 @@ export default function SettingsPage() {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-gray-900">{t('paymentAlerts')}</p>
-                    <p className="text-sm text-gray-600">{t('paymentAlertsDesc')}</p>
+                    <p className="font-semibold text-foreground">{t('paymentAlerts')}</p>
+                    <p className="text-sm text-foreground/70">{t('paymentAlertsDesc')}</p>
                   </div>
                   <Switch
                     isSelected={notificationSettings.paymentAlerts}
@@ -424,8 +424,8 @@ export default function SettingsPage() {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-gray-900">{t('systemUpdates')}</p>
-                    <p className="text-sm text-gray-600">{t('systemUpdatesDesc')}</p>
+                    <p className="font-semibold text-foreground">{t('systemUpdates')}</p>
+                    <p className="text-sm text-foreground/70">{t('systemUpdatesDesc')}</p>
                   </div>
                   <Switch
                     isSelected={notificationSettings.systemUpdates}
@@ -463,14 +463,14 @@ export default function SettingsPage() {
             </div>
           }
         >
-          <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mt-6">
+          <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 mt-6">
             <CardBody className="p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">{t('securitySettings')}</h2>
+              <h2 className="text-xl font-bold text-foreground mb-6">{t('securitySettings')}</h2>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-gray-900">{t('twoFactorAuth')}</p>
-                    <p className="text-sm text-gray-600">{t('twoFactorAuthDesc')}</p>
+                    <p className="font-semibold text-foreground">{t('twoFactorAuth')}</p>
+                    <p className="text-sm text-foreground/70">{t('twoFactorAuthDesc')}</p>
                   </div>
                   <Switch
                     isSelected={securitySettings.twoFactorEnabled}
@@ -527,9 +527,9 @@ export default function SettingsPage() {
             </div>
           }
         >
-          <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mt-6">
+          <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 mt-6">
             <CardBody className="p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">{t('analyticsSettings')}</h2>
+              <h2 className="text-xl font-bold text-foreground mb-6">{t('analyticsSettings')}</h2>
               <div className="space-y-4">
                 <Select
                   label={t('dataRetention')}
@@ -642,7 +642,7 @@ export default function SettingsPage() {
                 {t('deleteAccountConfirm')}
               </ModalHeader>
               <ModalBody>
-                <p className="text-gray-600">
+                <p className="text-foreground/70">
                   {t('deleteAccountWarning')}
                 </p>
                 <p className="text-sm text-red-600 mt-2 font-semibold">

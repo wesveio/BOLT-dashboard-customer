@@ -28,9 +28,9 @@ export function TextsTab({ config, onChange }: TextsTabProps) {
   return (
     <div className="space-y-6">
       {/* Interface Texts */}
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">{t('stepTitlesDescriptions')}</h3>
+          <h3 className="text-lg font-bold text-foreground mb-4">{t('stepTitlesDescriptions')}</h3>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <Input
@@ -95,9 +95,9 @@ export function TextsTab({ config, onChange }: TextsTabProps) {
       </Card>
 
       {/* Page Content - Rich Text Editors */}
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">{t('pageContent')}</h3>
+          <h3 className="text-lg font-bold text-foreground mb-4">{t('pageContent')}</h3>
           <div className="space-y-6">
             <TipTapTextEditor
               label={t('emptyCartMessage')}

@@ -24,12 +24,12 @@ export function LayoutTab({ config, onChange }: LayoutTabProps) {
   return (
     <div className="space-y-6">
       {/* General Layout */}
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">General Layout</h3>
+          <h3 className="text-lg font-bold text-foreground mb-4">General Layout</h3>
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Layout Type</label>
+              <label className="text-sm font-semibold text-foreground/80">Layout Type</label>
               <Select
                 selectedKeys={[config.layout.type]}
                 onSelectionChange={(keys) => {
@@ -45,8 +45,8 @@ export function LayoutTab({ config, onChange }: LayoutTabProps) {
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Stepper</label>
-                <p className="text-xs text-gray-500">Display progress stepper</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Stepper</label>
+                <p className="text-xs text-foreground/60">Display progress stepper</p>
               </div>
               <Switch
                 isSelected={config.layout.showStepper}
@@ -56,7 +56,7 @@ export function LayoutTab({ config, onChange }: LayoutTabProps) {
             </div>
             {config.layout.showStepper && (
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Stepper Position</label>
+                <label className="text-sm font-semibold text-foreground/80">Stepper Position</label>
                 <Select
                   selectedKeys={[config.layout.stepperPosition]}
                   onSelectionChange={(keys) => {
@@ -73,7 +73,7 @@ export function LayoutTab({ config, onChange }: LayoutTabProps) {
               </div>
             )}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Order Summary Position</label>
+              <label className="text-sm font-semibold text-foreground/80">Order Summary Position</label>
               <Select
                 selectedKeys={[config.layout.orderSummaryPosition]}
                 onSelectionChange={(keys) => {
@@ -89,7 +89,7 @@ export function LayoutTab({ config, onChange }: LayoutTabProps) {
               </Select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Container Type</label>
+              <label className="text-sm font-semibold text-foreground/80">Container Type</label>
               <Select
                 selectedKeys={[config.layout.containerType]}
                 onSelectionChange={(keys) => {
@@ -108,14 +108,14 @@ export function LayoutTab({ config, onChange }: LayoutTabProps) {
       </Card>
 
       {/* Components Configuration */}
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Components</h3>
+          <h3 className="text-lg font-bold text-foreground mb-4">Components</h3>
           <div className="space-y-4">
             <div className="space-y-3">
-              <h4 className="text-md font-semibold text-gray-700">App Header</h4>
+              <h4 className="text-md font-semibold text-foreground/80">App Header</h4>
               <div className="flex items-center justify-between">
-                <label className="text-sm text-gray-700">Show Header</label>
+                <label className="text-sm text-foreground/80">Show Header</label>
                 <Switch
                   isSelected={config.layout.components.appHeader.show}
                   onValueChange={(value) => updateLayout(['components', 'appHeader', 'show'], value)}
@@ -125,7 +125,7 @@ export function LayoutTab({ config, onChange }: LayoutTabProps) {
               {config.layout.components.appHeader.show && (
                 <>
                   <div className="flex items-center justify-between">
-                    <label className="text-sm text-gray-700">Sticky Header</label>
+                    <label className="text-sm text-foreground/80">Sticky Header</label>
                     <Switch
                       isSelected={config.layout.components.appHeader.sticky}
                       onValueChange={(value) => updateLayout(['components', 'appHeader', 'sticky'], value)}
@@ -133,7 +133,7 @@ export function LayoutTab({ config, onChange }: LayoutTabProps) {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <label className="text-sm text-gray-700">Transparent Header</label>
+                    <label className="text-sm text-foreground/80">Transparent Header</label>
                     <Switch
                       isSelected={config.layout.components.appHeader.transparent}
                       onValueChange={(value) => updateLayout(['components', 'appHeader', 'transparent'], value)}
@@ -144,9 +144,9 @@ export function LayoutTab({ config, onChange }: LayoutTabProps) {
               )}
             </div>
             <div className="space-y-3 pt-4 border-t">
-              <h4 className="text-md font-semibold text-gray-700">App Footer</h4>
+              <h4 className="text-md font-semibold text-foreground/80">App Footer</h4>
               <div className="flex items-center justify-between">
-                <label className="text-sm text-gray-700">Show Footer</label>
+                <label className="text-sm text-foreground/80">Show Footer</label>
                 <Switch
                   isSelected={config.layout.components.appFooter.show}
                   onValueChange={(value) => updateLayout(['components', 'appFooter', 'show'], value)}
@@ -155,9 +155,9 @@ export function LayoutTab({ config, onChange }: LayoutTabProps) {
               </div>
             </div>
             <div className="space-y-3 pt-4 border-t">
-              <h4 className="text-md font-semibold text-gray-700">Modern Stepper</h4>
+              <h4 className="text-md font-semibold text-foreground/80">Modern Stepper</h4>
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Style</label>
+                <label className="text-sm font-semibold text-foreground/80">Style</label>
                 <Select
                   selectedKeys={[config.layout.components.modernStepper.style]}
                   onSelectionChange={(keys) => {
@@ -174,9 +174,9 @@ export function LayoutTab({ config, onChange }: LayoutTabProps) {
               </div>
             </div>
             <div className="space-y-3 pt-4 border-t">
-              <h4 className="text-md font-semibold text-gray-700">Checkout Header</h4>
+              <h4 className="text-md font-semibold text-foreground/80">Checkout Header</h4>
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Gradient</label>
+                <label className="text-sm font-semibold text-foreground/80">Gradient</label>
                 <Select
                   selectedKeys={[config.layout.components.checkoutHeader.gradient]}
                   onSelectionChange={(keys) => {
@@ -193,7 +193,7 @@ export function LayoutTab({ config, onChange }: LayoutTabProps) {
                 </Select>
               </div>
               <div className="flex items-center justify-between">
-                <label className="text-sm text-gray-700">Show Icons</label>
+                <label className="text-sm text-foreground/80">Show Icons</label>
                 <Switch
                   isSelected={config.layout.components.checkoutHeader.showIcons}
                   onValueChange={(value) => updateLayout(['components', 'checkoutHeader', 'showIcons'], value)}

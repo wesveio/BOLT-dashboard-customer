@@ -108,7 +108,7 @@ export function TransactionDetailsModal({
           )}
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+            <div className="bg-danger/10 border border-danger/20 text-danger px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
           )}
@@ -116,32 +116,32 @@ export function TransactionDetailsModal({
           {transaction && !isLoading && (
             <div className="space-y-6">
               {/* Transaction Overview */}
-              <Card className="border border-gray-100">
+              <Card className="border border-default">
                 <CardBody className="p-6">
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Amount</span>
-                      <span className="text-2xl font-bold text-gray-900">
+                      <span className="text-foreground/70">Amount</span>
+                      <span className="text-2xl font-bold text-foreground">
                         {formatCurrency(transaction.amount, transaction.currency)}
                       </span>
                     </div>
                     <Divider />
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <span className="text-sm text-gray-600">Status</span>
-                        <p className="font-semibold capitalize">{transaction.status}</p>
+                        <span className="text-sm text-foreground/70">Status</span>
+                        <p className="font-semibold capitalize text-foreground">{transaction.status}</p>
                       </div>
                       <div>
-                        <span className="text-sm text-gray-600">Type</span>
-                        <p className="font-semibold capitalize">{transaction.transaction_type}</p>
+                        <span className="text-sm text-foreground/70">Type</span>
+                        <p className="font-semibold capitalize text-foreground">{transaction.transaction_type}</p>
                       </div>
                       <div>
-                        <span className="text-sm text-gray-600">Date</span>
-                        <p className="font-semibold">{formatDate(transaction.transaction_date)}</p>
+                        <span className="text-sm text-foreground/70">Date</span>
+                        <p className="font-semibold text-foreground">{formatDate(transaction.transaction_date)}</p>
                       </div>
                       <div>
-                        <span className="text-sm text-gray-600">Currency</span>
-                        <p className="font-semibold">{transaction.currency}</p>
+                        <span className="text-sm text-foreground/70">Currency</span>
+                        <p className="font-semibold text-foreground">{transaction.currency}</p>
                       </div>
                     </div>
                   </div>
@@ -150,26 +150,26 @@ export function TransactionDetailsModal({
 
               {/* Payment Gateway Information */}
               {transaction.payment_provider && (
-                <Card className="border border-gray-100">
+                <Card className="border border-default">
                   <CardBody className="p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4">Payment Gateway</h3>
+                    <h3 className="text-lg font-bold text-foreground mb-4">Payment Gateway</h3>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Provider</span>
-                        <span className="font-semibold capitalize">
+                        <span className="text-foreground/70">Provider</span>
+                        <span className="font-semibold capitalize text-foreground">
                           {transaction.payment_provider}
                         </span>
                       </div>
                       {transaction.payment_intent_id && (
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Payment Intent ID</span>
-                          <span className="font-mono text-sm">{transaction.payment_intent_id}</span>
+                          <span className="text-foreground/70">Payment Intent ID</span>
+                          <span className="font-mono text-sm text-foreground">{transaction.payment_intent_id}</span>
                         </div>
                       )}
                       {transaction.gateway_invoice_id && (
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Invoice ID</span>
-                          <span className="font-mono text-sm">
+                          <span className="text-foreground/70">Invoice ID</span>
+                          <span className="font-mono text-sm text-foreground">
                             {transaction.gateway_invoice_id}
                           </span>
                         </div>
@@ -181,16 +181,16 @@ export function TransactionDetailsModal({
 
               {/* Receipt and Invoice Links */}
               {(transaction.receipt_url || transaction.invoice_url || transaction.gateway_details?.receiptUrl) && (
-                <Card className="border border-gray-100">
+                <Card className="border border-default">
                   <CardBody className="p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4">Documents</h3>
+                    <h3 className="text-lg font-bold text-foreground mb-4">Documents</h3>
                     <div className="space-y-2">
                       {transaction.receipt_url && (
                         <a
                           href={transaction.receipt_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="block text-blue-600 hover:text-blue-800 underline"
+                          className="block text-primary hover:text-primary/80 underline"
                         >
                           View Receipt
                         </a>
@@ -200,7 +200,7 @@ export function TransactionDetailsModal({
                           href={transaction.invoice_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="block text-blue-600 hover:text-blue-800 underline"
+                          className="block text-primary hover:text-primary/80 underline"
                         >
                           View Invoice
                         </a>
@@ -210,7 +210,7 @@ export function TransactionDetailsModal({
                           href={transaction.gateway_details.receiptUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="block text-blue-600 hover:text-blue-800 underline"
+                          className="block text-primary hover:text-primary/80 underline"
                         >
                           View Gateway Receipt
                         </a>
@@ -222,14 +222,14 @@ export function TransactionDetailsModal({
 
               {/* Additional Metadata */}
               {transaction.metadata && Object.keys(transaction.metadata).length > 0 && (
-                <Card className="border border-gray-100">
+                <Card className="border border-default">
                   <CardBody className="p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4">Additional Information</h3>
+                    <h3 className="text-lg font-bold text-foreground mb-4">Additional Information</h3>
                     <div className="space-y-2">
                       {Object.entries(transaction.metadata).map(([key, value]) => (
                         <div key={key} className="flex justify-between">
-                          <span className="text-gray-600 capitalize">{key.replace(/_/g, ' ')}</span>
-                          <span className="font-semibold text-right">
+                          <span className="text-foreground/70 capitalize">{key.replace(/_/g, ' ')}</span>
+                          <span className="font-semibold text-right text-foreground">
                             {typeof value === 'object' ? JSON.stringify(value) : String(value)}
                           </span>
                         </div>

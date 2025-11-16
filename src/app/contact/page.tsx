@@ -55,11 +55,11 @@ export default async function ContactPage() {
                   </span>
                 </div>
 
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
                   {t('hero.title')}
                 </h1>
 
-                <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                <p className="text-xl text-foreground/70 mb-10 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                   {t('hero.description')}
                 </p>
               </div>
@@ -67,7 +67,7 @@ export default async function ContactPage() {
           </section>
 
           {/* Contact Form Section */}
-          <section className="py-20 bg-white">
+          <section className="py-20 bg-background">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="max-w-2xl mx-auto">
                 <ContactForm />
@@ -76,7 +76,7 @@ export default async function ContactPage() {
           </section>
 
           {/* Additional Info Section */}
-          <section className="py-20 bg-gray-50">
+          <section className="py-20 bg-default-50">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="max-w-4xl mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -91,8 +91,8 @@ export default async function ContactPage() {
                         />
                       </svg>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">{t('info.email.title')}</h3>
-                    <p className="text-gray-600 text-sm">{t('info.email.description')}</p>
+                    <h3 className="text-lg font-bold text-foreground mb-2">{t('info.email.title')}</h3>
+                    <p className="text-foreground/70 text-sm">{t('info.email.description')}</p>
                     <a
                       href="mailto:hello@bckstg.com"
                       className="text-blue-600 hover:text-blue-700 font-medium text-sm mt-2 inline-block"
@@ -112,8 +112,8 @@ export default async function ContactPage() {
                         />
                       </svg>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">{t('info.response.title')}</h3>
-                    <p className="text-gray-600 text-sm">{t('info.response.description')}</p>
+                    <h3 className="text-lg font-bold text-foreground mb-2">{t('info.response.title')}</h3>
+                    <p className="text-foreground/70 text-sm">{t('info.response.description')}</p>
                   </div>
 
                   <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
@@ -127,8 +127,8 @@ export default async function ContactPage() {
                         />
                       </svg>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">{t('info.demo.title')}</h3>
-                    <p className="text-gray-600 text-sm">{t('info.demo.description')}</p>
+                    <h3 className="text-lg font-bold text-foreground mb-2">{t('info.demo.title')}</h3>
+                    <p className="text-foreground/70 text-sm">{t('info.demo.description')}</p>
                   </div>
                 </div>
               </div>

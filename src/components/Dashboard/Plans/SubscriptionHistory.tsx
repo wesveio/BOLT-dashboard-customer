@@ -65,11 +65,11 @@ export function SubscriptionHistory({ subscriptions, transactions, isLoading }: 
 
   if (isLoading) {
     return (
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
           <div className="flex flex-col items-center justify-center py-8 gap-4">
             <Spinner size="md" />
-            <div className="text-gray-500">Loading subscription history...</div>
+            <div className="text-foreground/60">Loading subscription history...</div>
           </div>
         </CardBody>
       </Card>
@@ -78,9 +78,9 @@ export function SubscriptionHistory({ subscriptions, transactions, isLoading }: 
 
   if (subscriptions.length === 0) {
     return (
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <div className="text-center py-8 text-gray-500">No subscription history available.</div>
+          <div className="text-center py-8 text-foreground/60">No subscription history available.</div>
         </CardBody>
       </Card>
     );
@@ -89,9 +89,9 @@ export function SubscriptionHistory({ subscriptions, transactions, isLoading }: 
   return (
     <div className="space-y-6">
       {/* Subscriptions Table */}
-      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+      <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
         <CardBody className="p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">Subscription History</h3>
+          <h3 className="text-xl font-bold text-foreground mb-4">Subscription History</h3>
           <Table aria-label="Subscription history">
             <TableHeader>
               <TableColumn>Plan</TableColumn>
@@ -106,8 +106,8 @@ export function SubscriptionHistory({ subscriptions, transactions, isLoading }: 
                 <TableRow key={subscription.id}>
                   <TableCell>
                     <div>
-                      <p className="font-semibold text-gray-900">{subscription.plan?.name || 'Unknown'}</p>
-                      <p className="text-sm text-gray-500">{subscription.plan?.code}</p>
+                      <p className="font-semibold text-foreground">{subscription.plan?.name || 'Unknown'}</p>
+                      <p className="text-sm text-foreground/60">{subscription.plan?.code}</p>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -115,7 +115,7 @@ export function SubscriptionHistory({ subscriptions, transactions, isLoading }: 
                       {subscription.status}
                     </Chip>
                     {subscription.status === 'active' && subscription.ended_at && (
-                      <p className="text-xs text-orange-600 mt-1">
+                      <p className="text-xs text-warning mt-1">
                         Ends {formatDate(subscription.ended_at)}
                       </p>
                     )}
@@ -144,9 +144,9 @@ export function SubscriptionHistory({ subscriptions, transactions, isLoading }: 
 
       {/* Transactions Table (if available) */}
       {transactions && transactions.length > 0 && (
-        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+        <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
           <CardBody className="p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Transaction History</h3>
+            <h3 className="text-xl font-bold text-foreground mb-4">Transaction History</h3>
             <Table aria-label="Transaction history">
               <TableHeader>
                 <TableColumn>Date</TableColumn>
@@ -158,7 +158,7 @@ export function SubscriptionHistory({ subscriptions, transactions, isLoading }: 
                 {transactions.map((transaction) => (
                   <TableRow
                     key={transaction.id}
-                    className="cursor-pointer hover:bg-gray-50 transition-colors"
+                    className="cursor-pointer hover:bg-default-100 transition-colors"
                     onClick={() => handleTransactionClick(transaction.id)}
                   >
                     <TableCell>{formatDate(transaction.transaction_date)}</TableCell>

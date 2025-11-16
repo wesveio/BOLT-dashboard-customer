@@ -127,21 +127,21 @@ export default function DashboardsPage() {
                   variants={fadeIn}
                   className="transform transition-transform hover:scale-105 active:scale-95"
                 >
-                  <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 flex flex-col h-full">
+                  <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 flex flex-col h-full">
                     <CardBody className="p-6 flex flex-col flex-1">
                       <div className="flex items-center gap-4 mb-4">
                         <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
                           <Squares2X2Icon className="w-8 h-8 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-lg font-bold text-gray-900 truncate">{dashboard.name}</h3>
+                          <h3 className="text-lg font-bold text-foreground truncate">{dashboard.name}</h3>
                           {dashboard.updatedAt && (
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-foreground/60 mt-1">
                               {t('updatedAt')} <span className="font-medium">{formatRelativeTime(dashboard.updatedAt)}</span>
                             </p>
                           )}
                           {dashboard.createdAt && dashboard.createdAt !== dashboard.updatedAt && (
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-foreground/60">
                               {t('createdAt')} <span className="font-medium">{formatRelativeTime(dashboard.createdAt)}</span>
                             </p>
                           )}
@@ -149,7 +149,7 @@ export default function DashboardsPage() {
                       </div>
 
                       <div className="flex items-center gap-2 mb-4">
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-foreground/70">
                           {dashboard.widgets?.length || 0} {t('widgets')}
                         </span>
                         {dashboard.isPublic !== undefined && (
@@ -157,7 +157,7 @@ export default function DashboardsPage() {
                             className={`text-xs px-2 py-1 rounded-full ${
                               dashboard.isPublic
                                 ? 'bg-blue-100 text-blue-700'
-                                : 'bg-gray-100 text-gray-600'
+                                : 'bg-default-100 text-foreground/70'
                             }`}
                           >
                             {dashboard.isPublic ? (
@@ -212,9 +212,9 @@ export default function DashboardsPage() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <Squares2X2Icon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('empty')}</h3>
-              <p className="text-gray-600 mb-4">{t('emptyDescription')}</p>
+              <Squares2X2Icon className="w-16 h-16 text-foreground/30 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-foreground mb-2">{t('empty')}</h3>
+              <p className="text-foreground/70 mb-4">{t('emptyDescription')}</p>
               <Button
                 color="primary"
                 size="lg"
@@ -234,8 +234,8 @@ export default function DashboardsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <Card className="max-w-md w-full mx-4">
             <CardBody className="p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-2">{t('confirmDelete')}</h3>
-              <p className="text-sm text-gray-600 mb-4">{t('deleteWarning')}</p>
+              <h3 className="text-lg font-bold text-foreground mb-2">{t('confirmDelete')}</h3>
+              <p className="text-sm text-foreground/70 mb-4">{t('deleteWarning')}</p>
               <div className="flex gap-2 justify-end">
                 <Button
                   variant="light"

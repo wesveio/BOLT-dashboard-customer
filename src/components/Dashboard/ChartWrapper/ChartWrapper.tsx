@@ -109,7 +109,7 @@ export const ChartWrapper = memo(function ChartWrapper({
   // Default chart rendering
   if (isLoading) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-8 text-foreground/60">
         {loadingMessage}
       </div>
     );
@@ -117,7 +117,7 @@ export const ChartWrapper = memo(function ChartWrapper({
 
   if (!data || data.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-8 text-foreground/60">
         {emptyMessage}
       </div>
     );

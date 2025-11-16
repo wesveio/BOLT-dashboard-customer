@@ -55,18 +55,18 @@ export default function AcceptInvitePage() {
   }, [token, router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">
-      <Card className="w-full max-w-md border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-background to-purple-50 p-4">
+      <Card className="w-full max-w-md border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
         <CardBody className="p-8">
           <div className="flex flex-col items-center justify-center text-center space-y-6">
             {status === 'loading' && (
               <>
                 <Spinner size="lg" />
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                  <h1 className="text-2xl font-bold text-foreground mb-2">
                     Accepting Invitation...
                   </h1>
-                  <p className="text-gray-600">
+                  <p className="text-foreground/70">
                     Please wait while we process your invitation
                   </p>
                 </div>
@@ -79,11 +79,11 @@ export default function AcceptInvitePage() {
                   <CheckCircleIcon className="w-10 h-10 text-green-600" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                  <h1 className="text-2xl font-bold text-foreground mb-2">
                     Invitation Accepted!
                   </h1>
-                  <p className="text-gray-600 mb-4">{message}</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-foreground/70 mb-4">{message}</p>
+                  <p className="text-sm text-foreground/60">
                     Redirecting to login page...
                   </p>
                 </div>
@@ -103,11 +103,11 @@ export default function AcceptInvitePage() {
                   <XCircleIcon className="w-10 h-10 text-red-600" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                  <h1 className="text-2xl font-bold text-foreground mb-2">
                     Invitation Error
                   </h1>
-                  <p className="text-gray-600 mb-4">{message}</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-foreground/70 mb-4">{message}</p>
+                  <p className="text-sm text-foreground/60">
                     The invitation may have expired or already been used.
                   </p>
                 </div>

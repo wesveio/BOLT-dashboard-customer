@@ -29,7 +29,7 @@ export function RevenueChartWidget({ widget }: RevenueChartWidgetProps) {
 
   if (error) {
     return (
-      <div className="p-4 text-sm text-red-600">
+      <div className="p-4 text-sm text-danger">
         Error loading chart: {error.message || 'Unknown error'}
       </div>
     );

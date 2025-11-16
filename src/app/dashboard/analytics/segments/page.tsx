@@ -219,7 +219,7 @@ export default function SegmentsAnalyticsPage() {
           const color = SEGMENT_COLORS[segment.name] || 'default';
 
           return (
-            <Card key={segment.name} className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+            <Card key={segment.name} className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
               <CardBody className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${
@@ -232,31 +232,31 @@ export default function SegmentsAnalyticsPage() {
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-bold text-gray-900">{segment.name}</h3>
-                    <p className="text-xs text-gray-500">{segment.description}</p>
+                    <h3 className="text-lg font-bold text-foreground">{segment.name}</h3>
+                    <p className="text-xs text-foreground/60">{segment.description}</p>
                   </div>
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">{t('customers')}</span>
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-sm text-foreground/70">{t('customers')}</span>
+                    <span className="text-lg font-bold text-foreground">
                       {formatNumber(segment.metrics.count)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">{t('avgLTV')}</span>
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-sm text-foreground/70">{t('avgLTV')}</span>
+                    <span className="text-lg font-bold text-foreground">
                       {formatCurrency(segment.metrics.avgLTV)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">{t('totalRevenue')}</span>
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-sm text-foreground/70">{t('totalRevenue')}</span>
+                    <span className="text-lg font-bold text-foreground">
                       {formatCurrency(segment.metrics.totalRevenue)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">{t('segmentShare')}</span>
+                    <span className="text-sm text-foreground/70">{t('segmentShare')}</span>
                     <Chip color={color as any} variant="flat" size="sm">
                       {formatPercentage(segment.metrics.conversionRate)}
                     </Chip>
@@ -314,13 +314,13 @@ export default function SegmentsAnalyticsPage() {
                             </div>
                           )}
                           <div>
-                            <p className="text-sm font-semibold text-gray-900">{segment.name}</p>
-                            <p className="text-xs text-gray-500">{segment.description}</p>
+                            <p className="text-sm font-semibold text-foreground">{segment.name}</p>
+                            <p className="text-xs text-foreground/60">{segment.description}</p>
                           </div>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm font-semibold text-gray-900">
+                        <span className="text-sm font-semibold text-foreground">
                           {formatNumber(segment.metrics.count)}
                         </span>
                       </TableCell>
@@ -330,22 +330,22 @@ export default function SegmentsAnalyticsPage() {
                         </Chip>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm font-semibold text-gray-900">
+                        <span className="text-sm font-semibold text-foreground">
                           {formatCurrency(segment.metrics.totalRevenue)}
                         </span>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm font-semibold text-gray-900">
+                        <span className="text-sm font-semibold text-foreground">
                           {formatCurrency(segment.metrics.avgLTV)}
                         </span>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-foreground/70">
                           {formatCurrency(segment.metrics.avgAOV)}
                         </span>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-foreground/70">
                           {formatNumber(segment.metrics.avgOrders, { maximumFractionDigits: 1 })}
                         </span>
                       </TableCell>
@@ -358,8 +358,8 @@ export default function SegmentsAnalyticsPage() {
         </ChartCard>
       ) : (
         <ChartCard title={t('noSegmentDataTitle')} subtitle={t('noSegmentDataSubtitle')}>
-          <div className="text-center py-12 text-gray-500">
-            <UserGroupIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+          <div className="text-center py-12 text-foreground/60">
+            <UserGroupIcon className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
             <p className="text-lg font-semibold mb-2">{t('noSegmentsFound')}</p>
             <p className="text-sm">{t('tryDifferentPeriod')}</p>
           </div>

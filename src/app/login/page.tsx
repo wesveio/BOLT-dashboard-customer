@@ -282,7 +282,7 @@ function LoginContent() {
         <div className="w-full max-w-md">
           {/* Mode Toggle */}
           <div className="flex items-center justify-center mb-8">
-            <div className="inline-flex rounded-lg bg-gray-100 p-1">
+            <div className="inline-flex rounded-lg bg-default-100 p-1">
               <button
                 type="button"
                 onClick={() => {
@@ -291,8 +291,8 @@ function LoginContent() {
                   setCodeSent(false);
                 }}
                 className={`px-6 py-2 rounded-md font-semibold text-sm transition-all ${mode === 'login'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-foreground/70 hover:text-foreground'
                   }`}
               >
                 {t('title')}
@@ -303,8 +303,8 @@ function LoginContent() {
                   setMode('signup');
                 }}
                 className={`px-6 py-2 rounded-md font-semibold text-sm transition-all ${mode === 'signup'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-foreground/70 hover:text-foreground'
                   }`}
               >
                 {tSignup('title')}
@@ -321,7 +321,7 @@ function LoginContent() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="border border-gray-100 shadow-xl">
+                <Card className="border border-default shadow-xl">
                   <CardBody className="p-8">
                     {/* Header */}
                     <div className="text-center mb-8">
@@ -340,8 +340,8 @@ function LoginContent() {
                           />
                         </svg>
                       </div>
-                      <h2 className="text-3xl font-bold text-gray-900 mb-2">{t('title')}</h2>
-                      <p className="text-gray-600">{t('subtitle')}</p>
+                      <h2 className="text-3xl font-bold text-foreground mb-2">{t('title')}</h2>
+                      <p className="text-foreground/70">{t('subtitle')}</p>
                     </div>
 
                     {/* Error Message */}
@@ -442,7 +442,7 @@ function LoginContent() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="border border-gray-100 shadow-xl">
+                <Card className="border border-default shadow-xl">
                   <CardBody className="p-8">
                     {/* Header */}
                     <div className="text-center mb-8">
@@ -461,8 +461,8 @@ function LoginContent() {
                           />
                         </svg>
                       </div>
-                      <h2 className="text-3xl font-bold text-gray-900 mb-2">{tSignup('title')}</h2>
-                      <p className="text-gray-600">{tSignup('subtitle')}</p>
+                      <h2 className="text-3xl font-bold text-foreground mb-2">{tSignup('title')}</h2>
+                      <p className="text-foreground/70">{tSignup('subtitle')}</p>
                     </div>
 
                     <SignUpForm onSuccess={handleSignupSuccess} onSwitchToLogin={() => setMode('login')} />
@@ -473,8 +473,8 @@ function LoginContent() {
           </AnimatePresence>
 
           {/* Footer */}
-          <p className="text-center text-xs text-gray-500 mt-6">
-            {tPublic('poweredBy')} <span className="font-bold text-blue-600">{tPublic('poweredByBrand')}</span>
+          <p className="text-center text-xs text-foreground/60 mt-6">
+            {tPublic('poweredBy')} <span className="font-bold text-primary">{tPublic('poweredByBrand')}</span>
           </p>
         </div>
       </m.div>

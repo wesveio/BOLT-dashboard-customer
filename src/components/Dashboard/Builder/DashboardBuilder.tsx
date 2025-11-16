@@ -141,7 +141,7 @@ export function DashboardBuilder({ initialLayout, onSave, isSaving = false }: Da
 
       <div className="flex flex-1 min-h-0 overflow-hidden">
         {isEditing && (
-          <div className="w-64 border-r border-gray-200 overflow-y-auto flex-shrink-0">
+          <div className="w-64 border-r border-default overflow-y-auto flex-shrink-0">
             <WidgetPalette onAddWidget={handleAddWidget} />
           </div>
         )}

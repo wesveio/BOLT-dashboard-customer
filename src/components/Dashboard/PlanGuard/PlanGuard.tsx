@@ -42,11 +42,11 @@ export function PlanGuard({
   if (!hasAccess) {
     return (
       fallback || (
-        <Card className="border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-purple-50">
+        <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/10 to-secondary/10">
           <CardBody className="p-8">
             <div className="flex flex-col items-center gap-4 text-center">
               {/* Icon */}
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
                 <svg
                   className="w-8 h-8 text-white"
                   fill="none"
@@ -64,10 +64,10 @@ export function PlanGuard({
 
               {/* Message */}
               <div className="space-y-2">
-                <h3 className="text-xl font-semibold text-gray-900">
+                <h3 className="text-xl font-semibold text-foreground">
                   {t('enterpriseRequired')}
                 </h3>
-                <p className="text-gray-600 max-w-md">
+                <p className="text-foreground/70 max-w-md">
                   {requiredPlan === 'enterprise'
                     ? t('enterpriseRequired')
                     : `This feature requires a ${requiredPlan} plan.`}

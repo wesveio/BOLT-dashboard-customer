@@ -27,31 +27,31 @@ export function PublicPricingCard({ plan, isPopular = false, onSelect }: PublicP
         <Card
           className={`border transition-all duration-200 h-full flex flex-col ${
             isPopular
-              ? 'border-blue-500 shadow-xl ring-2 ring-blue-200'
-              : 'border-gray-100 hover:border-blue-200 hover:shadow-lg'
+              ? 'border-primary shadow-xl ring-2 ring-primary/20'
+              : 'border-default hover:border-primary/20 hover:shadow-lg'
           }`}
         >
 
         <CardBody className="p-8 flex-1 flex flex-col">
           {/* Plan Header */}
           <div className="mb-8 text-center">
-            <h3 className="text-2xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-4">{plan.name}</h3>
+            <h3 className="text-2xl md:text-2xl lg:text-3xl font-bold text-foreground mb-4">{plan.name}</h3>
             <div className="flex items-baseline justify-center gap-2 mb-2">
-              <span className="text-3xl md:text-3xl lg:text-4xl font-bold text-gray-900">
+              <span className="text-3xl md:text-3xl lg:text-4xl font-bold text-foreground">
                 {isEnterprise ? 'Custom' : formatCurrency(plan.monthly_price, 'USD')}
               </span>
-              {!isEnterprise && <span className="text-lg md:text-xl text-gray-600">/month</span>}
+              {!isEnterprise && <span className="text-lg md:text-xl text-foreground/70">/month</span>}
             </div>
             {!isEnterprise && (
-              <p className="text-sm text-gray-600 mt-2">
+              <p className="text-sm text-foreground/70 mt-2">
                 + {formatPercentage(plan.transaction_fee_percent)} transaction fee
               </p>
             )}
             {!isEnterprise && (
-              <p className="text-xs text-gray-500 mt-1">All prices in USD</p>
+              <p className="text-xs text-foreground/60 mt-1">All prices in USD</p>
             )}
             {isEnterprise && (
-              <p className="text-sm text-gray-600 mt-2">Contact us for custom pricing</p>
+              <p className="text-sm text-foreground/70 mt-2">Contact us for custom pricing</p>
             )}
           </div>
 
@@ -66,8 +66,8 @@ export function PublicPricingCard({ plan, isPopular = false, onSelect }: PublicP
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">{feature.name}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{feature.description}</p>
+                    <p className="text-sm font-medium text-foreground">{feature.name}</p>
+                    <p className="text-xs text-foreground/60 mt-0.5">{feature.description}</p>
                   </div>
                 </li>
               ))}
@@ -75,7 +75,7 @@ export function PublicPricingCard({ plan, isPopular = false, onSelect }: PublicP
           </div>
 
           {/* CTA Button */}
-          <div className="mt-auto pt-6 border-t border-gray-100">
+          <div className="mt-auto pt-6 border-t border-default">
             {isEnterprise ? (
               <Button
                 as={Link}

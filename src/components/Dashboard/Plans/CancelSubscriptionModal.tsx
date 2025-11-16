@@ -92,19 +92,19 @@ export function CancelSubscriptionModal({
         <ModalBody>
           <div className="space-y-4">
             <div>
-              <p className="text-gray-700 mb-4">
+              <p className="text-foreground/80 mb-4">
                 Are you sure you want to cancel your subscription to the{' '}
                 <strong>{subscription.plan?.name || 'current plan'}</strong> plan?
               </p>
             </div>
 
-            <Card className="border border-yellow-200 bg-yellow-50">
+            <Card className="border border-warning/20 bg-warning/10">
               <CardBody className="p-4">
                 <div className="space-y-2">
-                  <p className="text-sm font-semibold text-yellow-900">
+                  <p className="text-sm font-semibold text-warning">
                     Important Information:
                   </p>
-                  <ul className="text-sm text-yellow-800 space-y-1 list-disc list-inside">
+                  <ul className="text-sm text-warning space-y-1 list-disc list-inside">
                     <li>
                       No refunds will be issued for the current billing period
                     </li>
@@ -122,9 +122,9 @@ export function CancelSubscriptionModal({
             </Card>
 
             {subscription.ended_at && (
-              <Card className="border border-blue-200 bg-blue-50">
+              <Card className="border border-primary/20 bg-primary/10">
                 <CardBody className="p-4">
-                  <p className="text-sm text-blue-900">
+                  <p className="text-sm text-primary">
                     <strong>Access until:</strong>{' '}
                     {formatDate(subscription.ended_at)}
                   </p>
@@ -132,7 +132,7 @@ export function CancelSubscriptionModal({
               </Card>
             )}
 
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-foreground/70">
               <p>
                 If you change your mind, you can reactivate your subscription
                 at any time before the end of the current period.

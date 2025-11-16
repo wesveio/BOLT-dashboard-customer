@@ -41,7 +41,7 @@ export function AnalyticsTableWidget({ widget }: AnalyticsTableWidgetProps) {
 
   if (error) {
     return (
-      <div className="p-4 text-sm text-red-600">
+      <div className="p-4 text-sm text-danger">
         Error loading table data: {error.message || 'Unknown error'}
       </div>
     );
@@ -80,12 +80,12 @@ export function AnalyticsTableWidget({ widget }: AnalyticsTableWidgetProps) {
 
   if (isLoading) {
     return (
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
           <div className="space-y-4">
-            <div className="h-6 bg-gray-200 rounded animate-pulse w-1/3" />
+            <div className="h-6 bg-default-200 rounded animate-pulse w-1/3" />
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-12 bg-gray-200 rounded animate-pulse" />
+              <div key={i} className="h-12 bg-default-200 rounded animate-pulse" />
             ))}
           </div>
         </CardBody>
@@ -95,9 +95,9 @@ export function AnalyticsTableWidget({ widget }: AnalyticsTableWidgetProps) {
 
   if (tableData.length === 0) {
     return (
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-foreground/60">
             No {tableType} data available
           </div>
         </CardBody>
@@ -106,9 +106,9 @@ export function AnalyticsTableWidget({ widget }: AnalyticsTableWidgetProps) {
   }
 
   return (
-    <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+    <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
       <CardBody className="p-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">
+        <h3 className="text-lg font-bold text-foreground mb-4">
           {widget.config.title || `${tableType.charAt(0).toUpperCase() + tableType.slice(1)} Analytics`}
         </h3>
         <Table aria-label={`${tableType} analytics table`}>

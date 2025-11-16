@@ -146,30 +146,30 @@ export default function BrowserAnalyticsPage() {
                   <ChartCard key={browser.browser} title={browser.browser}>
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">{t('sessions')}</span>
-                        <span className="text-lg font-bold text-gray-900">
+                        <span className="text-sm text-foreground/70">{t('sessions')}</span>
+                        <span className="text-lg font-bold text-foreground">
                           {formatNumber(browser.sessions)}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">{t('conversionRate')}</span>
+                        <span className="text-sm text-foreground/70">{t('conversionRate')}</span>
                         <span className="text-lg font-bold text-green-600">
                           {formatPercentage(browser.conversion || 0)}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">{t('revenue')}</span>
-                        <span className="text-lg font-bold text-gray-900">
+                        <span className="text-sm text-foreground/70">{t('revenue')}</span>
+                        <span className="text-lg font-bold text-foreground">
                           {formatCurrency(browser.revenue || 0)}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">{t('marketShare')}</span>
-                        <span className="text-lg font-bold text-gray-900">
+                        <span className="text-sm text-foreground/70">{t('marketShare')}</span>
+                        <span className="text-lg font-bold text-foreground">
                           {formatPercentage(browser.marketShare || 0)}
                         </span>
                       </div>
-                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-2 bg-default-100 rounded-full overflow-hidden">
                         <div
                           className="h-full rounded-full transition-all duration-500"
                           style={{
@@ -225,24 +225,24 @@ export default function BrowserAnalyticsPage() {
                   <ChartCard key={platform.platform} title={platform.platform}>
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">{t('sessions')}</span>
-                        <span className="text-lg font-bold text-gray-900">
+                        <span className="text-sm text-foreground/70">{t('sessions')}</span>
+                        <span className="text-lg font-bold text-foreground">
                           {formatNumber(platform.sessions)}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">{t('conversionRate')}</span>
+                        <span className="text-sm text-foreground/70">{t('conversionRate')}</span>
                         <span className="text-lg font-bold text-green-600">
                           {formatPercentage(platform.conversion || 0)}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">{t('revenue')}</span>
-                        <span className="text-lg font-bold text-gray-900">
+                        <span className="text-sm text-foreground/70">{t('revenue')}</span>
+                        <span className="text-lg font-bold text-foreground">
                           {formatCurrency(platform.revenue || 0)}
                         </span>
                       </div>
-                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-2 bg-default-100 rounded-full overflow-hidden">
                         <div
                           className="h-full rounded-full transition-all duration-500"
                           style={{
@@ -260,8 +260,8 @@ export default function BrowserAnalyticsPage() {
         </>
       ) : (
         <ChartCard title="No Browser Data" subtitle="No browser data available for the selected period">
-          <div className="text-center py-12 text-gray-500">
-            <GlobeAltIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+          <div className="text-center py-12 text-foreground/60">
+            <GlobeAltIcon className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
             <p className="text-lg font-semibold mb-2">No browser data found</p>
             <p className="text-sm">Try selecting a different time period.</p>
           </div>

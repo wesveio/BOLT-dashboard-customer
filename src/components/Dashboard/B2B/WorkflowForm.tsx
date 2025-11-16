@@ -143,8 +143,8 @@ export function WorkflowForm({
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-semibold text-gray-900">Enabled</p>
-                <p className="text-sm text-gray-600">Enable this workflow</p>
+                <p className="font-semibold text-foreground">Enabled</p>
+                <p className="text-sm text-foreground/70">Enable this workflow</p>
               </div>
               <Switch
                 isSelected={formData.enabled}
@@ -213,8 +213,8 @@ export function WorkflowForm({
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-semibold text-gray-900">Auto Approve</p>
-                <p className="text-sm text-gray-600">Automatically approve when conditions are met</p>
+                <p className="font-semibold text-foreground">Auto Approve</p>
+                <p className="text-sm text-foreground/70">Automatically approve when conditions are met</p>
               </div>
               <Switch
                 isSelected={formData.autoApprove}
@@ -223,7 +223,7 @@ export function WorkflowForm({
             </div>
 
             <div className="space-y-2">
-              <p className="font-semibold text-gray-900">Conditions (optional)</p>
+              <p className="font-semibold text-foreground">Conditions (optional)</p>
               <Input
                 label="Cost Centers (comma-separated)"
                 value={costCenterInput}

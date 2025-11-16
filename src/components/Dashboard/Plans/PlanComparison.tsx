@@ -14,9 +14,9 @@ export function PlanComparison({ plans }: PlanComparisonProps) {
   ).sort();
 
   return (
-    <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+    <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
       <CardBody className="p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-6">Compare Plans</h3>
+        <h3 className="text-xl font-bold text-foreground mb-6">Compare Plans</h3>
         <div className="overflow-x-auto">
           <Table aria-label="Plan comparison">
             <TableHeader>
@@ -37,8 +37,8 @@ export function PlanComparison({ plans }: PlanComparisonProps) {
                     <TableRow key={featureCode}>
                       <TableCell>
                         <div>
-                          <p className="font-medium text-gray-900">{feature.name}</p>
-                          <p className="text-xs text-gray-500">{feature.description}</p>
+                          <p className="font-medium text-foreground">{feature.name}</p>
+                          <p className="text-xs text-foreground/60">{feature.description}</p>
                         </div>
                       </TableCell>
                       {(plans.map((plan) => {
@@ -46,11 +46,11 @@ export function PlanComparison({ plans }: PlanComparisonProps) {
                         return (
                           <TableCell key={plan.id} className="text-center">
                             {hasFeature ? (
-                              <svg className="w-5 h-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-5 h-5 text-success mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                               </svg>
                             ) : (
-                              <svg className="w-5 h-5 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-5 h-5 text-foreground/30 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                               </svg>
                             )}

@@ -34,10 +34,10 @@ export const PageHeader = memo(function PageHeader({
       {showBreadcrumb && <DashboardBreadcrumbs />}
       <div className={action ? 'flex items-center justify-between' : ''}>
         <div className="flex items-center gap-3">
-          {Icon && <Icon className="w-8 h-8 text-gray-700" />}
+          {Icon && <Icon className="w-8 h-8 text-foreground/70" />}
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
-            {displaySubtitle && <p className="text-gray-600">{displaySubtitle}</p>}
+            <h1 className="text-3xl font-bold text-foreground mb-2">{title}</h1>
+            {displaySubtitle && <p className="text-foreground/70">{displaySubtitle}</p>}
           </div>
         </div>
         {action && <div>{action}</div>}

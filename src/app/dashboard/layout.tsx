@@ -3,6 +3,7 @@
 import { HeroUIProvider } from '@heroui/react';
 import { Toaster } from 'sonner';
 import { DashboardAuthProvider } from '@/contexts/DashboardAuthContext';
+import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
 import { SidebarProvider, useSidebar } from '@/contexts/SidebarContext';
 import { PeriodProvider } from '@/contexts/PeriodContext';
 import { PlanAccessProvider } from '@/contexts/PlanAccessContext';
@@ -16,7 +17,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   const { isCollapsed } = useSidebar();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <DashboardHeader />
       <div className="flex">
         <Sidebar />
@@ -34,26 +35,41 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * Wrapper para HeroUIProvider que usa o tema do ThemeContext
+ */
+function HeroUIProviderWrapper({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme();
+  
+  return (
+    <HeroUIProvider defaultTheme={theme}>
+      {children}
+    </HeroUIProvider>
+  );
+}
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <HeroUIProvider>
-      <DashboardAuthProvider>
-        <PlanAccessProvider>
-          <SidebarProvider>
-            <PeriodProvider>
-              <AuthGuard>
-                <DashboardContent>{children}</DashboardContent>
-                <Toaster position="top-right" richColors />
-              </AuthGuard>
-            </PeriodProvider>
-          </SidebarProvider>
-        </PlanAccessProvider>
-      </DashboardAuthProvider>
-    </HeroUIProvider>
+    <DashboardAuthProvider>
+      <ThemeProvider>
+        <HeroUIProviderWrapper>
+          <PlanAccessProvider>
+            <SidebarProvider>
+              <PeriodProvider>
+                <AuthGuard>
+                  <DashboardContent>{children}</DashboardContent>
+                  <Toaster position="top-right" richColors />
+                </AuthGuard>
+              </PeriodProvider>
+            </SidebarProvider>
+          </PlanAccessProvider>
+        </HeroUIProviderWrapper>
+      </ThemeProvider>
+    </DashboardAuthProvider>
   );
 }
 

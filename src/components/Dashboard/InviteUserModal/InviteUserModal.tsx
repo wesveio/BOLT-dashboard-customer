@@ -79,11 +79,11 @@ export function InviteUserModal({
     <Modal isOpen={isOpen} onClose={handleClose} size="lg">
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
-          <h2 className="text-xl font-bold text-gray-900">Invite New User</h2>
-          <p className="text-sm text-gray-600 font-normal">
+          <h2 className="text-xl font-bold text-foreground">Invite New User</h2>
+          <p className="text-sm text-foreground/70 font-normal">
             Send an invitation to join your account
             {remainingSlots > 0 && (
-              <span className="ml-1 text-blue-600 font-medium">
+              <span className="ml-1 text-primary font-medium">
                 ({remainingSlots} slot{remainingSlots !== 1 ? 's' : ''} remaining)
               </span>
             )}

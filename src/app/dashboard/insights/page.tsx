@@ -108,12 +108,12 @@ export default function InsightsPage() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+        <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">{t('labels.totalInsights')}</p>
-                <p className="text-2xl font-bold text-gray-900">{insights.length}</p>
+                <p className="text-sm text-foreground/70 mb-1">{t('labels.totalInsights')}</p>
+                <p className="text-2xl font-bold text-foreground">{insights.length}</p>
               </div>
               <LightBulbIcon className="w-8 h-8 text-yellow-500" />
             </div>
@@ -141,14 +141,14 @@ export default function InsightsPage() {
             </div>
           </CardBody>
         </Card>
-        <Card className="border border-gray-200 bg-gray-50 hover:shadow-lg transition-all duration-200">
+        <Card className="border border-default-200 bg-default-50 hover:shadow-lg transition-all duration-200">
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">{t('labels.lowImpact')}</p>
-                <p className="text-2xl font-bold text-gray-900">{filteredInsights.low.length}</p>
+                <p className="text-sm text-foreground/70 mb-1">{t('labels.lowImpact')}</p>
+                <p className="text-2xl font-bold text-foreground">{filteredInsights.low.length}</p>
               </div>
-              <InformationCircleIcon className="w-8 h-8 text-gray-600" />
+              <InformationCircleIcon className="w-8 h-8 text-foreground/70" />
             </div>
           </CardBody>
         </Card>
@@ -180,7 +180,7 @@ export default function InsightsPage() {
                     <p className={`text-sm ${styles.text} mb-4`}>{insight.description}</p>
                     <div className="flex items-center justify-between">
                       {insight.timestamp && (
-                        <span className="text-xs text-gray-500">{insight.timestamp}</span>
+                        <span className="text-xs text-foreground/60">{insight.timestamp}</span>
                       )}
                       {insight.action && (
                         <a
@@ -201,11 +201,11 @@ export default function InsightsPage() {
 
       {/* Empty State (if no insights) */}
       {insights.length === 0 && (
-        <Card className="border border-gray-100">
+        <Card className="border border-default">
           <CardBody className="p-12 text-center">
-            <LightBulbIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No Insights Yet</h3>
-            <p className="text-gray-600">
+            <LightBulbIcon className="w-16 h-16 text-foreground/30 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-foreground mb-2">No Insights Yet</h3>
+            <p className="text-foreground/70">
               Insights will appear here as we analyze your checkout data.
             </p>
           </CardBody>

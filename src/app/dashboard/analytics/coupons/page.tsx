@@ -212,7 +212,7 @@ export default function CouponsAnalyticsPage() {
                       </Chip>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-sm font-semibold text-foreground">
                         {formatNumber(coupon.count)}
                       </span>
                     </TableCell>
@@ -222,22 +222,22 @@ export default function CouponsAnalyticsPage() {
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-foreground/70">
                         {formatCurrency(coupon.avgDiscount)}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-sm font-semibold text-foreground">
                         {formatCurrency(coupon.revenue)}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-foreground/70">
                         {formatNumber(coupon.orders)}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-foreground/70">
                         {formatCurrency(coupon.avgOrderValue)}
                       </span>
                     </TableCell>
@@ -249,8 +249,8 @@ export default function CouponsAnalyticsPage() {
         </ChartCard>
       ) : (
         <ChartCard title="No Coupon Data" subtitle="No coupons were used in the selected period">
-          <div className="text-center py-12 text-gray-500">
-            <TicketIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+          <div className="text-center py-12 text-foreground/60">
+            <TicketIcon className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
             <p className="text-lg font-semibold mb-2">No coupons found</p>
             <p className="text-sm">Try selecting a different time period.</p>
           </div>

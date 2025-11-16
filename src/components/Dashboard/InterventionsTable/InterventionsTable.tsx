@@ -86,14 +86,14 @@ export function InterventionsTable({ interventions, isLoading = false, maxRows =
     return (
       <div className="flex flex-col items-center justify-center h-64 gap-4">
         <Spinner size="md" />
-        <div className="text-gray-500">Loading interventions...</div>
+        <div className="text-foreground/60">Loading interventions...</div>
       </div>
     );
   }
 
   if (filteredInterventions.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-500">
+      <div className="flex items-center justify-center h-64 text-foreground/60">
         <p>No interventions found</p>
       </div>
     );
@@ -190,7 +190,7 @@ export function InterventionsTable({ interventions, isLoading = false, maxRows =
           {filteredInterventions.map((intervention) => (
             <TableRow key={intervention.id}>
               <TableCell>
-                <code className="text-xs text-gray-600">{formatSessionId(intervention.sessionId)}</code>
+                <code className="text-xs text-foreground/70">{formatSessionId(intervention.sessionId)}</code>
               </TableCell>
               <TableCell>
                 <Chip
@@ -204,7 +204,7 @@ export function InterventionsTable({ interventions, isLoading = false, maxRows =
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold text-gray-900">{intervention.riskScore}</span>
+                  <span className="font-semibold text-foreground">{intervention.riskScore}</span>
                   <Chip
                     color={RISK_LEVEL_COLORS[intervention.riskLevel]}
                     size="sm"
@@ -235,11 +235,11 @@ export function InterventionsTable({ interventions, isLoading = false, maxRows =
                     {intervention.result}
                   </Chip>
                 ) : (
-                  <span className="text-sm text-gray-400">-</span>
+                  <span className="text-sm text-foreground/40">-</span>
                 )}
               </TableCell>
               <TableCell>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-foreground/70">
                   {formatDate(intervention.appliedAt || intervention.createdAt, 'short')}
                 </span>
               </TableCell>

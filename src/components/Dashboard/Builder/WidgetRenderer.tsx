@@ -99,32 +99,32 @@ export function WidgetRenderer({ widget, isEditing = false }: WidgetRendererProp
     case 'table':
       return (
         <div>
-          <h3 className="text-lg font-semibold mb-2">{widget.config.title || 'Table'}</h3>
-          <p className="text-sm text-gray-500">Table widget - configuration coming soon</p>
+          <h3 className="text-lg font-semibold mb-2 text-foreground">{widget.config.title || 'Table'}</h3>
+          <p className="text-sm text-foreground/60">Table widget - configuration coming soon</p>
         </div>
       );
 
     case 'funnel':
       return (
         <div>
-          <h3 className="text-lg font-semibold mb-2">{widget.config.title || 'Funnel'}</h3>
-          <p className="text-sm text-gray-500">Funnel widget - configuration coming soon</p>
+          <h3 className="text-lg font-semibold mb-2 text-foreground">{widget.config.title || 'Funnel'}</h3>
+          <p className="text-sm text-foreground/60">Funnel widget - configuration coming soon</p>
         </div>
       );
 
     case 'map':
       return (
         <div>
-          <h3 className="text-lg font-semibold mb-2">{widget.config.title || 'Map'}</h3>
-          <p className="text-sm text-gray-500">Map widget - configuration coming soon</p>
+          <h3 className="text-lg font-semibold mb-2 text-foreground">{widget.config.title || 'Map'}</h3>
+          <p className="text-sm text-foreground/60">Map widget - configuration coming soon</p>
         </div>
       );
 
     case 'list':
       return (
         <div>
-          <h3 className="text-lg font-semibold mb-2">{widget.config.title || 'List'}</h3>
-          <p className="text-sm text-gray-500">List widget - configuration coming soon</p>
+          <h3 className="text-lg font-semibold mb-2 text-foreground">{widget.config.title || 'List'}</h3>
+          <p className="text-sm text-foreground/60">List widget - configuration coming soon</p>
         </div>
       );
 
@@ -153,7 +153,7 @@ export function WidgetRenderer({ widget, isEditing = false }: WidgetRendererProp
     default:
       return (
         <div>
-          <p className="text-sm text-gray-500">Unknown widget type: {widget.type}</p>
+          <p className="text-sm text-foreground/60">Unknown widget type: {widget.type}</p>
         </div>
       );
   }

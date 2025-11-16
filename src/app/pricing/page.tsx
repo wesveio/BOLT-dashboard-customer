@@ -18,7 +18,7 @@ export default async function PricingPage() {
 
   return (
     <AnimatedWrapperCSS>
-      <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="min-h-screen bg-background flex flex-col">
         <PublicHeader />
         <main className="flex-1">
           {/* Hero Section */}
@@ -30,10 +30,10 @@ export default async function PricingPage() {
 
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
               <div className="max-w-4xl mx-auto text-center">
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 animate-fade-in-up">
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 animate-fade-in-up">
                 {t('hero.title')}
                 </h1>
-                <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+                <p className="text-xl text-foreground/70 mb-8 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
                 {t('hero.subtitle')}
                 </p>
               </div>
@@ -43,13 +43,13 @@ export default async function PricingPage() {
           <PricingContent />
 
         {/* Dashboard Features Showcase */}
-        <section className="py-20 bg-gray-50">
+        <section className="py-20 bg-default-50">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-12 animate-fade-in-up">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
                 {t('dashboardFeatures.title')}
               </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
                 {t('dashboardFeatures.subtitle')}
               </p>
               </div>
@@ -113,19 +113,19 @@ export default async function PricingPage() {
                 ].map((feature) => (
                   <div
                   key={feature.title}
-                  className="bg-white rounded-xl p-6 border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200"
+                  className="bg-background rounded-xl p-6 border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200"
                 >
                   <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white mb-4">
                     {feature.icon}
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{feature.title}</h3>
-                  <p className="text-sm text-gray-600">{feature.description}</p>
+                  <h3 className="text-lg font-bold text-foreground mb-2">{feature.title}</h3>
+                  <p className="text-sm text-foreground/70">{feature.description}</p>
                   </div>
               ))}
             </div>
 
               <div className="mt-8 text-center animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-              <p className="text-sm text-gray-500">{t('dashboardFeatures.included')}</p>
+              <p className="text-sm text-foreground/60">{t('dashboardFeatures.included')}</p>
               </div>
             </div>
           </section>

@@ -239,10 +239,10 @@ export default function RetentionAnalyticsPage() {
                 {cohorts.map((cohort) => (
                   <TableRow key={cohort.cohort}>
                     <TableCell>
-                      <span className="text-sm font-semibold text-gray-900">{cohort.cohort}</span>
+                      <span className="text-sm font-semibold text-foreground">{cohort.cohort}</span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-sm font-semibold text-foreground">
                         {formatNumber(cohort.customers)}
                       </span>
                     </TableCell>
@@ -281,8 +281,8 @@ export default function RetentionAnalyticsPage() {
         </ChartCard>
       ) : (
         <ChartCard title={t('noCohortDataTitle')} subtitle={t('noCohortDataSubtitle')}>
-          <div className="text-center py-12 text-gray-500">
-            <UserGroupIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+          <div className="text-center py-12 text-foreground/60">
+            <UserGroupIcon className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
             <p className="text-lg font-semibold mb-2">{t('noCohortsFound')}</p>
             <p className="text-sm">{t('tryDifferentPeriod')}</p>
           </div>

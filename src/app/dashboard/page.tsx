@@ -89,7 +89,7 @@ export default function DashboardPage() {
 
       {/* User Info Card */}
       {isLoadingAuth && (
-        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mb-8">
+        <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 mb-8">
           <CardBody className="p-6">
             <LoadingState fullScreen={false} />
           </CardBody>
@@ -202,7 +202,7 @@ export default function DashboardPage() {
       {topInsights.length > 0 && (
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900">{tOverview('topInsights')}</h2>
+            <h2 className="text-xl font-bold text-foreground">{tOverview('topInsights')}</h2>
             <Link href="/dashboard/insights">
               <Button
                 size="sm"
@@ -223,7 +223,7 @@ export default function DashboardPage() {
 
       {/* Quick Links */}
       <div className="mb-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">{tOverview('quickLinksTitle')}</h2>
+        <h2 className="text-xl font-bold text-foreground mb-4">{tOverview('quickLinksTitle')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <QuickLinkCard
             href="/dashboard/revenue"

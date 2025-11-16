@@ -156,11 +156,11 @@ export default function WorkflowsPage() {
         }
       />
 
-      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+      <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
         <CardBody className="p-6">
           {workflows.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500 mb-4">No workflows configured</p>
+              <p className="text-foreground/60 mb-4">No workflows configured</p>
               <Button color="primary" onPress={handleCreate}>
                 Create First Workflow
               </Button>

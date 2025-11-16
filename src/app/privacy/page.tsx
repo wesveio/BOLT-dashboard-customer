@@ -20,14 +20,14 @@ export default async function PrivacyPage() {
       <div className="min-h-screen flex flex-col">
         <PublicHeader />
         <main className="flex-1">
-          <article className="py-12 md:py-20 bg-white">
+          <article className="py-12 md:py-20 bg-background">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
               {/* Header */}
               <header className="mb-12 animate-fade-in-up">
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
                   {t('title')}
                 </h1>
-                <p className="text-lg text-gray-600">
+                <p className="text-lg text-foreground/70">
                   {t('lastUpdated')}: {t('lastUpdatedDate')}
                 </p>
               </header>
@@ -35,14 +35,14 @@ export default async function PrivacyPage() {
               {/* Content Sections */}
               <div className="prose prose-lg max-w-none stagger-container">
                 <section className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('introduction.title')}</h2>
-                  <p className="text-gray-700 mb-4">{t('introduction.content')}</p>
+                  <h2 className="text-2xl font-bold text-foreground mb-4">{t('introduction.title')}</h2>
+                  <p className="text-foreground/80 mb-4">{t('introduction.content')}</p>
                 </section>
 
                 <section className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('informationCollection.title')}</h2>
-                  <p className="text-gray-700 mb-4">{t('informationCollection.content')}</p>
-                  <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                  <h2 className="text-2xl font-bold text-foreground mb-4">{t('informationCollection.title')}</h2>
+                  <p className="text-foreground/80 mb-4">{t('informationCollection.content')}</p>
+                  <ul className="list-disc pl-6 space-y-2 text-foreground/80">
                     <li>{t('informationCollection.items.personal')}</li>
                     <li>{t('informationCollection.items.usage')}</li>
                     <li>{t('informationCollection.items.device')}</li>
@@ -51,9 +51,9 @@ export default async function PrivacyPage() {
                 </section>
 
                 <section className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('dataUsage.title')}</h2>
-                  <p className="text-gray-700 mb-4">{t('dataUsage.content')}</p>
-                  <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                  <h2 className="text-2xl font-bold text-foreground mb-4">{t('dataUsage.title')}</h2>
+                  <p className="text-foreground/80 mb-4">{t('dataUsage.content')}</p>
+                  <ul className="list-disc pl-6 space-y-2 text-foreground/80">
                     <li>{t('dataUsage.items.service')}</li>
                     <li>{t('dataUsage.items.communication')}</li>
                     <li>{t('dataUsage.items.improvement')}</li>
@@ -62,21 +62,21 @@ export default async function PrivacyPage() {
                 </section>
 
                 <section className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('dataProtection.title')}</h2>
-                  <p className="text-gray-700 mb-4">{t('dataProtection.content')}</p>
-                  <p className="text-gray-700 mb-4">{t('dataProtection.measures')}</p>
+                  <h2 className="text-2xl font-bold text-foreground mb-4">{t('dataProtection.title')}</h2>
+                  <p className="text-foreground/80 mb-4">{t('dataProtection.content')}</p>
+                  <p className="text-foreground/80 mb-4">{t('dataProtection.measures')}</p>
                 </section>
 
                 <section className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('cookies.title')}</h2>
-                  <p className="text-gray-700 mb-4">{t('cookies.content')}</p>
-                  <p className="text-gray-700 mb-4">{t('cookies.types')}</p>
+                  <h2 className="text-2xl font-bold text-foreground mb-4">{t('cookies.title')}</h2>
+                  <p className="text-foreground/80 mb-4">{t('cookies.content')}</p>
+                  <p className="text-foreground/80 mb-4">{t('cookies.types')}</p>
                 </section>
 
                 <section className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('userRights.title')}</h2>
-                  <p className="text-gray-700 mb-4">{t('userRights.content')}</p>
-                  <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                  <h2 className="text-2xl font-bold text-foreground mb-4">{t('userRights.title')}</h2>
+                  <p className="text-foreground/80 mb-4">{t('userRights.content')}</p>
+                  <ul className="list-disc pl-6 space-y-2 text-foreground/80">
                     <li>{t('userRights.items.access')}</li>
                     <li>{t('userRights.items.correction')}</li>
                     <li>{t('userRights.items.deletion')}</li>
@@ -86,19 +86,19 @@ export default async function PrivacyPage() {
                 </section>
 
                 <section className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('thirdParty.title')}</h2>
-                  <p className="text-gray-700 mb-4">{t('thirdParty.content')}</p>
+                  <h2 className="text-2xl font-bold text-foreground mb-4">{t('thirdParty.title')}</h2>
+                  <p className="text-foreground/80 mb-4">{t('thirdParty.content')}</p>
                 </section>
 
                 <section className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('changes.title')}</h2>
-                  <p className="text-gray-700 mb-4">{t('changes.content')}</p>
+                  <h2 className="text-2xl font-bold text-foreground mb-4">{t('changes.title')}</h2>
+                  <p className="text-foreground/80 mb-4">{t('changes.content')}</p>
                 </section>
 
                 <section className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('contact.title')}</h2>
-                  <p className="text-gray-700 mb-4">{t('contact.content')}</p>
-                  <p className="text-gray-700">
+                  <h2 className="text-2xl font-bold text-foreground mb-4">{t('contact.title')}</h2>
+                  <p className="text-foreground/80 mb-4">{t('contact.content')}</p>
+                  <p className="text-foreground/80">
                     <strong>{t('contact.email')}:</strong>{' '}
                     <a href="mailto:privacy@bckstg.com" className="text-blue-600 hover:text-blue-700">
                       privacy@bckstg.com

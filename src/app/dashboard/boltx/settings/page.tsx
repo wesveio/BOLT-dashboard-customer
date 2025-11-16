@@ -179,7 +179,7 @@ export default function BoltXSettingsPage() {
           onSelectionChange={(key) => setActiveTab(key as string)}
           className="mb-6 mt-8"
           classNames={{
-            tabList: 'bg-white border border-gray-200 rounded-lg p-1',
+            tabList: 'bg-background border border-default-200 rounded-lg p-1',
             tab: 'data-[selected=true]:bg-gradient-to-r data-[selected=true]:from-blue-500 data-[selected=true]:to-purple-500 data-[selected=true]:text-white data-[selected=true]:[&_*]:text-white data-[selected=true]:[&_svg]:text-white',
           }}
         >
@@ -193,18 +193,18 @@ export default function BoltXSettingsPage() {
               </div>
             }
           >
-            <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mt-6">
+            <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 mt-6">
               <CardBody className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">{t('general.title')}</h2>
+                <h2 className="text-xl font-bold text-foreground mb-6">{t('general.title')}</h2>
                 <div className="space-y-6">
                   {/* Enabled Switch */}
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <p className="font-semibold text-gray-900 flex items-center gap-2">
+                      <p className="font-semibold text-foreground flex items-center gap-2">
                         {t('general.enabled')}
                         <span className="text-red-500 text-sm">*</span>
                       </p>
-                      <p className="text-sm text-gray-600 mt-1">{t('general.enabledDesc')}</p>
+                      <p className="text-sm text-foreground/70 mt-1">{t('general.enabledDesc')}</p>
                     </div>
                     <Switch
                       isSelected={config.enabled}
@@ -259,14 +259,14 @@ export default function BoltXSettingsPage() {
               </div>
             }
           >
-            <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mt-6">
+            <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 mt-6">
               <CardBody className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">{t('openai.title')}</h2>
+                <h2 className="text-xl font-bold text-foreground mb-6">{t('openai.title')}</h2>
                 <div className="space-y-6">
                   {/* API Key */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <label className="font-semibold text-gray-900 flex items-center gap-2">
+                      <label className="font-semibold text-foreground flex items-center gap-2">
                         {t('openai.apiKey')}
                         {config.ai_provider === 'openai' && config.enabled && (
                           <span className="text-red-500 text-sm">*</span>
@@ -283,9 +283,9 @@ export default function BoltXSettingsPage() {
                       )}
                     </div>
                     {config.openai_api_key_masked && !showApiKeyInput ? (
-                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
-                        <p className="text-sm text-gray-700 font-mono">{config.openai_api_key_masked}</p>
-                        <p className="text-xs text-gray-500 mt-1">{t('openai.apiKeyMasked')}</p>
+                      <div className="p-3 bg-default-50 rounded-lg border border-default-200">
+                        <p className="text-sm text-foreground/80 font-mono">{config.openai_api_key_masked}</p>
+                        <p className="text-xs text-foreground/60 mt-1">{t('openai.apiKeyMasked')}</p>
                       </div>
                     ) : (
                       <Input
@@ -381,15 +381,15 @@ export default function BoltXSettingsPage() {
               </div>
             }
           >
-            <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mt-6">
+            <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 mt-6">
               <CardBody className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">{t('performance.title')}</h2>
+                <h2 className="text-xl font-bold text-foreground mb-6">{t('performance.title')}</h2>
                 <div className="space-y-6">
                   {/* Cache Enabled */}
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <p className="font-semibold text-gray-900">{t('performance.cacheEnabled')}</p>
-                      <p className="text-sm text-gray-600 mt-1">{t('performance.cacheEnabledDesc')}</p>
+                      <p className="font-semibold text-foreground">{t('performance.cacheEnabled')}</p>
+                      <p className="text-sm text-foreground/70 mt-1">{t('performance.cacheEnabledDesc')}</p>
                     </div>
                     <Switch
                       isSelected={config.cache_enabled}
@@ -409,7 +409,7 @@ export default function BoltXSettingsPage() {
                     size="lg"
                     min={1}
                     description={t('performance.cacheTtlDesc')}
-                    endContent={<span className="text-gray-500 text-sm">seconds</span>}
+                    endContent={<span className="text-foreground/60 text-sm">seconds</span>}
                   />
 
                   {/* Rate Limit */}
@@ -424,7 +424,7 @@ export default function BoltXSettingsPage() {
                     size="lg"
                     min={1}
                     description={t('performance.rateLimitDesc')}
-                    endContent={<span className="text-gray-500 text-sm">requests/min</span>}
+                    endContent={<span className="text-foreground/60 text-sm">requests/min</span>}
                   />
 
                   <div className="pt-4">
@@ -453,9 +453,9 @@ export default function BoltXSettingsPage() {
               </div>
             }
           >
-            <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mt-6">
+            <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 mt-6">
               <CardBody className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">{t('advanced.title')}</h2>
+                <h2 className="text-xl font-bold text-foreground mb-6">{t('advanced.title')}</h2>
                 <div className="space-y-6">
                   {/* Prediction Model Version */}
                   <Input
@@ -496,18 +496,18 @@ export default function BoltXSettingsPage() {
               </div>
             }
           >
-            <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mt-6">
+            <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 mt-6">
               <CardBody className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">BoltX Feature Flags</h2>
-                <p className="text-sm text-gray-600 mb-6">
+                <h2 className="text-xl font-bold text-foreground mb-6">BoltX Feature Flags</h2>
+                <p className="text-sm text-foreground/70 mb-6">
                   Enable or disable individual BoltX features. These settings override environment variables.
                 </p>
                 <div className="space-y-6">
                   {/* Interventions */}
-                  <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-center justify-between p-4 border border-default-200 rounded-lg">
                     <div className="flex-1">
-                      <p className="font-semibold text-gray-900">Interventions</p>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="font-semibold text-foreground">Interventions</p>
+                      <p className="text-sm text-foreground/70 mt-1">
                         Enable automatic interventions to reduce checkout abandonment
                       </p>
                     </div>
@@ -520,10 +520,10 @@ export default function BoltXSettingsPage() {
                   </div>
 
                   {/* Personalization */}
-                  <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-center justify-between p-4 border border-default-200 rounded-lg">
                     <div className="flex-1">
-                      <p className="font-semibold text-gray-900">Personalization</p>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="font-semibold text-foreground">Personalization</p>
+                      <p className="text-sm text-foreground/70 mt-1">
                         Enable personalized checkout experiences based on user behavior
                       </p>
                     </div>
@@ -536,10 +536,10 @@ export default function BoltXSettingsPage() {
                   </div>
 
                   {/* Optimizations */}
-                  <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-center justify-between p-4 border border-default-200 rounded-lg">
                     <div className="flex-1">
-                      <p className="font-semibold text-gray-900">Optimizations</p>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="font-semibold text-foreground">Optimizations</p>
+                      <p className="text-sm text-foreground/70 mt-1">
                         Enable AI-powered checkout optimizations and form improvements
                       </p>
                     </div>

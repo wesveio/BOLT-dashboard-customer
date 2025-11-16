@@ -53,15 +53,15 @@ export const QuickLinkCard = memo(function QuickLinkCard({
       className={className}
     >
       <Link href={href}>
-        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 cursor-pointer h-full">
+        <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 cursor-pointer h-full">
           <CardBody className="p-6">
             <div className="flex items-center gap-4">
               <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center`}>
                 {icon}
               </div>
               <div>
-                <h3 className="font-bold text-gray-900">{title}</h3>
-                <p className="text-sm text-gray-600">{description}</p>
+                <h3 className="font-bold text-foreground">{title}</h3>
+                <p className="text-sm text-foreground/70">{description}</p>
               </div>
             </div>
           </CardBody>

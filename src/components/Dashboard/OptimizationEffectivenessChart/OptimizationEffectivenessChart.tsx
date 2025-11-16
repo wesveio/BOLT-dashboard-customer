@@ -45,7 +45,7 @@ export function OptimizationEffectivenessChart({
 
   if (!hasData) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-500">
+      <div className="flex items-center justify-center h-64 text-foreground/60">
         <p>No data available</p>
       </div>
     );
@@ -56,16 +56,16 @@ export function OptimizationEffectivenessChart({
       const data = payload[0].payload;
       const improvement = data['With Optimization'] - data['Without Optimization'];
       return (
-        <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-          <p className="font-semibold text-gray-900 mb-2">{data.step}</p>
+        <div className="bg-background p-3 border border-default rounded-lg shadow-lg">
+          <p className="font-semibold text-foreground mb-2">{data.step}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
               {entry.name}: {entry.value.toFixed(1)}%
             </p>
           ))}
           {improvement !== 0 && (
-            <div className="mt-2 pt-2 border-t border-gray-200">
-              <p className={`text-xs font-semibold ${improvement > 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <div className="mt-2 pt-2 border-t border-default">
+              <p className={`text-xs font-semibold ${improvement > 0 ? 'text-success' : 'text-danger'}`}>
                 Improvement: {improvement > 0 ? '+' : ''}{improvement.toFixed(1)}%
               </p>
             </div>

@@ -54,8 +54,8 @@ export function ApiKeyModal({
     <Modal isOpen={isOpen} onClose={handleClose} size="lg">
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
-          <h2 className="text-xl font-bold text-gray-900">Create New API Key</h2>
-          <p className="text-sm text-gray-600 font-normal">
+          <h2 className="text-xl font-bold text-foreground">Create New API Key</h2>
+          <p className="text-sm text-foreground/70 font-normal">
             Create a new API key for your integrations
           </p>
         </ModalHeader>
@@ -138,21 +138,21 @@ export function ApiKeyDisplayModal({
     <Modal isOpen={isOpen} onClose={onClose} size="lg" isDismissable={false} hideCloseButton>
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
-          <h2 className="text-xl font-bold text-gray-900">
+          <h2 className="text-xl font-bold text-foreground">
             {keyName ? `API Key Created: ${keyName}` : 'API Key Created'}
           </h2>
-          <p className="text-sm text-red-600 font-semibold">
+          <p className="text-sm text-danger font-semibold">
             ⚠️ Important: Copy this key now. You won&apos;t be able to see it again!
           </p>
         </ModalHeader>
         <ModalBody>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground/80 mb-2">
                 Your API Key
               </label>
               <div className="flex items-center gap-2">
-                <div className="flex-1 p-3 bg-gray-50 border border-gray-200 rounded-lg font-mono text-sm break-all">
+                <div className="flex-1 p-3 bg-default-50 border border-default-200 rounded-lg font-mono text-sm break-all text-foreground">
                   {apiKey}
                 </div>
                 <Button
@@ -162,15 +162,15 @@ export function ApiKeyDisplayModal({
                   className="flex-shrink-0"
                 >
                   {copied ? (
-                    <CheckIcon className="w-5 h-5 text-green-600" />
+                    <CheckIcon className="w-5 h-5 text-success" />
                   ) : (
-                    <ClipboardIcon className="w-5 h-5 text-gray-600" />
+                    <ClipboardIcon className="w-5 h-5 text-foreground/60" />
                   )}
                 </Button>
               </div>
             </div>
-            <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <p className="text-sm text-yellow-800">
+            <div className="p-4 bg-warning/10 border border-warning/20 rounded-lg">
+              <p className="text-sm text-warning">
                 <strong>Security Note:</strong> Store this key in a secure location. Never share it
                 publicly or commit it to version control.
               </p>

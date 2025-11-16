@@ -149,7 +149,7 @@ export default async function Home() {
                 </div>
 
                 {/* Trust Indicators */}
-                <div className="mt-12 flex flex-wrap justify-center items-center gap-8 text-sm text-gray-500 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                <div className="mt-12 flex flex-wrap justify-center items-center gap-8 text-sm text-foreground/60 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                   <div className="flex items-center gap-2">
                     <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                       <path
@@ -187,11 +187,11 @@ export default async function Home() {
           </section>
 
           {/* Features Section */}
-          <section className="py-20 bg-white">
+          <section className="py-20 bg-background">
             <div className="container-custom">
               <div className="text-center mb-16 animate-fade-in-up">
                 <h2 className="heading-section mb-4">{t('features.title')}</h2>
-                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                <p className="text-xl text-foreground/70 max-w-2xl mx-auto">
                   {t('features.subtitle')}
                 </p>
               </div>
@@ -210,7 +210,7 @@ export default async function Home() {
           </section>
 
           {/* Feature Detail: Customizable Theme System */}
-          <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50 animate-on-scroll">
+          <section className="py-20 bg-gradient-to-br from-default-50 to-blue-50 animate-on-scroll">
             <div className="container-custom">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
@@ -225,10 +225,10 @@ export default async function Home() {
                     </svg>
                     {t('featureDetails.themeSystem.badge')}
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                  <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
                     {t('featureDetails.themeSystem.title')}
                   </h2>
-                  <p className="text-xl text-gray-600 mb-6">
+                  <p className="text-xl text-foreground/70 mb-6">
                     {t('featureDetails.themeSystem.description')}
                   </p>
                   <ul className="space-y-4 mb-8">
@@ -247,8 +247,8 @@ export default async function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.themeSystem.defaultTheme.title')}</h3>
-                        <p className="text-gray-600">
+                        <h3 className="font-semibold text-foreground mb-1">{t('featureDetails.themeSystem.defaultTheme.title')}</h3>
+                        <p className="text-foreground/70">
                           {t('featureDetails.themeSystem.defaultTheme.description')}
                         </p>
                       </div>
@@ -268,8 +268,8 @@ export default async function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.themeSystem.singlePageTheme.title')}</h3>
-                        <p className="text-gray-600">
+                        <h3 className="font-semibold text-foreground mb-1">{t('featureDetails.themeSystem.singlePageTheme.title')}</h3>
+                        <p className="text-foreground/70">
                           {t('featureDetails.themeSystem.singlePageTheme.description')}
                         </p>
                       </div>
@@ -289,8 +289,8 @@ export default async function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.themeSystem.liquidGlassTheme.title')}</h3>
-                        <p className="text-gray-600">
+                        <h3 className="font-semibold text-foreground mb-1">{t('featureDetails.themeSystem.liquidGlassTheme.title')}</h3>
+                        <p className="text-foreground/70">
                           {t('featureDetails.themeSystem.liquidGlassTheme.description')}
                         </p>
                       </div>
@@ -299,8 +299,8 @@ export default async function Home() {
                   <FeatureDetailButton />
                 </div>
                 <div className="relative animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                  <div className="aspect-video bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center border-2 border-gray-200">
-                    <p className="text-gray-500 font-medium">Theme Preview Placeholder</p>
+                  <div className="aspect-video bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center border-2 border-default-200">
+                    <p className="text-foreground/60 font-medium">Theme Preview Placeholder</p>
                   </div>
               </div>
             </div>
@@ -308,12 +308,12 @@ export default async function Home() {
           </section>
 
           {/* Feature Detail: Enterprise Security */}
-          <section className="py-20 bg-white animate-on-scroll">
+          <section className="py-20 bg-background animate-on-scroll">
             <div className="container-custom">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div className="lg:order-2 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                  <div className="aspect-video bg-gradient-to-br from-gray-100 to-blue-100 rounded-2xl flex items-center justify-center border-2 border-gray-200">
-                    <p className="text-gray-500 font-medium">Security Badge Placeholder</p>
+                  <div className="aspect-video bg-gradient-to-br from-default-100 to-blue-100 rounded-2xl flex items-center justify-center border-2 border-default-200">
+                    <p className="text-foreground/60 font-medium">Security Badge Placeholder</p>
                   </div>
                 </div>
                 <div className="lg:order-1 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
@@ -328,10 +328,10 @@ export default async function Home() {
                     </svg>
                     {t('featureDetails.enterpriseSecurity.badge')}
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                  <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
                     {t('featureDetails.enterpriseSecurity.title')}
                   </h2>
-                  <p className="text-xl text-gray-600 mb-6">
+                  <p className="text-xl text-foreground/70 mb-6">
                     {t('featureDetails.enterpriseSecurity.description')}
                   </p>
                   <ul className="space-y-4 mb-8">
@@ -350,8 +350,8 @@ export default async function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.enterpriseSecurity.pciCompliant.title')}</h3>
-                        <p className="text-gray-600">
+                        <h3 className="font-semibold text-foreground mb-1">{t('featureDetails.enterpriseSecurity.pciCompliant.title')}</h3>
+                        <p className="text-foreground/70">
                           {t('featureDetails.enterpriseSecurity.pciCompliant.description')}
                         </p>
                       </div>
@@ -371,8 +371,8 @@ export default async function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.enterpriseSecurity.dataEncryption.title')}</h3>
-                        <p className="text-gray-600">
+                        <h3 className="font-semibold text-foreground mb-1">{t('featureDetails.enterpriseSecurity.dataEncryption.title')}</h3>
+                        <p className="text-foreground/70">
                           {t('featureDetails.enterpriseSecurity.dataEncryption.description')}
                         </p>
                       </div>
@@ -392,8 +392,8 @@ export default async function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.enterpriseSecurity.secureProxy.title')}</h3>
-                        <p className="text-gray-600">
+                        <h3 className="font-semibold text-foreground mb-1">{t('featureDetails.enterpriseSecurity.secureProxy.title')}</h3>
+                        <p className="text-foreground/70">
                           {t('featureDetails.enterpriseSecurity.secureProxy.description')}
                         </p>
                       </div>
@@ -413,10 +413,10 @@ export default async function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">
+                        <h3 className="font-semibold text-foreground mb-1">
                           {t('featureDetails.enterpriseSecurity.rateLimiting.title')}
                         </h3>
-                        <p className="text-gray-600">
+                        <p className="text-foreground/70">
                           {t('featureDetails.enterpriseSecurity.rateLimiting.description')}
                         </p>
                       </div>
@@ -442,10 +442,10 @@ export default async function Home() {
                   </svg>
                   {t('featureDetails.intelligentFlow.badge')}
                 </div>
-                <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
                   {t('featureDetails.intelligentFlow.title')}
                 </h2>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                <p className="text-xl text-foreground/70 max-w-3xl mx-auto">
                   {t('featureDetails.intelligentFlow.description')}
                 </p>
               </div>
@@ -473,16 +473,16 @@ export default async function Home() {
                     <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                       {item.step}
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{t(`featureDetails.intelligentFlow.steps.${item.key}.title`)}</h3>
-                    <p className="text-gray-600 text-sm">{t(`featureDetails.intelligentFlow.steps.${item.key}.description`)}</p>
+                    <h3 className="text-xl font-bold text-foreground mb-2">{t(`featureDetails.intelligentFlow.steps.${item.key}.title`)}</h3>
+                    <p className="text-foreground/70 text-sm">{t(`featureDetails.intelligentFlow.steps.${item.key}.description`)}</p>
                   </div>
                 ))}
               </div>
 
               <div className="mt-12 text-center animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
-                <div className="inline-flex items-center gap-4 p-6 bg-white rounded-xl shadow-md">
+                <div className="inline-flex items-center gap-4 p-6 bg-background rounded-xl shadow-md">
                   <div className="text-left">
-                    <p className="text-sm text-gray-500 mb-1">{t('featureDetails.intelligentFlow.supports')}</p>
+                    <p className="text-sm text-foreground/60 mb-1">{t('featureDetails.intelligentFlow.supports')}</p>
                     <div className="flex items-center gap-3">
                       <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
                         B2C
@@ -492,10 +492,10 @@ export default async function Home() {
                       </span>
                     </div>
                   </div>
-                  <div className="h-12 w-px bg-gray-200"></div>
+                  <div className="h-12 w-px bg-default-200"></div>
                   <div className="text-left">
-                    <p className="text-sm text-gray-500 mb-1">{t('featureDetails.intelligentFlow.features')}</p>
-                    <p className="text-gray-900 font-semibold">
+                    <p className="text-sm text-foreground/60 mb-1">{t('featureDetails.intelligentFlow.features')}</p>
+                    <p className="text-foreground font-semibold">
                       {t('featureDetails.intelligentFlow.featuresText')}
                     </p>
                   </div>
@@ -505,7 +505,7 @@ export default async function Home() {
           </section>
 
           {/* Feature Detail: Native VTEX Integration */}
-          <section className="py-20 bg-white animate-on-scroll">
+          <section className="py-20 bg-background animate-on-scroll">
             <div className="container-custom">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
@@ -520,10 +520,10 @@ export default async function Home() {
                     </svg>
                     {t('featureDetails.vtexIntegration.badge')}
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                  <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
                     {t('featureDetails.vtexIntegration.title')}
                   </h2>
-                  <p className="text-xl text-gray-600 mb-6">
+                  <p className="text-xl text-foreground/70 mb-6">
                     {t('featureDetails.vtexIntegration.description')}
                   </p>
                   <ul className="space-y-4 mb-8">
@@ -542,8 +542,8 @@ export default async function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.vtexIntegration.directApi.title')}</h3>
-                        <p className="text-gray-600">
+                        <h3 className="font-semibold text-foreground mb-1">{t('featureDetails.vtexIntegration.directApi.title')}</h3>
+                        <p className="text-foreground/70">
                           {t('featureDetails.vtexIntegration.directApi.description')}
                         </p>
                       </div>
@@ -563,8 +563,8 @@ export default async function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.vtexIntegration.orderFormManagement.title')}</h3>
-                        <p className="text-gray-600">
+                        <h3 className="font-semibold text-foreground mb-1">{t('featureDetails.vtexIntegration.orderFormManagement.title')}</h3>
+                        <p className="text-foreground/70">
                           {t('featureDetails.vtexIntegration.orderFormManagement.description')}
                         </p>
                       </div>
@@ -584,8 +584,8 @@ export default async function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.vtexIntegration.paymentProcessing.title')}</h3>
-                        <p className="text-gray-600">
+                        <h3 className="font-semibold text-foreground mb-1">{t('featureDetails.vtexIntegration.paymentProcessing.title')}</h3>
+                        <p className="text-foreground/70">
                           {t('featureDetails.vtexIntegration.paymentProcessing.description')}
                         </p>
                       </div>
@@ -605,8 +605,8 @@ export default async function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.vtexIntegration.shippingSimulation.title')}</h3>
-                        <p className="text-gray-600">
+                        <h3 className="font-semibold text-foreground mb-1">{t('featureDetails.vtexIntegration.shippingSimulation.title')}</h3>
+                        <p className="text-foreground/70">
                           {t('featureDetails.vtexIntegration.shippingSimulation.description')}
                         </p>
                       </div>
@@ -614,8 +614,8 @@ export default async function Home() {
                   </ul>
                 </div>
                 <div className="relative animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                  <div className="aspect-video bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center border-2 border-gray-200">
-                    <p className="text-gray-500 font-medium">
+                  <div className="aspect-video bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center border-2 border-default-200">
+                    <p className="text-foreground/60 font-medium">
                       VTEX Architecture Diagram Placeholder
                     </p>
                   </div>
@@ -625,12 +625,12 @@ export default async function Home() {
           </section>
 
           {/* Feature Detail: Fully Responsive & Accessible */}
-          <section className="py-20 bg-gradient-to-br from-blue-50 to-gray-50 animate-on-scroll">
+          <section className="py-20 bg-gradient-to-br from-blue-50 to-default-50 animate-on-scroll">
             <div className="container-custom">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div className="lg:order-2 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                  <div className="aspect-video bg-gradient-to-br from-blue-100 to-gray-100 rounded-2xl flex items-center justify-center border-2 border-gray-200">
-                    <p className="text-gray-500 font-medium">Multi-Device Preview Placeholder</p>
+                  <div className="aspect-video bg-gradient-to-br from-blue-100 to-default-100 rounded-2xl flex items-center justify-center border-2 border-default-200">
+                    <p className="text-foreground/60 font-medium">Multi-Device Preview Placeholder</p>
                   </div>
                 </div>
                 <div className="lg:order-1 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
@@ -645,10 +645,10 @@ export default async function Home() {
                     </svg>
                     {t('featureDetails.responsiveAccessible.badge')}
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                  <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
                     {t('featureDetails.responsiveAccessible.title')}
                   </h2>
-                  <p className="text-xl text-gray-600 mb-6">
+                  <p className="text-xl text-foreground/70 mb-6">
                     {t('featureDetails.responsiveAccessible.description')}
                   </p>
                   <ul className="space-y-4 mb-8">
@@ -667,8 +667,8 @@ export default async function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.responsiveAccessible.mobileFirst.title')}</h3>
-                        <p className="text-gray-600">
+                        <h3 className="font-semibold text-foreground mb-1">{t('featureDetails.responsiveAccessible.mobileFirst.title')}</h3>
+                        <p className="text-foreground/70">
                           {t('featureDetails.responsiveAccessible.mobileFirst.description')}
                         </p>
                       </div>
@@ -688,8 +688,8 @@ export default async function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.responsiveAccessible.wcagCompliant.title')}</h3>
-                        <p className="text-gray-600">
+                        <h3 className="font-semibold text-foreground mb-1">{t('featureDetails.responsiveAccessible.wcagCompliant.title')}</h3>
+                        <p className="text-foreground/70">
                           {t('featureDetails.responsiveAccessible.wcagCompliant.description')}
                         </p>
                       </div>
@@ -709,10 +709,10 @@ export default async function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">
+                        <h3 className="font-semibold text-foreground mb-1">
                           {t('featureDetails.responsiveAccessible.crossDevice.title')}
                         </h3>
-                        <p className="text-gray-600">
+                        <p className="text-foreground/70">
                           {t('featureDetails.responsiveAccessible.crossDevice.description')}
                         </p>
                       </div>
@@ -732,8 +732,8 @@ export default async function Home() {
                         />
                       </svg>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">{t('featureDetails.responsiveAccessible.performanceOptimized.title')}</h3>
-                        <p className="text-gray-600">
+                        <h3 className="font-semibold text-foreground mb-1">{t('featureDetails.responsiveAccessible.performanceOptimized.title')}</h3>
+                        <p className="text-foreground/70">
                           {t('featureDetails.responsiveAccessible.performanceOptimized.description')}
                         </p>
                       </div>
@@ -745,11 +745,11 @@ export default async function Home() {
           </section>
 
           {/* Dashboard Features Section */}
-          <section className="py-20 bg-white animate-on-scroll">
+          <section className="py-20 bg-background animate-on-scroll">
             <div className="container-custom">
               <div className="text-center mb-16 animate-fade-in-up">
                 <h2 className="heading-section mb-4">{t('dashboardFeatures.title')}</h2>
-                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                <p className="text-xl text-foreground/70 max-w-2xl mx-auto">
                   {t('dashboardFeatures.subtitle')}
                 </p>
               </div>

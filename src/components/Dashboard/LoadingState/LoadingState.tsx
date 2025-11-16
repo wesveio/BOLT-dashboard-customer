@@ -25,7 +25,7 @@ export const LoadingState = memo(function LoadingState({
   const content = (
     <div className={`text-center ${className}`}>
       <Spinner size="lg" />
-      {displayMessage && <p className="mt-4 text-gray-600">{displayMessage}</p>}
+      {displayMessage && <p className="mt-4 text-foreground/70">{displayMessage}</p>}
     </div>
   );
 

@@ -153,7 +153,7 @@ export function OtpInput({
       className="w-full"
     >
       {label && (
-        <label className="block text-sm font-semibold mb-2 text-gray-700">
+        <label className="block text-sm font-semibold mb-2 text-foreground/80">
           {label}
         </label>
       )}
@@ -178,11 +178,11 @@ export function OtpInput({
               border-2 rounded-lg
               transition-all duration-200
               focus:outline-none focus:ring-2 focus:ring-offset-1
-              disabled:bg-gray-100 disabled:cursor-not-allowed
+              disabled:bg-default-100 disabled:cursor-not-allowed
               ${
                 isInvalid
-                  ? 'border-red-500 focus:border-red-500 focus:ring-red-200'
-                  : 'border-gray-200 hover:border-blue-300 focus:border-blue-500 focus:ring-blue-200'
+                  ? 'border-danger focus:border-danger focus:ring-danger/20'
+                  : 'border-default-200 hover:border-primary/30 focus:border-primary focus:ring-primary/20'
               }
             `}
             aria-label={`Digit ${index + 1} of ${length}`}
@@ -191,7 +191,7 @@ export function OtpInput({
       </div>
 
       {placeholder && (
-        <p className="text-xs text-gray-500 mt-2 text-center">{placeholder}</p>
+        <p className="text-xs text-foreground/60 mt-2 text-center">{placeholder}</p>
       )}
     </m.div>
   );

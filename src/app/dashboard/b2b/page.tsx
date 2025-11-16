@@ -93,36 +93,36 @@ export default function B2BOverviewPage() {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+        <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">{t('metrics.workflows')}</p>
-                <p className="text-2xl font-bold text-gray-900">{metrics.totalWorkflows}</p>
+                <p className="text-sm text-foreground/70">{t('metrics.workflows')}</p>
+                <p className="text-2xl font-bold text-foreground">{metrics.totalWorkflows}</p>
               </div>
               <DocumentCheckIcon className="w-8 h-8 text-blue-600" />
             </div>
           </CardBody>
         </Card>
 
-        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+        <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">{t('metrics.buyers')}</p>
-                <p className="text-2xl font-bold text-gray-900">{metrics.activeBuyers}</p>
+                <p className="text-sm text-foreground/70">{t('metrics.buyers')}</p>
+                <p className="text-2xl font-bold text-foreground">{metrics.activeBuyers}</p>
               </div>
               <UserGroupIcon className="w-8 h-8 text-purple-600" />
             </div>
           </CardBody>
         </Card>
 
-        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+        <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">{t('metrics.creditLimits')}</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-sm text-foreground/70">{t('metrics.creditLimits')}</p>
+                <p className="text-2xl font-bold text-foreground">
                   {metrics.creditLimitsConfigured}
                 </p>
               </div>
@@ -131,12 +131,12 @@ export default function B2BOverviewPage() {
           </CardBody>
         </Card>
 
-        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+        <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">{t('metrics.purchaseOrders')}</p>
-                <p className="text-2xl font-bold text-gray-900">{metrics.totalPurchaseOrders}</p>
+                <p className="text-sm text-foreground/70">{t('metrics.purchaseOrders')}</p>
+                <p className="text-2xl font-bold text-foreground">{metrics.totalPurchaseOrders}</p>
               </div>
               <ShoppingBagIcon className="w-8 h-8 text-orange-600" />
             </div>
@@ -149,16 +149,16 @@ export default function B2BOverviewPage() {
           const Icon = link.icon;
           return (
             <Link key={link.href} href={link.href}>
-              <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 cursor-pointer">
+              <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 cursor-pointer">
                 <CardBody className="p-6">
                   <div className="flex items-start gap-4">
                     <div className="p-3 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600">
                       <Icon className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">{link.title}</h3>
-                      <p className="text-sm text-gray-600 mb-2">{link.description}</p>
-                      <p className="text-xs text-gray-500">
+                      <h3 className="text-lg font-semibold text-foreground mb-1">{link.title}</h3>
+                      <p className="text-sm text-foreground/70 mb-2">{link.description}</p>
+                      <p className="text-xs text-foreground/60">
                         {link.count} {link.count === 1 ? 'item' : 'items'}
                       </p>
                     </div>

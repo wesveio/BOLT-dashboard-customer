@@ -210,7 +210,7 @@ export function ThemeEditor({ themeId, onBack, onSave }: ThemeEditorProps) {
       <div className="flex justify-center items-center min-h-[400px]">
         <div className="text-center">
           <Spinner size="lg" className="mx-auto mb-4" />
-          <p className="text-gray-600">Loading theme...</p>
+          <p className="text-foreground/70">Loading theme...</p>
         </div>
       </div>
     );
@@ -229,10 +229,10 @@ export function ThemeEditor({ themeId, onBack, onSave }: ThemeEditorProps) {
         </Button>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-3xl font-bold text-foreground mb-2">
               {themeId === 'new' ? t('createNew') : t('editTheme')}
             </h1>
-            <p className="text-gray-600">{t('editorSubtitle')}</p>
+            <p className="text-foreground/70">{t('editorSubtitle')}</p>
           </div>
           <Button
             color="primary"
@@ -248,7 +248,7 @@ export function ThemeEditor({ themeId, onBack, onSave }: ThemeEditorProps) {
       </div>
 
       {/* Theme Name - Always visible */}
-      <Card className="border border-gray-100 mb-6">
+      <Card className="border border-default mb-6">
         <CardBody className="p-6">
           <Input
             label={t('themeName')}
@@ -298,7 +298,7 @@ export function ThemeEditor({ themeId, onBack, onSave }: ThemeEditorProps) {
         </Tab>
         <Tab key="preview" title="Preview">
           <div className="mt-6">
-            <Card className="border border-gray-100">
+            <Card className="border border-default">
               <CardBody className="p-6">
                 <PreviewPane config={config} />
               </CardBody>

@@ -33,9 +33,9 @@ export function RiskDistributionChart({ data }: RiskDistributionChartProps) {
       const data = payload[0];
       const percentage = total > 0 ? ((data.value / total) * 100).toFixed(1) : '0';
       return (
-        <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-          <p className="font-semibold text-gray-900">{data.name}</p>
-          <p className="text-sm text-gray-600">
+        <div className="bg-background p-3 border border-default rounded-lg shadow-lg">
+          <p className="font-semibold text-foreground">{data.name}</p>
+          <p className="text-sm text-foreground/70">
             {data.value} sessions ({percentage}%)
           </p>
         </div>
@@ -46,7 +46,7 @@ export function RiskDistributionChart({ data }: RiskDistributionChartProps) {
 
   if (total === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-500">
+      <div className="flex items-center justify-center h-64 text-foreground/60">
         <p>No data available</p>
       </div>
     );

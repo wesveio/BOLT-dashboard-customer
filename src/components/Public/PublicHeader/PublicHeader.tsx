@@ -42,8 +42,8 @@ export function PublicHeader({ showDashboard = false }: PublicHeaderProps) {
 
   const headerClasses = `sticky top-0 z-50 transition-all duration-200 ${
     isScrolled
-      ? 'bg-white/95 backdrop-blur-md shadow-md border-b border-gray-100'
-      : 'bg-white/80 backdrop-blur-sm border-b border-gray-100'
+      ? 'bg-background/95 backdrop-blur-md shadow-md border-b border-default'
+      : 'bg-background/80 backdrop-blur-sm border-b border-default'
   }`;
 
   return (
@@ -83,8 +83,8 @@ export function PublicHeader({ showDashboard = false }: PublicHeaderProps) {
                     isLoginLink
                       ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg hover:shadow-lg hover:-translate-y-0.5 transform'
                       : isActive(link.href)
-                      ? 'text-blue-600'
-                      : 'text-gray-700 hover:text-blue-600'
+                      ? 'text-primary'
+                      : 'text-foreground/80 hover:text-primary'
                   }`}
                 >
                   {link.label}
@@ -100,7 +100,7 @@ export function PublicHeader({ showDashboard = false }: PublicHeaderProps) {
       <button
         type="button"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+        className="md:hidden p-2 rounded-lg text-foreground/80 hover:bg-default-100 transition-colors duration-200"
         aria-label="Toggle menu"
         aria-expanded={isMenuOpen}
       >
@@ -147,7 +147,7 @@ export function PublicHeader({ showDashboard = false }: PublicHeaderProps) {
           />
 
           {/* Slide-out Menu */}
-          <nav className="fixed top-16 right-0 bottom-0 w-64 bg-white shadow-xl z-50 md:hidden overflow-y-auto animate-slide-in-right">
+          <nav className="fixed top-16 right-0 bottom-0 w-64 bg-background shadow-xl z-50 md:hidden overflow-y-auto animate-slide-in-right">
             <div className="flex flex-col p-6 gap-4 stagger-container">
               {navLinks.map((link) => {
                 const isLoginLink = link.href === '/login';
@@ -161,7 +161,7 @@ export function PublicHeader({ showDashboard = false }: PublicHeaderProps) {
                           ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-center'
                           : isActive(link.href)
                           ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md'
-                          : 'text-gray-700 hover:bg-gray-100 hover:text-blue-600'
+                          : 'text-foreground/80 hover:bg-default-100 hover:text-primary'
                       }`}
                     >
                       {link.label}

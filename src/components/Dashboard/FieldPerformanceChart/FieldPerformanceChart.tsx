@@ -45,7 +45,7 @@ export function FieldPerformanceChart({ fields }: FieldPerformanceChartProps) {
 
   if (chartData.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-500">
+      <div className="flex items-center justify-center h-64 text-foreground/60">
         <p>No field performance data available</p>
       </div>
     );
@@ -55,8 +55,8 @@ export function FieldPerformanceChart({ fields }: FieldPerformanceChartProps) {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-          <p className="font-semibold text-gray-900 mb-2">{data.name}</p>
+        <div className="bg-background p-3 border border-default rounded-lg shadow-lg">
+          <p className="font-semibold text-foreground mb-2">{data.name}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
               {entry.name}: {entry.dataKey === 'Avg Time (s)' 

@@ -86,12 +86,12 @@ export function PersonalizationConfig({ onSave }: PersonalizationConfigProps) {
 
   if (isLoading || !localConfig) {
     return (
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
           <div className="h-64 flex items-center justify-center">
             <div className="flex flex-col items-center justify-center gap-4">
               <Spinner size="md" />
-              <div className="text-gray-500">Loading configuration...</div>
+              <div className="text-foreground/60">Loading configuration...</div>
             </div>
           </div>
         </CardBody>
@@ -105,10 +105,10 @@ export function PersonalizationConfig({ onSave }: PersonalizationConfigProps) {
       animate="visible"
       variants={fadeIn}
     >
-      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+      <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
         <CardBody className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-gray-900">Personalization Configuration</h3>
+            <h3 className="text-xl font-bold text-foreground">Personalization Configuration</h3>
             {hasChanges && (
               <Button
                 color="primary"
@@ -122,23 +122,23 @@ export function PersonalizationConfig({ onSave }: PersonalizationConfigProps) {
           </div>
 
           {saveStatus === 'success' && (
-            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+            <div className="mb-4 p-3 bg-success/10 border border-success/20 rounded-lg text-success text-sm">
               Configuration saved successfully
             </div>
           )}
 
           {saveStatus === 'error' && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            <div className="mb-4 p-3 bg-danger/10 border border-danger/20 rounded-lg text-danger text-sm">
               Failed to save configuration. Please try again.
             </div>
           )}
 
           <div className="space-y-6">
             {/* Enable/Disable */}
-            <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+            <div className="flex items-center justify-between p-4 border border-default-200 rounded-lg">
               <div>
-                <h4 className="font-semibold text-gray-900">Enable Personalization</h4>
-                <p className="text-sm text-gray-600">Turn personalization on or off globally</p>
+                <h4 className="font-semibold text-foreground">Enable Personalization</h4>
+                <p className="text-sm text-foreground/70">Turn personalization on or off globally</p>
               </div>
               <Switch
                 isSelected={localConfig.enabled}
@@ -150,12 +150,12 @@ export function PersonalizationConfig({ onSave }: PersonalizationConfigProps) {
             {/* Confidence Threshold */}
             {localConfig.enabled && (
               <>
-                <div className="p-4 border border-gray-200 rounded-lg space-y-4">
+                <div className="p-4 border border-default-200 rounded-lg space-y-4">
                   <div>
-                    <label className="text-sm font-semibold text-gray-900 mb-2 block">
+                    <label className="text-sm font-semibold text-foreground mb-2 block">
                       Confidence Threshold: {localConfig.confidenceThreshold || 50}%
                     </label>
-                    <p className="text-xs text-gray-600 mb-2">
+                    <p className="text-xs text-foreground/70 mb-2">
                       Minimum confidence score required to apply personalization
                     </p>
                     <Slider
@@ -170,16 +170,16 @@ export function PersonalizationConfig({ onSave }: PersonalizationConfigProps) {
                 </div>
 
                 {/* Device Rules */}
-                <div className="p-4 border border-gray-200 rounded-lg space-y-4">
-                  <h4 className="font-semibold text-gray-900">Device Rules</h4>
+                <div className="p-4 border border-default-200 rounded-lg space-y-4">
+                  <h4 className="font-semibold text-foreground">Device Rules</h4>
                   {['mobile', 'desktop', 'tablet'].map((device) => (
-                    <div key={device} className="p-3 bg-gray-50 rounded-lg space-y-3">
-                      <h5 className="font-medium text-gray-900 capitalize">{device}</h5>
+                    <div key={device} className="p-3 bg-default-50 rounded-lg space-y-3">
+                      <h5 className="font-medium text-foreground capitalize">{device}</h5>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="text-xs text-gray-600 mb-1 block">Layout Variant</label>
+                          <label className="text-xs text-foreground/70 mb-1 block">Layout Variant</label>
                           <select
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                            className="w-full px-3 py-2 border border-default-300 rounded-lg text-sm bg-background text-foreground"
                             value={localConfig.deviceRules?.[device]?.layoutVariant || 'mobile-first'}
                             onChange={(e) => handleDeviceRuleChange(device, 'layoutVariant', e.target.value)}
                           >
@@ -193,8 +193,8 @@ export function PersonalizationConfig({ onSave }: PersonalizationConfigProps) {
                 </div>
 
                 {/* Step Messages */}
-                <div className="p-4 border border-gray-200 rounded-lg space-y-4">
-                  <h4 className="font-semibold text-gray-900">Step Messages</h4>
+                <div className="p-4 border border-default-200 rounded-lg space-y-4">
+                  <h4 className="font-semibold text-foreground">Step Messages</h4>
                   {['profile', 'shipping', 'payment'].map((step) => (
                     <Textarea
                       key={step}

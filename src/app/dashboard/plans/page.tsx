@@ -184,8 +184,8 @@ export default function PlansPage() {
   return (
     <m.div initial="hidden" animate="visible" variants={fadeIn}>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('title')}</h1>
-        <p className="text-gray-600">{t('subtitle')}</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">{t('title')}</h1>
+        <p className="text-foreground/70">{t('subtitle')}</p>
       </div>
 
       {/* Current Plan Section */}
@@ -195,11 +195,11 @@ export default function PlansPage() {
             <CardBody className="p-6">
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 mb-2">Current Plan</h2>
-                  <p className="text-gray-700">
+                  <h2 className="text-xl font-bold text-foreground mb-2">Current Plan</h2>
+                  <p className="text-foreground/80">
                     You&apos;re currently on the <strong>{getPlanDisplayName(currentPlanCode as any)}</strong> plan.
                     {currentSubscription.started_at && (
-                      <span className="text-sm text-gray-600 ml-2">
+                      <span className="text-sm text-foreground/70 ml-2">
                         Started {new Date(currentSubscription.started_at).toLocaleDateString()}
                       </span>
                     )}
@@ -228,7 +228,7 @@ export default function PlansPage() {
 
       {/* Available Plans */}
       <div className="mb-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Available Plans</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-6">Available Plans</h2>
         {plans.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {plans.map((plan) => {
@@ -246,9 +246,9 @@ export default function PlansPage() {
             })}
           </div>
         ) : (
-          <Card className="border border-gray-100">
+          <Card className="border border-default">
             <CardBody className="p-6">
-              <div className="text-center py-8 text-gray-500">No plans available.</div>
+              <div className="text-center py-8 text-foreground/60">No plans available.</div>
             </CardBody>
           </Card>
         )}
@@ -263,7 +263,7 @@ export default function PlansPage() {
 
       {/* Subscription History */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('history')}</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-6">{t('history')}</h2>
         <SubscriptionHistory subscriptions={subscriptions} transactions={transactions} isLoading={isLoading} />
       </div>
 
@@ -276,12 +276,12 @@ export default function PlansPage() {
             </ModalHeader>
             <ModalBody>
               <div className="mb-4">
-                <p className="text-gray-600 mb-2">
+                <p className="text-foreground/70 mb-2">
                   Complete payment to subscribe to the <strong>{selectedPlan.name}</strong> plan.
                 </p>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-2">Plan details:</p>
-                  <ul className="space-y-1 text-sm text-gray-700">
+                <div className="bg-default-50 p-4 rounded-lg">
+                  <p className="text-sm text-foreground/70 mb-2">Plan details:</p>
+                  <ul className="space-y-1 text-sm text-foreground/80">
                     <li>• Monthly fee: ${selectedPlan.monthly_price.toFixed(2)}</li>
                     <li>• Transaction fee: {selectedPlan.transaction_fee_percent}%</li>
                     <li>• Features: {selectedPlan.features.length} included</li>
@@ -332,20 +332,20 @@ export default function PlansPage() {
           <ModalBody>
             {selectedPlan && (
               <div>
-                <p className="text-gray-600 mb-4">
+                <p className="text-foreground/70 mb-4">
                   {currentPlanCode && comparePlans(currentPlanCode as any, selectedPlan.code as any) === 'upgrade'
                     ? `You're about to upgrade to the ${selectedPlan.name} plan.`
                     : `You're about to change to the ${selectedPlan.name} plan.`}
                 </p>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-2">New plan details:</p>
-                  <ul className="space-y-1 text-sm text-gray-700">
+                <div className="bg-default-50 p-4 rounded-lg">
+                  <p className="text-sm text-foreground/70 mb-2">New plan details:</p>
+                  <ul className="space-y-1 text-sm text-foreground/80">
                     <li>• Monthly fee: ${selectedPlan.monthly_price}</li>
                     <li>• Transaction fee: {selectedPlan.transaction_fee_percent}%</li>
                     <li>• Features: {selectedPlan.features.length} included</li>
                   </ul>
                 </div>
-                <p className="text-xs text-gray-500 mt-4">
+                <p className="text-xs text-foreground/60 mt-4">
                   Note: This change will take effect immediately. Your billing cycle will be updated.
                 </p>
               </div>

@@ -89,7 +89,7 @@ export function InvitationsList({
 
   if (pendingInvitations.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-8 text-foreground/60">
         <p>No pending invitations</p>
       </div>
     );
@@ -108,7 +108,7 @@ export function InvitationsList({
         {pendingInvitations.map((invitation) => (
           <TableRow key={invitation.id}>
             <TableCell>
-              <span className="font-medium text-gray-900">{invitation.email}</span>
+              <span className="font-medium text-foreground">{invitation.email}</span>
             </TableCell>
             <TableCell>
               <Chip
@@ -131,9 +131,9 @@ export function InvitationsList({
               </Chip>
             </TableCell>
             <TableCell>
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-foreground/70">
                 {isExpired(invitation.expires_at) ? (
-                  <span className="text-red-600">Expired</span>
+                  <span className="text-danger">Expired</span>
                 ) : (
                   formatDate(invitation.expires_at)
                 )}

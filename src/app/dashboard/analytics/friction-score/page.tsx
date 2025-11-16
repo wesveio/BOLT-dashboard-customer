@@ -291,7 +291,7 @@ export default function FrictionScorePage() {
                   return (
                     <TableRow key={session.sessionId}>
                       <TableCell>
-                        <span className="text-xs font-mono text-gray-600">
+                        <span className="text-xs font-mono text-foreground/70">
                           {session.sessionId.substring(0, 12)}...
                         </span>
                       </TableCell>
@@ -303,7 +303,7 @@ export default function FrictionScorePage() {
                             className="flex-1"
                             size="sm"
                           />
-                          <span className="text-sm font-semibold text-gray-900 min-w-[50px]">
+                          <span className="text-sm font-semibold text-foreground min-w-[50px]">
                             {session.score.score.toFixed(0)}
                           </span>
                         </div>
@@ -314,19 +314,19 @@ export default function FrictionScorePage() {
                         </Chip>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-foreground/70">
                           {Math.round(session.score.factors.totalDuration)}s
                         </span>
                       </TableCell>
                       <TableCell>
                         <span className={`text-sm font-semibold ${
-                          session.score.factors.errorCount > 0 ? 'text-red-600' : 'text-gray-600'
+                          session.score.factors.errorCount > 0 ? 'text-red-600' : 'text-foreground/70'
                         }`}>
                           {formatNumber(session.score.factors.errorCount)}
                         </span>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-foreground/70">
                           {formatNumber(session.score.factors.backNavigations)}
                         </span>
                       </TableCell>
@@ -350,7 +350,7 @@ export default function FrictionScorePage() {
         </ChartCard>
       ) : (
         <ChartCard title={t('noHighFrictionTitle')} subtitle={t('noHighFrictionSubtitle')}>
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-foreground/60">
             <CheckCircleIcon className="w-12 h-12 mx-auto mb-4 text-green-300" />
             <p className="text-lg font-semibold mb-2">{t('lowFrictionDetected')}</p>
             <p className="text-sm">{t('noHighFrictionPatterns')}</p>

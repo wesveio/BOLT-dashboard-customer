@@ -31,7 +31,7 @@ export function DashboardToolbar({
       initial="hidden"
       animate="visible"
       variants={fadeIn}
-      className="border-b border-gray-100 bg-white shadow-sm"
+      className="border-b border-default bg-background shadow-sm"
     >
       <div className="px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-6 flex-1 min-w-0">
@@ -48,15 +48,15 @@ export function DashboardToolbar({
               }}
             />
           ) : (
-            <h1 className="text-2xl font-bold text-gray-900 truncate">{layout.name}</h1>
+            <h1 className="text-2xl font-bold text-foreground truncate">{layout.name}</h1>
           )}
 
           {isEditing && onUpdateVisibility && (
-            <div className="flex items-center gap-3 px-4 py-2 rounded-lg bg-gray-50 border border-gray-200">
+            <div className="flex items-center gap-3 px-4 py-2 rounded-lg bg-default-50 border border-default-200">
               {layout.isPublic ? (
-                <GlobeAltIcon className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                <GlobeAltIcon className="w-5 h-5 text-primary flex-shrink-0" />
               ) : (
-                <LockClosedIcon className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                <LockClosedIcon className="w-5 h-5 text-foreground/50 flex-shrink-0" />
               )}
               <Switch
                 size="sm"
@@ -68,7 +68,7 @@ export function DashboardToolbar({
                   wrapper: 'group-data-[selected=true]:bg-gradient-to-r group-data-[selected=true]:from-blue-600 group-data-[selected=true]:to-purple-600',
                 }}
               >
-                <span className="text-sm font-semibold text-gray-700">
+                <span className="text-sm font-semibold text-foreground/80">
                   {layout.isPublic ? 'Public' : 'Private'}
                 </span>
               </Switch>
@@ -93,7 +93,7 @@ export function DashboardToolbar({
               <Button
                 size="lg"
                 variant="light"
-                className="hover:bg-gray-100 transition-colors font-semibold"
+                className="hover:bg-default-100 transition-colors font-semibold"
                 startContent={<XMarkIcon className="w-5 h-5" />}
                 onPress={onToggleEdit}
                 isDisabled={isSaving}
@@ -106,7 +106,7 @@ export function DashboardToolbar({
               <Button
                 size="lg"
                 variant="light"
-                className="hover:bg-gray-100 transition-colors font-semibold"
+                className="hover:bg-default-100 transition-colors font-semibold"
                 startContent={<PencilIcon className="w-5 h-5" />}
                 onPress={onToggleEdit}
               >
@@ -115,7 +115,7 @@ export function DashboardToolbar({
               <Button
                 size="lg"
                 variant="light"
-                className="hover:bg-gray-100 transition-colors font-semibold"
+                className="hover:bg-default-100 transition-colors font-semibold"
                 startContent={<ArrowDownTrayIcon className="w-5 h-5" />}
               >
                 Export

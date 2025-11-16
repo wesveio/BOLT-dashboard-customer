@@ -71,7 +71,7 @@ const widgetTypes: Array<{ type: WidgetType; name: string; icon: any; descriptio
 export function WidgetPalette({ onAddWidget }: WidgetPaletteProps) {
   return (
     <div className="p-4">
-      <h3 className="text-lg font-semibold mb-4">Widgets</h3>
+      <h3 className="text-lg font-semibold mb-4 text-foreground">Widgets</h3>
       <div className="space-y-2">
         {widgetTypes.map((widget) => (
           <motion.div
@@ -80,7 +80,7 @@ export function WidgetPalette({ onAddWidget }: WidgetPaletteProps) {
             whileTap={{ scale: 0.98 }}
           >
             <Card
-              className="cursor-pointer border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-200"
+              className="cursor-pointer border border-default hover:border-primary/20 hover:shadow-md transition-all duration-200"
               isPressable
               onPress={() => {
                 console.log('✅ [DEBUG] Adding widget:', widget.type);
@@ -89,10 +89,10 @@ export function WidgetPalette({ onAddWidget }: WidgetPaletteProps) {
             >
               <CardBody className="p-4">
                 <div className="flex items-start gap-3">
-                  <widget.icon className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <widget.icon className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-sm">{widget.name}</h4>
-                    <p className="text-xs text-gray-500 mt-1">{widget.description}</p>
+                    <h4 className="font-medium text-sm text-foreground">{widget.name}</h4>
+                    <p className="text-xs text-foreground/60 mt-1">{widget.description}</p>
                   </div>
                 </div>
               </CardBody>

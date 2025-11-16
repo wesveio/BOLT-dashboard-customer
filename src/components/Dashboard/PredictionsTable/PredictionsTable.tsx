@@ -97,14 +97,14 @@ export function PredictionsTable({ predictions, isLoading = false, maxRows = 50 
     return (
       <div className="flex flex-col items-center justify-center h-64 gap-4">
         <Spinner size="md" />
-        <div className="text-gray-500">Loading predictions...</div>
+        <div className="text-foreground/60">Loading predictions...</div>
       </div>
     );
   }
 
   if (filteredPredictions.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-500">
+      <div className="flex items-center justify-center h-64 text-foreground/60">
         <p>No predictions found</p>
       </div>
     );
@@ -182,10 +182,10 @@ export function PredictionsTable({ predictions, isLoading = false, maxRows = 50 
             return (
               <TableRow key={pred.sessionId}>
                 <TableCell>
-                  <code className="text-xs text-gray-600">{formatSessionId(pred.sessionId)}</code>
+                  <code className="text-xs text-foreground/70">{formatSessionId(pred.sessionId)}</code>
                 </TableCell>
                 <TableCell>
-                  <span className="font-semibold text-gray-900">{pred.prediction.riskScore}</span>
+                  <span className="font-semibold text-foreground">{pred.prediction.riskScore}</span>
                 </TableCell>
                 <TableCell>
                   <Chip
@@ -198,12 +198,12 @@ export function PredictionsTable({ predictions, isLoading = false, maxRows = 50 
                   </Chip>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm text-gray-600 capitalize">
+                  <span className="text-sm text-foreground/70 capitalize">
                     {formatStep(pred.prediction.factors.currentStep || 'unknown')}
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-foreground/70">
                     {formatDuration(pred.prediction.factors.totalDuration || 0)}
                   </span>
                 </TableCell>

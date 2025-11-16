@@ -39,18 +39,18 @@ export function FeatureFlagsTab() {
   }
 
   return (
-    <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+    <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
       <CardBody className="p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-2">App Feature Flags</h2>
-        <p className="text-sm text-gray-600 mb-6">
+        <h2 className="text-xl font-bold text-foreground mb-2">App Feature Flags</h2>
+        <p className="text-sm text-foreground/70 mb-6">
           Control application-level features. These settings override environment variables.
         </p>
         <div className="space-y-6">
           {/* Event Tracking */}
-          <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+          <div className="flex items-center justify-between p-4 border border-default-200 rounded-lg">
             <div className="flex-1">
-              <p className="font-semibold text-gray-900">Event Tracking</p>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="font-semibold text-foreground">Event Tracking</p>
+              <p className="text-sm text-foreground/70 mt-1">
                 Enable or disable the event tracking system for analytics
               </p>
             </div>
@@ -63,10 +63,10 @@ export function FeatureFlagsTab() {
           </div>
 
           {/* Bolt Plugin */}
-          <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+          <div className="flex items-center justify-between p-4 border border-default-200 rounded-lg">
             <div className="flex-1">
-              <p className="font-semibold text-gray-900">Bolt Metrics Plugin</p>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="font-semibold text-foreground">Bolt Metrics Plugin</p>
+              <p className="text-sm text-foreground/70 mt-1">
                 Enable or disable the Bolt metrics plugin for dashboard integration
               </p>
             </div>
@@ -79,10 +79,10 @@ export function FeatureFlagsTab() {
           </div>
 
           {/* Console Plugin */}
-          <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+          <div className="flex items-center justify-between p-4 border border-default-200 rounded-lg">
             <div className="flex-1">
-              <p className="font-semibold text-gray-900">Console Plugin</p>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="font-semibold text-foreground">Console Plugin</p>
+              <p className="text-sm text-foreground/70 mt-1">
                 Enable or disable console logging plugin for development debugging
               </p>
             </div>
@@ -95,10 +95,10 @@ export function FeatureFlagsTab() {
           </div>
 
           {/* Logging */}
-          <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+          <div className="flex items-center justify-between p-4 border border-default-200 rounded-lg">
             <div className="flex-1">
-              <p className="font-semibold text-gray-900">Application Logging</p>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="font-semibold text-foreground">Application Logging</p>
+              <p className="text-sm text-foreground/70 mt-1">
                 Enable or disable application-wide logging system
               </p>
             </div>

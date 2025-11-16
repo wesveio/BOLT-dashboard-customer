@@ -27,9 +27,9 @@ export function VisualTab({ config, onChange }: VisualTabProps) {
   return (
     <div className="space-y-6">
       {/* Colors */}
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Colors</h3>
+          <h3 className="text-lg font-bold text-foreground mb-4">Colors</h3>
           <div className="space-y-4">
             <ColorPicker
               label="Primary Gradient (From)"
@@ -69,7 +69,7 @@ export function VisualTab({ config, onChange }: VisualTabProps) {
               onChange={(color) => updateVisual(['colors', 'info'], color)}
             />
             <div className="pt-4 border-t">
-              <h4 className="text-md font-semibold text-gray-700 mb-3">Background Colors</h4>
+              <h4 className="text-md font-semibold text-foreground/80 mb-3">Background Colors</h4>
               <div className="space-y-3">
                 <ColorPicker
                   label="Primary Background"
@@ -84,7 +84,7 @@ export function VisualTab({ config, onChange }: VisualTabProps) {
               </div>
             </div>
             <div className="pt-4 border-t">
-              <h4 className="text-md font-semibold text-gray-700 mb-3">Text Colors</h4>
+              <h4 className="text-md font-semibold text-foreground/80 mb-3">Text Colors</h4>
               <div className="space-y-3">
                 <ColorPicker
                   label="Primary Text"
@@ -105,10 +105,10 @@ export function VisualTab({ config, onChange }: VisualTabProps) {
             </div>
             {config.layout.type === 'liquid-glass' && (
               <div className="pt-4 border-t">
-                <h4 className="text-md font-semibold text-gray-700 mb-3">Glassmorphism</h4>
+                <h4 className="text-md font-semibold text-foreground/80 mb-3">Glassmorphism</h4>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-semibold text-gray-700">Opacity</label>
+                    <label className="text-sm font-semibold text-foreground/80">Opacity</label>
                     <input
                       type="range"
                       min="0"
@@ -120,12 +120,12 @@ export function VisualTab({ config, onChange }: VisualTabProps) {
                       }
                       className="w-32"
                     />
-                    <span className="text-sm text-gray-600 w-12 text-right">
+                    <span className="text-sm text-foreground/70 w-12 text-right">
                       {config.visual.colors.glassmorphism?.opacity || 0.1}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-semibold text-gray-700">Blur (px)</label>
+                    <label className="text-sm font-semibold text-foreground/80">Blur (px)</label>
                     <input
                       type="range"
                       min="0"
@@ -137,7 +137,7 @@ export function VisualTab({ config, onChange }: VisualTabProps) {
                       }
                       className="w-32"
                     />
-                    <span className="text-sm text-gray-600 w-12 text-right">
+                    <span className="text-sm text-foreground/70 w-12 text-right">
                       {config.visual.colors.glassmorphism?.blur || 12}px
                     </span>
                   </div>
@@ -154,12 +154,12 @@ export function VisualTab({ config, onChange }: VisualTabProps) {
       </Card>
 
       {/* Typography */}
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Typography</h3>
+          <h3 className="text-lg font-bold text-foreground mb-4">Typography</h3>
           <div className="space-y-4">
             <div>
-              <h4 className="text-md font-semibold text-gray-700 mb-3">Primary Font</h4>
+              <h4 className="text-md font-semibold text-foreground/80 mb-3">Primary Font</h4>
               <FontSelector
                 label="Font Family"
                 value={config.visual.typography.primary.family}
@@ -167,7 +167,7 @@ export function VisualTab({ config, onChange }: VisualTabProps) {
               />
             </div>
             <div>
-              <h4 className="text-md font-semibold text-gray-700 mb-3">Heading Font</h4>
+              <h4 className="text-md font-semibold text-foreground/80 mb-3">Heading Font</h4>
               <FontSelector
                 label="Font Family"
                 value={config.visual.typography.heading.family}
@@ -175,7 +175,7 @@ export function VisualTab({ config, onChange }: VisualTabProps) {
               />
             </div>
             <div>
-              <h4 className="text-md font-semibold text-gray-700 mb-3">Monospace Font</h4>
+              <h4 className="text-md font-semibold text-foreground/80 mb-3">Monospace Font</h4>
               <FontSelector
                 label="Font Family"
                 value={config.visual.typography.mono.family}
@@ -187,9 +187,9 @@ export function VisualTab({ config, onChange }: VisualTabProps) {
       </Card>
 
       {/* Spacing */}
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Spacing & Layout</h3>
+          <h3 className="text-lg font-bold text-foreground mb-4">Spacing & Layout</h3>
           <SpacingEditor
             config={config.visual.spacing}
             onChange={(key, value) => updateVisual(['spacing', key], value)}
@@ -198,14 +198,14 @@ export function VisualTab({ config, onChange }: VisualTabProps) {
       </Card>
 
       {/* Animations */}
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Animations</h3>
+          <h3 className="text-lg font-bold text-foreground mb-4">Animations</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Animated Background</label>
-                <p className="text-xs text-gray-500">Enable animated gradient background</p>
+                <label className="text-sm font-semibold text-foreground/80">Animated Background</label>
+                <p className="text-xs text-foreground/60">Enable animated gradient background</p>
               </div>
               <Switch
                 isSelected={config.visual.animations.animatedBackground}
@@ -214,7 +214,7 @@ export function VisualTab({ config, onChange }: VisualTabProps) {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Transition Duration</label>
+              <label className="text-sm font-semibold text-foreground/80">Transition Duration</label>
               <Select
                 selectedKeys={[config.visual.animations.transitionDuration]}
                 onSelectionChange={(keys) => {
@@ -230,7 +230,7 @@ export function VisualTab({ config, onChange }: VisualTabProps) {
               </Select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Scroll Behavior</label>
+              <label className="text-sm font-semibold text-foreground/80">Scroll Behavior</label>
               <Select
                 selectedKeys={[config.visual.animations.scrollBehavior]}
                 onSelectionChange={(keys) => {

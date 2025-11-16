@@ -102,20 +102,20 @@ export default function ShippingAnalyticsPage() {
               <ChartCard key={method.method} title={method.method}>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Selections</span>
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-sm text-foreground/70">Selections</span>
+                    <span className="text-lg font-bold text-foreground">
                       {formatNumber(method.count)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Avg Delivery</span>
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-sm text-foreground/70">Avg Delivery</span>
+                    <span className="text-lg font-bold text-foreground">
                       {method.avgDays?.toFixed(1) || '0'} days
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Avg Cost</span>
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-sm text-foreground/70">Avg Cost</span>
+                    <span className="text-lg font-bold text-foreground">
                       {formatCurrency(method.avgCost || 0)}
                     </span>
                   </div>
@@ -126,8 +126,8 @@ export default function ShippingAnalyticsPage() {
         </>
       ) : (
         <ChartCard title="No Shipping Data" subtitle="No shipping data available for the selected period">
-          <div className="text-center py-12 text-gray-500">
-            <TruckIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+          <div className="text-center py-12 text-foreground/60">
+            <TruckIcon className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
             <p className="text-lg font-semibold mb-2">No shipping methods found</p>
             <p className="text-sm">Try selecting a different time period.</p>
           </div>

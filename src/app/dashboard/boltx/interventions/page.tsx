@@ -192,31 +192,31 @@ export default function InterventionsPage() {
               >
                 <div className="space-y-4">
                   {Object.entries(metrics.byType).map(([type, data]) => (
-                    <div key={type} className="p-4 border border-gray-200 rounded-lg">
+                    <div key={type} className="p-4 border border-default-200 rounded-lg">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-semibold text-gray-900 capitalize">{type}</h4>
-                        <span className="text-sm text-gray-600">
+                        <h4 className="font-semibold text-foreground capitalize">{type}</h4>
+                        <span className="text-sm text-foreground/70">
                           {formatPercentage(data.conversionRate)} conversion
                         </span>
                       </div>
                       <div className="grid grid-cols-3 gap-4 text-sm">
                         <div>
-                          <span className="text-gray-600">Applied:</span>
-                          <span className="ml-2 font-semibold text-gray-900">{data.applied}</span>
+                          <span className="text-foreground/70">Applied:</span>
+                          <span className="ml-2 font-semibold text-foreground">{data.applied}</span>
                         </div>
                         <div>
-                          <span className="text-gray-600">Converted:</span>
+                          <span className="text-foreground/70">Converted:</span>
                           <span className="ml-2 font-semibold text-green-600">{data.converted}</span>
                         </div>
                         <div>
-                          <span className="text-gray-600">Abandoned:</span>
+                          <span className="text-foreground/70">Abandoned:</span>
                           <span className="ml-2 font-semibold text-red-600">{data.abandoned}</span>
                         </div>
                       </div>
                     </div>
                   ))}
                   {Object.keys(metrics.byType).length === 0 && (
-                    <p className="text-gray-500 text-center py-8">No intervention data available</p>
+                    <p className="text-foreground/60 text-center py-8">No intervention data available</p>
                   )}
                 </div>
               </ChartCard>

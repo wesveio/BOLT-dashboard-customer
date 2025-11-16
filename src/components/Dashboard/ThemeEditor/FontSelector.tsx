@@ -22,7 +22,7 @@ const availableFonts = [
 export function FontSelector({ label, value, onChange }: FontSelectorProps) {
   return (
     <div className="space-y-2">
-      <label className="text-sm font-semibold text-gray-700">{label}</label>
+      <label className="text-sm font-semibold text-foreground/80">{label}</label>
       <Select
         selectedKeys={[value]}
         onSelectionChange={(keys) => {

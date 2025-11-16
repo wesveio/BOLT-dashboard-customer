@@ -41,33 +41,33 @@ export function PricingCard({
       <Card
         className={`border transition-all duration-200 h-full flex flex-col ${
           isCurrentPlan
-            ? 'border-blue-500 shadow-lg ring-2 ring-blue-200'
-            : 'border-gray-100 hover:border-blue-200 hover:shadow-lg'
+            ? 'border-primary shadow-lg ring-2 ring-primary/20'
+            : 'border-default hover:border-primary/20 hover:shadow-lg'
         }`}
       >
         <CardBody className="p-6 flex-1 flex flex-col">
           {/* Plan Header */}
           <div className="mb-6">
             {isCurrentPlan && (
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-4">
                 <CheckIcon className="w-4 h-4" />
                 Current Plan
               </div>
             )}
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+            <h3 className="text-2xl font-bold text-foreground mb-2">{plan.name}</h3>
             <div className="flex items-baseline gap-2 mb-2">
-              <span className="text-4xl font-bold text-gray-900">
+              <span className="text-4xl font-bold text-foreground">
                 {isEnterprise ? 'Custom' : formatCurrency(plan.monthly_price, 'USD')}
               </span>
-              {!isEnterprise && <span className="text-gray-600">/month</span>}
+              {!isEnterprise && <span className="text-foreground/70">/month</span>}
             </div>
             {!isEnterprise && (
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-foreground/70">
                 + {formatPercentage(plan.transaction_fee_percent)} transaction fee
               </p>
             )}
             {!isEnterprise && (
-              <p className="text-xs text-gray-500 mt-1">All prices in USD</p>
+              <p className="text-xs text-foreground/60 mt-1">All prices in USD</p>
             )}
           </div>
 
@@ -81,8 +81,8 @@ export function PricingCard({
                       <CheckIcon className="w-3 h-3 text-white" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">{feature.name}</p>
-                      <p className="text-xs text-gray-500 mt-0.5">{feature.description}</p>
+                      <p className="text-sm font-medium text-foreground">{feature.name}</p>
+                      <p className="text-xs text-foreground/60 mt-0.5">{feature.description}</p>
                     </div>
                   </li>
                 ))}
@@ -91,11 +91,11 @@ export function PricingCard({
           )}
 
           {/* CTA Button */}
-          <div className="mt-auto pt-6 border-t border-gray-100">
+          <div className="mt-auto pt-6 border-t border-default">
             {isCurrentPlan ? (
               <Button
                 disabled
-                className="w-full bg-gray-100 text-gray-600 cursor-not-allowed"
+                className="w-full bg-default-100 text-foreground/60 cursor-not-allowed"
               >
                 Current Plan
               </Button>

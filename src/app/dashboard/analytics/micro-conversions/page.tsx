@@ -182,17 +182,17 @@ export default function MicroConversionsPage() {
                     </TableCell>
                     <TableCell>
                       <div>
-                        <p className="text-sm font-semibold text-gray-900">{mc.label}</p>
-                        <p className="text-xs text-gray-500">{mc.description}</p>
+                        <p className="text-sm font-semibold text-foreground">{mc.label}</p>
+                        <p className="text-xs text-foreground/60">{mc.description}</p>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-sm font-semibold text-foreground">
                         {formatNumber(mc.reached)}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-sm font-semibold text-foreground">
                         {formatNumber(mc.completed)}
                       </span>
                     </TableCell>
@@ -204,7 +204,7 @@ export default function MicroConversionsPage() {
                           className="flex-1"
                           size="sm"
                         />
-                        <span className="text-sm font-semibold text-gray-900 min-w-[60px]">
+                        <span className="text-sm font-semibold text-foreground min-w-[60px]">
                           {formatPercentage(mc.conversionRate)}
                         </span>
                       </div>
@@ -217,13 +217,13 @@ export default function MicroConversionsPage() {
                             {formatNumber(dropOff.dropOff)}
                           </span>
                           {dropOff.dropOffRate !== undefined && (
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-foreground/60">
                               ({formatPercentage(dropOff.dropOffRate)})
                             </span>
                           )}
                         </div>
                       ) : (
-                        <span className="text-sm text-gray-400">-</span>
+                        <span className="text-sm text-foreground/40">-</span>
                       )}
                     </TableCell>
                     <TableCell>

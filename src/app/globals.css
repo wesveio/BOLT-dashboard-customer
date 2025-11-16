@@ -29,7 +29,7 @@ body {
   font-family: var(--font-inter), "Inter", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--color-bg-secondary);
+  @apply bg-background text-foreground;
 }
 
 /* Container utility */
@@ -44,15 +44,27 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100;
+  @apply bg-default-100;
+}
+
+.dark ::-webkit-scrollbar-track {
+  @apply bg-default-50;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-full transition-colors;
+  @apply bg-default-300 rounded-full transition-colors;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-default-400;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400;
+  @apply bg-default-400;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  @apply bg-default-500;
 }
 
 /* Loading skeleton animation */
@@ -67,7 +79,11 @@ body {
 }
 
 .loading-skeleton {
-  @apply animate-pulse bg-gray-200 rounded-lg;
+  @apply animate-pulse bg-default-200 rounded-lg;
+}
+
+.dark .loading-skeleton {
+  @apply bg-default-100;
 }
 
 /* Enhanced Button Styles */
@@ -77,33 +93,33 @@ body {
   }
 
   .btn-secondary-enhanced {
-    @apply bg-white text-gray-700 border-2 border-gray-300 px-8 py-4 rounded-xl font-semibold hover:border-gray-400 hover:shadow-md transition-all duration-200;
+    @apply bg-background text-foreground border-2 border-default-300 px-8 py-4 rounded-xl font-semibold hover:border-default-400 hover:shadow-md transition-all duration-200;
   }
 
   /* Card Elevation System */
   .card-elevated-sm {
-    @apply bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200;
+    @apply bg-background rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200;
   }
 
   .card-elevated-md {
-    @apply bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200;
+    @apply bg-background rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200;
   }
 
   .card-elevated-lg {
-    @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200;
+    @apply bg-background rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200;
   }
 
   /* Typography Enhancements */
   .heading-hero {
-    @apply text-5xl md:text-6xl font-bold tracking-tight text-gray-900;
+    @apply text-5xl md:text-6xl font-bold tracking-tight text-foreground;
   }
 
   .heading-section {
-    @apply text-3xl md:text-4xl font-bold tracking-tight text-gray-900;
+    @apply text-3xl md:text-4xl font-bold tracking-tight text-foreground;
   }
 
   .text-lead {
-    @apply text-xl md:text-2xl text-gray-600 leading-relaxed;
+    @apply text-xl md:text-2xl text-foreground/70 leading-relaxed;
   }
 }
 

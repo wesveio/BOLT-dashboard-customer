@@ -98,7 +98,7 @@ export function ResizeHandle({ widget, onResize }: ResizeHandleProps) {
 
   return (
     <div
-      className="absolute bottom-0 right-0 w-4 h-4 bg-blue-500 cursor-se-resize rounded-tl-lg opacity-0 hover:opacity-100 transition-opacity z-20"
+      className="absolute bottom-0 right-0 w-4 h-4 bg-primary cursor-se-resize rounded-tl-lg opacity-0 hover:opacity-100 transition-opacity z-20"
       onMouseDown={handleMouseDown}
       style={{ 
         zIndex: 20,

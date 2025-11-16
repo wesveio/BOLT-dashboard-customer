@@ -30,6 +30,7 @@ import { useDashboardAuth } from '@/hooks/useDashboardAuth';
 import { usePlanAccess } from '@/hooks/usePlanAccess';
 import { getRouteRequiredFeature } from '@/utils/feature-routes';
 import { Avatar } from '@heroui/react';
+import { ThemeSwitcher } from '@/components/Dashboard/ThemeSwitcher/ThemeSwitcher';
 
 interface NavSubItem {
   href: string;
@@ -310,7 +311,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className={`hidden md:flex bg-white border-r border-gray-100 fixed left-0 top-0 h-screen z-30 transition-all duration-200 flex-col ${
+      className={`hidden md:flex bg-background border-r border-default fixed left-0 top-0 h-screen z-30 transition-all duration-200 flex-col ${
         isCollapsed ? 'w-20' : 'w-64'
       }`}
     >
@@ -320,7 +321,7 @@ export function Sidebar() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`mb-6 pb-6 border-b border-gray-100 transition-all duration-200 ${
+            className={`mb-6 pb-6 border-b border-default transition-all duration-200 ${
               isCollapsed ? 'flex justify-center' : 'flex flex-col items-center'
             }`}
           >
@@ -343,22 +344,22 @@ export function Sidebar() {
                   className="flex flex-col items-center mt-3 w-full"
                 >
                   {/* User Name */}
-                  <p className="text-sm font-semibold text-gray-900 truncate w-full text-center">
+                  <p className="text-sm font-semibold text-foreground truncate w-full text-center">
                     {getUserDisplayName()}
                   </p>
                   
                   {/* Email */}
                   {(user.firstName || user.name) && (
-                    <p className="text-xs text-gray-500 truncate mt-0.5 w-full text-center">
+                    <p className="text-xs text-foreground/60 truncate mt-0.5 w-full text-center">
                       {user.email}
                     </p>
                   )}
 
                   {/* Role Badge */}
                   {user.role && (
-                    <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-blue-50 border border-blue-200">
-                      <UserCircleIcon className="w-3 h-3 text-blue-600" />
-                      <span className="text-xs font-medium text-blue-600">
+                    <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-primary/10 border border-primary/20">
+                      <UserCircleIcon className="w-3 h-3 text-primary" />
+                      <span className="text-xs font-medium text-primary">
                         {formatRole(user.role)}
                       </span>
                     </div>
@@ -366,10 +367,10 @@ export function Sidebar() {
 
                   {/* VTEX Account */}
                   {user.vtexAccountName && (
-                    <div className="mt-2 text-xs text-gray-600 truncate w-full text-center">
+                    <div className="mt-2 text-xs text-foreground/70 truncate w-full text-center">
                       <span className="font-medium">{t('vtexAccount')}:</span>
                       <div className="flex items-center gap-1">
-                        <Link href={`https://${user.vtexAccountName}.myvtex.com`} target="_blank" className="flex items-center gap-1 w-full justify-center"><span className="text-blue-600">{user.vtexAccountName}</span> <ArrowTopRightOnSquareIcon className="w-3 h-3 text-blue-600" /></Link>
+                        <Link href={`https://${user.vtexAccountName}.myvtex.com`} target="_blank" className="flex items-center gap-1 w-full justify-center"><span className="text-primary">{user.vtexAccountName}</span> <ArrowTopRightOnSquareIcon className="w-3 h-3 text-primary" /></Link>
                       </div>
                     </div>
                   )}
@@ -396,8 +397,8 @@ export function Sidebar() {
                       isCollapsed ? 'justify-center px-2 py-3' : 'px-4 py-3'
                     } ${
                       active || isSubItemActive
-                        ? 'bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 shadow-sm'
-                        : 'hover:bg-gray-50 hover:border-gray-200 border border-transparent'
+                        ? 'bg-primary/10 border border-primary/20 shadow-sm'
+                        : 'hover:bg-default-100 hover:border-default-200 border border-transparent'
                     }`}
                     whileHover={isCollapsed ? {} : { x: 4 }}
                     transition={{ type: 'spring', stiffness: 300 }}
@@ -407,8 +408,8 @@ export function Sidebar() {
                         isCollapsed ? 'w-6 h-6' : 'w-5 h-5'
                       } ${
                         active || isSubItemActive
-                          ? 'text-blue-600'
-                          : 'text-gray-400 group-hover:text-gray-600'
+                          ? 'text-primary'
+                          : 'text-foreground/50 group-hover:text-foreground'
                       }`}
                     />
                     <AnimatePresence>
@@ -420,7 +421,7 @@ export function Sidebar() {
                             exit={{ opacity: 0, width: 0 }}
                             transition={{ duration: 0.2 }}
                             className={`font-semibold whitespace-nowrap overflow-hidden flex-1 ${
-                              active || isSubItemActive ? 'text-blue-600' : 'text-gray-700'
+                              active || isSubItemActive ? 'text-primary' : 'text-foreground'
                             }`}
                           >
                             {item.label}
@@ -432,9 +433,9 @@ export function Sidebar() {
                               exit={{ opacity: 0 }}
                             >
                               {shouldExpand ? (
-                                <ChevronUpIcon className="w-4 h-4 text-gray-500" />
+                                <ChevronUpIcon className="w-4 h-4 text-foreground/50" />
                               ) : (
-                                <ChevronDownIcon className="w-4 h-4 text-gray-500" />
+                                <ChevronDownIcon className="w-4 h-4 text-foreground/50" />
                               )}
                             </motion.div>
                           )}
@@ -454,7 +455,7 @@ export function Sidebar() {
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden"
                     >
-                      <div className="ml-4 mt-1 space-y-1 border-l-2 border-gray-200 pl-4">
+                      <div className="ml-4 mt-1 space-y-1 border-l-2 border-default-200 pl-4">
                         {item.subItems.map((subItem) => {
                           const subActive = isActive(subItem.href);
                           return (
@@ -462,8 +463,8 @@ export function Sidebar() {
                               <motion.div
                                 className={`px-3 py-2 rounded-md transition-all duration-200 ${
                                   subActive
-                                    ? 'bg-blue-50 border border-blue-200 text-blue-700 font-medium'
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                    ? 'bg-primary/10 border border-primary/20 text-primary font-medium'
+                                    : 'text-foreground/70 hover:bg-default-100 hover:text-foreground'
                                 }`}
                                 whileHover={{ x: 2 }}
                                 transition={{ type: 'spring', stiffness: 300 }}
@@ -483,25 +484,31 @@ export function Sidebar() {
         </nav>
       </div>
 
-      {/* Toggle Button - Footer */}
-      <div className={`border-t border-gray-100 p-4 flex ${isCollapsed ? 'justify-center' : 'justify-end'} relative z-10`}>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleCollapse();
-          }}
-          className="p-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer"
-          aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          {isCollapsed ? (
-            <ChevronRightIcon className="w-5 h-5 text-gray-600" />
-          ) : (
-            <ChevronLeftIcon className="w-5 h-5 text-gray-600" />
-          )}
-        </button>
+      {/* Footer - Theme Switcher and Toggle Button */}
+      <div className={`border-t border-default p-4 flex flex-col gap-2 ${isCollapsed ? 'items-center' : ''} relative z-10`}>
+        {/* Theme Switcher */}
+        <ThemeSwitcher />
+        
+        {/* Toggle Button */}
+        <div className={`flex ${isCollapsed ? 'justify-center' : 'justify-end'}`}>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleCollapse();
+            }}
+            className="p-2 rounded-lg hover:bg-default-100 active:bg-default-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {isCollapsed ? (
+              <ChevronRightIcon className="w-5 h-5 text-foreground" />
+            ) : (
+              <ChevronLeftIcon className="w-5 h-5 text-foreground" />
+            )}
+          </button>
+        </div>
       </div>
     </aside>
   );

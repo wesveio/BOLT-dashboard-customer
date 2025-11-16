@@ -20,14 +20,14 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
   if (component === 'orderSummary') {
     const orderSummaryConfig = config as ComponentsConfig['orderSummary'];
     return (
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <h4 className="text-md font-semibold text-gray-900 mb-4">Order Summary</h4>
+          <h4 className="text-md font-semibold text-foreground mb-4">Order Summary</h4>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Items List</label>
-                <p className="text-xs text-gray-500">Display list of cart items</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Items List</label>
+                <p className="text-xs text-foreground/60">Display list of cart items</p>
               </div>
               <Switch
                 isSelected={orderSummaryConfig.showItemsList}
@@ -37,8 +37,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Subtotal</label>
-                <p className="text-xs text-gray-500">Display subtotal amount</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Subtotal</label>
+                <p className="text-xs text-foreground/60">Display subtotal amount</p>
               </div>
               <Switch
                 isSelected={orderSummaryConfig.showSubtotal}
@@ -48,8 +48,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Shipping</label>
-                <p className="text-xs text-gray-500">Display shipping cost</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Shipping</label>
+                <p className="text-xs text-foreground/60">Display shipping cost</p>
               </div>
               <Switch
                 isSelected={orderSummaryConfig.showShipping}
@@ -59,8 +59,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Discount</label>
-                <p className="text-xs text-gray-500">Display discount amount</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Discount</label>
+                <p className="text-xs text-foreground/60">Display discount amount</p>
               </div>
               <Switch
                 isSelected={orderSummaryConfig.showDiscount}
@@ -70,8 +70,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Tax</label>
-                <p className="text-xs text-gray-500">Display tax amount</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Tax</label>
+                <p className="text-xs text-foreground/60">Display tax amount</p>
               </div>
               <Switch
                 isSelected={orderSummaryConfig.showTax}
@@ -81,8 +81,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Total</label>
-                <p className="text-xs text-gray-500">Display total amount</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Total</label>
+                <p className="text-xs text-foreground/60">Display total amount</p>
               </div>
               <Switch
                 isSelected={orderSummaryConfig.showTotal}
@@ -92,8 +92,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Coupon Field</label>
-                <p className="text-xs text-gray-500">Display coupon code input</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Coupon Field</label>
+                <p className="text-xs text-foreground/60">Display coupon code input</p>
               </div>
               <Switch
                 isSelected={orderSummaryConfig.showCouponField}
@@ -102,7 +102,7 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Sticky Behavior</label>
+              <label className="text-sm font-semibold text-foreground/80">Sticky Behavior</label>
               <Select
                 selectedKeys={[orderSummaryConfig.stickyBehavior]}
                 onSelectionChange={(keys) => {
@@ -126,14 +126,14 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
   if (component === 'payment') {
     const paymentConfig = config as ComponentsConfig['payment'];
     return (
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <h4 className="text-md font-semibold text-gray-900 mb-4">Payment Component</h4>
+          <h4 className="text-md font-semibold text-foreground mb-4">Payment Component</h4>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Card Icons</label>
-                <p className="text-xs text-gray-500">Display credit card icons</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Card Icons</label>
+                <p className="text-xs text-foreground/60">Display credit card icons</p>
               </div>
               <Switch
                 isSelected={paymentConfig.showCardIcons}
@@ -143,8 +143,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Installments</label>
-                <p className="text-xs text-gray-500">Display installment options</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Installments</label>
+                <p className="text-xs text-foreground/60">Display installment options</p>
               </div>
               <Switch
                 isSelected={paymentConfig.showInstallments}
@@ -154,8 +154,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Save Card Option</label>
-                <p className="text-xs text-gray-500">Allow saving card for future use</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Save Card Option</label>
+                <p className="text-xs text-foreground/60">Allow saving card for future use</p>
               </div>
               <Switch
                 isSelected={paymentConfig.showSaveCardOption}
@@ -164,7 +164,7 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Card Number Format</label>
+              <label className="text-sm font-semibold text-foreground/80">Card Number Format</label>
               <Select
                 selectedKeys={[paymentConfig.cardNumberFormat]}
                 onSelectionChange={(keys) => {
@@ -180,7 +180,7 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
               </Select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Expiry Format</label>
+              <label className="text-sm font-semibold text-foreground/80">Expiry Format</label>
               <Select
                 selectedKeys={[paymentConfig.expiryFormat]}
                 onSelectionChange={(keys) => {
@@ -197,8 +197,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">CVV Required</label>
-                <p className="text-xs text-gray-500">Require CVV verification</p>
+                <label className="text-sm font-semibold text-foreground/80">CVV Required</label>
+                <p className="text-xs text-foreground/60">Require CVV verification</p>
               </div>
               <Switch
                 isSelected={paymentConfig.cvvRequired}
@@ -215,14 +215,14 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
   if (component === 'cart') {
     const cartConfig = config as ComponentsConfig['cart'];
     return (
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <h4 className="text-md font-semibold text-gray-900 mb-4">Cart Step</h4>
+          <h4 className="text-md font-semibold text-foreground mb-4">Cart Step</h4>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Images</label>
-                <p className="text-xs text-gray-500">Display product images</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Images</label>
+                <p className="text-xs text-foreground/60">Display product images</p>
               </div>
               <Switch
                 isSelected={cartConfig.showImages}
@@ -232,8 +232,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Quantity Controls</label>
-                <p className="text-xs text-gray-500">Allow quantity adjustment</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Quantity Controls</label>
+                <p className="text-xs text-foreground/60">Allow quantity adjustment</p>
               </div>
               <Switch
                 isSelected={cartConfig.showQuantityControls}
@@ -243,8 +243,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Remove Button</label>
-                <p className="text-xs text-gray-500">Allow item removal</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Remove Button</label>
+                <p className="text-xs text-foreground/60">Allow item removal</p>
               </div>
               <Switch
                 isSelected={cartConfig.showRemoveButton}
@@ -254,8 +254,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Discount Badge</label>
-                <p className="text-xs text-gray-500">Display discount indicators</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Discount Badge</label>
+                <p className="text-xs text-foreground/60">Display discount indicators</p>
               </div>
               <Switch
                 isSelected={cartConfig.showDiscountBadge}
@@ -265,8 +265,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Undeliverable Warning</label>
-                <p className="text-xs text-gray-500">Display delivery warnings</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Undeliverable Warning</label>
+                <p className="text-xs text-foreground/60">Display delivery warnings</p>
               </div>
               <Switch
                 isSelected={cartConfig.showUndeliverableWarning}
@@ -283,14 +283,14 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
   if (component === 'shipping') {
     const shippingConfig = config as ComponentsConfig['shipping'];
     return (
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <h4 className="text-md font-semibold text-gray-900 mb-4">Shipping Step</h4>
+          <h4 className="text-md font-semibold text-foreground mb-4">Shipping Step</h4>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Postal Code Lookup</label>
-                <p className="text-xs text-gray-500">Enable CEP/zip code lookup</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Postal Code Lookup</label>
+                <p className="text-xs text-foreground/60">Enable CEP/zip code lookup</p>
               </div>
               <Switch
                 isSelected={shippingConfig.showPostalCodeLookup}
@@ -300,8 +300,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Address Fields</label>
-                <p className="text-xs text-gray-500">Display address input fields</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Address Fields</label>
+                <p className="text-xs text-foreground/60">Display address input fields</p>
               </div>
               <Switch
                 isSelected={shippingConfig.showAddressFields}
@@ -311,8 +311,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Delivery Options</label>
-                <p className="text-xs text-gray-500">Display shipping method options</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Delivery Options</label>
+                <p className="text-xs text-foreground/60">Display shipping method options</p>
               </div>
               <Switch
                 isSelected={shippingConfig.showDeliveryOptions}
@@ -322,8 +322,8 @@ export function ComponentConfigPanel({ component, config, onChange }: ComponentC
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Show Delivery Estimate</label>
-                <p className="text-xs text-gray-500">Display estimated delivery time</p>
+                <label className="text-sm font-semibold text-foreground/80">Show Delivery Estimate</label>
+                <p className="text-xs text-foreground/60">Display estimated delivery time</p>
               </div>
               <Switch
                 isSelected={shippingConfig.showDeliveryEstimate}

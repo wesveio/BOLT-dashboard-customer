@@ -41,7 +41,7 @@ export function RealtimeIndicator({
             />
           )}
         </AnimatePresence>
-        <span className="text-xs font-semibold text-gray-600">Live</span>
+        <span className="text-xs font-semibold text-foreground/70">Live</span>
       </div>
     </div>
   );

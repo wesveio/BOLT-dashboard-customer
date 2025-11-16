@@ -21,17 +21,17 @@ export function PublicFooter({
 }: PublicFooterProps) {
   const t = useTranslations('public.footer');
   return (
-    <footer className="w-full bg-gray-50 border-t border-gray-200">
+    <footer className="w-full bg-default-50 border-t border-default">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
           {/* Contact Section */}
           <div className="space-y-4 animate-fade-in-up">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">{t('sections.contactUs')}</h3>
+            <h3 className="text-lg font-bold text-foreground mb-4">{t('sections.contactUs')}</h3>
             <div className="space-y-3">
               {contactEmail && (
                 <a
                   href={`mailto:${contactEmail}`}
-                  className="flex items-center gap-3 text-gray-700 hover:text-blue-600 transition-colors duration-200"
+                  className="flex items-center gap-3 text-foreground/80 hover:text-primary transition-colors duration-200"
                   aria-label={`Email us at ${contactEmail}`}
                 >
                   <svg
@@ -54,7 +54,7 @@ export function PublicFooter({
               {contactPhone && (
                 <a
                   href={`tel:${contactPhone}`}
-                  className="flex items-center gap-3 text-gray-700 hover:text-blue-600 transition-colors duration-200"
+                  className="flex items-center gap-3 text-foreground/80 hover:text-primary transition-colors duration-200"
                   aria-label={`Call us at ${contactPhone}`}
                 >
                   <svg
@@ -79,17 +79,17 @@ export function PublicFooter({
 
           {/* Legal Links Section */}
           <div className="space-y-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            <h3 className="text-lg font-bold text-gray-900 mb-4">{t('sections.legal')}</h3>
+            <h3 className="text-lg font-bold text-foreground mb-4">{t('sections.legal')}</h3>
             <nav className="flex flex-col space-y-2">
               <Link
                 href={privacyPolicyUrl}
-                className="text-sm md:text-base text-gray-700 hover:text-blue-600 transition-colors duration-200"
+                className="text-sm md:text-base text-foreground/80 hover:text-primary transition-colors duration-200"
               >
                 {t('privacyPolicy')}
               </Link>
               <Link
                 href={termsUrl}
-                className="text-sm md:text-base text-gray-700 hover:text-blue-600 transition-colors duration-200"
+                className="text-sm md:text-base text-foreground/80 hover:text-primary transition-colors duration-200"
               >
                 {t('termsAndConditions')}
               </Link>
@@ -98,7 +98,7 @@ export function PublicFooter({
 
           {/* Security Badges Section */}
           <div className="space-y-4 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            <h3 className="text-lg font-bold text-gray-900 mb-4">{t('sections.secureCheckout')}</h3>
+            <h3 className="text-lg font-bold text-foreground mb-4">{t('sections.secureCheckout')}</h3>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2">
                 <svg
@@ -113,11 +113,11 @@ export function PublicFooter({
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="text-sm font-semibold text-gray-900">{t('badges.sslEncrypted')}</span>
+                <span className="text-sm font-semibold text-foreground">{t('badges.sslEncrypted')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <svg
-                  className="w-5 h-5 text-blue-500 flex-shrink-0"
+                  className="w-5 h-5 text-primary flex-shrink-0"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   aria-hidden="true"
@@ -128,11 +128,11 @@ export function PublicFooter({
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="text-sm font-semibold text-gray-900">{t('badges.pciCompliant')}</span>
+                <span className="text-sm font-semibold text-foreground">{t('badges.pciCompliant')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <svg
-                  className="w-5 h-5 text-purple-500 flex-shrink-0"
+                  className="w-5 h-5 text-secondary flex-shrink-0"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   aria-hidden="true"
@@ -140,21 +140,21 @@ export function PublicFooter({
                   <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
                   <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z" />
                 </svg>
-                <span className="text-sm font-semibold text-gray-900">{t('badges.safeCheckout')}</span>
+                <span className="text-sm font-semibold text-foreground">{t('badges.safeCheckout')}</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom divider */}
-        <div className="mt-8 pt-8 border-t border-gray-200">
+        <div className="mt-8 pt-8 border-t border-default">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-center md:text-left text-sm text-gray-600">
+            <p className="text-center md:text-left text-sm text-foreground/70">
               © {new Date().getFullYear()} {t('copyright')}{' '}
-              <span className="font-bold text-blue-600">{t('poweredBy')}</span>
+              <span className="font-bold text-primary">{t('poweredBy')}</span>
             </p>
             <div className="flex items-center gap-2">
-              <Suspense fallback={<div className="w-20 h-10 bg-gray-200 rounded animate-pulse" />}>
+              <Suspense fallback={<div className="w-20 h-10 bg-default-200 rounded animate-pulse" />}>
               <LanguageSwitcher />
               </Suspense>
             </div>

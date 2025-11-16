@@ -78,14 +78,14 @@ export function ProfilesTable({ profiles, isLoading = false, maxRows = 100 }: Pr
     return (
       <div className="flex flex-col items-center justify-center h-64 gap-4">
         <Spinner size="md" />
-        <div className="text-gray-500">Loading profiles...</div>
+        <div className="text-foreground/60">Loading profiles...</div>
       </div>
     );
   }
 
   if (filteredProfiles.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-500">
+      <div className="flex items-center justify-center h-64 text-foreground/60">
         <p>No profiles found</p>
       </div>
     );
@@ -142,7 +142,7 @@ export function ProfilesTable({ profiles, isLoading = false, maxRows = 100 }: Pr
       </div>
 
       {/* Table */}
-      <Table aria-label="User profiles table" className="border border-gray-100 rounded-lg">
+      <Table aria-label="User profiles table" className="border border-default rounded-lg">
         <TableHeader>
           <TableColumn>SESSION ID</TableColumn>
           <TableColumn>DEVICE</TableColumn>
@@ -169,13 +169,13 @@ export function ProfilesTable({ profiles, isLoading = false, maxRows = 100 }: Pr
                 )}
               </TableCell>
               <TableCell>
-                <span className="text-sm text-gray-600">{profile.browser || 'N/A'}</span>
+                <span className="text-sm text-foreground/70">{profile.browser || 'N/A'}</span>
               </TableCell>
               <TableCell>
-                <span className="text-sm text-gray-600">{formatLocation(profile.location)}</span>
+                <span className="text-sm text-foreground/70">{formatLocation(profile.location)}</span>
               </TableCell>
               <TableCell>
-                <span className="text-sm text-gray-600">{formatDate(profile.updatedAt)}</span>
+                <span className="text-sm text-foreground/70">{formatDate(profile.updatedAt)}</span>
               </TableCell>
               <TableCell>
                 <Chip

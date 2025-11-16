@@ -258,26 +258,26 @@ export default function RevenueForecastPage() {
         >
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">{t('forecast7')}</span>
-              <span className="text-lg font-semibold text-gray-900">
+              <span className="text-sm text-foreground/70">{t('forecast7')}</span>
+              <span className="text-lg font-semibold text-foreground">
                 {formatCurrency(summary.forecast7Revenue)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">{t('forecast30')}</span>
-              <span className="text-lg font-semibold text-gray-900">
+              <span className="text-sm text-foreground/70">{t('forecast30')}</span>
+              <span className="text-lg font-semibold text-foreground">
                 {formatCurrency(summary.forecast30Revenue)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">{t('forecast90')}</span>
-              <span className="text-lg font-semibold text-gray-900">
+              <span className="text-sm text-foreground/70">{t('forecast90')}</span>
+              <span className="text-lg font-semibold text-foreground">
                 {formatCurrency(summary.forecast90Revenue)}
               </span>
             </div>
             <div className="flex items-center justify-between pt-4 border-t">
-              <span className="text-sm text-gray-600">{t('averageDailyForecast')}</span>
-              <span className="text-lg font-semibold text-gray-900">
+              <span className="text-sm text-foreground/70">{t('averageDailyForecast')}</span>
+              <span className="text-lg font-semibold text-foreground">
                 {formatCurrency(summary.avgForecastRevenue)}
               </span>
             </div>
@@ -290,19 +290,19 @@ export default function RevenueForecastPage() {
         >
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">{t('totalHistoricalRevenue')}</span>
-              <span className="text-lg font-semibold text-gray-900">
+              <span className="text-sm text-foreground/70">{t('totalHistoricalRevenue')}</span>
+              <span className="text-lg font-semibold text-foreground">
                 {formatCurrency(summary.totalHistoricalRevenue)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">{t('averageDailyRevenue')}</span>
-              <span className="text-lg font-semibold text-gray-900">
+              <span className="text-sm text-foreground/70">{t('averageDailyRevenue')}</span>
+              <span className="text-lg font-semibold text-foreground">
                 {formatCurrency(summary.avgDailyRevenue)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">{t('trend')}</span>
+              <span className="text-sm text-foreground/70">{t('trend')}</span>
               <Chip
                 color={
                   summary.trend === 'increasing' ? 'success' :
@@ -316,7 +316,7 @@ export default function RevenueForecastPage() {
               </Chip>
             </div>
             <div className="flex items-center justify-between pt-4 border-t">
-              <span className="text-sm text-gray-600">{t('dailyGrowth')}</span>
+              <span className="text-sm text-foreground/70">{t('dailyGrowth')}</span>
               <span className={`text-lg font-semibold ${
                 summary.avgGrowth >= 0 ? 'text-green-600' : 'text-red-600'
               }`}>
@@ -335,16 +335,16 @@ export default function RevenueForecastPage() {
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center">
-              <p className="text-sm text-gray-600 mb-2">{t('meanAbsoluteError')}</p>
-              <p className="text-2xl font-bold text-gray-900">{formatCurrency(accuracy.mae)}</p>
+              <p className="text-sm text-foreground/70 mb-2">{t('meanAbsoluteError')}</p>
+              <p className="text-2xl font-bold text-foreground">{formatCurrency(accuracy.mae)}</p>
             </div>
             <div className="text-center">
-              <p className="text-sm text-gray-600 mb-2">{t('meanAbsolutePercentError')}</p>
-              <p className="text-2xl font-bold text-gray-900">{formatPercentage(accuracy.mape)}</p>
+              <p className="text-sm text-foreground/70 mb-2">{t('meanAbsolutePercentError')}</p>
+              <p className="text-2xl font-bold text-foreground">{formatPercentage(accuracy.mape)}</p>
             </div>
             <div className="text-center">
-              <p className="text-sm text-gray-600 mb-2">{t('rootMeanSquaredError')}</p>
-              <p className="text-2xl font-bold text-gray-900">{formatCurrency(accuracy.rmse)}</p>
+              <p className="text-sm text-foreground/70 mb-2">{t('rootMeanSquaredError')}</p>
+              <p className="text-2xl font-bold text-foreground">{formatCurrency(accuracy.rmse)}</p>
             </div>
           </div>
         </ChartCard>

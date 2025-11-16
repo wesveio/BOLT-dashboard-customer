@@ -215,32 +215,32 @@ export default function GeographyAnalyticsPage() {
                       <TableRow key={country.country}>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <GlobeAltIcon className="w-4 h-4 text-gray-400" />
-                            <span className="text-sm font-semibold text-gray-900">{country.country}</span>
+                            <GlobeAltIcon className="w-4 h-4 text-foreground/40" />
+                            <span className="text-sm font-semibold text-foreground">{country.country}</span>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm font-semibold text-gray-900">
+                          <span className="text-sm font-semibold text-foreground">
                             {formatNumber(country.sessions)}
                           </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm font-semibold text-gray-900">
+                          <span className="text-sm font-semibold text-foreground">
                             {formatNumber(country.orders)}
                           </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm font-semibold text-gray-900">
+                          <span className="text-sm font-semibold text-foreground">
                             {formatCurrency(country.revenue)}
                           </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm text-gray-600">
+                          <span className="text-sm text-foreground/70">
                             {formatCurrency(country.avgOrderValue)}
                           </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm font-semibold text-gray-900">
+                          <span className="text-sm font-semibold text-foreground">
                             {formatPercentage(country.conversionRate)}
                           </span>
                         </TableCell>
@@ -312,36 +312,36 @@ export default function GeographyAnalyticsPage() {
                     {states.map((state, index) => (
                       <TableRow key={`${state.country}-${state.state}-${index}`}>
                         <TableCell>
-                          <span className="text-sm text-gray-600">{state.country}</span>
+                          <span className="text-sm text-foreground/70">{state.country}</span>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <MapPinIcon className="w-4 h-4 text-gray-400" />
-                            <span className="text-sm font-semibold text-gray-900">{state.state}</span>
+                            <MapPinIcon className="w-4 h-4 text-foreground/40" />
+                            <span className="text-sm font-semibold text-foreground">{state.state}</span>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm font-semibold text-gray-900">
+                          <span className="text-sm font-semibold text-foreground">
                             {formatNumber(state.sessions)}
                           </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm font-semibold text-gray-900">
+                          <span className="text-sm font-semibold text-foreground">
                             {formatNumber(state.orders)}
                           </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm font-semibold text-gray-900">
+                          <span className="text-sm font-semibold text-foreground">
                             {formatCurrency(state.revenue)}
                           </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm text-gray-600">
+                          <span className="text-sm text-foreground/70">
                             {formatCurrency(state.avgOrderValue)}
                           </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm font-semibold text-gray-900">
+                          <span className="text-sm font-semibold text-foreground">
                             {formatPercentage(state.conversionRate)}
                           </span>
                         </TableCell>

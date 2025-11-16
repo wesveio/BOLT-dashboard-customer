@@ -72,7 +72,7 @@ export function ProfilesTrendChart({ profiles, period }: ProfilesTrendChartProps
 
   if (chartData.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-500">
+      <div className="flex items-center justify-center h-64 text-foreground/60">
         <p>No data available</p>
       </div>
     );
@@ -81,8 +81,8 @@ export function ProfilesTrendChart({ profiles, period }: ProfilesTrendChartProps
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-          <p className="font-semibold text-gray-900 mb-2">
+        <div className="bg-background p-3 border border-default rounded-lg shadow-lg">
+          <p className="font-semibold text-foreground mb-2">
             {new Date(payload[0].payload.date).toLocaleDateString('en-US', {
               month: 'short',
               day: 'numeric',

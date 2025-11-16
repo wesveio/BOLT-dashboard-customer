@@ -322,25 +322,25 @@ export default function AnalyticsPage() {
                   <p className="text-2xl font-bold text-blue-600">
                     {formatNumber(summary.eventsByCategory.user_action)}
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">User Actions</p>
+                  <p className="text-sm text-foreground/70 mt-1">User Actions</p>
                 </div>
                 <div className="text-center p-4 bg-purple-50 rounded-lg">
                   <p className="text-2xl font-bold text-purple-600">
                     {formatNumber(summary.eventsByCategory.api_call)}
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">API Calls</p>
+                  <p className="text-sm text-foreground/70 mt-1">API Calls</p>
                 </div>
                 <div className="text-center p-4 bg-green-50 rounded-lg">
                   <p className="text-2xl font-bold text-green-600">
                     {formatNumber(summary.eventsByCategory.metric)}
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Metrics</p>
+                  <p className="text-sm text-foreground/70 mt-1">Metrics</p>
                 </div>
                 <div className="text-center p-4 bg-red-50 rounded-lg">
                   <p className="text-2xl font-bold text-red-600">
                     {formatNumber(summary.eventsByCategory.error)}
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Errors</p>
+                  <p className="text-sm text-foreground/70 mt-1">Errors</p>
                 </div>
               </>
             )}
@@ -349,17 +349,17 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Sessions Table */}
-      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+      <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
         <CardBody className="p-4 md:p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
-            <h3 className="text-xl font-bold text-gray-900">Sessions</h3>
-            <div className="text-sm text-gray-500">
+            <h3 className="text-xl font-bold text-foreground">Sessions</h3>
+            <div className="text-sm text-foreground/60">
               Showing {paginatedSessions.length} of {formatNumber(sessions.length)} sessions
             </div>
           </div>
 
           {sessions.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 text-foreground/60">
               <p className="text-lg font-semibold mb-2">No sessions found</p>
               <p className="text-sm">Try adjusting your filters or select a different time period.</p>
             </div>
@@ -368,12 +368,12 @@ export default function AnalyticsPage() {
               {/* Mobile Card View */}
               <div className="md:hidden space-y-4">
                 {paginatedSessions.map((session) => (
-                  <Card key={session.session_id} className="border border-gray-200">
+                  <Card key={session.session_id} className="border border-default-200">
                     <CardBody className="p-4 space-y-3">
                       <div className="flex items-start justify-between">
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-mono text-gray-500 mb-1">Session ID</p>
-                          <p className="text-sm font-semibold text-gray-900 truncate">
+                          <p className="text-xs font-mono text-foreground/60 mb-1">Session ID</p>
+                          <p className="text-sm font-semibold text-foreground truncate">
                             {session.session_id.substring(0, 20)}...
                           </p>
                         </div>
@@ -389,33 +389,33 @@ export default function AnalyticsPage() {
                         </Button>
                       </div>
                       
-                      <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100">
+                      <div className="grid grid-cols-2 gap-3 pt-2 border-t border-default">
                         <div>
-                          <p className="text-xs text-gray-500 mb-1">Events</p>
-                          <p className="text-sm font-semibold text-gray-900">
+                          <p className="text-xs text-foreground/60 mb-1">Events</p>
+                          <p className="text-sm font-semibold text-foreground">
                             {formatNumber(session.eventCount)}
                           </p>
                         </div>
                         <div>
-                          <p className="text-xs text-gray-500 mb-1">Duration</p>
-                          <p className="text-sm text-gray-900">
+                          <p className="text-xs text-foreground/60 mb-1">Duration</p>
+                          <p className="text-sm text-foreground">
                             {formatDuration(session.duration)}
                           </p>
                         </div>
                       </div>
 
-                      <div className="pt-2 border-t border-gray-100">
-                        <p className="text-xs text-gray-500 mb-2">Last Event</p>
-                        <p className="text-xs font-semibold text-gray-900">
+                      <div className="pt-2 border-t border-default">
+                        <p className="text-xs text-foreground/60 mb-2">Last Event</p>
+                        <p className="text-xs font-semibold text-foreground">
                           {formatRelativeTime(session.lastEventTime)}
                         </p>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-foreground/60 mt-1">
                           {new Date(session.lastEventTime).toLocaleString()}
                         </p>
                       </div>
 
-                      <div className="pt-2 border-t border-gray-100">
-                        <p className="text-xs text-gray-500 mb-2">Categories</p>
+                      <div className="pt-2 border-t border-default">
+                        <p className="text-xs text-foreground/60 mb-2">Categories</p>
                         <div className="flex gap-1 flex-wrap">
                           {session.categories.user_action > 0 && (
                             <Chip color="primary" size="sm" variant="flat">
@@ -460,36 +460,36 @@ export default function AnalyticsPage() {
                     {paginatedSessions.map((session) => (
                       <TableRow key={session.session_id}>
                         <TableCell>
-                          <span className="text-sm font-mono text-gray-900">
+                          <span className="text-sm font-mono text-foreground">
                             {session.session_id.substring(0, 12)}...
                           </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm font-semibold text-gray-900">
+                          <span className="text-sm font-semibold text-foreground">
                             {formatNumber(session.eventCount)}
                           </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm text-gray-600">
+                          <span className="text-sm text-foreground/70">
                             {formatDuration(session.duration)}
                           </span>
                         </TableCell>
                         <TableCell>
                           <div>
-                            <p className="text-xs font-semibold text-gray-900">
+                            <p className="text-xs font-semibold text-foreground">
                               {formatRelativeTime(session.firstEventTime)}
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-foreground/60">
                               {new Date(session.firstEventTime).toLocaleString()}
                             </p>
                           </div>
                         </TableCell>
                         <TableCell>
                           <div>
-                            <p className="text-xs font-semibold text-gray-900">
+                            <p className="text-xs font-semibold text-foreground">
                               {formatRelativeTime(session.lastEventTime)}
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-foreground/60">
                               {new Date(session.lastEventTime).toLocaleString()}
                             </p>
                           </div>
@@ -567,10 +567,10 @@ export default function AnalyticsPage() {
       >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
-            <h3 className="text-lg md:text-xl font-bold text-gray-900">Session Events</h3>
+            <h3 className="text-lg md:text-xl font-bold text-foreground">Session Events</h3>
             {selectedSession && (
               <div className="flex flex-col gap-3">
-                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm text-gray-600">
+                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm text-foreground/70">
                   <span className="font-mono text-xs md:text-sm break-all md:break-normal">{selectedSession.session_id}</span>
                   <span className="hidden md:inline">•</span>
                   <span>{formatNumber(selectedSession.eventCount)} events</span>
@@ -578,7 +578,7 @@ export default function AnalyticsPage() {
                   <span>Duration: {formatDuration(selectedSession.duration)}</span>
                 </div>
                 {/* Filter dropdowns */}
-                <div className="pt-2 border-t border-gray-200">
+                <div className="pt-2 border-t border-default-200">
                   <FilterBar
                     period="week"
                     onPeriodChange={() => {
@@ -599,7 +599,7 @@ export default function AnalyticsPage() {
                   />
                   {filteredModalEvents.length !== selectedSession.eventCount && (
                     <div className="mt-2">
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-foreground/60">
                         Showing {formatNumber(filteredModalEvents.length)} of {formatNumber(selectedSession.eventCount)} events
                       </span>
                     </div>
@@ -612,7 +612,7 @@ export default function AnalyticsPage() {
             {selectedSession && (
               <div className="space-y-4">
                 {filteredModalEvents.length === 0 ? (
-                  <div className="text-center py-12 text-gray-500">
+                  <div className="text-center py-12 text-foreground/60">
                     <p className="text-lg font-semibold mb-2">No events match the selected filters</p>
                     <p className="text-sm">Try adjusting your filter criteria.</p>
                   </div>
@@ -621,15 +621,15 @@ export default function AnalyticsPage() {
                     {/* Mobile Card View */}
                     <div className="md:hidden space-y-3">
                       {filteredModalEvents.map((event) => (
-                        <Card key={event.id} className="border border-gray-200">
+                        <Card key={event.id} className="border border-default-200">
                           <CardBody className="p-4 space-y-2">
                             <div className="flex items-start justify-between gap-2">
                               <div className="flex-1 min-w-0">
-                                <p className="text-xs text-gray-500 mb-1">Timestamp</p>
-                                <p className="text-sm font-semibold text-gray-900">
+                                <p className="text-xs text-foreground/60 mb-1">Timestamp</p>
+                                <p className="text-sm font-semibold text-foreground">
                                   {formatRelativeTime(event.timestamp)}
                                 </p>
-                                <p className="text-xs text-gray-500 mt-1">
+                                <p className="text-xs text-foreground/60 mt-1">
                                   {new Date(event.timestamp).toLocaleString()}
                                 </p>
                               </div>
@@ -642,17 +642,17 @@ export default function AnalyticsPage() {
                               </Chip>
                             </div>
                             
-                            <div className="pt-2 border-t border-gray-100">
-                              <p className="text-xs text-gray-500 mb-1">Event Type</p>
-                              <p className="text-sm font-medium text-gray-900 break-all">
+                            <div className="pt-2 border-t border-default">
+                              <p className="text-xs text-foreground/60 mb-1">Event Type</p>
+                              <p className="text-sm font-medium text-foreground break-all">
                                 {event.event_type}
                               </p>
                             </div>
 
                             {event.step && (
-                              <div className="pt-2 border-t border-gray-100">
-                                <p className="text-xs text-gray-500 mb-1">Step</p>
-                                <p className="text-sm text-gray-600">{event.step}</p>
+                              <div className="pt-2 border-t border-default">
+                                <p className="text-xs text-foreground/60 mb-1">Step</p>
+                                <p className="text-sm text-foreground/70">{event.step}</p>
                               </div>
                             )}
 
@@ -689,16 +689,16 @@ export default function AnalyticsPage() {
                             <TableRow key={event.id}>
                               <TableCell>
                                 <div>
-                                  <p className="text-sm font-semibold text-gray-900">
+                                  <p className="text-sm font-semibold text-foreground">
                                     {formatRelativeTime(event.timestamp)}
                                   </p>
-                                  <p className="text-xs text-gray-500">
+                                  <p className="text-xs text-foreground/60">
                                     {new Date(event.timestamp).toLocaleString()}
                                   </p>
                                 </div>
                               </TableCell>
                               <TableCell>
-                                <span className="text-sm font-medium text-gray-900">{event.event_type}</span>
+                                <span className="text-sm font-medium text-foreground">{event.event_type}</span>
                               </TableCell>
                               <TableCell>
                                 <Chip
@@ -710,7 +710,7 @@ export default function AnalyticsPage() {
                                 </Chip>
                               </TableCell>
                               <TableCell>
-                                <span className="text-sm text-gray-600">
+                                <span className="text-sm text-foreground/70">
                                   {event.step || '-'}
                                 </span>
                               </TableCell>
@@ -751,9 +751,9 @@ export default function AnalyticsPage() {
       >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
-            <h3 className="text-lg md:text-xl font-bold text-gray-900">Event Metadata</h3>
+            <h3 className="text-lg md:text-xl font-bold text-foreground">Event Metadata</h3>
             {selectedEventMetadata && (
-              <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm text-gray-600 mt-2">
+              <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm text-foreground/70 mt-2">
                 <span className="font-medium break-all md:break-normal">{selectedEventMetadata.event_type}</span>
                 <span className="hidden md:inline">•</span>
                 <Chip
@@ -776,14 +776,14 @@ export default function AnalyticsPage() {
             {selectedEventMetadata && selectedEventMetadata.metadata ? (
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-sm font-semibold text-gray-700 mb-2">Metadata</h4>
-                  <pre className="text-xs bg-gray-50 p-3 md:p-4 rounded-lg border border-gray-200 overflow-x-auto">
+                  <h4 className="text-sm font-semibold text-foreground/80 mb-2">Metadata</h4>
+                  <pre className="text-xs bg-default-50 p-3 md:p-4 rounded-lg border border-default-200 overflow-x-auto">
                     {JSON.stringify(selectedEventMetadata.metadata, null, 2)}
                   </pre>
                 </div>
               </div>
             ) : (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-foreground/60">
                 <p className="text-sm">No metadata available for this event.</p>
               </div>
             )}

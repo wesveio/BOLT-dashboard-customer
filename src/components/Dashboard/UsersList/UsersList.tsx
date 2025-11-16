@@ -91,8 +91,8 @@ export function UsersList({
           <TableRow key={user.id}>
             <TableCell>
               <div>
-                <p className="font-semibold text-gray-900">{displayName(user)}</p>
-                <p className="text-sm text-gray-600">{user.email}</p>
+                <p className="font-semibold text-foreground">{displayName(user)}</p>
+                <p className="text-sm text-foreground/70">{user.email}</p>
               </div>
             </TableCell>
             <TableCell>
@@ -106,10 +106,10 @@ export function UsersList({
               </Chip>
             </TableCell>
             <TableCell>
-              <span className="text-sm text-gray-600">{formatDate(user.created_at)}</span>
+              <span className="text-sm text-foreground/70">{formatDate(user.created_at)}</span>
             </TableCell>
             <TableCell>
-              <span className="text-sm text-gray-600">{formatDate(user.last_login_at)}</span>
+              <span className="text-sm text-foreground/70">{formatDate(user.last_login_at)}</span>
             </TableCell>
             {onDelete ? (
               <TableCell>

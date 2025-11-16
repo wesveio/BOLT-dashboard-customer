@@ -176,9 +176,9 @@ export function ContactForm({ source: sourceProp, onSuccess }: ContactFormProps 
 
   if (success) {
     return (
-      <div className="bg-white rounded-xl p-8 border border-gray-100 shadow-lg text-center animate-fade-in-up">
-        <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-          <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="bg-background rounded-xl p-8 border border-default shadow-lg text-center animate-fade-in-up">
+        <div className="w-16 h-16 mx-auto mb-4 bg-success/10 rounded-full flex items-center justify-center">
+          <svg className="w-8 h-8 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -187,19 +187,19 @@ export function ContactForm({ source: sourceProp, onSuccess }: ContactFormProps 
             />
           </svg>
         </div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">{tMessages('success.title')}</h3>
-        <p className="text-gray-600">{tMessages('success.message')}</p>
+        <h3 className="text-2xl font-bold text-foreground mb-2">{tMessages('success.title')}</h3>
+        <p className="text-foreground/70">{tMessages('success.message')}</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl p-6 md:p-8 border border-gray-100 shadow-lg animate-fade-in-up">
+    <div className="bg-background rounded-xl p-6 md:p-8 border border-default shadow-lg animate-fade-in-up">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name Field */}
         <div>
-          <label htmlFor="name" className="block text-sm font-semibold text-gray-900 mb-2">
-            {t('name.label')} <span className="text-red-500">*</span>
+          <label htmlFor="name" className="block text-sm font-semibold text-foreground mb-2">
+            {t('name.label')} <span className="text-danger">*</span>
           </label>
           <input
             type="text"
@@ -207,17 +207,17 @@ export function ContactForm({ source: sourceProp, onSuccess }: ContactFormProps 
             name="name"
             value={formData.name}
             onChange={handleChange('name')}
-            className={`w-full px-4 py-3 rounded-lg border ${
+            className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground ${
               errors.name
-                ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
+                ? 'border-danger focus:border-danger focus:ring-danger/20'
+                : 'border-default-300 focus:border-primary focus:ring-primary/20'
             } focus:outline-none focus:ring-2 transition-colors duration-200`}
             placeholder={t('name.placeholder')}
             aria-invalid={!!errors.name}
             aria-describedby={errors.name ? 'name-error' : undefined}
           />
           {errors.name && (
-            <p id="name-error" className="mt-1 text-sm text-red-600" role="alert">
+            <p id="name-error" className="mt-1 text-sm text-danger" role="alert">
               {errors.name}
             </p>
           )}
@@ -225,8 +225,8 @@ export function ContactForm({ source: sourceProp, onSuccess }: ContactFormProps 
 
         {/* Email Field */}
         <div>
-          <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-2">
-            {t('email.label')} <span className="text-red-500">*</span>
+          <label htmlFor="email" className="block text-sm font-semibold text-foreground mb-2">
+            {t('email.label')} <span className="text-danger">*</span>
           </label>
           <input
             type="email"
@@ -234,17 +234,17 @@ export function ContactForm({ source: sourceProp, onSuccess }: ContactFormProps 
             name="email"
             value={formData.email}
             onChange={handleChange('email')}
-            className={`w-full px-4 py-3 rounded-lg border ${
+            className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground ${
               errors.email
-                ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
+                ? 'border-danger focus:border-danger focus:ring-danger/20'
+                : 'border-default-300 focus:border-primary focus:ring-primary/20'
             } focus:outline-none focus:ring-2 transition-colors duration-200`}
             placeholder={t('email.placeholder')}
             aria-invalid={!!errors.email}
             aria-describedby={errors.email ? 'email-error' : undefined}
           />
           {errors.email && (
-            <p id="email-error" className="mt-1 text-sm text-red-600" role="alert">
+            <p id="email-error" className="mt-1 text-sm text-danger" role="alert">
               {errors.email}
             </p>
           )}
@@ -254,7 +254,7 @@ export function ContactForm({ source: sourceProp, onSuccess }: ContactFormProps 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Company Field */}
           <div>
-            <label htmlFor="company" className="block text-sm font-semibold text-gray-900 mb-2">
+            <label htmlFor="company" className="block text-sm font-semibold text-foreground mb-2">
               {t('company.label')}
             </label>
             <input
@@ -263,14 +263,14 @@ export function ContactForm({ source: sourceProp, onSuccess }: ContactFormProps 
               name="company"
               value={formData.company}
               onChange={handleChange('company')}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:outline-none focus:ring-2 transition-colors duration-200"
+              className="w-full px-4 py-3 rounded-lg border border-default-300 focus:border-primary focus:ring-primary/20 focus:outline-none focus:ring-2 transition-colors duration-200 bg-background text-foreground"
               placeholder={t('company.placeholder')}
             />
           </div>
 
           {/* Phone Field */}
           <div>
-            <label htmlFor="phone" className="block text-sm font-semibold text-gray-900 mb-2">
+            <label htmlFor="phone" className="block text-sm font-semibold text-foreground mb-2">
               {t('phone.label')}
             </label>
             <input
@@ -279,7 +279,7 @@ export function ContactForm({ source: sourceProp, onSuccess }: ContactFormProps 
               name="phone"
               value={formData.phone}
               onChange={handleChange('phone')}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:outline-none focus:ring-2 transition-colors duration-200"
+              className="w-full px-4 py-3 rounded-lg border border-default-300 focus:border-primary focus:ring-primary/20 focus:outline-none focus:ring-2 transition-colors duration-200 bg-background text-foreground"
               placeholder={t('phone.placeholder')}
             />
           </div>
@@ -287,8 +287,8 @@ export function ContactForm({ source: sourceProp, onSuccess }: ContactFormProps 
 
         {/* Message Field */}
         <div>
-          <label htmlFor="message" className="block text-sm font-semibold text-gray-900 mb-2">
-            {t('message.label')} <span className="text-red-500">*</span>
+          <label htmlFor="message" className="block text-sm font-semibold text-foreground mb-2">
+            {t('message.label')} <span className="text-danger">*</span>
           </label>
           <textarea
             id="message"
@@ -296,17 +296,17 @@ export function ContactForm({ source: sourceProp, onSuccess }: ContactFormProps 
             value={formData.message}
             onChange={handleChange('message')}
             rows={6}
-            className={`w-full px-4 py-3 rounded-lg border ${
+            className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground ${
               errors.message
-                ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
+                ? 'border-danger focus:border-danger focus:ring-danger/20'
+                : 'border-default-300 focus:border-primary focus:ring-primary/20'
             } focus:outline-none focus:ring-2 transition-colors duration-200 resize-none`}
             placeholder={t('message.placeholder')}
             aria-invalid={!!errors.message}
             aria-describedby={errors.message ? 'message-error' : undefined}
           />
           {errors.message && (
-            <p id="message-error" className="mt-1 text-sm text-red-600" role="alert">
+            <p id="message-error" className="mt-1 text-sm text-danger" role="alert">
               {errors.message}
             </p>
           )}
@@ -320,18 +320,18 @@ export function ContactForm({ source: sourceProp, onSuccess }: ContactFormProps 
             name="wantsDemo"
             checked={formData.wantsDemo}
             onChange={handleChange('wantsDemo')}
-            className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+            className="mt-1 w-4 h-4 text-primary border-default-300 rounded focus:ring-primary/20 focus:ring-2"
           />
-          <label htmlFor="wantsDemo" className="ml-3 text-sm text-gray-700">
+          <label htmlFor="wantsDemo" className="ml-3 text-sm text-foreground/80">
             {t('demo.label')}
           </label>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4" role="alert">
+          <div className="bg-danger/10 border border-danger/20 rounded-lg p-4" role="alert">
             <div className="flex items-center">
-              <svg className="w-5 h-5 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-danger mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -339,7 +339,7 @@ export function ContactForm({ source: sourceProp, onSuccess }: ContactFormProps 
                   d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <p className="text-sm text-red-800">{error}</p>
+              <p className="text-sm text-danger">{error}</p>
             </div>
           </div>
         )}

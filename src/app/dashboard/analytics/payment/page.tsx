@@ -100,19 +100,19 @@ export default function PaymentAnalyticsPage() {
               <ChartCard key={method.name} title={method.name}>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Transactions</span>
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-sm text-foreground/70">Transactions</span>
+                    <span className="text-lg font-bold text-foreground">
                       {formatNumber(method.value)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Revenue</span>
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-sm text-foreground/70">Revenue</span>
+                    <span className="text-lg font-bold text-foreground">
                       {formatCurrency(method.revenue || 0)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Success Rate</span>
+                    <span className="text-sm text-foreground/70">Success Rate</span>
                     <span
                       className={`text-lg font-bold ${
                         (method.successRate || 0) >= 98 ? 'text-green-600' : 'text-orange-600'
@@ -121,7 +121,7 @@ export default function PaymentAnalyticsPage() {
                       {formatPercentage(method.successRate || 0)}
                     </span>
                   </div>
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-2 bg-default-100 rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
@@ -137,8 +137,8 @@ export default function PaymentAnalyticsPage() {
         </>
       ) : (
         <ChartCard title="No Payment Data" subtitle="No payment data available for the selected period">
-          <div className="text-center py-12 text-gray-500">
-            <CreditCardIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+          <div className="text-center py-12 text-foreground/60">
+            <CreditCardIcon className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
             <p className="text-lg font-semibold mb-2">No payment methods found</p>
             <p className="text-sm">Try selecting a different time period.</p>
           </div>

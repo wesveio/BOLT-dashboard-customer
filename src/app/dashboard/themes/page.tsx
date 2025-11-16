@@ -265,7 +265,7 @@ export default function ThemesPage() {
           <>
             {/* Default Themes Section */}
             <div className="mb-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">{t('sections.defaultThemes')}</h2>
+              <h2 className="text-xl font-bold text-foreground mb-4">{t('sections.defaultThemes')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {defaultThemes.map((defaultTheme) => {
                   const isActive = isDefaultThemeActive(defaultTheme.baseTheme);
@@ -299,7 +299,7 @@ export default function ThemesPage() {
                         className={`border transition-all duration-200 flex flex-col w-full relative ${
                           isActive
                             ? 'border-green-500 bg-green-50/50 shadow-lg ring-2 ring-green-500/20'
-                            : 'border-gray-100 hover:border-blue-200 hover:shadow-lg'
+                            : 'border-default hover:border-primary/20 hover:shadow-lg'
                         }`}
                       >
                         <CardBody className="p-6 flex flex-col flex-1">
@@ -326,7 +326,7 @@ export default function ThemesPage() {
                             </div>
                             <div className="flex-1">
                               <div className="flex items-center gap-2">
-                                <h3 className="text-lg font-bold text-gray-900">{defaultTheme.name}</h3>
+                                <h3 className="text-lg font-bold text-foreground">{defaultTheme.name}</h3>
                                 {isActive && (
                                   <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-500 text-white text-xs font-semibold rounded-full">
                                     <svg
@@ -348,13 +348,13 @@ export default function ThemesPage() {
                                 {t('labels.default')}
                               </span>
                               {activeThemeForDefault?.updated_at && (
-                                <p className="text-xs text-gray-500 mt-2">
+                                <p className="text-xs text-foreground/60 mt-2">
                                   {t('labels.updatedAt')} <span className="font-medium">{formatRelativeTime(activeThemeForDefault.updated_at)}</span>
                                 </p>
                               )}
                             </div>
                           </div>
-                          <p className="text-sm text-gray-600 mb-4 flex-1">{defaultTheme.description}</p>
+                          <p className="text-sm text-foreground/70 mb-4 flex-1">{defaultTheme.description}</p>
                           <div className="flex gap-2 mt-auto">
                             <Button
                               size="sm"
@@ -403,7 +403,7 @@ export default function ThemesPage() {
             {/* Custom Themes Section */}
             {themes.length > 0 && (
               <div>
-                <h2 className="text-xl font-bold text-gray-900 mb-4">{t('sections.customThemes')}</h2>
+                <h2 className="text-xl font-bold text-foreground mb-4">{t('sections.customThemes')}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {themes.map((theme) => (
                     <div
@@ -414,7 +414,7 @@ export default function ThemesPage() {
                         className={`border transition-all duration-200 cursor-pointer flex flex-col w-full relative ${
                           isThemeActive(theme)
                             ? 'border-green-500 bg-green-50/50 shadow-lg ring-2 ring-green-500/20'
-                            : 'border-gray-100 hover:border-blue-200 hover:shadow-lg'
+                            : 'border-default hover:border-primary/20 hover:shadow-lg'
                         }`}
                       >
                         <CardBody className="p-6 flex flex-col flex-1">
@@ -441,7 +441,7 @@ export default function ThemesPage() {
                             </div>
                             <div className="flex-1">
                               <div className="flex items-center gap-2">
-                                <h3 className="text-lg font-bold text-gray-900">{theme.name}</h3>
+                                <h3 className="text-lg font-bold text-foreground">{theme.name}</h3>
                                 {isThemeActive(theme) && (
                                   <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-500 text-white text-xs font-semibold rounded-full">
                                     <svg
@@ -460,12 +460,12 @@ export default function ThemesPage() {
                                 )}
                               </div>
                               {theme.base_theme && (
-                                <span className="inline-block mt-1 px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-semibold rounded">
+                                <span className="inline-block mt-1 px-2 py-0.5 bg-default-100 text-foreground/80 text-xs font-semibold rounded">
                                   {t('labels.basedOn')} {theme.base_theme}
                                 </span>
                               )}
                               {theme.updated_at && (
-                                <p className="text-xs text-gray-500 mt-2">
+                                <p className="text-xs text-foreground/60 mt-2">
                                   {t('labels.updatedAt')} <span className="font-medium">{formatRelativeTime(theme.updated_at)}</span>
                                 </p>
                               )}
@@ -533,9 +533,9 @@ export default function ThemesPage() {
             {/* Empty State (only if no custom themes) */}
             {themes.length === 0 && (
               <div className="text-center py-12">
-                <PaintBrushIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{t('labels.noCustomThemes')}</h3>
-                <p className="text-gray-600 mb-4">
+                <PaintBrushIcon className="w-16 h-16 text-foreground/30 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-foreground mb-2">{t('labels.noCustomThemes')}</h3>
+                <p className="text-foreground/70 mb-4">
                   {t('labels.noCustomThemesDesc')}
                 </p>
                 <RoleGuard requiredPermission={{ resource: 'themes', action: 'write' }}>
@@ -599,10 +599,10 @@ export default function ThemesPage() {
               <>
                 <ModalHeader className="flex flex-col gap-1">{t('confirmDelete')}</ModalHeader>
                 <ModalBody>
-                  <p className="text-gray-600">
+                  <p className="text-foreground/70">
                     {t('deleteTheme')}: <strong>{deletingTheme?.name}</strong>
                   </p>
-                  <p className="text-sm text-gray-500 mt-2">
+                  <p className="text-sm text-foreground/60 mt-2">
                     {t('deleteWarning')}
                   </p>
                 </ModalBody>

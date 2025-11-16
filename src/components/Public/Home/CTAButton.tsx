@@ -10,7 +10,7 @@ export function CTAButton() {
   return (
     <button
       onClick={() => router.push('/dashboard')}
-      className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+      className="bg-background text-primary px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 border border-default hover:border-primary/20"
     >
       {t('cta.accessDashboard')}
     </button>

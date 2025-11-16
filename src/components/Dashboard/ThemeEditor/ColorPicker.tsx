@@ -13,11 +13,11 @@ export function ColorPicker({ label, value, onChange, gradient = false }: ColorP
   if (gradient && typeof value === 'object') {
     return (
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-700">{label}</label>
+        <label className="text-sm font-semibold text-foreground/80">{label}</label>
         <div className="space-y-2">
           <div className="flex items-center gap-3">
             <div
-              className="w-12 h-12 rounded-lg border-2 border-gray-200 cursor-pointer hover:border-blue-400 transition-colors"
+              className="w-12 h-12 rounded-lg border-2 border-default-200 cursor-pointer hover:border-primary transition-colors"
               style={{ background: `linear-gradient(to right, ${value.from}, ${value.to})` }}
               onClick={() => {
                 const input = document.createElement('input');
@@ -46,7 +46,7 @@ export function ColorPicker({ label, value, onChange, gradient = false }: ColorP
           </div>
           <div className="flex items-center gap-3">
             <div
-              className="w-12 h-12 rounded-lg border-2 border-gray-200 cursor-pointer hover:border-blue-400 transition-colors"
+              className="w-12 h-12 rounded-lg border-2 border-default-200 cursor-pointer hover:border-primary transition-colors"
               style={{ backgroundColor: value.to }}
               onClick={() => {
                 const input = document.createElement('input');
@@ -82,10 +82,10 @@ export function ColorPicker({ label, value, onChange, gradient = false }: ColorP
 
   return (
     <div className="space-y-2">
-      <label className="text-sm font-semibold text-gray-700">{label}</label>
+      <label className="text-sm font-semibold text-foreground/80">{label}</label>
       <div className="flex items-center gap-3">
         <div
-          className="w-12 h-12 rounded-lg border-2 border-gray-200 cursor-pointer hover:border-blue-400 transition-colors"
+          className="w-12 h-12 rounded-lg border-2 border-default-200 cursor-pointer hover:border-primary transition-colors"
           style={{ backgroundColor: stringValue }}
           onClick={() => {
             const input = document.createElement('input');

@@ -97,18 +97,18 @@ export default function PerformancePage() {
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">{t('labels.averageTime')}</span>
-                  <span className="text-lg font-bold text-gray-900">
+                  <span className="text-sm text-foreground/70">{t('labels.averageTime')}</span>
+                  <span className="text-lg font-bold text-foreground">
                     {safeAvgTime}s
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">{t('labels.abandonmentRate')}</span>
+                  <span className="text-sm text-foreground/70">{t('labels.abandonmentRate')}</span>
                   <span className="text-lg font-bold text-red-600">
                     {formattedAbandonment}
                   </span>
                 </div>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-2 bg-default-100 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-blue-600 to-purple-600 rounded-full transition-all duration-200"
                     style={{ width: `${progressWidth}%` }}

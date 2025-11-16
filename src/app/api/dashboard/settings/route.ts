@@ -6,7 +6,7 @@ import { apiSuccess, apiError, apiInternalError } from '@/lib/api/responses';
 import { withAuthAndValidation } from '@/lib/api/route-handler';
 
 const settingsSchema = z.object({
-  category: z.enum(['general', 'notifications', 'security', 'analytics']),
+  category: z.enum(['general', 'notifications', 'security', 'analytics', 'theme']),
   settings: z.record(z.string(), z.any()),
 });
 

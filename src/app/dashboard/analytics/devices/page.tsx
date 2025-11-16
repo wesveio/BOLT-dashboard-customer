@@ -104,24 +104,24 @@ export default function DeviceAnalyticsPage() {
               <ChartCard key={device.device} title={device.device}>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Sessions</span>
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-sm text-foreground/70">Sessions</span>
+                    <span className="text-lg font-bold text-foreground">
                       {formatNumber(device.sessions)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Conversion Rate</span>
+                    <span className="text-sm text-foreground/70">Conversion Rate</span>
                     <span className="text-lg font-bold text-green-600">
                       {formatPercentage(device.conversion || 0)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Revenue</span>
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-sm text-foreground/70">Revenue</span>
+                    <span className="text-lg font-bold text-foreground">
                       {formatCurrency(device.revenue || 0)}
                     </span>
                   </div>
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-2 bg-default-100 rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
@@ -137,8 +137,8 @@ export default function DeviceAnalyticsPage() {
         </>
       ) : (
         <ChartCard title="No Device Data" subtitle="No device data available for the selected period">
-          <div className="text-center py-12 text-gray-500">
-            <DevicePhoneMobileIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+          <div className="text-center py-12 text-foreground/60">
+            <DevicePhoneMobileIcon className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
             <p className="text-lg font-semibold mb-2">No device data found</p>
             <p className="text-sm">Try selecting a different time period.</p>
           </div>

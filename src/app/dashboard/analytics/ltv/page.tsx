@@ -199,7 +199,7 @@ export default function LTVAnalyticsPage() {
                   <TableRow key={customer.customerId || `customer-${index}`}>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-mono text-gray-600">
+                        <span className="text-sm font-mono text-foreground/70">
                           {customer.customerId ? customer.customerId.substring(0, 8) + '...' : t('anonymous')}
                         </span>
                         {customer.isRecurring && (
@@ -210,22 +210,22 @@ export default function LTVAnalyticsPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-sm font-semibold text-foreground">
                         {formatNumber(customer.orders)}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm font-bold text-gray-900">
+                      <span className="text-sm font-bold text-foreground">
                         {formatCurrency(customer.revenue)}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-foreground/70">
                         {formatCurrency(customer.avgOrderValue)}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-foreground/70">
                         {formatNumber(customer.purchaseFrequency, { maximumFractionDigits: 1 })} {t('ordersPerMonth')}
                       </span>
                     </TableCell>
@@ -246,8 +246,8 @@ export default function LTVAnalyticsPage() {
         </ChartCard>
       ) : (
         <ChartCard title={t('noCustomerDataTitle')} subtitle={t('noCustomerDataSubtitle')}>
-          <div className="text-center py-12 text-gray-500">
-            <UserGroupIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+          <div className="text-center py-12 text-foreground/60">
+            <UserGroupIcon className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
             <p className="text-lg font-semibold mb-2">{t('noCustomersFound')}</p>
             <p className="text-sm">{t('tryDifferentPeriod')}</p>
           </div>

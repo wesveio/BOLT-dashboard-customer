@@ -195,7 +195,7 @@ export function UserManagementTab() {
 
   if (isLoading) {
     return (
-      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mt-6">
+      <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 mt-6">
         <CardBody className="p-6">
           <div className="flex justify-center items-center py-12">
             <Spinner size="lg" />
@@ -208,12 +208,12 @@ export function UserManagementTab() {
   return (
     <div className="space-y-6">
       {/* Header with Invite Button */}
-      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+      <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
         <CardBody className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Team Members</h2>
-              <p className="text-sm text-gray-600">
+              <h2 className="text-xl font-bold text-foreground mb-2">Team Members</h2>
+              <p className="text-sm text-foreground/70">
                 {userCount} of {limit} users used ({remainingSlots} remaining)
               </p>
             </div>
@@ -231,9 +231,9 @@ export function UserManagementTab() {
       </Card>
 
       {/* Users List */}
-      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+      <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
         <CardBody className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Active Users</h3>
+          <h3 className="text-lg font-bold text-foreground mb-4">Active Users</h3>
           <UsersList
             users={users}
             currentUserId={currentUser?.id}
@@ -246,9 +246,9 @@ export function UserManagementTab() {
       </Card>
 
       {/* Invitations List */}
-      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+      <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
         <CardBody className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Pending Invitations</h3>
+          <h3 className="text-lg font-bold text-foreground mb-4">Pending Invitations</h3>
           <InvitationsList
             invitations={invitations}
             onResend={handleResend}

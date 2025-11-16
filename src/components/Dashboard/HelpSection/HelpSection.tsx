@@ -61,7 +61,7 @@ export function HelpSection({
       variants={fadeIn}
       className="mb-8"
     >
-      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+      <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
         <CardBody className="p-6">
           <button
             onClick={() => setIsCardExpanded(!isCardExpanded)}
@@ -74,18 +74,18 @@ export function HelpSection({
                 <QuestionMarkCircleIcon className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-900">
+                <h3 className="text-xl font-bold text-foreground">
                   {title}
                 </h3>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-foreground/70 mt-1">
                   {subtitle}
                 </p>
               </div>
             </div>
             {isCardExpanded ? (
-              <ChevronUpIcon className="w-5 h-5 text-gray-500 flex-shrink-0" />
+              <ChevronUpIcon className="w-5 h-5 text-foreground/50 flex-shrink-0" />
             ) : (
-              <ChevronDownIcon className="w-5 h-5 text-gray-500 flex-shrink-0" />
+              <ChevronDownIcon className="w-5 h-5 text-foreground/50 flex-shrink-0" />
             )}
           </button>
 
@@ -107,11 +107,11 @@ export function HelpSection({
                     return (
                       <div
                         key={section.id}
-                        className="border border-gray-200 rounded-lg overflow-hidden transition-all duration-200 hover:border-blue-300"
+                        className="border border-default-200 rounded-lg overflow-hidden transition-all duration-200 hover:border-primary/30"
                       >
                         <button
                           onClick={() => toggleSection(section.id)}
-                          className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors duration-200"
+                          className="w-full flex items-center justify-between p-4 text-left hover:bg-default-100 transition-colors duration-200"
                           aria-expanded={isExpanded}
                           aria-controls={`section-${section.id}`}
                         >
@@ -119,14 +119,14 @@ export function HelpSection({
                             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
                               <Icon className="w-5 h-5 text-white" />
                             </div>
-                            <h4 className="font-semibold text-gray-900">
+                            <h4 className="font-semibold text-foreground">
                               {section.title}
                             </h4>
                           </div>
                           {isExpanded ? (
-                            <ChevronUpIcon className="w-5 h-5 text-gray-500" />
+                            <ChevronUpIcon className="w-5 h-5 text-foreground/50" />
                           ) : (
-                            <ChevronDownIcon className="w-5 h-5 text-gray-500" />
+                            <ChevronDownIcon className="w-5 h-5 text-foreground/50" />
                           )}
                         </button>
 
@@ -140,24 +140,24 @@ export function HelpSection({
                               transition={{ duration: 0.3, ease: 'easeInOut' }}
                               className="overflow-hidden"
                             >
-                              <div className="p-4 pt-0 space-y-4 bg-gray-50">
+                              <div className="p-4 pt-0 space-y-4 bg-default-50">
                                 {section.items.map((item) => (
                                   <div
                                     key={item.key}
-                                    className="p-4 bg-white rounded-lg border border-gray-100"
+                                    className="p-4 bg-background rounded-lg border border-default"
                                   >
-                                    <h5 className="font-semibold text-gray-900 mb-2">
+                                    <h5 className="font-semibold text-foreground mb-2">
                                       {item.title}
                                     </h5>
-                                    <p className="text-sm text-gray-700 mb-2">
+                                    <p className="text-sm text-foreground/80 mb-2">
                                       {item.description}
                                     </p>
                                     {item.example && (
-                                      <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                                        <p className="text-xs font-medium text-blue-900 mb-1">
+                                      <div className="mt-3 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+                                        <p className="text-xs font-medium text-primary mb-1">
                                           Example:
                                         </p>
-                                        <p className="text-xs text-blue-800">
+                                        <p className="text-xs text-primary/80">
                                           {item.example}
                                         </p>
                                       </div>

@@ -376,7 +376,7 @@ export default function IntegrationsPage() {
 
       {/* Metrics API Key Section */}
       <m.div variants={fadeIn} initial="hidden" animate="visible">
-        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mb-8">
+        <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 mb-8">
           <CardBody className="p-6">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
@@ -384,8 +384,8 @@ export default function IntegrationsPage() {
                   <KeyIcon className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">{t('metricsApiKey.title')}</h2>
-                  <p className="text-sm text-gray-600">{t('metricsApiKey.description')}</p>
+                  <h2 className="text-xl font-bold text-foreground">{t('metricsApiKey.title')}</h2>
+                  <p className="text-sm text-foreground/70">{t('metricsApiKey.description')}</p>
                 </div>
               </div>
               {isAdmin && (
@@ -403,15 +403,15 @@ export default function IntegrationsPage() {
             </div>
 
             {isLoading ? (
-              <div className="p-4 text-center text-gray-500">Loading...</div>
+              <div className="p-4 text-center text-foreground/60">Loading...</div>
             ) : metricsKey ? (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground/80 mb-2">
                     Metrics API Key
                   </label>
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 p-3 bg-gray-50 border border-gray-200 rounded-lg font-mono text-sm">
+                    <div className="flex-1 p-3 bg-default-50 border border-default-200 rounded-lg font-mono text-sm">
                       {maskApiKey(`${metricsKey.key_prefix}${metricsKey.key_suffix}`.padEnd(32, 'x'))}
                     </div>
                     <Button
@@ -419,7 +419,7 @@ export default function IntegrationsPage() {
                       variant="flat"
                       onPress={() => handleCopyKey(metricsKey.key_prefix, metricsKey.key_suffix)}
                     >
-                      <ClipboardIcon className="w-5 h-5 text-gray-600" />
+                      <ClipboardIcon className="w-5 h-5 text-foreground/70" />
                     </Button>
                   </div>
                 </div>
@@ -437,7 +437,7 @@ export default function IntegrationsPage() {
                 </div>
               </div>
             ) : (
-              <div className="p-4 text-center text-gray-500">
+              <div className="p-4 text-center text-foreground/60">
                 <p className="mb-4">{t('metricsApiKey.noKey')}</p>
                 {isAdmin && (
                   <Button
@@ -458,7 +458,7 @@ export default function IntegrationsPage() {
 
       {/* VTEX Credentials Section */}
       <m.div variants={fadeIn} initial="hidden" animate="visible">
-        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 mb-8">
+        <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 mb-8">
           <CardBody className="p-6">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
@@ -472,8 +472,8 @@ export default function IntegrationsPage() {
                   />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">{t('vtex.title')}</h2>
-                  <p className="text-sm text-gray-600">{t('vtex.description')}</p>
+                  <h2 className="text-xl font-bold text-foreground">{t('vtex.title')}</h2>
+                  <p className="text-sm text-foreground/70">{t('vtex.description')}</p>
                 </div>
               </div>
               {canManageVtex && vtexCredentials && (
@@ -491,7 +491,7 @@ export default function IntegrationsPage() {
             </div>
 
             {isLoading ? (
-              <div className="p-4 text-center text-gray-500">Loading...</div>
+              <div className="p-4 text-center text-foreground/60">Loading...</div>
             ) : (
               <div className="space-y-4">
                 <div className="space-y-4">
@@ -530,9 +530,9 @@ export default function IntegrationsPage() {
                         aria-label={showToken ? 'Hide token' : 'Show token'}
                       >
                         {showToken ? (
-                          <EyeSlashIcon className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+                          <EyeSlashIcon className="w-5 h-5 text-foreground/40 hover:text-foreground/70" />
                         ) : (
-                          <EyeIcon className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+                          <EyeIcon className="w-5 h-5 text-foreground/40 hover:text-foreground/70" />
                         )}
                       </button>
                     }
@@ -593,21 +593,21 @@ export default function IntegrationsPage() {
 
       {/* Custom API Keys Section */}
       <m.div variants={fadeIn} initial="hidden" animate="visible">
-        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+        <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
           <CardBody className="p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">{t('customKeys.title')}</h2>
-                <p className="text-sm text-gray-600">{t('customKeys.subtitle')}</p>
+                <h2 className="text-xl font-bold text-foreground">{t('customKeys.title')}</h2>
+                <p className="text-sm text-foreground/70">{t('customKeys.subtitle')}</p>
               </div>
             </div>
 
             {isLoading ? (
-              <div className="p-4 text-center text-gray-500">Loading...</div>
+              <div className="p-4 text-center text-foreground/60">Loading...</div>
             ) : apiKeys.length === 0 ? (
               <div className="p-8 text-center">
-                <KeyIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600 mb-4">{t('customKeys.noKeys')}</p>
+                <KeyIcon className="w-12 h-12 text-foreground/40 mx-auto mb-4" />
+                <p className="text-foreground/70 mb-4">{t('customKeys.noKeys')}</p>
                 {isAdmin && (
                   <Button
                     color="primary"
@@ -633,15 +633,15 @@ export default function IntegrationsPage() {
                     <TableRow key={key.id}>
                       <TableCell>
                         <div>
-                          <p className="font-semibold text-gray-900">{key.name}</p>
+                          <p className="font-semibold text-foreground">{key.name}</p>
                           {key.description && (
-                            <p className="text-sm text-gray-600">{key.description}</p>
+                            <p className="text-sm text-foreground/70">{key.description}</p>
                           )}
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-sm text-gray-700">
+                          <span className="font-mono text-sm text-foreground/80">
                             {maskApiKey(`${key.key_prefix}${key.key_suffix}`.padEnd(32, 'x'))}
                           </span>
                           <Button
@@ -650,17 +650,17 @@ export default function IntegrationsPage() {
                             variant="light"
                             onPress={() => handleCopyKey(key.key_prefix, key.key_suffix)}
                           >
-                            <ClipboardIcon className="w-4 h-4 text-gray-600" />
+                            <ClipboardIcon className="w-4 h-4 text-foreground/70" />
                           </Button>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-foreground/70">
                           {formatDate(key.created_at)}
                         </span>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-foreground/70">
                           {key.last_used_at ? formatDate(key.last_used_at) : 'Never'}
                         </span>
                       </TableCell>

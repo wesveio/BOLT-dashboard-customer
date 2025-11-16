@@ -48,7 +48,7 @@ export function SpacingEditor({ config, onChange }: SpacingEditorProps) {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-700">Card Padding</label>
+        <label className="text-sm font-semibold text-foreground/80">Card Padding</label>
         <Select
           selectedKeys={[config.cardPadding]}
           onSelectionChange={(keys) => {
@@ -67,7 +67,7 @@ export function SpacingEditor({ config, onChange }: SpacingEditorProps) {
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-700">Gap Between Elements</label>
+        <label className="text-sm font-semibold text-foreground/80">Gap Between Elements</label>
         <Select
           selectedKeys={[config.gap]}
           onSelectionChange={(keys) => {
@@ -86,7 +86,7 @@ export function SpacingEditor({ config, onChange }: SpacingEditorProps) {
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-700">Border Radius</label>
+        <label className="text-sm font-semibold text-foreground/80">Border Radius</label>
         <Select
           selectedKeys={[config.borderRadius]}
           onSelectionChange={(keys) => {
@@ -105,7 +105,7 @@ export function SpacingEditor({ config, onChange }: SpacingEditorProps) {
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-700">Container Max Width</label>
+        <label className="text-sm font-semibold text-foreground/80">Container Max Width</label>
         <Select
           selectedKeys={[config.containerMaxWidth]}
           onSelectionChange={(keys) => {

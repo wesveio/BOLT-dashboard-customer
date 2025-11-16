@@ -27,21 +27,21 @@ export function FeatureToggleGroup({ title, features, values, onChange }: Featur
 
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-bold text-gray-900">{title}</h3>
+      <h3 className="text-lg font-bold text-foreground">{title}</h3>
       
       {Object.entries(groupedFeatures).map(([category, categoryFeatures]) => (
-        <Card key={category} className="border border-gray-100">
+        <Card key={category} className="border border-default">
           <CardBody className="p-6">
-            <h4 className="text-md font-semibold text-gray-700 mb-4 capitalize">{category}</h4>
+            <h4 className="text-md font-semibold text-foreground/80 mb-4 capitalize">{category}</h4>
             <div className="space-y-4">
               {categoryFeatures.map((feature) => (
                 <div key={feature.id} className="flex items-start justify-between gap-4">
                   <div className="flex-1">
-                    <label className="text-sm font-semibold text-gray-900 cursor-pointer">
+                    <label className="text-sm font-semibold text-foreground cursor-pointer">
                       {feature.label}
                     </label>
                     {feature.description && (
-                      <p className="text-xs text-gray-500 mt-1">{feature.description}</p>
+                      <p className="text-xs text-foreground/60 mt-1">{feature.description}</p>
                     )}
                   </div>
                   <Switch

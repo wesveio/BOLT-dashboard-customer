@@ -75,16 +75,16 @@ export function TipTapTextEditor({
 
   return (
     <div className="space-y-2">
-      <label className="text-sm font-semibold text-gray-700">{label}</label>
-      <Card className="border border-gray-200">
+      <label className="text-sm font-semibold text-foreground/80">{label}</label>
+      <Card className="border border-default">
         <CardBody className="p-0">
           {/* Toolbar */}
-          <div className="flex items-center gap-1 p-2 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+          <div className="flex items-center gap-1 p-2 border-b border-default bg-default-50 rounded-t-lg">
             <button
               type="button"
               onClick={toggleBold}
-              className={`p-2 rounded hover:bg-gray-200 ${
-                editor.isActive('bold') ? 'bg-gray-300' : ''
+              className={`p-2 rounded hover:bg-default-200 ${
+                editor.isActive('bold') ? 'bg-default-300' : ''
               }`}
               title="Bold"
             >
@@ -93,19 +93,19 @@ export function TipTapTextEditor({
             <button
               type="button"
               onClick={toggleItalic}
-              className={`p-2 rounded hover:bg-gray-200 ${
-                editor.isActive('italic') ? 'bg-gray-300' : ''
+              className={`p-2 rounded hover:bg-default-200 ${
+                editor.isActive('italic') ? 'bg-default-300' : ''
               }`}
               title="Italic"
             >
               <span className="italic text-sm">I</span>
             </button>
-            <div className="w-px h-6 bg-gray-300 mx-1" />
+            <div className="w-px h-6 bg-default-300 mx-1" />
             <button
               type="button"
               onClick={() => toggleHeading(1)}
-              className={`p-2 rounded hover:bg-gray-200 ${
-                editor.isActive('heading', { level: 1 }) ? 'bg-gray-300' : ''
+              className={`p-2 rounded hover:bg-default-200 ${
+                editor.isActive('heading', { level: 1 }) ? 'bg-default-300' : ''
               }`}
               title="Heading 1"
             >
@@ -114,8 +114,8 @@ export function TipTapTextEditor({
             <button
               type="button"
               onClick={() => toggleHeading(2)}
-              className={`p-2 rounded hover:bg-gray-200 ${
-                editor.isActive('heading', { level: 2 }) ? 'bg-gray-300' : ''
+              className={`p-2 rounded hover:bg-default-200 ${
+                editor.isActive('heading', { level: 2 }) ? 'bg-default-300' : ''
               }`}
               title="Heading 2"
             >
@@ -124,19 +124,19 @@ export function TipTapTextEditor({
             <button
               type="button"
               onClick={() => toggleHeading(3)}
-              className={`p-2 rounded hover:bg-gray-200 ${
-                editor.isActive('heading', { level: 3 }) ? 'bg-gray-300' : ''
+              className={`p-2 rounded hover:bg-default-200 ${
+                editor.isActive('heading', { level: 3 }) ? 'bg-default-300' : ''
               }`}
               title="Heading 3"
             >
               <span className="text-sm font-semibold">H3</span>
             </button>
-            <div className="w-px h-6 bg-gray-300 mx-1" />
+            <div className="w-px h-6 bg-default-300 mx-1" />
             <button
               type="button"
               onClick={setLink}
-              className={`p-2 rounded hover:bg-gray-200 ${
-                editor.isActive('link') ? 'bg-gray-300' : ''
+              className={`p-2 rounded hover:bg-default-200 ${
+                editor.isActive('link') ? 'bg-default-300' : ''
               }`}
               title="Add Link"
             >
@@ -145,8 +145,8 @@ export function TipTapTextEditor({
             <button
               type="button"
               onClick={() => editor.chain().focus().toggleBulletList().run()}
-              className={`p-2 rounded hover:bg-gray-200 ${
-                editor.isActive('bulletList') ? 'bg-gray-300' : ''
+              className={`p-2 rounded hover:bg-default-200 ${
+                editor.isActive('bulletList') ? 'bg-default-300' : ''
               }`}
               title="Bullet List"
             >
@@ -155,8 +155,8 @@ export function TipTapTextEditor({
             <button
               type="button"
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
-              className={`p-2 rounded hover:bg-gray-200 ${
-                editor.isActive('orderedList') ? 'bg-gray-300' : ''
+              className={`p-2 rounded hover:bg-default-200 ${
+                editor.isActive('orderedList') ? 'bg-default-300' : ''
               }`}
               title="Numbered List"
             >
@@ -171,12 +171,12 @@ export function TipTapTextEditor({
           >
             <EditorContent editor={editor} />
             {editor.isEmpty && (
-              <div className="text-gray-400 italic absolute pointer-events-none">{placeholder}</div>
+              <div className="text-foreground/40 italic absolute pointer-events-none">{placeholder}</div>
             )}
           </div>
         </CardBody>
       </Card>
-      <p className="text-xs text-gray-500">Use the toolbar above to format your text</p>
+      <p className="text-xs text-foreground/60">Use the toolbar above to format your text</p>
     </div>
   );
 }

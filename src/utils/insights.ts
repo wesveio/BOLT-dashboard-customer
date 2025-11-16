@@ -25,31 +25,32 @@ export const insightIcons = {
 
 /**
  * Color scheme mapping for insight types
+ * Uses HeroUI semantic colors with opacity for dark mode compatibility
  */
 export const insightColors = {
   success: {
-    bg: 'bg-green-50',
-    border: 'border-green-300',
-    text: 'text-green-700',
-    icon: 'text-green-600',
+    bg: 'bg-success/10',
+    border: 'border-success/30',
+    text: 'text-success',
+    icon: 'text-success',
   },
   warning: {
-    bg: 'bg-orange-50',
-    border: 'border-orange-300',
-    text: 'text-orange-700',
-    icon: 'text-orange-600',
+    bg: 'bg-warning/10',
+    border: 'border-warning/30',
+    text: 'text-warning',
+    icon: 'text-warning',
   },
   info: {
-    bg: 'bg-blue-50',
-    border: 'border-blue-300',
-    text: 'text-blue-700',
-    icon: 'text-blue-600',
+    bg: 'bg-primary/10',
+    border: 'border-primary/30',
+    text: 'text-primary',
+    icon: 'text-primary',
   },
   recommendation: {
-    bg: 'bg-purple-50',
-    border: 'border-purple-300',
-    text: 'text-purple-700',
-    icon: 'text-purple-600',
+    bg: 'bg-secondary/10',
+    border: 'border-secondary/30',
+    text: 'text-secondary',
+    icon: 'text-secondary',
   },
 } as const;
 

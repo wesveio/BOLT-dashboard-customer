@@ -31,7 +31,7 @@ export function DashboardHeader() {
       }`}
     >
       <div className="mx-4">
-        <div className="backdrop-blur-md bg-white/80 border border-white/30 rounded-full px-6 py-3 shadow-lg">
+        <div className="backdrop-blur-md bg-background/80 border border-default-200 rounded-full px-6 py-3 shadow-lg">
           <div className="flex items-center justify-between">
             {/* Left side - Logo */}
             <Link

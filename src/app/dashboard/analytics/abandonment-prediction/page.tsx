@@ -242,7 +242,7 @@ export default function AbandonmentPredictionPage() {
                   return (
                     <TableRow key={prediction.sessionId}>
                       <TableCell>
-                        <span className="text-xs font-mono text-gray-600">
+                        <span className="text-xs font-mono text-foreground/70">
                           {prediction.sessionId.substring(0, 12)}...
                         </span>
                       </TableCell>
@@ -254,7 +254,7 @@ export default function AbandonmentPredictionPage() {
                             className="flex-1"
                             size="sm"
                           />
-                          <span className="text-sm font-semibold text-gray-900 min-w-[50px]">
+                          <span className="text-sm font-semibold text-foreground min-w-[50px]">
                             {prediction.prediction.riskScore.toFixed(0)}
                           </span>
                         </div>
@@ -265,18 +265,18 @@ export default function AbandonmentPredictionPage() {
                         </Chip>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-foreground/70">
                           {prediction.prediction.factors.currentStep}
                         </span>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-foreground/70">
                           {formatDuration(prediction.prediction.factors.totalDuration)}
                         </span>
                       </TableCell>
                       <TableCell>
                         <span className={`text-sm font-semibold ${
-                          prediction.prediction.factors.errorCount > 0 ? 'text-red-600' : 'text-gray-600'
+                          prediction.prediction.factors.errorCount > 0 ? 'text-red-600' : 'text-foreground/70'
                         }`}>
                           {formatNumber(prediction.prediction.factors.errorCount)}
                         </span>
@@ -298,7 +298,7 @@ export default function AbandonmentPredictionPage() {
                       </TableCell>
                       <TableCell>
                         <div className="max-w-xs">
-                          <ul className="text-xs text-gray-600 list-disc list-inside">
+                          <ul className="text-xs text-foreground/70 list-disc list-inside">
                             {prediction.prediction.recommendations.slice(0, 2).map((rec, idx) => (
                               <li key={idx}>{rec}</li>
                             ))}
@@ -314,7 +314,7 @@ export default function AbandonmentPredictionPage() {
         </ChartCard>
       ) : (
         <ChartCard title={t('noHighRiskTitle')} subtitle={t('noHighRiskSubtitle')}>
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-foreground/60">
             <CheckCircleIcon className="w-12 h-12 mx-auto mb-4 text-green-300" />
             <p className="text-lg font-semibold mb-2">{t('allSessionsGood')}</p>
             <p className="text-sm">{t('noHighRiskPatterns')}</p>

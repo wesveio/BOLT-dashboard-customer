@@ -69,11 +69,11 @@ export function RoleGuard({
     if (!hasPermission(requiredPermission.resource, requiredPermission.action)) {
       return (
         fallback || (
-          <Card className="border-2 border-red-300 bg-red-50">
+          <Card className="border-2 border-danger/30 bg-danger/10">
             <CardBody className="p-6">
               <div className="flex items-center gap-3">
                 <svg
-                  className="w-6 h-6 text-red-500 flex-shrink-0"
+                  className="w-6 h-6 text-danger flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -86,8 +86,8 @@ export function RoleGuard({
                   />
                 </svg>
                 <div>
-                  <p className="text-red-700 font-semibold">Access Denied</p>
-                  <p className="text-red-600 text-sm">
+                  <p className="text-danger font-semibold">Access Denied</p>
+                  <p className="text-danger text-sm">
                     You don&apos;t have permission to {requiredPermission.action} this resource.
                   </p>
                 </div>

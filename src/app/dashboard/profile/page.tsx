@@ -102,9 +102,9 @@ export default function ProfilePage() {
         {/* Left Column - Profile Info */}
         <div className="lg:col-span-2 space-y-6">
           {/* Personal Information */}
-          <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+          <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
             <CardBody className="p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">{t('personalInfo')}</h2>
+              <h2 className="text-xl font-bold text-foreground mb-6">{t('personalInfo')}</h2>
               <div className="space-y-4">
                 <Input
                   label={t('name')}
@@ -114,7 +114,7 @@ export default function ProfilePage() {
                   size="lg"
                   isDisabled={!isEditing}
                   isRequired
-                  startContent={<UserIcon className="w-5 h-5 text-gray-400" />}
+                  startContent={<UserIcon className="w-5 h-5 text-foreground/40" />}
                   classNames={{
                     input: 'text-base',
                     label: 'text-sm font-semibold',
@@ -128,7 +128,7 @@ export default function ProfilePage() {
                   size="lg"
                   isDisabled={true}
                   isRequired
-                  startContent={<EnvelopeIcon className="w-5 h-5 text-gray-400" />}
+                  startContent={<EnvelopeIcon className="w-5 h-5 text-foreground/40" />}
                   description={t('emailNote')}
                   classNames={{
                     input: 'text-base',
@@ -153,9 +153,9 @@ export default function ProfilePage() {
           </Card>
 
           {/* Professional Information */}
-          <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+          <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
             <CardBody className="p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">{t('professionalInfo')}</h2>
+              <h2 className="text-xl font-bold text-foreground mb-6">{t('professionalInfo')}</h2>
               <div className="space-y-4">
                 <Input
                   label={t('company')}
@@ -223,7 +223,7 @@ export default function ProfilePage() {
         {/* Right Column - Avatar & Stats */}
         <div className="lg:col-span-1 space-y-6">
           {/* Avatar Card */}
-          <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+          <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
             <CardBody className="p-6">
               <div className="text-center">
                 <div className="relative inline-block mb-4">
@@ -244,8 +244,8 @@ export default function ProfilePage() {
                     </button>
                   )}
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-1">{user?.name || 'User'}</h3>
-                <p className="text-sm text-gray-600 mb-4">{user?.email}</p>
+                <h3 className="text-xl font-bold text-foreground mb-1">{user?.name || 'User'}</h3>
+                <p className="text-sm text-foreground/70 mb-4">{user?.email}</p>
                 <div className="inline-block px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full">
                   {user?.role || 'viewer'}
                 </div>
@@ -254,24 +254,24 @@ export default function ProfilePage() {
           </Card>
 
           {/* Account Stats */}
-          <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+          <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
             <CardBody className="p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">{t('accountStats')}</h3>
+              <h3 className="text-lg font-bold text-foreground mb-4">{t('accountStats')}</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">{t('memberSince')}</span>
-                  <span className="text-sm font-semibold text-gray-900">
+                  <span className="text-sm text-foreground/70">{t('memberSince')}</span>
+                  <span className="text-sm font-semibold text-foreground">
                     {new Date().toLocaleDateString()}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">{t('lastLogin')}</span>
-                  <span className="text-sm font-semibold text-gray-900">
+                  <span className="text-sm text-foreground/70">{t('lastLogin')}</span>
+                  <span className="text-sm font-semibold text-foreground">
                     {new Date().toLocaleDateString()}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">{t('accountStatus')}</span>
+                  <span className="text-sm text-foreground/70">{t('accountStatus')}</span>
                   <span className="inline-block px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded">
                     {t('active')}
                   </span>

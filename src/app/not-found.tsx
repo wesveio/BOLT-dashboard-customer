@@ -9,7 +9,7 @@ import { fadeIn, scaleIn } from '@/utils/animations';
 export default function NotFound() {
   const t = useTranslations('notFound');
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <m.div
         className="max-w-2xl w-full text-center"
         initial="hidden"
@@ -52,7 +52,7 @@ export default function NotFound() {
 
         {/* Title */}
         <m.h2
-          className="text-3xl md:text-4xl font-bold text-gray-900 mb-4"
+          className="text-3xl md:text-4xl font-bold text-foreground mb-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
@@ -62,7 +62,7 @@ export default function NotFound() {
 
         {/* Subtitle */}
         <m.p
-          className="text-lg md:text-xl text-gray-600 mb-8 max-w-md mx-auto"
+          className="text-lg md:text-xl text-foreground/70 mb-8 max-w-md mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
@@ -92,7 +92,7 @@ export default function NotFound() {
             variant="light"
             color="default"
             size="lg"
-            className="font-semibold text-base py-7 px-8 hover:bg-gray-100 transition-colors"
+            className="font-semibold text-base py-7 px-8 hover:bg-default-100 transition-colors"
           >
             {t('returnToHome')}
           </Button>
@@ -100,7 +100,7 @@ export default function NotFound() {
 
         {/* Decorative line */}
         <m.div
-          className="mt-12 w-24 h-1 mx-auto rounded-full bg-gradient-to-r from-transparent via-gray-300 to-transparent"
+          className="mt-12 w-24 h-1 mx-auto rounded-full bg-gradient-to-r from-transparent via-default-300 to-transparent"
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ delay: 0.7, duration: 0.6 }}

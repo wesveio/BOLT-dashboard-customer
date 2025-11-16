@@ -28,12 +28,12 @@ export const ErrorState = memo(function ErrorState({
   const displayRetryLabel = retryLabel || t('retry');
   
   return (
-    <Card className={`border border-red-200 bg-red-50 ${className}`}>
+    <Card className={`border border-danger/20 bg-danger/10 ${className}`}>
       <CardBody className="p-6">
         <div className="flex flex-col items-center justify-center text-center">
-          <ExclamationTriangleIcon className="w-12 h-12 text-red-600 mb-4" />
-          <h3 className="text-lg font-bold text-red-900 mb-2">{t('error')}</h3>
-          <p className="text-sm text-red-700 mb-4">{displayMessage}</p>
+          <ExclamationTriangleIcon className="w-12 h-12 text-danger mb-4" />
+          <h3 className="text-lg font-bold text-danger mb-2">{t('error')}</h3>
+          <p className="text-sm text-danger mb-4">{displayMessage}</p>
           {onRetry && (
             <Button
               color="danger"

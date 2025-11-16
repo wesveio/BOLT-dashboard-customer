@@ -45,16 +45,16 @@ export const MetricCard = memo(function MetricCard({
       variants={fadeIn}
       className={`h-full ${className}`}
     >
-      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 h-full flex flex-col">
+      <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 h-full flex flex-col">
         <CardBody className="p-6 flex-1 flex flex-col">
           <div className="flex items-start justify-between h-full gap-4">
             <div className="flex-1 flex flex-col min-w-0">
-              <p className="text-sm text-gray-600 mb-1 font-semibold truncate">{title}</p>
+              <p className="text-sm text-foreground/70 mb-1 font-semibold truncate">{title}</p>
               {isLoading ? (
-                <div className="h-8 w-24 bg-gray-200 rounded animate-pulse" />
+                <div className="h-8 w-24 bg-default-200 rounded animate-pulse" />
               ) : (
                 <p
-                  className="text-xl sm:text-2xl font-bold text-gray-900 break-words overflow-hidden"
+                  className="text-xl sm:text-2xl font-bold text-foreground break-words overflow-hidden"
                   style={{
                     wordBreak: 'break-word',
                     overflowWrap: 'break-word',
@@ -66,18 +66,18 @@ export const MetricCard = memo(function MetricCard({
                 </p>
               )}
               {subtitle && (
-                <p className="text-xs text-gray-500 mt-1 line-clamp-2">{subtitle}</p>
+                <p className="text-xs text-foreground/60 mt-1 line-clamp-2">{subtitle}</p>
               )}
               {trend && (
                 <div className="flex items-center gap-1 mt-2 flex-wrap">
                   <span
                     className={`text-xs font-semibold ${
-                      trend.isPositive ? 'text-green-600' : 'text-red-600'
+                      trend.isPositive ? 'text-success' : 'text-danger'
                     }`}
                   >
                     {trend.isPositive ? '↑' : '↓'} {formatPercentage(Math.abs(trend.value))}
                   </span>
-                  <span className="text-xs text-gray-500">vs previous period</span>
+                  <span className="text-xs text-foreground/60">vs previous period</span>
                 </div>
               )}
             </div>

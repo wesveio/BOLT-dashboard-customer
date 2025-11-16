@@ -44,8 +44,8 @@ export function PreviewPane({ config }: PreviewPaneProps) {
       {/* Preview Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-lg font-bold text-gray-900">Live Preview</h3>
-          <p className="text-sm text-gray-500">
+          <h3 className="text-lg font-bold text-foreground">Live Preview</h3>
+          <p className="text-sm text-foreground/60">
             See how your theme will look in the checkout
           </p>
         </div>
@@ -56,7 +56,7 @@ export function PreviewPane({ config }: PreviewPaneProps) {
 
       {/* Preview Container */}
       <div
-        className="rounded-xl border-2 border-gray-200 p-6 min-h-[500px] relative overflow-hidden"
+        className="rounded-xl border-2 border-default p-6 min-h-[500px] relative overflow-hidden"
         style={{
           backgroundColor: backgroundColor,
         }}
@@ -97,7 +97,7 @@ export function PreviewPane({ config }: PreviewPaneProps) {
               </p>
             </div>
             {config?.branding?.logo?.url && (
-              <div className="w-12 h-12 rounded-lg bg-white flex items-center justify-center shadow-sm">
+              <div className="w-12 h-12 rounded-lg bg-background flex items-center justify-center shadow-sm">
                 <img
                   src={config.branding.logo.url}
                   alt={config.branding.logo.altText || 'Logo'}
@@ -294,7 +294,7 @@ export function PreviewPane({ config }: PreviewPaneProps) {
       </div>
 
       {/* Color Palette Swatches */}
-      <div className="grid grid-cols-5 gap-3 pt-4 border-t border-gray-200">
+      <div className="grid grid-cols-5 gap-3 pt-4 border-t border-default">
         {[
           { name: 'Primary', color: primaryColor },
           { name: 'Secondary', color: secondaryColor },
@@ -304,10 +304,10 @@ export function PreviewPane({ config }: PreviewPaneProps) {
         ].map(({ name, color }) => (
           <div key={name} className="text-center">
             <div
-              className="w-12 h-12 rounded-lg mx-auto mb-2 shadow-sm border border-gray-200"
+              className="w-12 h-12 rounded-lg mx-auto mb-2 shadow-sm border border-default"
               style={{ backgroundColor: color }}
             />
-            <span className="text-xs text-gray-600">{name}</span>
+            <span className="text-xs text-foreground/70">{name}</span>
           </div>
         ))}
       </div>

@@ -27,13 +27,13 @@ export const ChartCard = memo(function ChartCard({
       variants={fadeIn}
       className={className}
     >
-      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+      <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
         <CardBody className="p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-xl font-bold text-gray-900">{title}</h3>
+              <h3 className="text-xl font-bold text-foreground">{title}</h3>
               {subtitle && (
-                <p className="text-sm text-gray-600 mt-1">{subtitle}</p>
+                <p className="text-sm text-foreground/70 mt-1">{subtitle}</p>
               )}
             </div>
             {action && <div>{action}</div>}

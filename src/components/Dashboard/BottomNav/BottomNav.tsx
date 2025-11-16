@@ -47,7 +47,7 @@ export function BottomNav() {
   return (
     <>
       {/* Bottom Navigation Bar */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-50 shadow-lg safe-area-inset-bottom">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t border-default z-50 shadow-lg safe-area-inset-bottom">
         <div className="flex items-center justify-around px-2 py-2">
           {/* Main items */}
           {navItems.map((item) => {
@@ -58,19 +58,19 @@ export function BottomNav() {
                 <motion.div
                   className={`flex flex-col items-center justify-center py-2 px-2 rounded-lg transition-all duration-200 ${
                     active
-                      ? 'bg-gradient-to-r from-blue-50 to-purple-50'
-                      : 'hover:bg-gray-50'
+                      ? 'bg-primary/10'
+                      : 'hover:bg-default-100'
                   }`}
                   whileTap={{ scale: 0.95 }}
                 >
                   <Icon
                     className={`w-5 h-5 mb-1 ${
-                      active ? 'text-blue-600' : 'text-gray-400'
+                      active ? 'text-primary' : 'text-foreground/50'
                     }`}
                   />
                   <span
                     className={`text-xs font-medium ${
-                      active ? 'text-blue-600' : 'text-gray-600'
+                      active ? 'text-primary' : 'text-foreground/70'
                     }`}
                   >
                     {item.label}

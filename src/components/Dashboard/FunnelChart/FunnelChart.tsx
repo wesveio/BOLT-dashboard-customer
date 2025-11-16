@@ -19,7 +19,7 @@ export function FunnelChart({ data, isLoading = false }: FunnelChartProps) {
     return (
       <div className="space-y-4">
         {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="h-16 bg-gray-200 rounded animate-pulse" />
+          <div key={i} className="h-16 bg-default-200 rounded animate-pulse" />
         ))}
       </div>
     );
@@ -27,7 +27,7 @@ export function FunnelChart({ data, isLoading = false }: FunnelChartProps) {
 
   if (!data || data.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-8 text-foreground/60">
         No data available
       </div>
     );
@@ -47,14 +47,14 @@ export function FunnelChart({ data, isLoading = false }: FunnelChartProps) {
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
                   {index + 1}
                 </div>
-                <span className="font-semibold text-gray-900">{step.label}</span>
+                <span className="font-semibold text-foreground">{step.label}</span>
               </div>
               <div className="text-right">
-                <p className="text-sm font-bold text-gray-900">{step.count.toLocaleString()}</p>
-                <p className="text-xs text-gray-500">{formatPercentage(step.percentage)}</p>
+                <p className="text-sm font-bold text-foreground">{step.count.toLocaleString()}</p>
+                <p className="text-xs text-foreground/60">{formatPercentage(step.percentage)}</p>
               </div>
             </div>
-            <div className="relative h-10 bg-gray-100 rounded-lg overflow-hidden">
+            <div className="relative h-10 bg-default-100 rounded-lg overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg transition-all duration-500 flex items-center justify-end pr-3"
                 style={{ width: `${widthPercentage}%` }}
@@ -68,7 +68,7 @@ export function FunnelChart({ data, isLoading = false }: FunnelChartProps) {
             </div>
             {index < data.length - 1 && (
               <div className="flex justify-center">
-                <div className="w-0.5 h-4 bg-gray-300" />
+                <div className="w-0.5 h-4 bg-default-300" />
               </div>
             )}
           </div>

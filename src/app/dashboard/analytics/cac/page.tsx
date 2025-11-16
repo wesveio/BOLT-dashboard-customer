@@ -144,12 +144,12 @@ export default function CACAnalyticsPage() {
         >
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">{t('target')}</span>
+              <span className="text-sm text-foreground/70">{t('target')}</span>
               <Chip color={efficiencyColor} variant="flat" size="lg">
                 {efficiencyLabel}
               </Chip>
             </div>
-            <div className="relative h-8 bg-gray-100 rounded-full overflow-hidden">
+            <div className="relative h-8 bg-default-100 rounded-full overflow-hidden">
               <div
                 className={`absolute h-full rounded-full transition-all duration-500 ${
                   summary.acquisitionEfficiency.excellent
@@ -163,12 +163,12 @@ export default function CACAnalyticsPage() {
                 }}
               />
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xs font-semibold text-gray-700">
+                <span className="text-xs font-semibold text-foreground/80">
                   {t('ratio', { ratio: summary.ltvCacRatio.toFixed(2) })}
                 </span>
               </div>
             </div>
-            <div className="flex items-center justify-between text-xs text-gray-500">
+            <div className="flex items-center justify-between text-xs text-foreground/60">
               <span>0:1</span>
               <span>{t('goodRatio')}</span>
               <span>{t('excellentRatio')}</span>
@@ -242,25 +242,25 @@ export default function CACAnalyticsPage() {
                   return (
                     <TableRow key={`${channel.channel}-${index}`}>
                       <TableCell>
-                        <span className="text-sm font-semibold text-gray-900">{channel.channel}</span>
+                        <span className="text-sm font-semibold text-foreground">{channel.channel}</span>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm font-semibold text-gray-900">
+                        <span className="text-sm font-semibold text-foreground">
                           {formatNumber(channel.sessions)}
                         </span>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm font-semibold text-gray-900">
+                        <span className="text-sm font-semibold text-foreground">
                           {formatNumber(channel.conversions)}
                         </span>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-foreground/70">
                           {formatPercentage(channel.conversionRate)}
                         </span>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm font-semibold text-gray-900">
+                        <span className="text-sm font-semibold text-foreground">
                           {formatCurrency(channel.estimatedCAC)}
                         </span>
                       </TableCell>
@@ -291,8 +291,8 @@ export default function CACAnalyticsPage() {
         </ChartCard>
       ) : (
         <ChartCard title={t('noChannelDataTitle')} subtitle={t('noChannelDataSubtitle')}>
-          <div className="text-center py-12 text-gray-500">
-            <UserPlusIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+          <div className="text-center py-12 text-foreground/60">
+            <UserPlusIcon className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
             <p className="text-lg font-semibold mb-2">{t('noChannelDataFound')}</p>
             <p className="text-sm">{t('tryDifferentPeriod')}</p>
           </div>

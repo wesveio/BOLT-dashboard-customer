@@ -141,11 +141,11 @@ export function WidgetConfigModal({ widget, isOpen, onClose, onSave }: WidgetCon
             )}
 
             {/* Period Info */}
-            <div className="p-3 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-600">
+            <div className="p-3 bg-default-50 rounded-lg">
+              <p className="text-sm text-foreground/70">
                 <span className="font-semibold">Period:</span> {period}
               </p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-foreground/60 mt-1">
                 Widget will use the current dashboard period setting
               </p>
             </div>

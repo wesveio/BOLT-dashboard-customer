@@ -135,9 +135,9 @@ export default function PurchaseOrdersPage() {
       <PageHeader title={t('title')} subtitle={t('subtitle')} />
 
       <div className="space-y-6">
-        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+        <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
           <CardBody className="p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">{t('configuration')}</h2>
+            <h2 className="text-xl font-bold text-foreground mb-6">{t('configuration')}</h2>
             <div className="space-y-4">
               <Input
                 label="PO Prefix"
@@ -149,8 +149,8 @@ export default function PurchaseOrdersPage() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-semibold text-gray-900">Auto Generate PO Numbers</p>
-                  <p className="text-sm text-gray-600">
+                  <p className="font-semibold text-foreground">Auto Generate PO Numbers</p>
+                  <p className="text-sm text-foreground/70">
                     Automatically generate PO numbers when creating new purchase orders
                   </p>
                 </div>
@@ -172,12 +172,12 @@ export default function PurchaseOrdersPage() {
           </CardBody>
         </Card>
 
-        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+        <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
           <CardBody className="p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">{t('purchaseOrders')}</h2>
+            <h2 className="text-xl font-bold text-foreground mb-6">{t('purchaseOrders')}</h2>
             {orders.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-gray-500">No purchase orders found</p>
+                <p className="text-foreground/60">No purchase orders found</p>
               </div>
             ) : (
               <Table aria-label="Purchase orders table">

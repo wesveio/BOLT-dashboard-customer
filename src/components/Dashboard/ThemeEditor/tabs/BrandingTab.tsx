@@ -25,9 +25,9 @@ export function BrandingTab({ config, onChange }: BrandingTabProps) {
   return (
     <div className="space-y-6">
       {/* Logo */}
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Logo & Identity</h3>
+          <h3 className="text-lg font-bold text-foreground mb-4">Logo & Identity</h3>
           <div className="space-y-4">
             <Input
               label="Logo URL"
@@ -66,9 +66,9 @@ export function BrandingTab({ config, onChange }: BrandingTabProps) {
       </Card>
 
       {/* Contact */}
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Contact Information</h3>
+          <h3 className="text-lg font-bold text-foreground mb-4">Contact Information</h3>
           <div className="space-y-4">
             <Input
               label="Phone"
@@ -100,9 +100,9 @@ export function BrandingTab({ config, onChange }: BrandingTabProps) {
       </Card>
 
       {/* Legal Links */}
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Legal Links</h3>
+          <h3 className="text-lg font-bold text-foreground mb-4">Legal Links</h3>
           <div className="space-y-4">
             <Input
               label="Privacy Policy URL"

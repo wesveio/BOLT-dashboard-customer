@@ -251,7 +251,7 @@ export default function SecurityPage() {
 
       {/* Recent Alerts */}
       {data?.recentAlerts && data.recentAlerts.length > 0 && (
-        <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+        <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
           <CardBody className="p-6">
             <h3 className="text-lg font-semibold mb-4">{t('recentAlerts.title')}</h3>
             <div className="space-y-3">
@@ -284,10 +284,10 @@ export default function SecurityPage() {
                         >
                           {alert.severity.toUpperCase()}
                         </span>
-                        <span className="text-sm font-medium text-gray-700">{alert.type}</span>
+                        <span className="text-sm font-medium text-foreground/80">{alert.type}</span>
                       </div>
-                      <p className="text-sm text-gray-600">{alert.description}</p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-sm text-foreground/70">{alert.description}</p>
+                      <p className="text-xs text-foreground/60 mt-1">
                         {new Date(alert.timestamp).toLocaleString()}
                       </p>
                     </div>

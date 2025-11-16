@@ -104,12 +104,12 @@ export function InterventionConfig({ onSave }: InterventionConfigProps) {
 
   if (isLoading) {
     return (
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
           <div className="h-64 flex items-center justify-center">
             <div className="flex flex-col items-center justify-center gap-4">
               <Spinner size="md" />
-              <div className="text-gray-500">Loading configuration...</div>
+              <div className="text-foreground/60">Loading configuration...</div>
             </div>
           </div>
         </CardBody>
@@ -123,10 +123,10 @@ export function InterventionConfig({ onSave }: InterventionConfigProps) {
       animate="visible"
       variants={fadeIn}
     >
-      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+      <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
         <CardBody className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-gray-900">Intervention Configuration</h3>
+            <h3 className="text-xl font-bold text-foreground">Intervention Configuration</h3>
             {hasChanges && (
               <Button
                 color="primary"
@@ -140,13 +140,13 @@ export function InterventionConfig({ onSave }: InterventionConfigProps) {
           </div>
 
           {saveStatus === 'success' && (
-            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+            <div className="mb-4 p-3 bg-success/10 border border-success/20 rounded-lg text-success text-sm">
               Configuration saved successfully
             </div>
           )}
 
           {saveStatus === 'error' && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            <div className="mb-4 p-3 bg-danger/10 border border-danger/20 rounded-lg text-danger text-sm">
               Failed to save configuration. Please try again.
             </div>
           )}
@@ -155,10 +155,10 @@ export function InterventionConfig({ onSave }: InterventionConfigProps) {
             {configs.map((config, index) => (
               <div
                 key={config.type}
-                className="p-4 border border-gray-200 rounded-lg space-y-4"
+                className="p-4 border border-default-200 rounded-lg space-y-4"
               >
                 <div className="flex items-center justify-between">
-                  <h4 className="font-semibold text-gray-900">{getTypeLabel(config.type)}</h4>
+                  <h4 className="font-semibold text-foreground">{getTypeLabel(config.type)}</h4>
                   <Switch
                     isSelected={config.enabled}
                     onValueChange={(value) => handleConfigChange(index, 'enabled', value)}
@@ -169,7 +169,7 @@ export function InterventionConfig({ onSave }: InterventionConfigProps) {
                 {config.enabled && (
                   <>
                     <div>
-                      <label className="text-sm text-gray-600 mb-2 block">
+                      <label className="text-sm text-foreground/70 mb-2 block">
                         Risk Threshold: {config.threshold}
                       </label>
                       <Slider
@@ -191,7 +191,7 @@ export function InterventionConfig({ onSave }: InterventionConfigProps) {
                     />
 
                     {config.type === 'discount' && (
-                      <div className="space-y-3 pt-2 border-t border-gray-200">
+                        <div className="space-y-3 pt-2 border-t border-default-200">
                         <div className="grid grid-cols-2 gap-4">
                           <Input
                             label="Discount Percentage"
@@ -202,7 +202,7 @@ export function InterventionConfig({ onSave }: InterventionConfigProps) {
                             onValueChange={(value) =>
                               handleDiscountChange(index, 'percentage', value ? parseFloat(value) : undefined)
                             }
-                            endContent={<span className="text-gray-500">%</span>}
+                            endContent={<span className="text-foreground/60">%</span>}
                           />
                           <Input
                             label="Discount Amount"
@@ -212,7 +212,7 @@ export function InterventionConfig({ onSave }: InterventionConfigProps) {
                             onValueChange={(value) =>
                               handleDiscountChange(index, 'amount', value ? parseFloat(value) : undefined)
                             }
-                            startContent={<span className="text-gray-500">$</span>}
+                            startContent={<span className="text-foreground/60">$</span>}
                           />
                         </div>
                         <Input

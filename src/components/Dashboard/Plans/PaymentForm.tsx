@@ -123,10 +123,10 @@ function PaymentFormContent({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-foreground/80 mb-2">
           Card Information
         </label>
-        <div className="border border-gray-300 rounded-lg p-4 bg-white">
+        <div className="border border-default-300 rounded-lg p-4 bg-background">
           <CardElement
             options={{
               style: {
@@ -147,15 +147,15 @@ function PaymentFormContent({
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+        <div className="bg-danger/10 border border-danger/20 text-danger px-4 py-3 rounded-lg text-sm">
           {error}
         </div>
       )}
 
-      <div className="bg-gray-50 p-4 rounded-lg">
+      <div className="bg-default-50 p-4 rounded-lg">
         <div className="flex justify-between items-center">
-          <span className="text-gray-600">Total Amount:</span>
-          <span className="text-xl font-bold text-gray-900">
+          <span className="text-foreground/70">Total Amount:</span>
+          <span className="text-xl font-bold text-foreground">
             {new Intl.NumberFormat('en-US', {
               style: 'currency',
               currency: currency,

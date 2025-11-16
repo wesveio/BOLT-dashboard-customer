@@ -97,11 +97,11 @@ export function PersonalizationRules() {
 
   if (isLoading) {
     return (
-      <Card className="border border-gray-100">
+      <Card className="border border-default">
         <CardBody className="p-6">
           <div className="h-64 flex flex-col items-center justify-center gap-4">
             <Spinner size="md" />
-            <div className="text-gray-500">Loading rules...</div>
+            <div className="text-foreground/60">Loading rules...</div>
           </div>
         </CardBody>
       </Card>
@@ -114,10 +114,10 @@ export function PersonalizationRules() {
       animate="visible"
       variants={fadeIn}
     >
-      <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200">
+      <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200">
         <CardBody className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-gray-900">Personalization Rules</h3>
+            <h3 className="text-xl font-bold text-foreground">Personalization Rules</h3>
             <div className="flex gap-2">
               <Button
                 color="primary"
@@ -140,14 +140,14 @@ export function PersonalizationRules() {
 
           <div className="space-y-4">
             {rules.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-foreground/60">
                 <p>No rules configured. Click "Add Rule" to create one.</p>
               </div>
             ) : (
               rules.map((rule, index) => (
                 <div
                   key={rule.id || index}
-                  className="p-4 border border-gray-200 rounded-lg space-y-3"
+                  className="p-4 border border-default-200 rounded-lg space-y-3"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -178,7 +178,7 @@ export function PersonalizationRules() {
                       size="sm"
                     />
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-foreground/70">
                     <p>
                       <span className="font-medium">Condition:</span> {rule.condition.field} {rule.condition.operator} {Array.isArray(rule.condition.value) ? rule.condition.value.join(', ') : rule.condition.value}
                     </p>

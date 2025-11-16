@@ -76,7 +76,7 @@ export default function BoltXPage() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <Card className="border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200 cursor-pointer h-full">
+                    <Card className="border border-default hover:border-primary/20 hover:shadow-lg transition-all duration-200 cursor-pointer h-full">
                       <CardBody className="p-6">
                         <div className="flex items-start gap-4">
                           {/* Icon */}
@@ -88,10 +88,10 @@ export default function BoltXPage() {
 
                           {/* Content */}
                           <div className="flex-1">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            <h3 className="text-lg font-semibold text-foreground mb-2">
                               {feature.title}
                             </h3>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-foreground/70">
                               {feature.description}
                             </p>
                           </div>

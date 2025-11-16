@@ -103,7 +103,7 @@ export function FieldsPerformanceTable({ fields, isLoading = false, maxRows = 10
     return (
       <div className="flex flex-col items-center justify-center h-64 gap-4">
         <Spinner size="md" />
-        <div className="text-gray-500">Loading field performance data...</div>
+        <div className="text-foreground/60">Loading field performance data...</div>
       </div>
     );
   }
@@ -163,7 +163,7 @@ export function FieldsPerformanceTable({ fields, isLoading = false, maxRows = 10
             </SelectItem>
           </Select>
         </div>
-        <div className="flex items-center justify-center h-64 text-gray-500">
+        <div className="flex items-center justify-center h-64 text-foreground/60">
           <p>No field performance data found</p>
         </div>
       </div>
@@ -285,7 +285,7 @@ export function FieldsPerformanceTable({ fields, isLoading = false, maxRows = 10
             return (
               <TableRow key={`${field.step}-${field.fieldName}-${index}`}>
                 <TableCell>
-                  <span className="font-semibold text-gray-900">{formatFieldName(field.fieldName)}</span>
+                  <span className="font-semibold text-foreground">{formatFieldName(field.fieldName)}</span>
                 </TableCell>
                 <TableCell>
                   <Chip
@@ -298,22 +298,22 @@ export function FieldsPerformanceTable({ fields, isLoading = false, maxRows = 10
                   </Chip>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm text-gray-900 font-medium">
+                  <span className="text-sm text-foreground font-medium">
                     {formatPercentage(field.completionRate * 100)}
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm text-gray-900 font-medium">
+                  <span className="text-sm text-foreground font-medium">
                     {formatPercentage(field.errorRate * 100)}
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-foreground/70">
                     {(field.avgTimeToComplete / 1000).toFixed(2)}s
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm text-gray-600">{field.totalAttempts}</span>
+                  <span className="text-sm text-foreground/70">{field.totalAttempts}</span>
                 </TableCell>
                 <TableCell>
                   <Chip

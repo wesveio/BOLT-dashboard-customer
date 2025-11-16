@@ -120,10 +120,10 @@ export function SignUpForm({ onSuccess, onSwitchToLogin }: SignUpFormProps) {
   if (success) {
     return (
       <div className="space-y-6">
-        <div className="p-6 bg-green-50 border-2 border-green-300 rounded-lg">
+        <div className="p-6 bg-success/10 border-2 border-success/30 rounded-lg">
           <div className="flex items-center gap-3 mb-2">
             <svg
-              className="w-6 h-6 text-green-600"
+              className="w-6 h-6 text-success"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -135,9 +135,9 @@ export function SignUpForm({ onSuccess, onSwitchToLogin }: SignUpFormProps) {
                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <h3 className="text-green-800 font-bold text-lg">{t('success.title')}</h3>
+            <h3 className="text-success font-bold text-lg">{t('success.title')}</h3>
           </div>
-          <p className="text-green-700 text-sm">{t('success.message')}</p>
+          <p className="text-success text-sm">{t('success.message')}</p>
         </div>
         
         {onSwitchToLogin && (
@@ -158,8 +158,8 @@ export function SignUpForm({ onSuccess, onSwitchToLogin }: SignUpFormProps) {
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Error Message */}
       {error && (
-        <div className="p-4 bg-red-50 border-2 border-red-300 rounded-lg">
-          <p className="text-red-700 font-semibold text-sm">{error}</p>
+        <div className="p-4 bg-danger/10 border-2 border-danger/30 rounded-lg">
+          <p className="text-danger font-semibold text-sm">{error}</p>
         </div>
       )}
 
@@ -281,13 +281,13 @@ export function SignUpForm({ onSuccess, onSwitchToLogin }: SignUpFormProps) {
       {/* Switch to Login */}
       {onSwitchToLogin && (
         <div className="text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-foreground/70">
             {t('alreadyHaveAccount')}{' '}
             <button
               type="button"
               onClick={onSwitchToLogin}
               disabled={isLoading}
-              className="text-blue-600 hover:text-blue-700 font-semibold transition-colors disabled:opacity-50"
+              className="text-primary hover:text-primary/80 font-semibold transition-colors disabled:opacity-50"
             >
               {t('loginLink')}
             </button>
