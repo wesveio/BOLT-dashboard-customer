@@ -3,7 +3,7 @@
 import { HeroUIProvider } from '@heroui/react';
 import { Toaster } from 'sonner';
 import { DashboardAuthProvider } from '@/contexts/DashboardAuthContext';
-import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import { SidebarProvider, useSidebar } from '@/contexts/SidebarContext';
 import { PeriodProvider } from '@/contexts/PeriodContext';
 import { PlanAccessProvider } from '@/contexts/PlanAccessContext';
@@ -36,13 +36,13 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * Wrapper para HeroUIProvider que usa o tema do ThemeContext
+ * Wrapper para HeroUIProvider
+ * O HeroUI detecta automaticamente a classe 'light' ou 'dark' no elemento raiz
+ * que é aplicada pelo ThemeContext
  */
 function HeroUIProviderWrapper({ children }: { children: React.ReactNode }) {
-  const { theme } = useTheme();
-  
   return (
-    <HeroUIProvider defaultTheme={theme}>
+    <HeroUIProvider>
       {children}
     </HeroUIProvider>
   );
