@@ -156,6 +156,7 @@ netlify deploy --prod
 
 ## Documentation
 
+- [Email System](./docs/EMAIL-SYSTEM.md) - Complete email system documentation
 - [Design Style Guide](../bckstg-checkout/docs/DESIGN-STYLE-GUIDE.md) - Follow the design system
 - [Design Quick Reference](../bckstg-checkout/docs/DESIGN-QUICK-REFERENCE.md) - Quick reference for common patterns
 
